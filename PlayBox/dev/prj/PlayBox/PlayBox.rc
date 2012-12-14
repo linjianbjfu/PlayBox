@@ -1,0 +1,291 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Chinese (P.R.C.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
+    "LANGUAGE 4, 2\r\n"
+    "#pragma code_page(936)\r\n"
+    "#include ""res\\PlayBox.rc2""  // 非 Microsoft Visual C++ 编辑过的资源\r\n"
+    "#include ""afxres.rc""         // 标准组件\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\PlayBox.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// RT_MANIFEST
+//
+
+IDR_RT_MANIFEST1        RT_MANIFEST             "res\\rt_manif.bin"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_PLAYBOX_DIALOG DIALOGEX 0, 0, 251, 166
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE
+EXSTYLE WS_EX_APPWINDOW
+FONT 9, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+END
+
+IDD_DLG_MINOREXIT DIALOGEX 0, 0, 186, 90
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_MSG_DLG DIALOGEX 0, 0, 186, 93
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_HOST DIALOGEX 0, 0, 186, 90
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CLIPCHILDREN | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_TRANS_DLG DIALOGEX 0, 0, 5, 5
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CLIPCHILDREN | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_CONFIG DIALOGEX 0, 0, 250, 138
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "选项设置"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,159,119,36,16
+    PUSHBUTTON      "取消",IDCANCEL,208,119,36,16
+    PUSHBUTTON      "重置",IDC_CONFIG_BTN_DEFAULT,6,119,47,16
+    LTEXT           "",IDC_STATIC,0,0,250,115,SS_SUNKEN,WS_EX_STATICEDGE
+END
+
+IDD_DIALOG_DOWN DIALOGEX 0, 0, 250, 35
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "游戏保存到",IDC_STATIC1,14,12,41,8
+    EDITTEXT        IDC_EDIT1,58,10,148,12,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "浏览",IDC_BUTTON1,212,10,26,12
+    LTEXT           "截图保存到",IDC_STATIC_PIC_SAVE_PATH,14,25,41,8,NOT 
+                    WS_VISIBLE
+    EDITTEXT        IDC_EDIT_SAVE_PATH,58,23,148,12,ES_AUTOHSCROLL | 
+                    ES_READONLY | NOT WS_VISIBLE
+    PUSHBUTTON      "浏览",IDC_BTN_BRO_SAVE_PATH,212,23,26,12,NOT WS_VISIBLE
+END
+
+IDD_DIALOG_SYS DIALOGEX 0, 0, 250, 80
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "开机自动启动",IDC_CHECK_AUTORUN,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,14,7,98,10
+    LTEXT           "点击关闭按钮时：",IDC_STATIC_MINOREXIT,13,28,74,10
+    CONTROL         "最小化，不退出程序",IDC_RAD_MIN,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP,13,39,138,11
+    CONTROL         "退出程序",IDC_RAD_EXIT,"Button",BS_AUTORADIOBUTTON,13,
+                    52,54,10
+    CONTROL         "每次关闭时不再提示",IDC_CHK_NOASK,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,13,63,99,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,4,0
+ PRODUCTVERSION 1,0,4,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080403a8"
+        BEGIN
+            VALUE "FileDescription", "小宝贝游戏盒"
+            VALUE "FileVersion", "1.0.4.0"
+            VALUE "InternalName", "PlayBox.exe"
+            VALUE "OriginalFilename", "PlayBox.exe"
+            VALUE "ProductName", "小宝贝游戏盒"
+            VALUE "ProductVersion", "1.0.4.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 936
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_DLG_MINOREXIT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 83
+    END
+
+    IDD_MSG_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 86
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_FRAME_LINE          BITMAP                  "res\\bitmap1.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU_TITLE MENU 
+BEGIN
+    POPUP "TITLE"
+    BEGIN
+        MENUITEM "界面总在最前",                IDC_TOPPANEL_HOLD
+        MENUITEM "选项设置",                    ID_MEMU_SETTING
+        MENUITEM "退出",                        ID_APP_EXIT
+    END
+END
+
+IDR_MENU_COVERLIST MENU 
+BEGIN
+    POPUP ""
+    BEGIN
+        MENUITEM "大图",                        32772
+        MENUITEM "中图",                        ID_CL_MIDICON
+        MENUITEM "小图",                        ID_CL_SMALLICON
+        MENUITEM "删除",                        ID_CL_DELFROMDISK
+    END
+END
+
+IDR_MENU_TRAYICON MENU 
+BEGIN
+    POPUP "TITLE"
+    BEGIN
+        MENUITEM "选项设置",                    ID_MEMU_SETTING
+        MENUITEM "退出",                        ID_APP_EXIT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_CURSOR1             CURSOR                  "res\\hand.cur"
+#endif    // Chinese (P.R.C.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE 4, 2
+#pragma code_page(936)
+#include "res\PlayBox.rc2"  // 非 Microsoft Visual C++ 编辑过的资源
+#include "afxres.rc"         // 标准组件
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

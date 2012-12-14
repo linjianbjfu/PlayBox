@@ -1,0 +1,38 @@
+#pragma once
+#include <vector>
+#include "ITabBarObserver.h"
+using namespace std;
+
+class PlayedGameWnd;
+
+#define MSG_USER_OPEN_HOMEPAGE WM_USER+203 //向qqtreectrl发送消息，让它点击“游戏大厅”ITEM
+
+typedef pair< TAB_ITEM, CWnd* > ONE_TAB;
+//该类实际上更多的是对窗口的管理
+//而非对用户control的管理
+//tab_item的操作可直接调用CTabBarData的接口
+class CTabPageControl : public ITabBarObserver
+{
+private:
+	vector<ONE_TAB>		m_mapTab;
+	CWnd*				m_pWndParent;
+public:
+	static CTabPageControl*	m_pTabPageControl;
+	static CTabPageControl*	GetInstance();
+	static void				DelInstance();
+	
+	CTabPageControl();
+	~CTabPageControl();
+
+public:
+	void SetParentWnd(CWnd* pWnd);
+	void ITabBarOb_CreateNewTab(TAB_ITEM & item);
+	void ITabBarOb_OpenExistTab(TAB_ITEM & item);
+	void ITabBarOb_DelTab(TAB_ITEM & item);
+	void ITabBarOb_OpenTabError(int iErrorCode);
+
+	void ResizePage();
+
+	void OpenHomePage();
+	void CallJS (LPVOID lpVoid);
+};

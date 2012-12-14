@@ -1,0 +1,7 @@
+LIBRARY	NetOp
+EXPORTS
+   StartHttpDown				@1
+   StopHttpDown					@2
+   StopAllHttp					@3
+   StartKWHD					@4
+   CloseKWHD					@5

@@ -1,0 +1,7 @@
+#ifndef _MYGAME_PANEL_RES_H
+#define _MYGAME_PANEL_RES_H
+
+#define MSG_QQDATA_START				WM_USER + 103
+#define MSG_UPDATE_QQ_TREE				WM_USER + 104
+
+#endif;
