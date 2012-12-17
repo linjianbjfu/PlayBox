@@ -218,6 +218,7 @@ void DownPercentWnd::DrawAd( CDC* pDc, CRect rc)
 	if(m_pWnd != NULL&&m_bNavi == true)
 	{
 		m_pWnd->Navigate2 ("www.baidu.com");
+		m_bNavi = false;
 	}
 	////确定范围:从最上方到中心点,居中显示
 	//int iAdMaxHeight = rc.Height()/2;
