@@ -180,6 +180,7 @@
 #define ID_Menu                         32779
 #define ID_MENU_AUTOADDLOCALGAME        32781
 #define ID_MENU_MANUALADDLOCALGAME      32783
+#define IDD_HTML_VIEW						158
 
 // Next default values for new objects
 // 

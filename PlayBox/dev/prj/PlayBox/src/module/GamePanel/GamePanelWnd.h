@@ -15,6 +15,10 @@ class CShowMenu;
 class CxStaticText;
 class IPanelChange;
 
+#define ADS_TIMER_ID 1001
+//Time to play the ads( by million seconds)*60
+#define ADS_TIME			400
+
 class GamePanelWnd : public CBasicWnd,
 					 public ILayoutChangeObserver,
 	                 public IHttpDownObserver,
@@ -71,8 +75,13 @@ private:
 
 	string				m_strSwfHtmlPath;
 	string				m_strCopyedHtmlPath;
+
+	//Records the step for the ads.
+	int	m_iStep;
 	
 	CString UINT2CString(UINT ui);
 	void	LogPlaySwfGameAct();
 	CString GetLeftTime( unsigned int uiSize, unsigned int uiSpeed, unsigned int uiFinished );
+public:
+	afx_msg void OnTimer(UINT nIDEvent);
 };

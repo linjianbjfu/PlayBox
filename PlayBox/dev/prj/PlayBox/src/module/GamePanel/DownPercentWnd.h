@@ -5,10 +5,12 @@
 #include "../../datainterface/IAdData.h"
 #include <vector>
 #include <string>
+#include "MyHtmlView.h"
 
 using std::vector;
 using std::string;
 
+class CMyHtmlView;
 class CDibBitmap;
 
 class DownPercentWnd : public CWnd,
@@ -51,4 +53,9 @@ public:
 	void	SetFailed( bool bFailed );
 	void	LoadSkin();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+public:
+	CMyHtmlView * m_pWnd;
+	// Dynamic adding views(HtmlView here)
+	BOOL AddDynamicView(LPCTSTR  lpszLabel, CRuntimeClass * pViewClass);
+	bool m_bNavi;
 };

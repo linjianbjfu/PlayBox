@@ -18,6 +18,7 @@
 #include "../../Gui/CommonControl/ShockwaveFlash.h"
 #include "DownPercentWnd.h"
 #include "GameCtrlWnd.h"
+#include ".\gamepanelwnd.h"
 
 
 IMPLEMENT_DYNAMIC(GamePanelWnd, CBasicWnd)
@@ -29,11 +30,15 @@ GamePanelWnd::GamePanelWnd()
 	m_isMainWindowTopMost	= false;
 	m_bFullScreen			= false;
 
+	this->m_iStep = 0;
+
+	//2012-12-13
 	m_pGameFlash      = new CShockwaveFlash();
 	m_pWndDownPercent = new DownPercentWnd();
 	m_pBtnSwitch      = new CxSkinButton();
 	m_pGameCtrl       = new CGameCtrlWnd();
 	m_pGameInfo       = new CxStaticText();
+
 	AfxGetMessageManager()->AttachMessage( ID_MESSAGE_LAYOUTMGR,(ILayoutChangeObserver*) this);
 	AfxGetMessageManager()->AttachMessage( ID_MESSAGE_PANEL_CHANGE,(IPanelChangeObserver*) this);
 	AfxGetMessageManager()->AttachMessage( ID_MESSAGE_HTTP_DOWN,(IHttpDownObserver*) this);
@@ -58,6 +63,7 @@ BEGIN_MESSAGE_MAP(GamePanelWnd, CBasicWnd)
 	ON_BN_CLICKED(IDC_BTN_SWITCH,OnClickedSwitch)
 	ON_MESSAGE(WM_REPLAY,OnClickedReplay)
 	ON_MESSAGE(WM_CUT_SCREEN,OnClickedCut)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -109,6 +115,8 @@ void GamePanelWnd::SetTabItem( TAB_ITEM ti )
 	m_swfGame.strSwfUrl = CWebManager::GetInstance()->GetValue( ti.strParam, "swfurl" );
 	m_swfGame.strIntro  = CWebManager::GetInstance()->GetValue( ti.strParam, "intro" );;
 	
+	//Try to load here.
+	//MessageBox("Hello from GamePanelWnd::SetTabItem","Info");
 	SetGameEntry( m_swfGame );
 	
 	string strGameInfo = "x 指定缩小CRect的左和右边的单位数";
@@ -274,6 +282,7 @@ void GamePanelWnd::HttpDownOb_DownFinish( string& strID, string& strSwfPath )
 	//进度窗口参数
 	m_pWndDownPercent->SetFailed( false );
 	vector<string> vecText;
+	//Set the download percentage.
 	vecText.push_back( "下载完成,启动中..." );
 	m_pWndDownPercent->SetText( vecText );
 	m_pWndDownPercent->SetDownPercent( 1.0 );
@@ -306,6 +315,7 @@ void GamePanelWnd::HttpDownOb_DownFinish( string& strID, string& strSwfPath )
 	OneLocalGame olg;
 	GLOBAL_LOCALGAME->ILocalGameData_GetGameByID( strID, olg );
 
+	//File has been downloaded ,Try to play the Movie now...
 	PlayMovie( olg.strID, olg.strGamePath );
 	m_bDown = false;
 	UpdateAllWnd();
@@ -397,7 +407,8 @@ void GamePanelWnd::HttpDownOb_DownProgress( string& strID, double dPercent,
 		UINT2CString( unSpeed ).GetString(),
 		GetLeftTime( unFileSize, unSpeed, (unsigned int)(dPercent*100) ).GetString() );
 	vecText.push_back( strText );	
-
+	
+	//Show the percentage of download-process.
 	m_pWndDownPercent->SetFailed( false );
 	m_pWndDownPercent->SetText( vecText );
 	m_pWndDownPercent->SetDownPercent( dPercent );
@@ -408,6 +419,8 @@ void GamePanelWnd::SetGameEntry( SWF_GAME sg )
 {
 	YL_Log("CGameCtrlWnd.txt", LOG_DEBUG, "CGameCtrlWnd::SetGameEntry", "===IN");
 	m_swfGame = sg;
+	//Testing
+	//MessageBox("Hello from GamePanelWnd::SetGameEntry","Info");
 
 	OneLocalGame olg;
 	if( GLOBAL_LOCALGAME->ILocalGameData_GetGameByID( m_swfGame.strID, olg ) )
@@ -417,6 +430,10 @@ void GamePanelWnd::SetGameEntry( SWF_GAME sg )
 			"m_swfGame.strID:%s,olg.strGamePath:%s", 
 			m_swfGame.strID.c_str(),
 			olg.strGamePath.c_str());
+
+		//If the Movie has been downloaded then play it.
+		m_bDown = true;
+		this->SetTimer(ADS_TIMER_ID,ADS_TIME,NULL);
 		PlayMovie( olg.strID, olg.strGamePath );
 		UpdateAllWnd();
 
@@ -438,6 +455,8 @@ void GamePanelWnd::PlayMovie( string strID, string strPath )
 {
 	YL_Log("GamePanelWnd.txt", LOG_DEBUG, "GamePanelWnd::PlayMovie", "===IN");
 	YL_Log("GamePanelWnd.txt", LOG_DEBUG, "GamePanelWnd", "strPath:%s", strPath.c_str());
+	//Try to debug here
+	//MessageBox("Hello from GamePanelWnd::PlayMovie","Info");
 	
 	//播放swf	
 	if( m_pGameFlash->GetMovie().Compare( strPath.c_str() ) == 0  )
@@ -660,4 +679,38 @@ void GamePanelWnd::ILayoutChangeOb_UpdateLayout(HWND hWnd)
 		UpdateAllWnd();
 	}
 	YL_Log("GamePlayingWnd.txt", LOG_DEBUG, "GamePlayingWnd::ILayoutChangeOb_UpdateLayout", "===OUT");
+}
+void GamePanelWnd::OnTimer(UINT nIDEvent)
+{
+	// TODO: Add your message handler code here and/or call default
+	if(nIDEvent == ADS_TIMER_ID )
+	{
+		++this->m_iStep ;
+		this->m_pWndDownPercent ->SetDownPercent  (m_iStep/(double)60);
+		vector<string> vecText;
+		switch(this->m_iStep %3)
+		{
+		case 0:
+			vecText.push_back ("正在缓冲...");
+			break;
+		case 1:
+			vecText.push_back ("正在缓冲.  ");
+			break;
+		case 2:
+			vecText.push_back ("正在缓冲.. ");
+			break;
+		default:
+			vecText.push_back ("正在缓冲...");
+			break;
+		}
+		this->m_pWndDownPercent ->SetText (vecText);
+		if(this->m_iStep == 60)
+		{
+			KillTimer (ADS_TIMER_ID );
+			m_bDown = false;
+			UpdateAllWnd();
+		}
+	}
+
+	__super::OnTimer(nIDEvent);
 }

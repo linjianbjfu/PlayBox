@@ -21,6 +21,9 @@ DownPercentWnd::DownPercentWnd()
 	m_pBmpBgR  = NULL;
 	m_pBmpM    = NULL;
 	m_pImgAd   = NULL;
+	m_pWnd = NULL;
+
+	m_bNavi = true;
 
 	//字体
 	LOGFONT  lf;
@@ -44,6 +47,11 @@ DownPercentWnd::DownPercentWnd()
 DownPercentWnd::~DownPercentWnd()
 {
 	m_font.DeleteObject();
+	/*if(m_pWnd != NULL)
+	{
+		delete m_pWnd;
+		m_pWnd = NULL;
+	}*/
 }
 
 BEGIN_MESSAGE_MAP(DownPercentWnd, CWnd)
@@ -91,6 +99,7 @@ void DownPercentWnd::OnPaint()
 	//1画背景色
 	MemDC2.FillSolidRect( &rect, m_colBk );
 	//2画进度条
+	//rect.top = rect.bottom - 90 -14;
 	DrawProgress( &MemDC2, rect );
 	//3写信息文字
 	DrawInfoText( &MemDC2, rect );
@@ -115,8 +124,8 @@ void DownPercentWnd::DrawProgress( CDC* pDc, CRect rc )
 	CRect rcProgressBarBg( rc );
 	rcProgressBarBg.left += 30;
 	rcProgressBarBg.right -= 30;
-	rcProgressBarBg.bottom = ptCenter.y + 30;
-	rcProgressBarBg.top = rcProgressBarBg.bottom - m_pBmpBgL->GetHeight();
+	rcProgressBarBg.top = /*ptCenter.y + 30*/rc.bottom-90 +15;
+	rcProgressBarBg.bottom = rcProgressBarBg.top + m_pBmpBgL->GetHeight();
 	//画进度条背景
 	//左背景
 	CRect rcBgL( rcProgressBarBg );
@@ -149,8 +158,8 @@ void DownPercentWnd::DrawInfoText( CDC* pDc, CRect rc )
 	//确定进度条范围:中心点向下50像素
 	CPoint ptCenter = rc.CenterPoint();
 	CRect rcInfo( rc );
-	rcInfo.top = ptCenter.y + 50;
-	rcInfo.bottom = rcInfo.top + 20;
+	rcInfo.top = rc.bottom-90 +15+ 35;
+	rcInfo.bottom = rcInfo.top + 15;
 	//写字
 	pDc->SelectObject( &m_font );
 	pDc->SetTextColor( m_colText );
@@ -160,49 +169,99 @@ void DownPercentWnd::DrawInfoText( CDC* pDc, CRect rc )
 		rcInfo.OffsetRect( 0, 20 ); //下移20像素
 	}	
 }
+BOOL DownPercentWnd::AddDynamicView(LPCTSTR  lpszLabel, CRuntimeClass * pViewClass)
+{
+	TRY
+	{
+		if (m_pWnd != NULL)
+			return FALSE;
+		m_pWnd = (CMyHtmlView *)pViewClass->CreateObject ();
+		if (m_pWnd == NULL)
+		{
+			::AfxThrowMemoryException ();
+		}
+	}
+	CATCH_ALL(e)
+	{
+			return FALSE;
+	}
+	END_CATCH_ALL
+
+	DWORD dwStyle = AFX_WS_DEFAULT_VIEW ;
+	//Set the rect of dynamic created view.
+	CRect rect;
+	GetClientRect(&rect);
+	rect.top += 14;
+	rect.bottom -=90;
+	rect.right -=15;
+	rect.left +=15;
+
+	if(!m_pWnd->Create (NULL,NULL,dwStyle,rect,this,CMyHtmlView::IDD ))
+	{
+		return FALSE;
+	}
+	m_pWnd->OnInitialUpdate ();
+	m_pWnd->EnableWindow (TRUE);
+	m_pWnd->ShowWindow (SW_SHOW);
+
+	return TRUE;
+	return 0;
+}
 
 void DownPercentWnd::DrawAd( CDC* pDc, CRect rc)
 {
-	if( m_pImgAd == NULL )
-		return;
-	//确定范围:从最上方到中心点,居中显示
-	int iAdMaxHeight = rc.Height()/2;
-	int iAdMaxWidth  = rc.Width();
-
-	float fPerY = (float)(m_pImgAd->GetHeight()) / (float)iAdMaxHeight;
-	float fPerX = (float)(m_pImgAd->GetWidth())  / (float)iAdMaxWidth;
-
-	CPoint pCenter = rc.CenterPoint();
-	int iX = 0;
-	int iY = 0;
-	if( fPerY <= 1 && fPerX <= 1 )//图片原始大小显示
+	//static int i = 0;
+	if(!this->AddDynamicView (_T(""),RUNTIME_CLASS(CMyHtmlView)))
+		{
+			return ;
+		}
+	if(m_pWnd != NULL&&m_bNavi == true)
 	{
-		iX = m_pImgAd->GetWidth();
-		iY = m_pImgAd->GetHeight();
-	}else
-	if( fPerY > fPerX ) //图片太高
-	{
-		iX = (float)(m_pImgAd->GetWidth()) / (float)fPerY;
-		iY = iAdMaxHeight;
-	}else //图片太长
-	{
-		iX = iAdMaxWidth;
-		iY = (float)(m_pImgAd->GetHeight()) / (float)fPerX;
+		m_pWnd->Navigate2 ("www.baidu.com");
 	}
-	m_rcFlash.left = pCenter.x - ( iX / 2 );
-	m_rcFlash.top  = ( pCenter.y / 2 ) - ( iY / 2 );
-	m_rcFlash.right  = m_rcFlash.left + iX;
-	m_rcFlash.bottom = m_rcFlash.top  + iY;
+	////确定范围:从最上方到中心点,居中显示
+	//int iAdMaxHeight = rc.Height()/2;
+	//int iAdMaxWidth  = rc.Width();
 
-	Rect rcImg( m_rcFlash.left, m_rcFlash.top, m_rcFlash.Width(), m_rcFlash.Height() );
-	Graphics gc( pDc->GetSafeHdc() );
-	gc.DrawImage( m_pImgAd, rcImg );
+	//float fPerY = (float)(m_pImgAd->GetHeight()) / (float)iAdMaxHeight;
+	//float fPerX = (float)(m_pImgAd->GetWidth())  / (float)iAdMaxWidth;
+
+	//CPoint pCenter = rc.CenterPoint();
+	//int iX = 0;
+	//int iY = 0;
+	//if( fPerY <= 1 && fPerX <= 1 )//图片原始大小显示
+	//{
+	//	iX = m_pImgAd->GetWidth();
+	//	iY = m_pImgAd->GetHeight();
+	//}else
+	//if( fPerY > fPerX ) //图片太高
+	//{
+	//	iX = (float)(m_pImgAd->GetWidth()) / (float)fPerY;
+	//	iY = iAdMaxHeight;
+	//}else //图片太长
+	//{
+	//	iX = iAdMaxWidth;
+	//	iY = (float)(m_pImgAd->GetHeight()) / (float)fPerX;
+	//}
+	//m_rcFlash.left = pCenter.x - ( iX / 2 );
+	//m_rcFlash.top  = ( pCenter.y / 2 ) - ( iY / 2 );
+	//m_rcFlash.right  = m_rcFlash.left + iX;
+	//m_rcFlash.bottom = m_rcFlash.top  + iY;
+
+	//Rect rcImg( m_rcFlash.left, m_rcFlash.top, m_rcFlash.Width(), m_rcFlash.Height() );
+	//Graphics gc( pDc->GetSafeHdc() );
+	//gc.DrawImage( m_pImgAd, rcImg );
 }
 
 void DownPercentWnd::SetDownPercent( double dPercent )
 {
 	m_dDownPercent = dPercent;
-	Invalidate();
+	CRect rect;
+	GetClientRect(&rect);
+	rect.top += (rect.bottom -90 - 14);
+	//rect.bottom -=90;
+	this->InvalidateRect (rect);
+	//Invalidate();
 }
 
 void DownPercentWnd::SetText( vector<string>& vecText )
