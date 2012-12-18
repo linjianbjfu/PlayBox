@@ -140,14 +140,19 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "开机自动启动",IDC_CHECK_AUTORUN,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,14,7,98,10
-    LTEXT           "点击关闭按钮时：",IDC_STATIC_MINOREXIT,13,28,74,10
+                    BS_AUTOCHECKBOX | WS_TABSTOP,14,3,98,10
+    LTEXT           "点击关闭按钮时：",IDC_STATIC_MINOREXIT,13,37,74,10
     CONTROL         "最小化，不退出程序",IDC_RAD_MIN,"Button",
-                    BS_AUTORADIOBUTTON | WS_GROUP,13,39,138,11
+                    BS_AUTORADIOBUTTON | WS_GROUP,13,47,138,11
     CONTROL         "退出程序",IDC_RAD_EXIT,"Button",BS_AUTORADIOBUTTON,13,
-                    52,54,10
+                    57,54,10
     CONTROL         "每次关闭时不再提示",IDC_CHK_NOASK,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,13,63,99,14
+                    BS_AUTOCHECKBOX | WS_TABSTOP,13,65,99,14
+    LTEXT           "快捷键",IDC_STATIC_HOTKEY,13,15,25,8
+    CONTROL         "老板键",IDC_CHK_BOSSKEY,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,14,26,40,10
+    CONTROL         "",IDC_HOTKEY_BOSSKEY,"msctls_hotkey32",WS_BORDER | 
+                    WS_TABSTOP,70,24,146,14
 END
 
 

@@ -118,7 +118,15 @@ int CTopPanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	pLayoutMgr->RegisterCtrl( this,"Setting",&m_btnSetting);
 	pLayoutMgr->CreateControlPane( this,"toppanel","normal");	
 	pLayoutMgr->CreateBmpPane( this,"toppanel","normal" );
-
+	bool bEnableBossKey;
+	AfxGetUserConfig()->GetConfigBoolValue(CONF_SETTING_MODULE_NAME, CONF_SETTING_ENABLE_BOSS_KEY, bEnableBossKey);
+	if (bEnableBossKey)
+	{
+		int iKeyValue;
+		AfxGetUserConfig()->GetConfigIntValue(CONF_SETTING_MODULE_NAME, CONF_SETTING_BOSS_KEY_VALUE, iKeyValue);
+		RegisterBossKey(iKeyValue);
+	}
+	
 	PostMessage(MSG_GETLAYOUT);
 	return 0;
 }
@@ -342,7 +350,20 @@ void CTopPanelWnd::OnAppExit()
 void CTopPanelWnd::OnSetting()
 {
 	CConfigDialog configDlg;
-	configDlg.DoModal();
+	int ret = configDlg.DoModal();
+
+	if (ret == IDOK)
+	{
+		bool bEnableBossKey;
+		AfxGetUserConfig()->GetConfigBoolValue(CONF_SETTING_MODULE_NAME, CONF_SETTING_ENABLE_BOSS_KEY, bEnableBossKey);
+		UnRegisterBossKey();
+		if (bEnableBossKey)
+		{
+			int iKeyValue;
+			AfxGetUserConfig()->GetConfigIntValue(CONF_SETTING_MODULE_NAME, CONF_SETTING_BOSS_KEY_VALUE, iKeyValue);
+			RegisterBossKey(iKeyValue);
+		}
+	}
 }
 
 void CTopPanelWnd::OnBnClickedHold()
@@ -415,4 +436,34 @@ void CTopPanelWnd::IPanelChangeOb_WindowMin()
 void CTopPanelWnd::IPanelChangeOb_WindowClose()
 {
 	OnBnClickedClose();
+}
+
+BOOL CTopPanelWnd::RegisterHotKey( UINT uHotKeyID, UINT uVirtualKey/*=0*/, UINT uModifiers/*=0*/,
+								  BOOL bRegister /*= FALSE*/ )
+{
+	if (bRegister == FALSE)
+	{
+		return ::UnregisterHotKey(AfxGetMainWnd()->GetSafeHwnd(), uHotKeyID);
+	}
+
+	return ::RegisterHotKey(AfxGetMainWindow()->GetSafeHwnd(), uHotKeyID, uModifiers, uVirtualKey);
+}
+
+void CTopPanelWnd::RegisterBossKey(int iKeyValue)
+{
+	UINT uVK	= HIWORD( *((DWORD*)&iKeyValue) );
+	UINT uMod	= LOWORD( *((DWORD*)&iKeyValue) );
+	UINT uShift = (uMod&0x1) << 2;
+	UINT uAlt	= uMod >> 2;
+	uMod &= 0x02;
+	uMod |= uShift |= uAlt;
+	if (!RegisterHotKey(ID_HOTKEY_BOSSKEY, uVK, uMod, TRUE))
+	{
+		MessageBox(TEXT("ÀÏ°å¼ü×¢²áÊ§°Ü"), TEXT("¾¯¸æ"), MB_OK|MB_ICONWARNING);
+	}
+}
+
+void CTopPanelWnd::UnRegisterBossKey()
+{
+	RegisterHotKey(ID_HOTKEY_BOSSKEY);
 }

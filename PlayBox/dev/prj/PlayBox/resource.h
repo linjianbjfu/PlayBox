@@ -173,6 +173,10 @@
 #define IDC_CHK_IS_POPUP_DIALOG_BOX     1011
 #define IDC_STATIC_PIC_SAVE_PATH        1012
 #define IDC_STATIC_SAVE_PATTH           1013
+#define IDC_STATIC_HOTKEY               1014
+#define IDC_CHK_BOSSKEY                 1015
+#define IDC_HOTKEY1                     1016
+#define IDC_HOTKEY_BOSSKEY              1016
 #define ID_CL_LARGEICON                 32772
 #define ID_CL_MIDICON                   32774
 #define ID_CL_SMALLICON                 32776
@@ -188,7 +192,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        147
 #define _APS_NEXT_COMMAND_VALUE         32785
-#define _APS_NEXT_CONTROL_VALUE         1014
+#define _APS_NEXT_CONTROL_VALUE         1017
 #define _APS_NEXT_SYMED_VALUE           140
 #endif
 #endif

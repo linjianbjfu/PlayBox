@@ -88,6 +88,7 @@ BEGIN_MESSAGE_MAP(CPlayBoxDlg, CDialog)
 	ON_COMMAND(ID_OPEN, OnTrayMenuOpen)
 	ON_WM_COPYDATA()
 	ON_WM_GETMINMAXINFO()
+	ON_MESSAGE(WM_HOTKEY, OnHotKey)
 END_MESSAGE_MAP()
 
 void CPlayBoxDlg::OnCancel()
@@ -1016,4 +1017,31 @@ void CPlayBoxDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 		lpMMI->ptMaxSize.y = rcWorkArea.bottom;
 
 	__super::OnGetMinMaxInfo(lpMMI);
+}
+
+LRESULT CPlayBoxDlg::OnHotKey(WPARAM wParam, LPARAM lParam)
+{
+	switch (wParam)
+	{
+	case ID_HOTKEY_BOSSKEY:
+		{
+			BOOL bShowingWnd = IsWindowVisible();
+			if (bShowingWnd)
+			{
+				ShowWindow(SW_HIDE);
+				delete m_ptrayIcon;
+				m_ptrayIcon = NULL;
+			}
+			else
+			{
+				ShowWindow(SW_NORMAL);
+				m_ptrayIcon = new CTrayIcon(IDR_MAINFRAME);
+				m_ptrayIcon->SetNotificationWnd(this, WM_MY_TRAY_NOTIFICATION);
+				m_ptrayIcon->SetIcon(theApp.LoadIcon(IDR_MAINFRAME),"–°±¶±¥”Œœ∑∫–");
+			}
+			
+		}
+		break;
+	}
+	return 0;
 }

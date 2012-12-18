@@ -46,6 +46,10 @@ protected:
 	afx_msg void	OnSetting();
 	bool			CanShowTooltip();
 	void			InitTips();	
+	// ×¢²á/×¢Ïú ÈÈ¼ü
+	BOOL RegisterHotKey(UINT uHotKeyID, UINT uVirtualKey=0, UINT uModifiers=0, BOOL bRegister = FALSE);
+	void			RegisterBossKey(int iKeyValue);
+	void			UnRegisterBossKey();
 public:
 	CxSkinButton	m_btnMin;
 	CxSkinButton	m_btnClose;
