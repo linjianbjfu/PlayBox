@@ -9,6 +9,7 @@
 IMPLEMENT_DYNAMIC(CSysDialog, BaseDialog)
 
 CSysDialog::CSysDialog(CWnd* pParent /*=NULL*/)
+: m_bUseBossKey(FALSE)
 {
 	CDialog(CSysDialog::IDD, pParent);
 	m_minOrExit = FALSE;
@@ -24,6 +25,7 @@ BEGIN_MESSAGE_MAP(CSysDialog, BaseDialog)
 	ON_BN_CLICKED(IDC_RAD_EXIT, OnBnClickedRadExit)
 	ON_BN_CLICKED(IDC_CHK_NOASK, OnBnClickedChkNoask)
 	ON_BN_CLICKED(IDC_CHECK_AUTORUN, OnBnClickedCheckAutoRun)
+	ON_BN_CLICKED(IDC_CHK_BOSSKEY, OnBnClickedChkBosskey)
 END_MESSAGE_MAP()
 
 void CSysDialog::DoDataExchange(CDataExchange* pDX)
@@ -38,6 +40,8 @@ void CSysDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_RAD_EXIT, m_exitCtrl);
 	DDX_Control(pDX, IDC_CHK_NOASK, m_noAskCtrl);
 	DDX_Control(pDX, IDC_STATIC_MINOREXIT, m_staticMinOrExit);
+	DDX_Check(pDX, IDC_CHK_BOSSKEY, m_bUseBossKey);
+	DDX_Control(pDX, IDC_HOTKEY_BOSSKEY, m_BossKeyCtrl);
 }
 
 void CSysDialog::SaveConf( bool bSave2File )
@@ -50,6 +54,14 @@ void CSysDialog::SaveConf( bool bSave2File )
 
 	bValue = m_noAsk;
 	AfxGetUserConfig()->SetConfigBoolValue( CONF_SETTING_MODULE_NAME,CONF_SETTING_CONFIG_IFASKEXIT,bValue);
+	bValue = m_bUseBossKey;
+	AfxGetUserConfig()->SetConfigBoolValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_ENABLE_BOSS_KEY, bValue );
+
+	WORD wMod, wVK;
+	m_BossKeyCtrl.GetHotKey(wVK, wMod);
+	int iKeyValue = wVK;
+	iKeyValue = (iKeyValue<<16) | wMod;
+	AfxGetUserConfig()->SetConfigIntValue(CONF_SETTING_MODULE_NAME, CONF_SETTING_BOSS_KEY_VALUE, iKeyValue);
 }
 
 void CSysDialog::LoadConf()
@@ -64,6 +76,13 @@ void CSysDialog::LoadConf()
 
 	pUserConfig->GetConfigBoolValue( CONF_SETTING_MODULE_NAME,CONF_SETTING_CONFIG_IFASKEXIT,bValue);
 	m_noAsk = bValue;
+	pUserConfig->GetConfigBoolValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_ENABLE_BOSS_KEY, bValue);
+	m_bUseBossKey = bValue;
+	m_BossKeyCtrl.EnableWindow(m_bUseBossKey);
+
+	int iKeyValue;
+	pUserConfig->GetConfigIntValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_BOSS_KEY_VALUE, iKeyValue);
+	m_BossKeyCtrl.SetHotKey(HIWORD(*((DWORD*)&iKeyValue)), LOWORD(*((DWORD*)&iKeyValue)) );
 }
 
 void CSysDialog::SetDefault()
@@ -125,4 +144,11 @@ void CSysDialog::OnBnClickedChkNoask()
 void CSysDialog::OnBnClickedCheckAutoRun()
 {
 	SthChanged();
+}
+
+void CSysDialog::OnBnClickedChkBosskey()
+{
+	SthChanged();
+	UpdateData();
+	m_BossKeyCtrl.EnableWindow(m_bUseBossKey);
 }

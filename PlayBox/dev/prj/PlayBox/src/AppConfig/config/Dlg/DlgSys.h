@@ -19,6 +19,9 @@ class CSysDialog : public BaseDialog
 	SetBaseButton m_noAskCtrl;
 	SetBaseStatic m_staticMinOrExit;
 
+	BOOL m_bUseBossKey;	// 是否启用老板键
+	CHotKeyCtrl m_BossKeyCtrl;	// 老板键输入控件
+
 public:
 	CSysDialog(CWnd* pParent = NULL);   // standard constructor
 	virtual ~CSysDialog();
@@ -37,6 +40,7 @@ protected:
 	afx_msg void OnBnClickedRadExit();
 	afx_msg void OnBnClickedChkNoask();
 	afx_msg void OnBnClickedCheckAutoRun();
+	afx_msg void OnBnClickedChkBosskey();
 private:
 	HRESULT CreateLink(LPCSTR lpszPathObj, LPCSTR lpszPathLink, LPCSTR lpszDesc);
 };
