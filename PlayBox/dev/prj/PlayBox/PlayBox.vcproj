@@ -1337,6 +1337,12 @@
 					RelativePath=".\src\module\GamePanel\GamePanelWnd.h">
 				</File>
 				<File
+					RelativePath=".\src\module\GamePanel\MyHtmlView.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\GamePanel\MyHtmlView.h">
+				</File>
+				<File
 					RelativePath=".\src\module\GamePanel\WebGamePanelWnd.cpp">
 				</File>
 				<File
