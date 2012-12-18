@@ -31,7 +31,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="C:\Program Files\YoungPlayBox\NetOp.dll"
+				OutputFile="C:\Program Files (x86)\YoungPlayBox\NetOp.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="../../lib_D"
 				ModuleDefinitionFile="NetOp.def"
@@ -46,8 +46,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
-				Name="VCPreBuildEventTool"
-				CommandLine="del  &quot;C:\Program Files\YoungPlayBox\NetOp.dll&quot;"/>
+				Name="VCPreBuildEventTool"/>
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
@@ -231,9 +230,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\NetOp.def">
-			</File>
-			<File
 				RelativePath=".\Interface.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -262,6 +258,9 @@
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\NetOp.def">
 			</File>
 			<File
 				RelativePath=".\oiosocket2.cpp">

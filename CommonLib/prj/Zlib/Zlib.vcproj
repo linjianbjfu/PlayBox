@@ -31,7 +31,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="C:\Program Files\YoungPlayBox\Zlib.dll"
+				OutputFile="C:\Program Files (x86)\YoungPlayBox\Zlib.dll"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="../../bin_d/Zlib.pdb"
@@ -43,8 +43,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
-				Name="VCPreBuildEventTool"
-				CommandLine="del  &quot;C:\Program Files\YoungPlayBox\zlib.dll&quot;"/>
+				Name="VCPreBuildEventTool"/>
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool

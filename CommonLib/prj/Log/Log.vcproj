@@ -34,7 +34,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="NetOp.lib zlib.lib"
-				OutputFile="C:\Program Files\YoungPlayBox\Log.dll"
+				OutputFile="C:\Program Files (x86)\YoungPlayBox\Log.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="../../lib_d"
 				GenerateDebugInformation="TRUE"
@@ -47,8 +47,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
-				Name="VCPreBuildEventTool"
-				CommandLine="del &quot;c:\Program Files\YoungPlayBox\Log.dll&quot;"/>
+				Name="VCPreBuildEventTool"/>
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool

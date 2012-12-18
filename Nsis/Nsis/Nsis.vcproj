@@ -33,7 +33,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="C:\Program Files\NSIS\Plugins\Nsis.dll"
+				OutputFile="C:\Program Files (x86)\NSIS\Plugins\Nsis.dll"
 				LinkIncremental="2"
 				ModuleDefinitionFile=".\Nsis.def"
 				GenerateDebugInformation="TRUE"

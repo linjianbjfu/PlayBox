@@ -31,13 +31,13 @@
 				AssemblerOutput="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="4"/>
+				DebugInformationFormat="2"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="dbghelp.lib NetOp.lib zlib.lib DocOp.lib Log.lib Wininet.lib winmm.lib"
-				OutputFile="C:\Program files\YoungPlayBox\PlayBox.exe"
+				OutputFile="C:\Program files (x86)\YoungPlayBox\PlayBox.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\CommonLib\lib_D;../../lib_d;"
 				GenerateDebugInformation="TRUE"
@@ -195,13 +195,7 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
 			<File
-				RelativePath=".\res\B.bmp">
-			</File>
-			<File
 				RelativePath=".\res\bitmap1.bmp">
-			</File>
-			<File
-				RelativePath=".\res\bmp00001.bmp">
 			</File>
 			<File
 				RelativePath=".\res\cursor1.cur">
@@ -211,9 +205,6 @@
 			</File>
 			<File
 				RelativePath=".\res\hand.cur">
-			</File>
-			<File
-				RelativePath=".\res\logo.bmp">
 			</File>
 			<File
 				RelativePath=".\res\PlayBox.ico">
@@ -1489,9 +1480,6 @@
 		</Filter>
 		<File
 			RelativePath=".\res\PlayBox.manifest">
-		</File>
-		<File
-			RelativePath=".\ReadMe.txt">
 		</File>
 	</Files>
 	<Globals>

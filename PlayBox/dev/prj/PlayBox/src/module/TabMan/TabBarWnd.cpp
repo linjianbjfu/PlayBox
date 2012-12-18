@@ -16,6 +16,7 @@ CTabBarWnd::CTabBarWnd()
 	m_iTabCur    = -1;
 	m_iTabOver   = -1;
 	m_iCloseOver = -1;
+	m_bOverNewWindow = false;
 
 	m_pBmpRectNormalLeft   = NULL;
 	m_pBmpRectNormalMiddle = NULL;
@@ -31,6 +32,15 @@ CTabBarWnd::CTabBarWnd()
 
 	m_pBmpCloseNormal = NULL;
 	m_pBmpCloseOver   = NULL;
+	m_pBmpCloseDown	  = NULL;
+
+	m_pBmpSelCloseNormal = NULL;
+	m_pBmpSelCloseOver   = NULL;
+	m_pBmpSelCloseDown   = NULL;
+
+	m_pBmpNewWindowNormal = NULL;
+	m_pBmpNewWindowOver   = NULL;
+	m_pBmpNewWindowDown   = NULL;
 
 	m_colNormalTextColor = RGB(205,205,205);
 	m_colDownTextColor	 = RGB(255,175,38);
@@ -127,6 +137,15 @@ void CTabBarWnd::LoadSkin()
 
 	m_pBmpCloseNormal = pSkinMgr->GetDibBmp( "TabBarCloseNormal" );
 	m_pBmpCloseOver   = pSkinMgr->GetDibBmp( "TabBarCloseOver" );
+	m_pBmpCloseDown   = pSkinMgr->GetDibBmp( "TabBarCloseDown" );
+
+	m_pBmpSelCloseNormal = pSkinMgr->GetDibBmp( "TabBarSelCloseNormal" );
+	m_pBmpSelCloseOver   = pSkinMgr->GetDibBmp( "TabBarSelCloseOver" );
+	m_pBmpSelCloseDown   = pSkinMgr->GetDibBmp( "TabBarSelCloseDown" );
+
+	m_pBmpNewWindowNormal = pSkinMgr->GetDibBmp( "TabbarNewWindowNormal" );
+	m_pBmpNewWindowOver = pSkinMgr->GetDibBmp( "TabbarNewWindowOver" );
+	m_pBmpNewWindowDown = pSkinMgr->GetDibBmp( "TabbarNewWindowDown" );		
 
 	m_colNormalTextColor = pSkinMgr->GetColor( "TabBarNormalTextColor" );
 	m_colDownTextColor	 = pSkinMgr->GetColor( "TabBarDownTextColor" );
@@ -189,7 +208,7 @@ void CTabBarWnd::DrawBar( CDC* pDc )
 	{
 		DrawTabItemRect( pDc, m_vecTab[m_iTabCur], m_pBmpRectDownLeft,
 			m_pBmpRectDownMiddle, m_pBmpRectDownRight, 
-			m_vecClose[m_iTabCur], m_pBmpCloseNormal, 
+			m_vecClose[m_iTabCur], m_pBmpSelCloseNormal, 
 			m_vecTi[m_iTabCur].strName, true );
 	}
 	//3画鼠标over的rect
@@ -203,8 +222,25 @@ void CTabBarWnd::DrawBar( CDC* pDc )
 	//4画鼠标over的close
 	if( m_iCloseOver != -1 && m_iCloseOver != 0 )
 	{
-		m_pBmpCloseOver->SetCDibRect( m_vecClose[m_iCloseOver] );
-		m_pBmpCloseOver->Draw( pDc, TRUE, m_colMask );
+		if (m_iCloseOver == m_iTabCur)
+		{
+			m_pBmpSelCloseOver->SetCDibRect( m_vecClose[m_iCloseOver] );
+			m_pBmpSelCloseOver->Draw( pDc, TRUE, m_colMask );
+		}else
+		{
+			m_pBmpCloseOver->SetCDibRect( m_vecClose[m_iCloseOver] );
+			m_pBmpCloseOver->Draw( pDc, TRUE, m_colMask );
+		}
+	}
+	//5画newwindow按钮
+	if (m_bOverNewWindow)
+	{
+		m_pBmpNewWindowOver->SetCDibRect( m_rectNewWindow );
+		m_pBmpNewWindowOver->Draw( pDc, TRUE, m_colMask );
+	}else
+	{
+		m_pBmpNewWindowNormal->SetCDibRect( m_rectNewWindow );
+		m_pBmpNewWindowNormal->Draw( pDc, TRUE, m_colMask );
 	}
 }
 
@@ -310,6 +346,7 @@ void CTabBarWnd::CalcTabPosition()
 	m_vecTab.clear();
 	m_vecClose.clear();
 	m_vecTi.clear();
+	m_rectNewWindow.SetRectEmpty();
 	GLOBAL_TABBARDATA->ITabBar_GetTabBarData( m_vecTi );
 
 	CRect rc;
@@ -330,11 +367,14 @@ void CTabBarWnd::CalcTabPosition()
 
 	CRect rcBtn( rc );
 	CRect rcClose;
+	int iStartPos = 5; //最左边空出5个像素
+	int iNewWindowStartPos = iStartPos;
 	//所有btn，包括btn上的关闭按钮
 	for( int i = 0; i < m_vecTi.size(); i++ )
 	{
-		rcBtn.left = i * iWidth + 5; //最左边空出点地方
+		rcBtn.left = i * iWidth + iStartPos;
 		rcBtn.right = rcBtn.left + iWidth;
+		iNewWindowStartPos = rcBtn.right;
 		if( i == m_iTabCur )
 		{
 			rcBtn.top = rcBtn.bottom - m_pBmpRectDownMiddle->GetHeight();
@@ -345,7 +385,8 @@ void CTabBarWnd::CalcTabPosition()
 		
 		m_vecTab.push_back( rcBtn );
 	
-		if( i == 0 || i == 1 )
+		//if( i == 0 || i == 1 || i == 2 ) //头3个不能关闭
+		if( i == 0 )
 		{
 			rcClose.right = rcBtn.right - WIDTH_CLOSE_TO_RIGHT;
 			rcClose.left  = rcClose.right;	
@@ -360,16 +401,19 @@ void CTabBarWnd::CalcTabPosition()
 		}
 		m_vecClose.push_back( rcClose );
 	}
+	m_rectNewWindow.left = iNewWindowStartPos;
+	m_rectNewWindow.right = m_rectNewWindow.left + m_pBmpNewWindowNormal->GetWidth();
+	m_rectNewWindow.bottom = rcBtn.bottom;
+	m_rectNewWindow.top = m_rectNewWindow.bottom - m_pBmpNewWindowNormal->GetHeight();
 }
 
 void CTabBarWnd::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	AfxGetMainWindow()->Invalidate ();
+	AfxGetMainWindow()->Invalidate();
 
 	//是否落在了close上
 	if( m_iCloseOver != -1 
-		&& m_iCloseOver != 0 
-		&& m_iCloseOver != 1 )
+		&& m_iCloseOver != 0 )
 	{
 		TAB_ITEM tmpTI = m_vecTi[m_iCloseOver];
 		GLOBAL_TABBARDATA->ITabBar_DeleteTab( tmpTI );
@@ -386,6 +430,15 @@ void CTabBarWnd::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		TAB_ITEM tmpTI = m_vecTi[m_iTabOver];
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tmpTI );
+	}
+	//是否落在了newwindow按钮上
+	if ( m_bOverNewWindow )
+	{
+		TAB_ITEM tItem;
+		tItem.eumType = TAB_GAME;
+		tItem.strName = "test";
+		tItem.strParam = "test";
+		GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
 	}
 	__super::OnLButtonDown(nFlags, point);
 }
@@ -407,6 +460,7 @@ void CTabBarWnd::OnMouseMove(UINT nFlags, CPoint point)
 		CalcTabPosition();
 		Invalidate();
 	}
+	m_bOverNewWindow = m_rectNewWindow.PtInRect(point);
 
 	if( m_iTabOver != -1 )
 	{
@@ -448,3 +502,4 @@ void CTabBarWnd::OnDestroy()
 	m_pToolTip->DestroyWindow();
 	__super::OnDestroy();
 }
+

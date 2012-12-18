@@ -34,7 +34,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="Ws2_32.lib Iphlpapi.lib NetOp.lib Log.lib"
-				OutputFile="C:\Program Files\YoungPlayBox\Update.dll"
+				OutputFile="C:\Program Files (x86)\YoungPlayBox\Update.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="../../lib_d"
 				ModuleDefinitionFile="Update.def"
@@ -48,8 +48,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
-				Name="VCPreBuildEventTool"
-				CommandLine="del  &quot;c:\Program Files\YoungPlayBox\Update.dll&quot;"/>
+				Name="VCPreBuildEventTool"/>
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool

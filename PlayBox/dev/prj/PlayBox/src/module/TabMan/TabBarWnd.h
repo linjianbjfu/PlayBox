@@ -39,6 +39,8 @@ private:
 	vector<CRect>			m_vecTab;			//所有tab的位置
 	vector<CRect>			m_vecClose;			//所有tab上的关闭按钮位置
 	vector<TAB_ITEM>		m_vecTi;			//文字信息
+	CRect					m_rectNewWindow;
+	bool					m_bOverNewWindow;	//鼠标当前是否在newwindow按钮上
 	int						m_iTabCur;			//当前显示的tab
 	int						m_iTabOver;			//当前鼠标over的tab
 	int						m_iCloseOver;		//当前鼠标over的close
@@ -60,6 +62,15 @@ private:
 
 	CDibBitmap*				m_pBmpCloseNormal;
 	CDibBitmap*				m_pBmpCloseOver;
+	CDibBitmap*				m_pBmpCloseDown;
+
+	CDibBitmap*				m_pBmpSelCloseNormal;
+	CDibBitmap*				m_pBmpSelCloseOver;
+	CDibBitmap*				m_pBmpSelCloseDown;
+
+	CDibBitmap*				m_pBmpNewWindowNormal;
+	CDibBitmap*				m_pBmpNewWindowOver;
+	CDibBitmap*				m_pBmpNewWindowDown;
 
 	BITMAPINFOHEADER		m_bmih;
 
