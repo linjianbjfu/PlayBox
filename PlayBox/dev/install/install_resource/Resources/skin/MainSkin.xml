@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<root  ver="1.0.0" color="11a0e4">
+<rootpanel name="playbox" ori="VERT" sizeX="200" sizeY="592" sizeXMin="790" sizeYMin="580" border_l="2" border_r="2" border_t="2" border_b="2">
+	<pane name="topA" ori="HORZ" greedy="1" absolute_vert="1" relative_horz="1" sizeY="39" second-size="39"> 
+		<paneitem name="logopanel" absolute_horz="1" sizeX="54" sizeXMin="54"/>
+		<paneitem name="tabbarWnd" greedy="1"/>
+		<paneitem name="toppanel" absolute_horz="1" sizeX="120" sizeXMin="120"/>
+	</pane>
+	<paneitem name="tabpanelparent" greedy="1" sizeYMin="510" sizeXMin="790"/>
+	<paneitem name="bottompanel" absolute_vert ="1" relative_horz="1" sizeY="28" private_setting="1"/>	
+</rootpanel>
+
+<wndpanel name="mainBk">
+	<background name="11" ori="NO_POS">
+		<paneitem name="FrameTopLeft"  type="bmp" start_x_left="0"  start_y_top="0" x_delta="4" y_delta="4"/>
+		<paneitem name="FrameTopMid"   type="bmp" start_x_left="4"  start_y_top="0" end_x_right="3" y_delta="2"/>
+		<paneitem name="FrameTopRight" type="bmp" start_x_right="3" start_y_top="0" end_x_right="0" y_delta="3"/>
+		
+		<paneitem name="FrameLeftMid" type="bmp" start_x_left="0" start_y_top="4" x_delta="4" end_y_bottom="4"/>
+		
+		<paneitem name="FrameBottomLeft" type="bmp" start_x_left="0" start_y_bottom="4" x_delta="4" y_delta="4"/>
+		<paneitem name="FrameBottomMid" type="bmp" start_x_left="4" start_y_bottom="3" end_x_right="4" end_y_botom="0"/>
+		<paneitem name="FrameBottomRight" type="bmp" start_x_right="4" start_y_bottom="4" x_delta="4" y_delta="4"/>
+		
+		<paneitem name="FrameRightMid" type="bmp" start_x_right="4" start_y_top="3" x_delta="4" end_y_bottom="4"/>
+	</background>
+</wndpanel>
+
+<wndpanel name="toppanel" mode="normal">
+	<controlpanel name="normal" ori="NO_POS">
+		<paneitem name="Close"   type="button" tooltip="关闭"   bmp="TopPanelBtnClose"   start_x_right="47" start_y_top="0" x_delta="43" y_delta="17"/>
+		<panemulti name="Normal_Large" ori="VERT" current="Large" start_x_right="71" start_y_top="0" x_delta="24" y_delta="17">
+			<paneitem name="Normal" type="button" tooltip="还原" bmp="TopPanelBtnRestore" absolute_vert="1" absolute_horz="1" align_v="center" sizeX="24"   sizeY="17"/>	
+			<paneitem name="Large" type="button" tooltip="最大化" bmp="TopPanelBtnMax" absolute_vert="1" absolute_horz="1" align_v="center" sizeX="24"   sizeY="17"/>
+		</panemulti>
+		<paneitem name="Min"     type="button" tooltip="最小化" bmp="TopPanelBtnMin"     start_x_right="95" start_y_top="0" x_delta="24" y_delta="17"/>
+		<paneitem name="Setting" type="button" tooltip="设置"   bmp="TopPanelBtnSetting" start_x_right="119" start_y_top="0" x_delta="24" y_delta="17" />
+	</controlpanel>
+	<background name="normal" ori="NO_POS" background_color="dae8f4">
+		<paneitem name="TabBarBK" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_bottom="0" />
+	</background>
+</wndpanel>
+
+<wndpanel name="tabbarWnd" mode="normal">
+	<background name="normal" ori="NO_POS" background_color="dae8f4">
+		<paneitem name="TabBarBK" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_bottom="0" />
+	</background>
+</wndpanel>
+
+<wndpanel name="logopanel" mode="normal">
+	<background name="normal" ori="NO_POS" background_color="dae8f4">
+		<paneitem name="TabBarBK" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_bottom="0" />
+		<paneitem name="Logo" type="bmp" start_x_left="14" start_y_top="8" x_delta="26" y_delta="24" />
+	</background>
+</wndpanel>
+
+<wndpanel name="bottompanel" mode="normal">
+	<controlpanel name="normal" ori="NO_POS">
+	</controlpanel>
+	<background name="normal" ori="NO_POS" background_color="ffffff">
+		<paneitem name="BottomLeftText" type="bmp" start_x_left="10" start_y_top="0" x_delta="151" y_delta="28" />
+		<paneitem name="BottomRightText" type="bmp" start_x_right="156" start_y_top="0" x_delta="146" y_delta="28" />
+	</background>
+</wndpanel>
+
+<wndpanel name="tabpanelparent" mode="normal">
+	<background name="normal" ori="NO_POS" background_color="dae8f4">
+	</background>
+</wndpanel>
+
+<wndpanel name="gamepanel" mode="normal">
+	<background name="normal" ori="NO_POS" background_color="dae8f4">
+		<paneitem name="FlashGameControlBarBg" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_top="40" />
+	</background>
+	<controlpanel name="normal" ori="VERT">
+		<paneitem name="GameRePlay" type="button" tooltip="重玩"     bmp="GameRePlay" start_x_left="20"   start_y_top="8" x_delta="70" y_delta="25" />
+		<paneitem name="ToFull"     type="button" tooltip="进入全屏" bmp="ToFull"     start_x_left="94"   start_y_top="8" x_delta="70" y_delta="25" />
+		<paneitem name="ExitFull"   type="button" tooltip="退出全屏" bmp="ExitFull"   start_x_left="94"   start_y_top="8" x_delta="70" y_delta="25" />
+		<paneitem name="Mute"       type="button" tooltip="关闭声音" bmp="Mute"       start_x_left="168"  start_y_top="8" x_delta="70" y_delta="25" />
+		<paneitem name="UnMute"     type="button" tooltip="打开声音" bmp="UnMute"     start_x_left="168"  start_y_top="8" x_delta="70" y_delta="25" />
+		<paneitem name="UnMute"     type="button" tooltip="暂停"     bmp=""     start_x_left="242"  start_y_top="8" x_delta="70" y_delta="25" />
+		<paneitem name="Cut"        type="button" tooltip="截图"     bmp="Cut"        start_x_left="316"  start_y_top="8" x_delta="70" y_delta="25" />
+		
+		<paneitem name="GameFlash"    type="wnd"  start_x_left="0" end_x_right="0" start_y_top="40" end_y_bottom="51"  />
+		<paneitem name="GameBottom"   type="wnd"  start_x_left="0" end_x_right="260" start_y_bottom="40" end_y_bottom="0" /> 
+		<paneitem name="GameRight"    type="wnd"  start_x_right="260" end_x_right="0" start_y_top="40" end_y_bottom="0"/>
+	</controlpanel>
+</wndpanel>
+
+<wndpanel name="MinOrExit" >
+	<background name="normal" ori="NO_POS">
+		<paneitem name="MinOrExitBkg" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_bottom="0" dont_change_color="1" />
+	</background>
+	<controlpanel name="normal" ori="NO_POS">
+		<paneitem name="MinOrExit_close" type="button" bmp="minorexitclose" start_x_left="286" start_y_top="6"  x_delta="22" y_delta="17" dont_change_color="1"/> 
+		<paneitem name="MinOrExit_cancle" type="button" bmp="minorexitcancle" start_x_left="241" start_y_top="153"  x_delta="67" y_delta="23" dont_change_color="1"/> 
+		<paneitem name="MinOrExit_ok" type="button" bmp="minorexitok" start_x_left="170" start_y_top="153"  x_delta="67" y_delta="23" dont_change_color="1"/> 
+		<paneitem name="MinOrExit_rad1unCheck" type="button" bmp="minorexitraduchk" start_x_left="68" start_y_top="81"  x_delta="16" y_delta="16" dont_change_color="1"/> 
+		<paneitem name="MinOrExit_rad1Checked" type="button"  bmp="minorexitradchk" start_x_left="68" start_y_top="81"  x_delta="16" y_delta="16" dont_change_color="1"/> 
+		<paneitem name="MinOrExit_rad2unCheck" type="button" bmp="minorexitraduchk" start_x_left="68" start_y_top="105"  x_delta="16" y_delta="16" dont_change_color="1"/> 
+		<paneitem name="MinOrExit_rad2Checked" type="button" bmp="minorexitradchk" start_x_left="68" start_y_top="105"  x_delta="16" y_delta="16" dont_change_color="1"/> 
+		<paneitem name="MinOrExit_m_boxunCheck" type="button" bmp="minorexitboxuchk" start_x_left="10" start_y_top="156"  x_delta="16" y_delta="16" dont_change_color="1"/> 
+		<paneitem name="MinOrExit_m_boxChecked" type="button" bmp="minorexitboxchk" start_x_left="10" start_y_top="156"  x_delta=16" y_delta="16" dont_change_color="1"/> 
+	</controlpanel>
+</wndpanel>
+
+<colors>
+	<color name="MenuLeftBk" value="F5F6F5"/>
+	<color name="MenuBk" value="FFFFFF"/>
+	<color name="MenuText" value="333333"/>
+	<color name="MenuSelBk" value="2b90d7"/>
+	<color name="ScrollBarCornerColor" value="ffffff"/>
+	<color name="TooltipTextColor" value="000000"/>
+	<color name="TooltipBorderColor" value="000000"/>
+	<color name="TooltipBKColor" value="ffffff"/>
+	<color name="TabBarNormalTextColor" value="000000"/>
+	<color name="TabBarDownTextColor" value="0460a3"/>
+	<color name="DownProgressWndBk" value="dae8f4"/>
+	<color name="DownProgressWndTextColor" value="000000"/>
+	<color name="PlayedGameDetailTextColor" value="333333"/>
+	<color name="PlayedGameBkColor" value="ffffff"/>
+	<color name="PlayedGameNameColor" value="333333"/>
+	<color name="PlayedGameFrameBorder" value="ffaf26"/>
+</colors>
+</root>
