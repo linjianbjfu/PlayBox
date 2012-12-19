@@ -17,9 +17,7 @@
 #include "../../module/httpDown/HttpDownCtrl.h"
 #include "../../Gui/CommonControl/ShockwaveFlash.h"
 #include "DownPercentWnd.h"
-#include "GameCtrlWnd.h"
-#include ".\gamepanelwnd.h"
-
+#include "util/Sound.h"
 
 IMPLEMENT_DYNAMIC(GamePanelWnd, CBasicWnd)
 GamePanelWnd::GamePanelWnd()
@@ -35,9 +33,15 @@ GamePanelWnd::GamePanelWnd()
 	//2012-12-13
 	m_pGameFlash      = new CShockwaveFlash();
 	m_pWndDownPercent = new DownPercentWnd();
-	m_pBtnSwitch      = new CxSkinButton();
-	m_pGameCtrl       = new CGameCtrlWnd();
-	m_pGameInfo       = new CxStaticText();
+	m_pBtnRePlay      = new CxSkinButton();
+	m_pBtnMute      = new CxSkinButton();
+	m_pBtnUnMute      = new CxSkinButton();
+	m_pBtnToFullScreen      = new CxSkinButton();
+	m_pBtnExitFullScreen      = new CxSkinButton();
+	m_pBtnPause      = new CxSkinButton();
+
+	m_pWndRight = new MyWebBrowserWnd();
+	m_pWndBottom = new MyWebBrowserWnd();
 
 	AfxGetMessageManager()->AttachMessage( ID_MESSAGE_LAYOUTMGR,(ILayoutChangeObserver*) this);
 	AfxGetMessageManager()->AttachMessage( ID_MESSAGE_PANEL_CHANGE,(IPanelChangeObserver*) this);
@@ -48,9 +52,15 @@ GamePanelWnd::~GamePanelWnd()
 {
 	delete m_pGameFlash;
 	delete m_pWndDownPercent;
-	delete m_pBtnSwitch;
-	delete m_pGameInfo;
-	delete m_pGameCtrl;
+	delete m_pBtnRePlay;
+	delete m_pBtnMute;
+	delete m_pBtnUnMute;
+	delete m_pBtnToFullScreen;
+	delete m_pBtnExitFullScreen;
+	delete m_pBtnPause;
+	delete m_pWndRight;
+	delete m_pWndBottom;
+
 	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_LAYOUTMGR,(ILayoutChangeObserver*) this);
 	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_PANEL_CHANGE,(IPanelChangeObserver*) this);
 	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_HTTP_DOWN,(IHttpDownObserver*) this);
@@ -60,42 +70,56 @@ BEGIN_MESSAGE_MAP(GamePanelWnd, CBasicWnd)
 	ON_WM_CREATE()
 	ON_WM_DESTROY()
 	ON_WM_SIZE()
-	ON_BN_CLICKED(IDC_BTN_SWITCH,OnClickedSwitch)
-	ON_MESSAGE(WM_REPLAY,OnClickedReplay)
-	ON_MESSAGE(WM_CUT_SCREEN,OnClickedCut)
+	ON_BN_CLICKED(IDC_BTN_REPLAY,OnClickedReplay)
+	ON_BN_CLICKED(IDC_BTN_FULL_SCREEN,OnClickedFullScreen)
+	ON_BN_CLICKED(IDC_BTN_EXIT_FULL_SCREEN,OnClickedExitFullScreen)
+	ON_BN_CLICKED(IDC_BTN_MUTE,OnClickedMute)
+	ON_BN_CLICKED(IDC_BTN_UN_MUTE,OnClickedUnMute)
+	ON_BN_CLICKED(IDC_BTN_CUT,OnClickedCut)
 	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
+void GamePanelWnd::InitFlashParams(CShockwaveFlash*	pGameFlash)
+{
+	pGameFlash->SetBackgroundColor( -1 );//无背景色
+	pGameFlash->SetAlignMode( 2 );       //
+	pGameFlash->SetMenu( FALSE );        //无扩展的弹出菜单 
+	pGameFlash->SetScale( "ExactFit" );  //缩放模式为能显示动画所有内容
+	pGameFlash->SetWMode( "Window" );    //设置窗口模式
+	pGameFlash->SetQuality( 1 );         //设置播放动画质量为高 
+	pGameFlash->SetEmbedMovie(TRUE);     //动画是内嵌的 
+}
 
 int GamePanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if(__super::OnCreate(lpCreateStruct) == -1)
-	{
 		return -1;
-	}
+
 	CRect rectNull(0,0,0,0);
-
-	m_pGameCtrl->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN,rectNull,this,ID_WND_GAME_CTRL );
 	m_pGameFlash->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN|WS_VISIBLE, rectNull, this, ID_WND_GAME_SWF);
-
-	m_pGameFlash->SetBackgroundColor( -1 );//无背景色
-	m_pGameFlash->SetAlignMode( 2 );       //
-	m_pGameFlash->SetMenu( FALSE );        //无扩展的弹出菜单 
-	m_pGameFlash->SetScale( "ExactFit" );  //缩放模式为能显示动画所有内容
-	m_pGameFlash->SetWMode( "Window" );    //设置窗口模式
-	m_pGameFlash->SetQuality( 1 );         //设置播放动画质量为高 
-	m_pGameFlash->SetEmbedMovie(TRUE);     //动画是内嵌的 
+	InitFlashParams(m_pGameFlash);
+	m_pBtnRePlay->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_REPLAY);
+	m_pBtnToFullScreen->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_FULL_SCREEN);
+	m_pBtnExitFullScreen->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_EXIT_FULL_SCREEN);
+	m_pBtnMute->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_MUTE);
+	m_pBtnUnMute->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_UN_MUTE);
+	m_pBtnPause->Create (NULL, WS_VISIBLE, rectNull, this, IDC_BTN_PAUSE);
+	m_pWndRight->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN,rectNull,this,ID_WND_FLASHGAME_RIGHT );
+	m_pWndBottom->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN,rectNull,this,ID_WND_FLASHGAME_BOTTOM );
 
 	m_pWndDownPercent->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN,rectNull,this,ID_WND_GAME_DOWN_PERCENT );
-	m_pBtnSwitch->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_SWITCH);
-	m_pGameInfo->Create(NULL,WS_VISIBLE, rectNull,this,ID_WND_GAME_INFO);
 
 	ILayoutMgr* pLayoutMgr =  AfxGetUIManager()->UIGetLayoutMgr();	
-	pLayoutMgr->RegisterCtrl( this, "GameCtrl", m_pGameCtrl );
 	pLayoutMgr->RegisterCtrl( this, "GameFlash", m_pGameFlash );
-	pLayoutMgr->RegisterCtrl( this, "GameCISwitch", m_pBtnSwitch );
-	pLayoutMgr->RegisterCtrl( this, "GameInfo", m_pGameInfo );
-		
+	pLayoutMgr->RegisterCtrl( this, "GameRePlay", m_pBtnRePlay );
+	pLayoutMgr->RegisterCtrl( this, "ToFull", m_pBtnToFullScreen );
+	pLayoutMgr->RegisterCtrl( this, "ExitFull", m_pBtnExitFullScreen );
+	pLayoutMgr->RegisterCtrl( this, "Mute", m_pBtnMute );
+	pLayoutMgr->RegisterCtrl( this, "UnMute", m_pBtnUnMute );
+	pLayoutMgr->RegisterCtrl (this, "Pause", m_pBtnPause);
+	pLayoutMgr->RegisterCtrl (this, "FlashGameBottom", m_pWndBottom);
+	pLayoutMgr->RegisterCtrl (this, "FlashGameRight", m_pWndRight);
+
 	pLayoutMgr->CreateControlPane( this, "gamepanel", "normal" );
 	pLayoutMgr->CreateBmpPane( this,"gamepanel","normal" );
 
@@ -118,17 +142,6 @@ void GamePanelWnd::SetTabItem( TAB_ITEM ti )
 	//Try to load here.
 	//MessageBox("Hello from GamePanelWnd::SetTabItem","Info");
 	SetGameEntry( m_swfGame );
-	
-	string strGameInfo = "x 指定缩小CRect的左和右边的单位数";
-	strGameInfo += "y 指定缩小CRect的上、下边的单位数";
-	strGameInfo += "size 指定缩小CRect的单位数的SIZE或CSize；";
-	strGameInfo += "cx 值指定缩小左、右边的单位数；";
-	strGameInfo += "cy 指定缩小上、下边的单位数；";
-	strGameInfo += "lpRect 指向一个RECT结构或CRect，指定缩小每一边的单位数；";
-	strGameInfo += "l 指定缩小CRect左边的单位数；";
-	strGameInfo += "t 指定缩小CRect上边的单位数；";
-	m_swfGame.strIntro = strGameInfo;
-	m_pGameInfo->SetWindowText( m_swfGame.strIntro.c_str() );
 }
 
 void GamePanelWnd::Init()
@@ -149,7 +162,8 @@ void GamePanelWnd::OnDestroy()
 {
 	m_pGameFlash->DestroyWindow();
 	m_pWndDownPercent->DestroyWindow();
-	m_pGameCtrl->DestroyWindow();
+	m_pWndBottom->DestroyWindow();
+	m_pWndRight->DestroyWindow();
 	//删除播放swf的htm文件
 	if( m_strCopyedHtmlPath.length() != 0 )
 	{
@@ -417,7 +431,6 @@ void GamePanelWnd::HttpDownOb_DownProgress( string& strID, double dPercent,
 
 void GamePanelWnd::SetGameEntry( SWF_GAME sg )
 {
-	YL_Log("CGameCtrlWnd.txt", LOG_DEBUG, "CGameCtrlWnd::SetGameEntry", "===IN");
 	m_swfGame = sg;
 	//Testing
 	//MessageBox("Hello from GamePanelWnd::SetGameEntry","Info");
@@ -432,12 +445,12 @@ void GamePanelWnd::SetGameEntry( SWF_GAME sg )
 			olg.strGamePath.c_str());
 
 		//If the Movie has been downloaded then play it.
-		m_bDown = true;
-		this->SetTimer(ADS_TIMER_ID,ADS_TIME,NULL);
+		//m_bDown = true;
+		//this->SetTimer(ADS_TIMER_ID,ADS_TIME,NULL);
 		PlayMovie( olg.strID, olg.strGamePath );
 		UpdateAllWnd();
-
-		m_pGameCtrl->m_strGameName = sg.strName;
+		m_pWndRight->Navigate("so.360.cn");
+		m_pWndBottom->Navigate("www.sogou.com");
 	}else
 	{
 		m_bDown = true;
@@ -447,7 +460,6 @@ void GamePanelWnd::SetGameEntry( SWF_GAME sg )
 		HttpDownCtrl::GetInstance()->StartDown( m_swfGame.strID, m_swfGame.strSwfUrl );
 		UpdateAllWnd();
 	}
-	YL_Log("GamePanelWnd.txt", LOG_DEBUG, "GamePanelWnd::SetGameEntry", "===OUT");
 }
 
 
@@ -564,28 +576,46 @@ void GamePanelWnd::UpdateAllWnd()
 	{
 		//显示下载wnd
 		m_pWndDownPercent->ShowWindow( SW_SHOW );
-		m_pBtnSwitch->ShowWindow( SW_HIDE );
 		m_pGameFlash->ShowWindow( SW_HIDE );
-		m_pGameCtrl->ShowWindow( SW_HIDE );
-		m_pGameInfo->ShowWindow( SW_HIDE );
+		m_pBtnRePlay->ShowWindow( SW_HIDE );
+		m_pBtnMute->ShowWindow( SW_HIDE );
+		m_pBtnUnMute->ShowWindow( SW_HIDE );
+		m_pBtnToFullScreen->ShowWindow( SW_HIDE );
+		m_pBtnExitFullScreen->ShowWindow( SW_HIDE );
+		m_pBtnPause->ShowWindow(SW_HIDE);
+		m_pWndRight->ShowWindow(SW_HIDE);
+		m_pWndBottom->ShowWindow(SW_HIDE);
 	}else
 	{
 		m_pWndDownPercent->ShowWindow( SW_HIDE );
-		m_pBtnSwitch->ShowWindow( SW_SHOW );
-		m_pBtnSwitch->Invalidate();
-		m_pGameFlash->ShowWindow( SW_SHOW );
-		if( m_pBtnSwitch->GetCheck() == 1 )
+		//显示重玩
+		m_pBtnRePlay->ShowWindow( SW_SHOW );
+		m_pBtnRePlay->Invalidate();
+		//声音
+		if( CSound::GetInstance()->GetMute( 1 ) )
 		{
-			m_pGameInfo->ShowWindow( SW_HIDE );
-			m_pGameCtrl->ShowWindow( SW_SHOW );
-			m_pGameCtrl->UpdateAllWnd();
+			m_pBtnMute->ShowWindow( SW_HIDE );
+			m_pBtnUnMute->ShowWindow( SW_SHOW );
 		}else
 		{
-			m_pGameCtrl->ShowWindow( SW_HIDE );
-			m_pGameInfo->ShowWindow( SW_SHOW );
+			m_pBtnMute->ShowWindow( SW_SHOW );
+			m_pBtnUnMute->ShowWindow( SW_HIDE );
 		}
+		//全屏
+		if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
+		{
+			m_pBtnToFullScreen->ShowWindow( SW_HIDE );
+			m_pBtnExitFullScreen->ShowWindow( SW_SHOW );
+		}else
+		{
+			m_pBtnToFullScreen->ShowWindow( SW_SHOW );
+			m_pBtnExitFullScreen->ShowWindow( SW_HIDE );
+		}
+		m_pBtnPause->ShowWindow(SW_SHOW);
+		m_pWndRight->ShowWindow(SW_SHOW);
+		m_pWndBottom->ShowWindow(SW_SHOW);
+		m_pGameFlash->ShowWindow( SW_SHOW );
 	}
-	YL_Log("CGameCtrlWnd.txt", LOG_DEBUG, "CGameCtrlWnd::UpdateAllWnd", "===OUT");
 }
 void GamePanelWnd::OnSize(UINT nType, int cx, int cy)
 {
@@ -594,25 +624,12 @@ void GamePanelWnd::OnSize(UINT nType, int cx, int cy)
 	UpdateAllWnd();	
 }
 
-void GamePanelWnd::OnClickedSwitch()
-{
-	if( m_pBtnSwitch->GetCheck() == 1 )
-	{
-		m_pBtnSwitch->SetCheck( 0 );
-	}else
-	{
-		m_pBtnSwitch->SetCheck( 1 );
-	}
-	UpdateAllWnd();
-}
-
-LRESULT GamePanelWnd::OnClickedReplay(WPARAM wParam,LPARAM lParama)
+void GamePanelWnd::OnClickedReplay()
 {
 	SetGameEntry( m_swfGame );
-	return 0L;
 }
 
-LRESULT GamePanelWnd::OnClickedCut(WPARAM wParam,LPARAM lParama)
+void GamePanelWnd::OnClickedCut()
 {
 	string strDesktopPath;
 	char szTmpPath[MAX_PATH] = {0};
@@ -620,7 +637,7 @@ LRESULT GamePanelWnd::OnClickedCut(WPARAM wParam,LPARAM lParama)
 	strDesktopPath = szTmpPath;
 
 	if (!strDesktopPath.length ())
-		return 1L;
+		return;
 
 	time_t now;
 	time (&now);
@@ -654,32 +671,49 @@ LRESULT GamePanelWnd::OnClickedCut(WPARAM wParam,LPARAM lParama)
 	CString strContent = CString(strFileName.c_str());
 	
 	::SendMessage( AfxGetMainWindow()->m_hWnd, MSG_SHOW_TRAYICONBALLOON, WPARAM(&strTitle), LPARAM(&strContent) );
-	
-	return 0L;
 }
 
 void GamePanelWnd::ILayoutChangeOb_InitFinished()
 {
-	YL_Log("GamePlayingWnd.txt", LOG_DEBUG, "GamePlayingWnd::ILayoutChangeOb_InitFinished", "===IN");
 	UpdateAllWnd();
-	YL_Log("GamePlayingWnd.txt", LOG_DEBUG, "GamePlayingWnd::ILayoutChangeOb_InitFinished", "===OUT");
 }
 void GamePanelWnd::ILayoutChangeOb_SkinChanged(string oldSkinPath, string newSkinPath)
 {
-	YL_Log("GamePlayingWnd.txt", LOG_DEBUG, "GamePlayingWnd::ILayoutChangeOb_SkinChanged", "===IN");
 	UpdateAllWnd();
-	YL_Log("GamePlayingWnd.txt", LOG_DEBUG, "GamePlayingWnd::ILayoutChangeOb_SkinChanged", "===OUT");
 }
 
 void GamePanelWnd::ILayoutChangeOb_UpdateLayout(HWND hWnd)
 {
-	YL_Log("GamePlayingWnd.txt", LOG_DEBUG, "GamePlayingWnd::ILayoutChangeOb_UpdateLayout", "===IN");
 	if( hWnd == GetSafeHwnd() )
 	{
 		UpdateAllWnd();
 	}
-	YL_Log("GamePlayingWnd.txt", LOG_DEBUG, "GamePlayingWnd::ILayoutChangeOb_UpdateLayout", "===OUT");
 }
+
+void GamePanelWnd::OnClickedMute()
+{
+	if( CSound::GetInstance()->GetMute( 1 ) )
+	{
+		CSound::GetInstance()->SetMute( 1, false );
+	}else
+	{
+		CSound::GetInstance()->SetMute( 1, true );
+	}
+	UpdateAllWnd();
+}
+
+void GamePanelWnd::OnClickedUnMute()
+{
+	if( CSound::GetInstance()->GetMute( 1 ) )
+	{
+		CSound::GetInstance()->SetMute( 1, false );
+	}else
+	{
+		CSound::GetInstance()->SetMute( 1, true );
+	}
+	UpdateAllWnd();
+}
+
 void GamePanelWnd::OnTimer(UINT nIDEvent)
 {
 	// TODO: Add your message handler code here and/or call default
@@ -713,4 +747,26 @@ void GamePanelWnd::OnTimer(UINT nIDEvent)
 	}
 
 	__super::OnTimer(nIDEvent);
+}
+
+void GamePanelWnd::OnClickedFullScreen()
+{
+	if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
+	{
+		GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
+	}else
+	{
+		GLOBAL_PANELCHANGEDATA->IPanelChange_ToFullScreen( GetParent() );
+	}	
+}
+
+void GamePanelWnd::OnClickedExitFullScreen()
+{
+	if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
+	{
+		GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
+	}else
+	{
+		GLOBAL_PANELCHANGEDATA->IPanelChange_ToFullScreen( GetParent() );
+	}
 }

@@ -7,9 +7,8 @@
 #include "../../LayoutMgr/ISkinMgr.h"
 
 class CShockwaveFlash;
-class CGameInfoWnd;
-class CGameCtrlWnd;
 class DownPercentWnd;
+class MyWebBrowserWnd;
 class CxSkinButton;
 class CShowMenu;
 class CxStaticText;
@@ -39,9 +38,13 @@ protected:
 	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void	OnDestroy();
 	afx_msg void	OnSize(UINT nType, int cx, int cy);
-	afx_msg void	OnClickedSwitch();
-	afx_msg LRESULT OnClickedReplay(WPARAM wParam,LPARAM lParama);
-	afx_msg LRESULT OnClickedCut(WPARAM wParam,LPARAM lParama);
+	afx_msg void	OnClickedReplay();
+	afx_msg void	OnClickedCut();
+	afx_msg void	OnClickedFullScreen();
+	afx_msg void	OnClickedExitFullScreen();
+	afx_msg void	OnClickedMute();
+	afx_msg void	OnClickedUnMute();	
+	
 public:
 	virtual void	ILayoutChangeOb_InitFinished();
 	virtual void	ILayoutChangeOb_SkinChanged(string oldSkinPath, string newSkinPath);
@@ -59,10 +62,15 @@ public:
 	void	PlayMovie( string strID, string strPath );
 private:
 	CShockwaveFlash*	m_pGameFlash;
-	DownPercentWnd*		m_pWndDownPercent;
-	CxSkinButton*		m_pBtnSwitch;
-	CxStaticText*		m_pGameInfo;
-	CGameCtrlWnd*		m_pGameCtrl;	
+	DownPercentWnd*		m_pWndDownPercent;	
+	CxSkinButton*		m_pBtnRePlay;
+	CxSkinButton*		m_pBtnMute;
+	CxSkinButton*		m_pBtnUnMute;
+	CxSkinButton*		m_pBtnToFullScreen;
+	CxSkinButton*		m_pBtnExitFullScreen;
+	CxSkinButton*		m_pBtnPause;
+	MyWebBrowserWnd*	m_pWndRight;
+	MyWebBrowserWnd*	m_pWndBottom;
 
 	bool				m_bDown;	//是否显示下载页面
 	SWF_GAME			m_swfGame;
@@ -82,6 +90,7 @@ private:
 	CString UINT2CString(UINT ui);
 	void	LogPlaySwfGameAct();
 	CString GetLeftTime( unsigned int uiSize, unsigned int uiSpeed, unsigned int uiFinished );
+	void	InitFlashParams(CShockwaveFlash*	pGameFlash);
 public:
 	afx_msg void OnTimer(UINT nIDEvent);
 };
