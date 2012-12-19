@@ -185,6 +185,13 @@
 #define IDD_HTML_VIEW					274
 #define ID_WND_FLASHGAME_RIGHT          275
 #define ID_WND_FLASHGAME_BOTTOM         276
+#define IDC_BTN_BROWSER_BACK			277
+#define IDC_BTN_BROWSER_FORWARD			278
+#define IDC_BTN_BROWSER_REFRESH			279
+#define IDC_BTN_BROWSER_FAV				280
+#define IDC_BTN_BROWSER_ADDRESS_BAR		281
+#define IDC_BROWSER_WEB					282
+
 
 // Next default values for new objects
 // 

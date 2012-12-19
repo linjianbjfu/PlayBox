@@ -75,7 +75,7 @@ BEGIN_MESSAGE_MAP(GamePanelWnd, CBasicWnd)
 	ON_BN_CLICKED(IDC_BTN_EXIT_FULL_SCREEN,OnClickedExitFullScreen)
 	ON_BN_CLICKED(IDC_BTN_MUTE,OnClickedMute)
 	ON_BN_CLICKED(IDC_BTN_UN_MUTE,OnClickedUnMute)
-	ON_BN_CLICKED(IDC_BTN_CUT,OnClickedCut)
+	ON_BN_CLICKED(IDC_BTN_PAUSE,OnClickedPause)
 	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
@@ -627,6 +627,11 @@ void GamePanelWnd::OnSize(UINT nType, int cx, int cy)
 void GamePanelWnd::OnClickedReplay()
 {
 	SetGameEntry( m_swfGame );
+}
+
+void GamePanelWnd::OnClickedPause()
+{
+
 }
 
 void GamePanelWnd::OnClickedCut()

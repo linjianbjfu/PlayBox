@@ -86,6 +86,20 @@
 	</controlpanel>
 </wndpanel>
 
+<wndpanel name="browserpanel" mode="normal">
+	<background name="normal" ori="NO_POS" background_color="dae8f4">
+		<paneitem name="FlashGameControlBarBg" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_top="40" />
+	</background>
+	<controlpanel name="normal" ori="NO_POS">
+		<paneitem name="BrowserBack"     type="button" tooltip="后退" bmp="BrowserBack" start_x_left="20"  start_y_top="8" x_delta="28" y_delta="25" />
+		<paneitem name="BrowserForward"  type="button" tooltip="前进" bmp="BrowserForward" start_x_left="52" start_y_top="8" x_delta="28" y_delta="25" />
+		<paneitem name="BrowserRefresh"  type="button" tooltip="刷新" bmp="BrowserRefresh" start_x_left="84"  start_y_top="8" x_delta="28" y_delta="25" />
+		<paneitem name="BrowserAddressBar"  type="Edit" start_x_left="116"  start_y_top="8" x_delta="70" y_delta="25" />
+		<paneitem name="BrowserFav"  type="button" tooltip="收藏" bmp="BrowserFav"  start_x_right="32"  start_y_top="8" x_delta="28" y_delta="25" />
+		<paneitem name="BrowserWeb" type = "wnd" start_x_left="0"  start_y_top="40" end_x_right="0" end_y_bottom="0" />
+	</controlpanel>
+</wndpanel>
+
 <wndpanel name="MinOrExit" >
 	<background name="normal" ori="NO_POS">
 		<paneitem name="MinOrExitBkg" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_bottom="0" dont_change_color="1" />

@@ -1428,6 +1428,16 @@
 					RelativePath=".\src\module\BottomPanel\BottomPanelWnd.h">
 				</File>
 			</Filter>
+			<Filter
+				Name="BrowserPanel"
+				Filter="">
+				<File
+					RelativePath=".\src\module\BrowserPanel\BrowserPanelWnd.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\BrowserPanel\BrowserPanelWnd.h">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="datainterface"
