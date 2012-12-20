@@ -58,8 +58,9 @@ GamePanelWnd::~GamePanelWnd()
 	delete m_pBtnToFullScreen;
 	delete m_pBtnExitFullScreen;
 	delete m_pBtnPause;
-	delete m_pWndRight;
-	delete m_pWndBottom;
+  //do not delete MyWebBrowserWnd ptr, you can see now it's hwnd is feeefeee
+	//delete m_pWndRight;
+	//delete m_pWndBottom;
 
 	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_LAYOUTMGR,(ILayoutChangeObserver*) this);
 	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_PANEL_CHANGE,(IPanelChangeObserver*) this);
@@ -697,25 +698,15 @@ void GamePanelWnd::ILayoutChangeOb_UpdateLayout(HWND hWnd)
 
 void GamePanelWnd::OnClickedMute()
 {
-	if( CSound::GetInstance()->GetMute( 1 ) )
-	{
-		CSound::GetInstance()->SetMute( 1, false );
-	}else
-	{
-		CSound::GetInstance()->SetMute( 1, true );
-	}
+	bool bIsMute = CSound::GetInstance()->GetMute( 1 );
+	CSound::GetInstance()->SetMute( 1, !bIsMute );
 	UpdateAllWnd();
 }
 
 void GamePanelWnd::OnClickedUnMute()
 {
-	if( CSound::GetInstance()->GetMute( 1 ) )
-	{
-		CSound::GetInstance()->SetMute( 1, false );
-	}else
-	{
-		CSound::GetInstance()->SetMute( 1, true );
-	}
+	bool bIsMute = CSound::GetInstance()->GetMute( 1 );
+	CSound::GetInstance()->SetMute( 1, !bIsMute );
 	UpdateAllWnd();
 }
 
