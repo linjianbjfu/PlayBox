@@ -350,8 +350,9 @@ void CTopPanelWnd::OnAppExit()
 void CTopPanelWnd::OnSetting()
 {
 	CConfigDialog configDlg;
+	AfxGetUIManager()->UIAddDialog(&configDlg);
 	int ret = configDlg.DoModal();
-
+	AfxGetUIManager()->UIRemoveDialog(&configDlg);
 	if (ret == IDOK)
 	{
 		bool bEnableBossKey;

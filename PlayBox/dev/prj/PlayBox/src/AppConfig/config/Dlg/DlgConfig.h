@@ -7,6 +7,7 @@
 #include "BaseDlg.h"
 #include "../../../DataInterface/IAppExitObserver.h"
 #include "../../../gui/CommonControl/HyperLinkCtrl.h"
+#include "../../gui/CommonControl/xSkinButton.h"
 
 using std::map;
 
@@ -43,5 +44,10 @@ protected:
 	afx_msg void OnClickedCancel();					//取消
 	afx_msg void OnConfigBtnDefaultBnClicked();		//缺省设置
 	bool IsAllInputOK();
-	void IAppExit();	
+	void IAppExit();
+
+	// control
+	CxSkinButton m_btnOK;
+	CxSkinButton m_btnCancle;
+ 	CxSkinButton m_btnReset;
 };

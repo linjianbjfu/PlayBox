@@ -43,4 +43,21 @@ static const char* CONF_SETTING[] =
 };
 
 #define ID_HOTKEY_BOSSKEY		10086
+
+#if !defined CONF_DLG_CTRL_ID
+#define CONF_DLG_CTRL_ID
+
+#define	IDC_CONF_BTN_OK				1001
+#define IDC_CONF_BTN_CANCEL			1002
+#define IDC_CONF_BTN_RESET			1003
+
+#define IDC_CONF_CHK_AUTORUN		1004
+#define IDC_CONF_CHK_ENABLE_BOSSKEY	1005
+#define IDC_CONF_CHK_PRINTSCREEN	1006
+#define IDC_CONF_RAD_MIN			1007
+#define IDC_CONF_RAD_EXIT			1008
+#define IDC_CONF_CHK_NOASK			1009
+
+#endif // CONF_DLG_CTRL_ID
+
 #endif

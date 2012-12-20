@@ -5,15 +5,15 @@
 #include "../ConfigSettingDef.h"
 #include "YL_FileInfo.h"
 #include "YL_StringUtil.h"
+#include ".\dlgsys.h"
 
 IMPLEMENT_DYNAMIC(CSysDialog, BaseDialog)
 
 CSysDialog::CSysDialog(CWnd* pParent /*=NULL*/)
-: m_bUseBossKey(FALSE)
 {
 	CDialog(CSysDialog::IDD, pParent);
 	m_minOrExit = FALSE;
-	m_noAsk     = FALSE;
+	m_bNoAsk     = FALSE;
 }
 
 CSysDialog::~CSysDialog()
@@ -21,28 +21,58 @@ CSysDialog::~CSysDialog()
 }
 
 BEGIN_MESSAGE_MAP(CSysDialog, BaseDialog)
-	ON_BN_CLICKED(IDC_RAD_MIN, OnBnClickedRadMin)
-	ON_BN_CLICKED(IDC_RAD_EXIT, OnBnClickedRadExit)
-	ON_BN_CLICKED(IDC_CHK_NOASK, OnBnClickedChkNoask)
-	ON_BN_CLICKED(IDC_CHECK_AUTORUN, OnBnClickedCheckAutoRun)
-	ON_BN_CLICKED(IDC_CHK_BOSSKEY, OnBnClickedChkBosskey)
+	ON_BN_CLICKED(IDC_CONF_CHK_AUTORUN,			OnBnClickedCheckAutoRun)
+	ON_BN_CLICKED(IDC_CONF_CHK_ENABLE_BOSSKEY,	OnBnClickedChkBosskey)
+	ON_BN_CLICKED(IDC_CONF_RAD_MIN,		OnBnClickedRadMin)
+	ON_BN_CLICKED(IDC_CONF_RAD_EXIT,	OnBnClickedRadExit)
+	ON_BN_CLICKED(IDC_CONF_CHK_NOASK,	OnBnClickedChkNoask)
 END_MESSAGE_MAP()
 
 void CSysDialog::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	
-	DDX_Check(pDX, IDC_CHECK_AUTORUN, m_bAutoRun);
-	DDX_Check(pDX, IDC_CHK_NOASK, m_noAsk);
-	DDX_Control(pDX, IDC_CHECK_AUTORUN, m_checkAutoRun);
-	DDX_Radio(pDX, IDC_RAD_MIN, m_minOrExit);
-	DDX_Control(pDX, IDC_RAD_MIN, m_minCtrl);
-	DDX_Control(pDX, IDC_RAD_EXIT, m_exitCtrl);
-	DDX_Control(pDX, IDC_CHK_NOASK, m_noAskCtrl);
-	DDX_Control(pDX, IDC_STATIC_MINOREXIT, m_staticMinOrExit);
-	DDX_Check(pDX, IDC_CHK_BOSSKEY, m_bUseBossKey);
+
 	DDX_Control(pDX, IDC_HOTKEY_BOSSKEY, m_BossKeyCtrl);
 }
+
+BOOL CSysDialog::OnInitDialog()
+{
+	BaseDialog::OnInitDialog();
+
+	CRect rctNULL(0, 0, 0, 0);
+	m_checkedAutoRun.Create(NULL, WS_VISIBLE, rctNULL, this, IDC_CONF_CHK_AUTORUN);
+	m_unChkedAutoRun.Create(NULL, WS_VISIBLE, rctNULL, this, IDC_CONF_CHK_AUTORUN);
+	m_checkUseBossKey.Create(NULL, WS_VISIBLE, rctNULL, this, IDC_CONF_CHK_ENABLE_BOSSKEY);
+	m_unChkUseBossKey.Create(NULL, WS_VISIBLE, rctNULL, this, IDC_CONF_CHK_ENABLE_BOSSKEY);
+	m_radMin_Checked.Create(NULL, WS_VISIBLE, rctNULL, this, IDC_CONF_RAD_MIN);
+	m_radMin_unChked.Create(NULL, WS_VISIBLE, rctNULL, this, IDC_CONF_RAD_MIN);
+	m_radExit_Checked.Create(NULL, WS_VISIBLE, rctNULL, this, IDC_CONF_RAD_EXIT);
+	m_radExit_unChked.Create(NULL, WS_VISIBLE, rctNULL, this, IDC_CONF_RAD_EXIT);
+	m_checkedNoAsk.Create(NULL, WS_VISIBLE, rctNULL, this, IDC_CONF_CHK_NOASK);
+	m_unChkedNoAsk.Create(NULL, WS_VISIBLE, rctNULL, this, IDC_CONF_CHK_NOASK);
+
+	ILayoutMgr* pLayoutMgr = AfxGetUIManager()->UIGetLayoutMgr();
+	pLayoutMgr->RegisterCtrl(this, "ConfigDlg_SYS_chkAutorun_checked",	&m_checkedAutoRun);
+	pLayoutMgr->RegisterCtrl(this, "ConfigDlg_SYS_chkAutorun_unchecked",&m_unChkedAutoRun);
+	pLayoutMgr->RegisterCtrl(this, "ConfigDlg_SYS_chkBosskey_checked",	&m_checkUseBossKey);
+	pLayoutMgr->RegisterCtrl(this, "ConfigDlg_SYS_chkBosskey_unchecked",&m_unChkUseBossKey);
+	pLayoutMgr->RegisterCtrl(this, "ConfigDlg_SYS_radMin_Checked",		&m_radMin_Checked);
+	pLayoutMgr->RegisterCtrl(this, "ConfigDlg_SYS_radMin_unChecked",	&m_radMin_unChked);
+	pLayoutMgr->RegisterCtrl(this, "ConfigDlg_SYS_radExit_Checked",		&m_radExit_Checked);
+	pLayoutMgr->RegisterCtrl(this, "ConfigDlg_SYS_radExit_unChecked",	&m_radExit_unChked);
+	pLayoutMgr->RegisterCtrl(this, "ConfigDlg_SYS_chkNoAsk_checked",	&m_checkedNoAsk);
+	pLayoutMgr->RegisterCtrl(this, "ConfigDlg_SYS_chkNoAsk_unchecked",	&m_unChkedNoAsk);
+
+	pLayoutMgr->CreateControlPane( this,"ConfigDlg_SYS","normal");	
+	pLayoutMgr->CreateBmpPane( this,"ConfigDlg_SYS","normal" );
+
+
+	UpdateData( FALSE );
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+	// EXCEPTION: OCX Property Pages should return FALSE
+}
+
 
 void CSysDialog::SaveConf( bool bSave2File )
 {
@@ -50,10 +80,10 @@ void CSysDialog::SaveConf( bool bSave2File )
 	GlobalFunc::CreateGBoxRunInStartUp( m_bAutoRun );
 
 	bool bValue = m_minOrExit;
-	AfxGetUserConfig()->SetConfigBoolValue( CONF_SETTING_MODULE_NAME,CONF_SETTING_CONFIG_EXITCHOICE,bValue);
+	AfxGetUserConfig()->SetConfigBoolValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_CONFIG_EXITCHOICE,bValue);
 
-	bValue = m_noAsk;
-	AfxGetUserConfig()->SetConfigBoolValue( CONF_SETTING_MODULE_NAME,CONF_SETTING_CONFIG_IFASKEXIT,bValue);
+	bValue = m_bNoAsk;
+	AfxGetUserConfig()->SetConfigBoolValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_CONFIG_IFASKEXIT,bValue);
 	bValue = m_bUseBossKey;
 	AfxGetUserConfig()->SetConfigBoolValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_ENABLE_BOSS_KEY, bValue );
 
@@ -75,21 +105,21 @@ void CSysDialog::LoadConf()
 	m_minOrExit = bValue;
 
 	pUserConfig->GetConfigBoolValue( CONF_SETTING_MODULE_NAME,CONF_SETTING_CONFIG_IFASKEXIT,bValue);
-	m_noAsk = bValue;
+	m_bNoAsk = bValue;
 	pUserConfig->GetConfigBoolValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_ENABLE_BOSS_KEY, bValue);
 	m_bUseBossKey = bValue;
-	m_BossKeyCtrl.EnableWindow(m_bUseBossKey);
 
-	int iKeyValue;
-	pUserConfig->GetConfigIntValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_BOSS_KEY_VALUE, iKeyValue);
-	m_BossKeyCtrl.SetHotKey(HIWORD(*((DWORD*)&iKeyValue)), LOWORD(*((DWORD*)&iKeyValue)) );
+	int iKeyValue = 0;
+	AfxGetUserConfig()->GetConfigIntValue(CONF_SETTING_MODULE_NAME, CONF_SETTING_BOSS_KEY_VALUE, iKeyValue);
+	m_BossKeyCtrl.SetHotKey(HIWORD( *((DWORD*)&iKeyValue) ), LOWORD( *((DWORD*)&iKeyValue) ));
 }
 
 void CSysDialog::SetDefault()
 {
 	m_bAutoRun	= TRUE;
 	m_minOrExit	= FALSE;
-	m_noAsk		= FALSE;
+	m_bNoAsk	= FALSE;
+	m_bUseBossKey=FALSE;
 	UpdateData( FALSE );
 }
 
@@ -128,27 +158,100 @@ HRESULT CSysDialog::CreateLink(LPCSTR lpszPathObj, LPCSTR lpszPathLink, LPCSTR l
 
 void CSysDialog::OnBnClickedRadMin()
 {
+	m_minOrExit = FALSE;
+	UpdateData(FALSE);
 	SthChanged();
 }
 
 void CSysDialog::OnBnClickedRadExit()
 {
+	m_minOrExit = TRUE;
+	UpdateData(FALSE);
 	SthChanged();
 }
 
 void CSysDialog::OnBnClickedChkNoask()
 {
+	m_bNoAsk = !m_bNoAsk;
+	UpdateData(FALSE);
 	SthChanged();
 }
 
 void CSysDialog::OnBnClickedCheckAutoRun()
 {
+	m_bAutoRun = !m_bAutoRun;
+	UpdateData(FALSE);
 	SthChanged();
 }
 
 void CSysDialog::OnBnClickedChkBosskey()
 {
+	m_bUseBossKey = !m_bUseBossKey;
+	UpdateData(FALSE);
 	SthChanged();
-	UpdateData();
-	m_BossKeyCtrl.EnableWindow(m_bUseBossKey);
+}
+
+BOOL CSysDialog::UpdateData(BOOL bSaveAndValidate /* = TRUE */ )
+{
+	if (!bSaveAndValidate)
+	{
+		m_BossKeyCtrl.EnableWindow(m_bUseBossKey);
+		if (m_bAutoRun)		// 开机启动
+		{
+			m_checkedAutoRun.ShowWindow(SW_SHOW);
+			m_unChkedAutoRun.ShowWindow(SW_HIDE);
+		}
+		else
+		{
+			m_checkedAutoRun.ShowWindow(SW_HIDE);
+			m_unChkedAutoRun.ShowWindow(SW_SHOW);
+		}
+
+		if (m_bUseBossKey)	//启用老板键
+		{
+			m_checkUseBossKey.ShowWindow(SW_SHOW);
+			m_unChkUseBossKey.ShowWindow(SW_HIDE);
+		}
+		else
+		{
+			m_checkUseBossKey.ShowWindow(SW_HIDE);
+			m_unChkUseBossKey.ShowWindow(SW_SHOW);
+		}
+
+		if (m_bNoAsk)		// 不再询问
+		{
+			m_checkedNoAsk.ShowWindow(SW_SHOW);
+			m_unChkedNoAsk.ShowWindow(SW_HIDE);
+		}
+		else
+		{
+			m_checkedNoAsk.ShowWindow(SW_HIDE);
+			m_unChkedNoAsk.ShowWindow(SW_SHOW);
+		}
+
+		if (m_minOrExit)	// 默认选择 退出/最小化
+		{
+			m_minOrExit = TRUE;
+			m_radMin_Checked.ShowWindow(SW_HIDE);
+			m_radMin_unChked.ShowWindow(SW_SHOW);
+			m_radExit_Checked.ShowWindow(SW_SHOW);
+			m_radExit_unChked.ShowWindow(SW_HIDE);
+		}
+		else
+		{			
+			m_radMin_Checked.ShowWindow(SW_SHOW);
+			m_radMin_unChked.ShowWindow(SW_HIDE);
+			m_radExit_Checked.ShowWindow(SW_HIDE);
+			m_radExit_unChked.ShowWindow(SW_SHOW);
+		}
+	}
+	else
+	{	// bSaveAndValidate == TRUE
+		m_bAutoRun		= m_checkedAutoRun.IsWindowVisible();
+		m_bUseBossKey	= m_checkUseBossKey.IsWindowVisible();
+		m_bNoAsk		= m_checkedNoAsk.IsWindowVisible();
+		m_minOrExit		= m_radExit_Checked.IsWindowVisible();
+	}
+
+	return __super::UpdateData(bSaveAndValidate);
 }

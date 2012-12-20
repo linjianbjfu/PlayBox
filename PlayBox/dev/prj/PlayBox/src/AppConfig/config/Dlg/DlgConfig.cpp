@@ -23,10 +23,10 @@ CConfigDialog::~CConfigDialog()
 }
 
 BEGIN_MESSAGE_MAP(CConfigDialog,CDialog)
-    ON_BN_CLICKED(IDOK, OnClickedOK)
+	ON_BN_CLICKED(IDC_CONF_BTN_OK, OnClickedOK)
     ON_BN_CLICKED(IDCANCEL, OnClickedCancel)
-	ON_BN_CLICKED(IDC_CONFIG_BTN_DEFAULT, OnConfigBtnDefaultBnClicked)
-	//ON_WM_CTLCOLOR()
+	ON_BN_CLICKED(IDC_CONF_BTN_RESET, OnConfigBtnDefaultBnClicked)
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 void CConfigDialog::DoDataExchange(CDataExchange* pDX)
@@ -45,15 +45,33 @@ BOOL CConfigDialog::OnInitDialog()
 	g_hLastConfWnd = m_hWnd;
 
 	CenterWindow();
+	CRect rctNULL(0,0,0,0);
+	m_btnOK.Create(NULL,WS_VISIBLE,rctNULL,this,IDC_CONF_BTN_OK);
+	m_btnCancle.Create(NULL, WS_VISIBLE, rctNULL, this, IDCANCEL);
+	m_btnReset.Create(NULL, WS_VISIBLE, rctNULL, this, IDC_CONF_BTN_RESET);
 
-	RECT rect;
-	GetDlgItem(IDC_STATIC)->GetWindowRect(&rect);
-	POINT point;
-	point.x = rect.left;
-	point.y = rect.top;
-	ScreenToClient(&point);
-    //创建右边的所有对话框
-	CRect dlgRc = CRect( point.x,point.y,(rect.right - rect.left)+point.x,(rect.bottom-rect.top)+point.y );
+	ILayoutMgr* pLayoutMgr =  AfxGetUIManager()->UIGetLayoutMgr();
+
+	pLayoutMgr->RegisterCtrl( this,"ConfigDlg_btnOK",&m_btnOK);
+	pLayoutMgr->RegisterCtrl( this,"ConfigDlg_btnCancel",&m_btnCancle);
+	pLayoutMgr->RegisterCtrl( this,"ConfigDlg_btnReset",&m_btnReset);
+
+	pLayoutMgr->CreateControlPane( this,"ConfigDlg","normal");	
+	pLayoutMgr->CreateBmpPane( this,"ConfigDlg","normal" );
+
+/* * * * * * * * * * * * * * 原版 * * * *
+*	RECT rect;
+*	GetDlgItem(IDC_STATIC_RECT)->GetWindowRect(&rect);
+*	POINT point;
+*	point.x = rect.left;
+*	point.y = rect.top;
+*	ScreenToClient(&point);
+*    //创建右边的所有对话框
+*	CRect dlgRc = CRect( point.x,point.y,(rect.right - rect.left)+point.x,(rect.bottom-rect.top)+point.y );
+* * * * * * * * * * * * * * * * * * * * */
+
+	CRect dlgRc;
+	GetDlgItem(IDC_STATIC_RECT)->GetClientRect(&dlgRc);
 
 	m_downDlg.Create( CDownDialog::IDD, this );
 	m_downDlg.m_strAlert = "下载";
@@ -68,12 +86,14 @@ BOOL CConfigDialog::OnInitDialog()
 	CRect rc(dlgRc);
 	for( int i=0; i<m_mapBase.size(); i++ )
 	{
+		AfxGetUIManager()->UIAddDialog(m_mapBase[i]);
 		CRect rcOne;
-		m_mapBase[i]->GetClientRect(&rcOne);
+		m_mapBase[i]->GetWindowRect(&rcOne);
 
 		rc.bottom = rc.top + rcOne.Height();
 		m_mapBase[i]->MoveWindow( rc );
 		m_mapBase[i]->ShowWindow(SW_SHOW);
+
 
 		rc.top = rc.bottom;
 	}
@@ -102,7 +122,9 @@ void CConfigDialog::OnClickedOK()
 	//摧毁所有窗口
 	for( int i=0; i<m_mapBase.size(); i++ )
 	{
-		m_mapBase[i]->DestroyWindow();
+		//m_mapBase[i]->DestroyWindow();
+		m_mapBase[i]->EndDialog(0);
+		AfxGetUIManager()->UIRemoveDialog(m_mapBase[i]);
 	}
 	g_hLastConfWnd = NULL;
 
@@ -135,7 +157,9 @@ void CConfigDialog::OnClickedCancel()
 
 	for( int i=0; i<m_mapBase.size(); i++ )
 	{
-		m_mapBase[i]->DestroyWindow();
+		//m_mapBase[i]->DestroyWindow();
+		m_mapBase[i]->EndDialog(0);
+		AfxGetUIManager()->UIRemoveDialog(m_mapBase[i]);
 	}
 	AfxGetUIManager()->UIRemoveDialog(this);
 	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_APPEXIT,this );
@@ -149,7 +173,7 @@ void CConfigDialog::OnConfigBtnDefaultBnClicked()
 	{
 		m_mapBase[i]->SetDefault();
 	}
-	GetDlgItem(IDC_BUTTON_APPLY)->EnableWindow();
+	GetDlgItem(IDC_CONF_BTN_OK)->EnableWindow();
 	LogUserActMsg( "SETTING", "SET_CHANGE:DEFAULT" );
 }
 

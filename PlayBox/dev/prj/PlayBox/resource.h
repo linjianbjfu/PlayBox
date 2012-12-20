@@ -2,7 +2,6 @@
 // Microsoft Visual C++ generated include file.
 // Used by PlayBox.rc
 //
-
 #define IDR_RT_MANIFEST1                1
 #define IDC_BTN_CLSOE                   2
 #define IDR_MENU_TRAY                   3
@@ -182,16 +181,17 @@
 #define ID_Menu                         271
 #define ID_MENU_AUTOADDLOCALGAME        272
 #define ID_MENU_MANUALADDLOCALGAME      273
-#define IDD_HTML_VIEW					274
+#define IDD_HTML_VIEW                   274
 #define ID_WND_FLASHGAME_RIGHT          275
 #define ID_WND_FLASHGAME_BOTTOM         276
-#define IDC_BTN_BROWSER_BACK			277
-#define IDC_BTN_BROWSER_FORWARD			278
-#define IDC_BTN_BROWSER_REFRESH			279
-#define IDC_BTN_BROWSER_FAV				280
-#define IDC_BTN_BROWSER_ADDRESS_BAR		281
-#define IDC_BROWSER_WEB					282
-
+#define IDC_BTN_BROWSER_BACK            277
+#define IDC_BTN_BROWSER_FORWARD         278
+#define IDC_BTN_BROWSER_REFRESH         279
+#define IDC_BTN_BROWSER_FAV             280
+#define IDC_BTN_BROWSER_ADDRESS_BAR     281
+#define IDC_BROWSER_WEB                 282
+#define IDC_BTN_CUT						283
+#define IDC_STATIC_RECT                 284
 
 // Next default values for new objects
 // 
@@ -199,7 +199,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        147
 #define _APS_NEXT_COMMAND_VALUE         32785
-#define _APS_NEXT_CONTROL_VALUE         1017
+#define _APS_NEXT_CONTROL_VALUE         1018
 #define _APS_NEXT_SYMED_VALUE           140
 #endif
 #endif
