@@ -1,11 +1,14 @@
 #include "stdafx.h"
+#include "resource.h"
 #include "YL_StringUtil.h"
 #include "WebGamePanelWnd.h"
 #include "../WebInteract/MyWebBrowserWnd.h"
 #include "../../AppConfig/config/ConfigAppDef.h"
-#include "WebGamePlayingWnd.h"
-#include "../../core/CDataManager.h"
 #include "../WebInteract/WebManager.h"
+#include "../../core/CDataManager.h"
+#include "../../gui/CommonControl/xSkinButton.h"
+#include "../../gui/CommonControl/xStaticText.h"
+#include "../../Gui/CommonControl/EditEx.h"
 
 IMPLEMENT_DYNAMIC(WebGamePanelWnd, CBasicWnd)
 WebGamePanelWnd::WebGamePanelWnd()
@@ -13,15 +16,32 @@ WebGamePanelWnd::WebGamePanelWnd()
 	m_isMainWindowTopMost = false;
 	m_bFullScreen = false;
 
-	m_pWndGameRight		= new MyWebBrowserWnd();
-	m_pWndGamePlaying	= new WebGamePlayingWnd();
+	m_pWndWebGame	= new MyWebBrowserWnd();
+	m_pBtnRefresh	= new CxSkinButton();
+	m_pBtnToFull	= new CxSkinButton();
+	m_pBtnExitFull	= new CxSkinButton();
+	m_pBtnMute	= new CxSkinButton();
+	m_pBtnUnMute	= new CxSkinButton();
+	m_pBtnClearCache	= new CxSkinButton();
+	m_pBtnSite	= new CxSkinButton();
+	m_pBtnCustomService	= new CxSkinButton();
+	m_pBtnPay	= new CxSkinButton();
 
 	AfxGetMessageManager()->AttachMessage( ID_MESSAGE_PANEL_CHANGE,(IPanelChangeObserver*) this);
 }
 
 WebGamePanelWnd::~WebGamePanelWnd()
 {
-	delete m_pWndGamePlaying;
+	delete m_pBtnRefresh;
+	delete m_pBtnToFull;
+	delete m_pBtnExitFull;
+	delete m_pBtnMute;
+	delete m_pBtnUnMute;
+	delete m_pBtnClearCache;
+	delete m_pBtnSite;
+	delete m_pBtnCustomService;
+	delete m_pBtnPay;
+	//do not delete m_pWndWebGame
 	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_PANEL_CHANGE,(IPanelChangeObserver*) this);
 }
 
@@ -29,8 +49,16 @@ BEGIN_MESSAGE_MAP(WebGamePanelWnd, CBasicWnd)
 	ON_WM_CREATE()
 	ON_WM_DESTROY()
 	ON_WM_ERASEBKGND()
+	ON_BN_CLICKED(IDC_BTN_WEBGAME_REFRESH,OnClickedRefresh)
+	ON_BN_CLICKED(IDC_BTN_WEBGAME_TO_FULL,OnClickedToFull)
+	ON_BN_CLICKED(IDC_BTN_WEBGAME_EXIT_FULL,OnClickedExitFull)
+	ON_BN_CLICKED(IDC_BTN_WEBGAME_MUTE,OnClickedMute)
+	ON_BN_CLICKED(IDC_BTN_WEBGAME_UNMUTE,OnClickedUnMute)
+	ON_BN_CLICKED(IDC_BTN_WEBGAME_CLEAR_CACHE,OnClickedClearCache)
+	ON_BN_CLICKED(IDC_BTN_WEBGAME_SITE,OnClickedSite)
+	ON_BN_CLICKED(IDC_BTN_WEBGAME_CUSTOM_SERVICE,OnClickedCustomService)
+	ON_BN_CLICKED(IDC_BTN_WEBGAME_PAY,OnClickedPay)
 END_MESSAGE_MAP()
-
 
 int WebGamePanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
@@ -39,14 +67,28 @@ int WebGamePanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 	}
 	CRect rectNull(0,0,0,0);
-
-	m_pWndGameRight->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN|WS_CLIPSIBLINGS,rectNull,this,ID_WND_WEBGAMERIGHT );
-	m_pWndGamePlaying->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN|WS_CLIPSIBLINGS,rectNull,this,ID_WND_WEBGAMEPLAYING );
+	m_pWndWebGame->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN,rectNull,this,ID_WND_WEBGAMEPLAYING );
+	m_pBtnRefresh->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_WEBGAME_REFRESH);
+	m_pBtnToFull->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_WEBGAME_TO_FULL);
+	m_pBtnExitFull->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_WEBGAME_EXIT_FULL);
+	m_pBtnMute->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_WEBGAME_MUTE);
+	m_pBtnUnMute->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_WEBGAME_UNMUTE);
+	m_pBtnClearCache->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_WEBGAME_CLEAR_CACHE);
+	m_pBtnSite->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_WEBGAME_SITE);
+	m_pBtnCustomService->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_WEBGAME_CUSTOM_SERVICE);
+	m_pBtnPay->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_WEBGAME_PAY);
 
 	ILayoutMgr* pLayoutMgr =  AfxGetUIManager()->UIGetLayoutMgr();
-	
-	pLayoutMgr->RegisterCtrl( this, "WebGamePlaying", m_pWndGamePlaying );
-	pLayoutMgr->RegisterCtrl( this, "WebGameRight", m_pWndGameRight );
+	pLayoutMgr->RegisterCtrl( this, "WebGameRefresh", m_pBtnRefresh );
+	pLayoutMgr->RegisterCtrl( this, "WebGameToFull", m_pBtnToFull );
+	pLayoutMgr->RegisterCtrl( this, "WebGameToSmall", m_pBtnExitFull );
+	pLayoutMgr->RegisterCtrl( this, "WebGameMute", m_pBtnMute );
+	pLayoutMgr->RegisterCtrl( this, "WebGameUnMute", m_pBtnUnMute );
+	pLayoutMgr->RegisterCtrl( this, "WebGameClearCache", m_pBtnClearCache );
+	pLayoutMgr->RegisterCtrl( this, "WebGameSite", m_pBtnSite );
+	pLayoutMgr->RegisterCtrl( this, "WebGameCustomService", m_pBtnCustomService );
+	pLayoutMgr->RegisterCtrl( this, "WebGamePay", m_pBtnPay );
+	pLayoutMgr->RegisterCtrl( this, "WebGameBrowser", m_pWndWebGame );
 
 	pLayoutMgr->CreateControlPane( this, "webgamepanel", "normal" );
 	pLayoutMgr->CreateBmpPane( this,"webgamepanel","normal" );
@@ -64,27 +106,22 @@ void WebGamePanelWnd::SetTabItem( TAB_ITEM ti )
 	m_webGame.strName = ti.strName;
 	m_webGame.strGameUrl = CWebManager::GetInstance()->GetValue( ti.strParam, "url" );
 	
-	string strRightUrl;
-	m_pWndGameRight->Navigate( strRightUrl );
-	m_pWndGamePlaying->SetGameEntry( m_webGame );
+	m_pWndWebGame->Navigate(m_webGame.strGameUrl);
 }
 
 void WebGamePanelWnd::Init()
 {
-	m_pWndGameRight->Init();
-	m_pWndGamePlaying->Init();
+	m_pWndWebGame->Init();
 }
 
 void WebGamePanelWnd::OnDestroy()
 {
-	m_pWndGamePlaying->DestroyWindow();
-	m_pWndGameRight->DestroyWindow();
+	m_pWndWebGame->DestroyWindow();
 	__super::OnDestroy();
 }
 
 void WebGamePanelWnd::IPanelChangeOb_ToFullScreen( CWnd* pWnd )
 {
-	YL_Log("WebGamePanelWnd.txt", LOG_DEBUG, "WebGamePanelWnd::IPanelChangeOb_ToFullScreen", "===IN");
 	if( pWnd != this )
 		return;
 
@@ -118,8 +155,6 @@ void WebGamePanelWnd::IPanelChangeOb_ToFullScreen( CWnd* pWnd )
 	SetWindowPos(&wndTopMost,m_rectFullScreen.left,m_rectFullScreen.top,
 		m_rectFullScreen.Width(),m_rectFullScreen.Height(),SWP_SHOWWINDOW);
 	m_bFullScreen = true;
-
-	YL_Log("WebGamePanelWnd.txt", LOG_DEBUG, "WebGamePanelWnd::IPanelChangeOb_ToFullScreen", "===OUT");
 }
 
 void WebGamePanelWnd::SetMainWindow(bool isTopMost)
@@ -182,4 +217,53 @@ BOOL WebGamePanelWnd::OnEraseBkgnd(CDC* pDC)
 void WebGamePanelWnd::Recycle()
 {
 	Init();
+}
+
+void WebGamePanelWnd::OnClickedRefresh()
+{
+	m_pWndWebGame->Refresh();
+}
+
+void WebGamePanelWnd::OnClickedToFull()
+{
+
+}
+
+void WebGamePanelWnd::OnClickedExitFull()
+{
+
+}
+
+void WebGamePanelWnd::OnClickedMute()
+{
+	bool bIsMute = CSound::GetInstance()->GetMute( 1 );
+	CSound::GetInstance()->SetMute( 1, !bIsMute );
+	UpdateAllWnd();
+}
+
+void WebGamePanelWnd::OnClickedUnMute()
+{
+	bool bIsMute = CSound::GetInstance()->GetMute( 1 );
+	CSound::GetInstance()->SetMute( 1, !bIsMute );
+	UpdateAllWnd();
+}
+
+void WebGamePanelWnd::OnClickedClearCache()
+{
+
+}
+
+void WebGamePanelWnd::OnClickedSite()
+{
+
+}
+
+void WebGamePanelWnd::OnClickedCustomService()
+{
+
+}
+
+void WebGamePanelWnd::OnClickedPay()
+{
+
 }

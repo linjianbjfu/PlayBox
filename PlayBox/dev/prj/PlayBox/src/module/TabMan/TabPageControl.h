@@ -5,8 +5,6 @@ using namespace std;
 
 class PlayedGameWnd;
 
-#define MSG_USER_OPEN_HOMEPAGE WM_USER+203 //向qqtreectrl发送消息，让它点击“游戏大厅”ITEM
-
 typedef pair< TAB_ITEM, CWnd* > ONE_TAB;
 //该类实际上更多的是对窗口的管理
 //而非对用户control的管理

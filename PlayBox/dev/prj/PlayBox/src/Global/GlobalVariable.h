@@ -10,9 +10,9 @@ enum TAB_TYPE
 	TAB_HOME,			//主页
 	TAB_WEBGAME,		//web game wnd
 	TAB_WEB,			//主页,搜索之外的网页：用户中心
-	//以上都是html展现
 	TAB_GAME,			//flash游戏wnd
-	TAB_PLAYED_GAME		//玩过的游戏
+	TAB_PLAYED_GAME,	//玩过的游戏
+	TAB_BROWSER	
 };
 
 struct TAB_ITEM

@@ -100,6 +100,24 @@
 	</controlpanel>
 </wndpanel>
 
+<wndpanel name="webgamepanel" mode="normal">
+	<background name="normal" ori="NO_POS" background_color="dae8f4">
+		<paneitem name="FlashGameControlBarBg" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_top="40" />
+	</background>
+	<controlpanel name="normal" ori="NO_POS">
+		<paneitem name="WebGameRefresh" type="button" tooltip="刷新" bmp="WebGameRefresh" start_x_left="20"  start_y_top="8" x_delta="70" y_delta="25" />
+		<paneitem name="WebGameToFull"  type="button" tooltip="全屏" bmp="WebGameToFull" start_x_left="94" start_y_top="8" x_delta="70" y_delta="25" />
+		<paneitem name="WebGameToSmall" type="button" tooltip="小屏" bmp="WebGameToSmall" start_x_left="94" start_y_top="8" x_delta="70" y_delta="25" />
+		<paneitem name="WebGameMute"    type="button" tooltip="静音" bmp="WebGameMute" start_x_left="168"  start_y_top="8" x_delta="70" y_delta="25" />
+		<paneitem name="WebGameUnMute"  type="button" tooltip="取消静音" bmp="WebGameUnMute"  start_x_left="168"  start_y_top="8" x_delta="70" y_delta="25" />
+		<paneitem name="WebGameClearCache"  type="button" tooltip="清理缓存" bmp="WebGameClearCache"  start_x_left="242"  start_y_top="8" x_delta="100" y_delta="25" />
+		<paneitem name="WebGameSite"   type="button" tooltip="官网" bmp="WebGameSite"  start_x_left="346"  start_y_top="8" x_delta="70" y_delta="25" />
+		<paneitem name="WebGameCustomService"  type="button" tooltip="客服" bmp="WebGameCustomService"  start_x_left="420"  start_y_top="8" x_delta="70" y_delta="25" />
+		<paneitem name="WebGamePay"    type="button" tooltip="充值" bmp="WebGamePay"  start_x_left="494"  start_y_top="8" x_delta="70" y_delta="25" />
+		<paneitem name="WebGameBrowser" type = "wnd" start_x_left="0"  start_y_top="40" end_x_right="0" end_y_bottom="0" />
+	</controlpanel>
+</wndpanel>
+
 <wndpanel name="MinOrExit" >
 	<background name="normal" ori="NO_POS">
 		<paneitem name="MinOrExitBkg" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_bottom="0" dont_change_color="1" />
@@ -114,33 +132,6 @@
 		<paneitem name="MinOrExit_rad2Checked" type="button" bmp="minorexitradchk" start_x_left="68" start_y_top="105"  x_delta="16" y_delta="16" dont_change_color="1"/> 
 		<paneitem name="MinOrExit_m_boxunCheck" type="button" bmp="minorexitboxuchk" start_x_left="10" start_y_top="156"  x_delta="16" y_delta="16" dont_change_color="1"/> 
 		<paneitem name="MinOrExit_m_boxChecked" type="button" bmp="minorexitboxchk" start_x_left="10" start_y_top="156"  x_delta=16" y_delta="16" dont_change_color="1"/> 
-	</controlpanel>
-</wndpanel>
-
-<wndpanel name="ConfigDlg" >
-	<background name="normal" ori="NO_POS" background_color="dae8f4">
-	</background>
-	<controlpanel name="normal" ori="NO_POS">
-		<paneitem name="ConfigDlg_btnOK" type="button" bmp="minorexitok" start_x_left="225" start_y_top="220" x_delta="67" y_delta="23" dont_change_color="1"/> 
-		<paneitem name="ConfigDlg_btnCancel" type="button" bmp="minorexitcancle" start_x_left="300" start_y_top="220" x_delta="67" y_delta="23" dont_change_color="1"/> 
-		<paneitem name="ConfigDlg_btnReset" type="button" bmp="minorexitcancle" start_x_left="30" start_y_top="220" x_delta="67" y_delta="23" dont_change_color="1"/> 
-	</controlpanel>
-</wndpanel>
-
-<wndpanel name="ConfigDlg_SYS" >
-	<background name="normal" ori="NO_POS" background_color="dae8f4">
-	</background>
-	<controlpanel name="normal" ori="NO_POS">
-		<paneitem name="ConfigDlg_SYS_chkAutorun_checked" type="button" bmp="minorexitboxchk" start_x_left="17" start_y_top="3" x_delta="16" y_delta="16" dont_change_color="1"/>
-		<paneitem name="ConfigDlg_SYS_chkAutorun_unchecked" type="button" bmp="minorexitboxuchk" start_x_left="17" start_y_top="3" x_delta="16" y_delta="16" dont_change_color="1"/>
-		<paneitem name="ConfigDlg_SYS_chkBosskey_checked" type="button" bmp="minorexitboxchk" start_x_left="17" start_y_top="40" x_delta="16" y_delta="16" dont_change_color="1"/>
-		<paneitem name="ConfigDlg_SYS_chkBosskey_unchecked" type="button" bmp="minorexitboxuchk" start_x_left="17" start_y_top="40" x_delta="16" y_delta="16" dont_change_color="1"/>
-		<paneitem name="ConfigDlg_SYS_radMin_Checked" type="button"  bmp="minorexitradchk" start_x_left="17" start_y_top="81"  x_delta="16" y_delta="16" dont_change_color="1"/> 
-		<paneitem name="ConfigDlg_SYS_radMin_unChecked" type="button" bmp="minorexitraduchk" start_x_left="17" start_y_top="81"  x_delta="16" y_delta="16" dont_change_color="1"/> 
-		<paneitem name="ConfigDlg_SYS_radExit_Checked" type="button"  bmp="minorexitradchk" start_x_left="17" start_y_top="100"  x_delta="16" y_delta="16" dont_change_color="1"/> 
-		<paneitem name="ConfigDlg_SYS_radExit_unChecked" type="button" bmp="minorexitraduchk" start_x_left="17" start_y_top="100"  x_delta="16" y_delta="16" dont_change_color="1"/> 
-		<paneitem name="ConfigDlg_SYS_chkNoAsk_checked" type="button" bmp="minorexitboxchk" start_x_left="17" start_y_top="120" x_delta="16" y_delta="16" dont_change_color="1"/>
-		<paneitem name="ConfigDlg_SYS_chkNoAsk_unchecked" type="button" bmp="minorexitboxuchk" start_x_left="17" start_y_top="120" x_delta="16" y_delta="16" dont_change_color="1"/>
 	</controlpanel>
 </wndpanel>
 

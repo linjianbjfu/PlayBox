@@ -122,7 +122,6 @@
 #define IDC_CHK_NOASK                   211
 #define ID_WND_WEBGAME                  212
 #define IDC_CHK_IS_SCAN_LOCAL_GAME      212
-#define ID_WND_WEBGAMERIGHT             213
 #define ID_WND_WEBGAMEPLAYING           214
 #define IDD_DLG_UPDATE_TIP              215
 #define IDC_STATIC_UPDATE_INFO          216
@@ -192,6 +191,15 @@
 #define IDC_BROWSER_WEB                 282
 #define IDC_BTN_CUT						283
 #define IDC_STATIC_RECT                 284
+#define IDC_BTN_WEBGAME_REFRESH			285
+#define IDC_BTN_WEBGAME_TO_FULL			286
+#define IDC_BTN_WEBGAME_EXIT_FULL		287
+#define IDC_BTN_WEBGAME_MUTE			288
+#define IDC_BTN_WEBGAME_UNMUTE			289
+#define IDC_BTN_WEBGAME_CLEAR_CACHE		290
+#define IDC_BTN_WEBGAME_SITE			291
+#define IDC_BTN_WEBGAME_CUSTOM_SERVICE	292
+#define IDC_BTN_WEBGAME_PAY				293
 
 // Next default values for new objects
 // 

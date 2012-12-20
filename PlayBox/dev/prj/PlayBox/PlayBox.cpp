@@ -10,7 +10,6 @@
 #include "./src/Global/GlobalFunction.h"
 #include <Tlhelp32.h>
 #include <process.h>
-
 #include "../module/TopPanel/TopPanel_Control.h"
 
 #ifdef _DEBUG

@@ -29,7 +29,7 @@
 				TreatWChar_tAsBuiltInType="TRUE"
 				UsePrecompiledHeader="3"
 				AssemblerOutput="2"
-				WarningLevel="3"
+				WarningLevel="0"
 				Detect64BitPortabilityProblems="TRUE"
 				DebugInformationFormat="4"/>
 			<Tool
@@ -1325,12 +1325,6 @@
 					RelativePath=".\src\module\GamePanel\DownPercentWnd.h">
 				</File>
 				<File
-					RelativePath=".\src\module\GamePanel\GameCtrlWnd.cpp">
-				</File>
-				<File
-					RelativePath=".\src\module\GamePanel\GameCtrlWnd.h">
-				</File>
-				<File
 					RelativePath=".\src\module\GamePanel\GamePanelWnd.cpp">
 				</File>
 				<File
@@ -1347,12 +1341,6 @@
 				</File>
 				<File
 					RelativePath=".\src\module\GamePanel\WebGamePanelWnd.h">
-				</File>
-				<File
-					RelativePath=".\src\module\GamePanel\WebGamePlayingWnd.cpp">
-				</File>
-				<File
-					RelativePath=".\src\module\GamePanel\WebGamePlayingWnd.h">
 				</File>
 			</Filter>
 			<Filter

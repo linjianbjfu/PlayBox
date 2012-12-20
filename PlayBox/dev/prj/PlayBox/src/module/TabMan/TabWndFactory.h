@@ -6,6 +6,7 @@ class PlayedGameWnd;
 class GamePanelWnd;
 class WebGamePanelWnd;
 class MyWebBrowserWnd;
+class BrowserPanelWnd;
 
 class TabWndFactory
 {
@@ -27,5 +28,6 @@ public:
 	GamePanelWnd*		CreateWndGamePanel( );
 	WebGamePanelWnd*	CreateWndWebGamePanel( );
 	MyWebBrowserWnd*	CreateWndMyWebBrowser( );
+	BrowserPanelWnd*	CreateWndBrowserPanel( );
 	void Recycle( CWnd* pWnd );
 };

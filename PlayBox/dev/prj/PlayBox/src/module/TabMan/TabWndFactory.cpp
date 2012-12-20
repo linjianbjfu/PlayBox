@@ -4,6 +4,7 @@
 #include "../GamePanel/WebGamePanelWnd.h"
 #include "../WebInteract/MyWebBrowserWnd.h"
 #include "../PlayedGamePanel/PlayedGameWnd.h"
+#include "../BrowserPanel/BrowserPanelWnd.h"
 
 TabWndFactory * TabWndFactory::m_pSelf = NULL;
 
@@ -176,6 +177,32 @@ MyWebBrowserWnd* TabWndFactory::CreateWndMyWebBrowser( )
 	if( pWnd == NULL )
 	{
 		pWnd = new MyWebBrowserWnd();
+		CRect rcNull(0,0,0,0);
+		pWnd->Create(NULL,NULL,WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS,rcNull,m_pWndParent, m_idWnd++);
+	}
+	pWnd->MoveWindow( &rc );
+	return pWnd;
+}
+
+BrowserPanelWnd* TabWndFactory::CreateWndBrowserPanel( )
+{
+	BrowserPanelWnd* pWnd = NULL;
+	for( vector<CWnd*>::iterator it1 = m_vecWnd.begin();
+		it1 != m_vecWnd.end(); it1++ )
+	{
+		if( dynamic_cast<BrowserPanelWnd*>(*it1) )
+		{
+			pWnd = (BrowserPanelWnd*)(*it1);
+			m_vecWnd.erase( it1 );
+			break;
+		}
+	}
+
+	CRect rc;
+	m_pWndParent->GetClientRect( &rc );
+	if( pWnd == NULL )
+	{
+		pWnd = new BrowserPanelWnd();
 		CRect rcNull(0,0,0,0);
 		pWnd->Create(NULL,NULL,WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS,rcNull,m_pWndParent, m_idWnd++);
 	}
