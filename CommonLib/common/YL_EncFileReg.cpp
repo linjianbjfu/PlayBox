@@ -8,9 +8,11 @@
 
 string YL_EncFileReg::StrHash( string str )
 {
-	string strRet = "A";
-	strRet += long2str( RSHash( str.c_str() ) );
-	return strRet;
+	return str;
+	//do not hash
+	//string strRet = "A";
+	//strRet += long2str( RSHash( str.c_str() ) );
+	//return strRet;
 }
 
 string YL_EncFileReg::Enc( unsigned int i )
@@ -20,23 +22,23 @@ string YL_EncFileReg::Enc( unsigned int i )
 
 string YL_EncFileReg::Enc( string str )
 {
-	char szRet[1024];
-	memset( szRet, 0, 1024 );
-	YL_Base64Encode( szRet, str.c_str(), str.length(), "young" );
-	//=Ìæ»»³É_
-	string strRet = string( szRet );
-	//YL_StringUtil::ReplaceAll( strRet, "=", "_" );
-	return strRet;
+	return str;
+	//do not enc
+	//char szRet[1024];
+	//memset( szRet, 0, 1024 );
+	//YL_Base64Encode( szRet, str.c_str(), str.length(), "young" );
+	//string strRet = string( szRet );
+	//return strRet;
 }
 
 string YL_EncFileReg::Dec2Str( string str )
 {
-	//_Ìæ»»³É=
-	//YL_StringUtil::ReplaceAll( str, "_", "=" );
-	char szRet[1024];
-	memset( szRet, 0, 1024 );
-	YL_Base64Decode( szRet, str.c_str(), "young" );
-	return string( szRet );
+	return str;
+	//do not dec
+	//char szRet[1024];
+	//memset( szRet, 0, 1024 );
+	//YL_Base64Decode( szRet, str.c_str(), "young" );
+	//return string( szRet );
 }
 
 unsigned int YL_EncFileReg::Dec2Int( string str )

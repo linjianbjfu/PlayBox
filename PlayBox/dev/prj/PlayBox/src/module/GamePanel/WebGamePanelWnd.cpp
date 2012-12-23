@@ -9,6 +9,8 @@
 #include "../../gui/CommonControl/xSkinButton.h"
 #include "../../gui/CommonControl/xStaticText.h"
 #include "../../Gui/CommonControl/EditEx.h"
+#include "util/Sound.h"
+#include "AppConfig/config/ConfigSettingDef.h"
 
 IMPLEMENT_DYNAMIC(WebGamePanelWnd, CBasicWnd)
 WebGamePanelWnd::WebGamePanelWnd()
@@ -226,26 +228,22 @@ void WebGamePanelWnd::OnClickedRefresh()
 
 void WebGamePanelWnd::OnClickedToFull()
 {
-
 }
 
 void WebGamePanelWnd::OnClickedExitFull()
 {
-
 }
 
 void WebGamePanelWnd::OnClickedMute()
 {
 	bool bIsMute = CSound::GetInstance()->GetMute( 1 );
 	CSound::GetInstance()->SetMute( 1, !bIsMute );
-	UpdateAllWnd();
 }
 
 void WebGamePanelWnd::OnClickedUnMute()
 {
 	bool bIsMute = CSound::GetInstance()->GetMute( 1 );
 	CSound::GetInstance()->SetMute( 1, !bIsMute );
-	UpdateAllWnd();
 }
 
 void WebGamePanelWnd::OnClickedClearCache()
@@ -255,15 +253,42 @@ void WebGamePanelWnd::OnClickedClearCache()
 
 void WebGamePanelWnd::OnClickedSite()
 {
-
+	string strValue;
+	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_CONFIG_MAIN_PAGE, strValue );
+	if (!strValue.empty())
+	{
+		TAB_ITEM tabItem;
+		tabItem.strName = "官方网站";
+		tabItem.eumType = TAB_BROWSER;
+		tabItem.strParam = "url=" + strValue;
+		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
+	}
 }
 
 void WebGamePanelWnd::OnClickedCustomService()
 {
-
+	string strValue;
+	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_CONFIG_WEB_GAME_CUSTOM_SERVICE, strValue );
+	if (!strValue.empty())
+	{
+		TAB_ITEM tabItem;
+		tabItem.strName = "页游客服";
+		tabItem.eumType = TAB_BROWSER;
+		tabItem.strParam = "url=" + strValue;
+		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
+	}
 }
 
 void WebGamePanelWnd::OnClickedPay()
 {
-
+	string strValue;
+	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_CONFIG_PAY, strValue );
+	if (!strValue.empty())
+	{
+		TAB_ITEM tabItem;
+		tabItem.strName = "充值";
+		tabItem.eumType = TAB_BROWSER;
+		tabItem.strParam = "url=" + strValue;
+		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
+	}
 }

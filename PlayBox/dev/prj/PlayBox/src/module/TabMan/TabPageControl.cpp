@@ -17,15 +17,14 @@
 #include "YL_HTTPDownFile.h"
 
 #include <algorithm>
+#include "../BrowserPanel/BrowserPanelWnd.h"
 
 CTabPageControl * CTabPageControl::m_pTabPageControl = NULL;
 
 CTabPageControl* CTabPageControl::GetInstance()
 {
 	if( m_pTabPageControl == NULL )
-	{
 		m_pTabPageControl = new CTabPageControl;
-	}
 	return m_pTabPageControl;
 }
 
@@ -73,34 +72,28 @@ void CTabPageControl::ITabBarOb_CreateNewTab(TAB_ITEM & item)
 			pWndTmp = pWnd;
 		}
 	}else
-	if( item.eumType == TAB_GAME
-		|| item.eumType == TAB_PLAYED_GAME
-		|| item.eumType == TAB_WEB
-		|| item.eumType == TAB_WEBGAME )
+	if( item.eumType == TAB_FLASHGAME )
 	{
-		if( item.eumType == TAB_GAME )
-		{
-			GamePanelWnd *pWnd = TabWndFactory::GetInstance()->CreateWndGamePanel();
-			pWnd->SetTabItem( item );
-			pWndTmp = pWnd;
-		}else
-		if( item.eumType == TAB_WEBGAME )
-		{
-			WebGamePanelWnd *pWnd = TabWndFactory::GetInstance()->CreateWndWebGamePanel();
-			pWnd->SetTabItem( item );
-			pWndTmp = pWnd;
-		}else
-		if( item.eumType == TAB_WEB )
-		{
-			MyWebBrowserWnd *pWnd = TabWndFactory::GetInstance()->CreateWndMyWebBrowser();
-			string strUrl = CWebManager::GetInstance()->GetValue( item.strParam, "param" );
-			pWnd->Navigate( strUrl );
-			pWndTmp = pWnd;
-		}else if( item.eumType == TAB_PLAYED_GAME )
-		{
-			PlayedGameWnd* pWnd = TabWndFactory::GetInstance()->CreateWndPlayedGame();
-			pWndTmp = pWnd;
-		}
+		GamePanelWnd *pWnd = TabWndFactory::GetInstance()->CreateWndGamePanel();
+		pWnd->SetTabItem( item );
+		pWndTmp = pWnd;
+	}else
+	if( item.eumType == TAB_WEBGAME )
+	{
+		WebGamePanelWnd *pWnd = TabWndFactory::GetInstance()->CreateWndWebGamePanel();
+		pWnd->SetTabItem( item );
+		pWndTmp = pWnd;
+	}else
+	if( item.eumType == TAB_BROWSER )
+	{
+		BrowserPanelWnd *pWnd = TabWndFactory::GetInstance()->CreateWndBrowserPanel();
+		string strUrl = CWebManager::GetInstance()->GetValue( item.strParam, "url" );
+		pWnd->Navigate( item.strParam );
+		pWndTmp = pWnd;
+	}else if( item.eumType == TAB_PLAYED_GAME )
+	{
+		PlayedGameWnd* pWnd = TabWndFactory::GetInstance()->CreateWndPlayedGame();
+		pWndTmp = pWnd;
 	}
 	if( pWndTmp != NULL )
 	{
@@ -152,15 +145,11 @@ void CTabPageControl::ITabBarOb_OpenExistTab(TAB_ITEM & item)
 	for( vector<ONE_TAB>::iterator it = m_mapTab.begin();
 		it != m_mapTab.end(); it++ )
 	{
-		if( it->first.strName == item.strName 
-			&& it->first.eumType == item.eumType )
-		{
-			it->second->ShowWindow( SW_SHOW );
-		}else
-		{
-// 			it->second->MoveWindow( &rectNull, TRUE);
-			it->second->ShowWindow( SW_HIDE);
-		}
+		bool bShow = it->first.strName == item.strName && 
+			it->first.eumType == item.eumType && 
+			it->first.strParam == item.strParam;
+
+		it->second->ShowWindow( bShow ? SW_SHOW : SW_HIDE );
 	}
 }
 
@@ -170,7 +159,8 @@ void CTabPageControl::ITabBarOb_DelTab(TAB_ITEM & item)
 	for( ; it != m_mapTab.end(); it++ )
 	{
 		if( it->first.strName == item.strName
-			&& it->first.eumType == item.eumType )
+			&& it->first.eumType == item.eumType
+			&& it->first.strParam == item.strParam)
 		{
 			break;
 		}

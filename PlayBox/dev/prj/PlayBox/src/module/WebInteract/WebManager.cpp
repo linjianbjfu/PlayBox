@@ -40,12 +40,10 @@ void CWebManager::DelInstance()
 
 void CWebManager::CallGBoxFromWeb(const string& strCommand,string& strRes)
 {
-	YL_Log("KPlugin.txt",LOG_DEBUG,"CallKwMusic","%s",strCommand.c_str() );
-
 	string strHeader;
 	string strContent;
 
-	size_t iHeader = strCommand.find("\n\n");
+	size_t iHeader = strCommand.find("\n");
 	if( iHeader == string::npos)
 	{
 		return;
@@ -57,7 +55,7 @@ void CWebManager::CallGBoxFromWeb(const string& strCommand,string& strRes)
 	CString resToken;
 	int curPos = 0;
 
-	resToken= str.Tokenize("\n",curPos);
+	resToken= str.Tokenize("\n\n",curPos);
 	while (resToken != "")
 	{
 		CString strLeft,strRight;
@@ -80,9 +78,9 @@ void CWebManager::CallGBoxFromWeb(const string& strCommand,string& strRes)
 				strRes = _command_refresh( strContent );
 				return;
 			}else
-			if (strRight == "opennewtab")
+			if (strRight == "browser")
 			{
-				strRes = _command_opennewtab (strContent);
+				strRes = _command_openBrowser (strContent);
 				return;
 			}else
 			if (strRight == "checkdlstatus")
@@ -147,13 +145,10 @@ string CWebManager::_command_playswfgame(string& strContent)
 	if( bIDOK && bNameOK && bUrlOK )
 	{
 		TAB_ITEM tItem;
-		tItem.eumType = TAB_GAME;
+		tItem.eumType = TAB_FLASHGAME;
 		tItem.strName = strName;
 		tItem.strParam = strContent;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
-
-		string s = "PlaySwfGame:" + strID;
-		LogRealMsg("PLAYGAME",s.c_str());
 		return "res=ok\n\n";
 	}else
 	{
@@ -165,29 +160,11 @@ string CWebManager::_command_playwebgame(string& strContent)
 {	
 	string strID   = GetValue( strContent, "id" );
 	string strName = GetValue( strContent, "name" );
-	string strUrl  = GetValue( strContent, "url" );
-
-	//判断id是否OK
-	bool bIDOK = false;
-	if( strID.length() > 0 && IsNumber( strID ) ) //ID必须是数字
-	{
-		bIDOK = true;
-	}
-	//判断name是否OK
-	bool bNameOK = false;
-	if( strName.length() != 0 )
-	{
-		bNameOK = true;
-	}
-	//判断url是否OK
-	bool bUrlOK = false;
-	CString cstrUrl = CString( strUrl.c_str() );
-	if( cstrUrl.Left(7).MakeLower() == "http://" ) //url必须是http:// 打头
-	{
-		bUrlOK = true;
-	}	
+	string strUrl  = GetValue( strContent, "url" );	
 	
-	if( bIDOK && bNameOK && bUrlOK )	
+	if( strID.length() > 0 && IsNumber( strID ) && 
+		!strName.empty() && 
+		!strUrl.empty() )	
 	{
 		TAB_ITEM tItem;
 		tItem.eumType = TAB_WEBGAME;
@@ -195,30 +172,20 @@ string CWebManager::_command_playwebgame(string& strContent)
 		tItem.strParam = strContent;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
 
-		string s = "PlayWebGame:" + strID;
-		LogRealMsg("PLAYGAME",s.c_str());
 		return "res=ok\n\n";
 	}	
 	return "res=err\n\n";
 }
 
-
-string CWebManager::_command_opennewtab (string & strContent)
+string CWebManager::_command_openBrowser (string & strContent)
 {
-	string strID = GetValue (strContent, "id");
-	string strName = GetValue (strContent, "name");
-	string strUrl = GetValue (strContent, "infourl");
-
-	string strParam;
-	YL_StringUtil::Format (strParam, "param=%s", strUrl.c_str ());
+	string strUrl = GetValue (strContent, "url");
 
 	TAB_ITEM tItem;
-	tItem.eumType = TAB_WEB;
-	tItem.strName = strName;
-	tItem.strParam = strParam;
-
+	tItem.eumType = TAB_BROWSER;
+	tItem.strName = "酷游浏览器";
+	tItem.strParam = "url="+strUrl;
 	GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
-
 	return "";
 }
 

@@ -29,6 +29,7 @@ public:
 protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg void	OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
 	afx_msg void	OnBnClickedClose();
 	afx_msg void	OnBnClickedMin();
 	afx_msg void	OnBnClickedLarge();
@@ -44,6 +45,14 @@ protected:
 	afx_msg void	OnMini();
 	afx_msg void	OnShowResource();
 	afx_msg void	OnSetting();
+	afx_msg void	OnMenuMainPage();
+	afx_msg void	OnMenuProblemReport();
+	afx_msg void	OnMenuWebGameCustomService();
+	afx_msg void	OnHelpAbout();
+
+	afx_msg void	OnLogonOut();
+	afx_msg void	OnCheckNewVersion();
+	afx_msg void	OnBugReport();
 	bool			CanShowTooltip();
 	void			InitTips();	
 	// ×¢²á/×¢Ïú ÈÈ¼ü
@@ -65,6 +74,7 @@ public:
 	int				m_iWndNormalWidth;
 	int				m_iWndNormalHeigth;
 
+	CShowMenu*		m_pShowMenu;
 	bool			m_bMainWndHold;
 	vector<string>  m_vecSkins;
 	vector<string>	m_vecSubjects;

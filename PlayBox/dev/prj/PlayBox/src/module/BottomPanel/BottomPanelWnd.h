@@ -4,6 +4,7 @@
 #include "../../LayoutMgr/ISkinMgr.h"
 
 class CShowMenu;
+class CBottomAdPanel;
 
 class CBottomPanelWnd : public CBasicWnd
 {
@@ -17,4 +18,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void	OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
 	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
+private:
+	CBottomAdPanel*	m_pAdPanel;
 };

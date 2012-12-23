@@ -92,7 +92,8 @@ void CTabBarData::ITabBar_ChangeTab(TAB_ITEM &item)
 	for( ; it != m_vecItem.end(); it++ )
 	{
 		if( it->eumType == item.eumType
-			&& it->strName == item.strName )
+			&& it->strName == item.strName
+			&& it->strParam == item.strParam)
 		{
 			break;
 		}
@@ -123,7 +124,8 @@ void CTabBarData::ITabBar_DeleteTab(TAB_ITEM &item)
 	for( ; it != m_vecItem.end(); it++ )
 	{
 		if( it->eumType == item.eumType
-			&& it->strName == item.strName )
+			&& it->strName == item.strName
+			&& it->strParam == item.strParam)
 		{
 			break;
 		}

@@ -84,7 +84,7 @@ BOOL CMinOrExit::OnInitDialog()
 	}
 	m_boxChecked.ShowWindow(SW_HIDE);
 	m_boxunCheck.ShowWindow(SW_SHOW);
-	CRect winPos(0,0,319,180);
+	CRect winPos(0,0,320,180);
 	CRect wndRect;
 	
 	CWnd *pWnd = NULL;
@@ -109,12 +109,12 @@ BOOL CMinOrExit::OnInitDialog()
 	{
 		winPos.left=20;
 	}
-	winPos.right=winPos.left+319;
+	winPos.right=winPos.left+320;
 	
 	if (winPos.right>screenX)
 	{
 		winPos.right=screenX-20;
-		winPos.left=winPos.right-319;
+		winPos.left=winPos.right-320;
 	}
 	if (y>0)
 	{

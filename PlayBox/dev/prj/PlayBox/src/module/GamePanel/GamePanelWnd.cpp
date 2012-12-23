@@ -58,7 +58,7 @@ GamePanelWnd::~GamePanelWnd()
 	delete m_pBtnToFullScreen;
 	delete m_pBtnExitFullScreen;
 	delete m_pBtnPause;
-  //do not delete MyWebBrowserWnd ptr, you can see now it's hwnd is feeefeee
+	//do not delete MyWebBrowserWnd ptr, you can see now it's hwnd is feeefeee
 	//delete m_pWndRight;
 	//delete m_pWndBottom;
 

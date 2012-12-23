@@ -15,7 +15,7 @@
 #define IDD_DLG_MINOREXIT               11
 #define IDD_MSG_DLG                     12
 #define IDD_HOST                        13
-#define ID_MENU_SKIN_APPLY              14
+#define ID_MENU_SKIN_APPLY				14
 #define ID_MENU_SKIN_DELETE             15
 #define ID_MENU_MORE_SKIN               16
 #define ID_WND_GAMEPLAYING              17
@@ -179,7 +179,6 @@
 #define ID_CL_DELFROMDISK               270
 #define ID_Menu                         271
 #define ID_MENU_AUTOADDLOCALGAME        272
-#define ID_MENU_MANUALADDLOCALGAME      273
 #define IDD_HTML_VIEW                   274
 #define ID_WND_FLASHGAME_RIGHT          275
 #define ID_WND_FLASHGAME_BOTTOM         276
@@ -189,24 +188,28 @@
 #define IDC_BTN_BROWSER_FAV             280
 #define IDC_BTN_BROWSER_ADDRESS_BAR     281
 #define IDC_BROWSER_WEB                 282
-#define IDC_BTN_CUT						283
+#define IDC_BTN_CUT                     283
 #define IDC_STATIC_RECT                 284
-#define IDC_BTN_WEBGAME_REFRESH			285
-#define IDC_BTN_WEBGAME_TO_FULL			286
-#define IDC_BTN_WEBGAME_EXIT_FULL		287
-#define IDC_BTN_WEBGAME_MUTE			288
-#define IDC_BTN_WEBGAME_UNMUTE			289
-#define IDC_BTN_WEBGAME_CLEAR_CACHE		290
-#define IDC_BTN_WEBGAME_SITE			291
-#define IDC_BTN_WEBGAME_CUSTOM_SERVICE	292
-#define IDC_BTN_WEBGAME_PAY				293
-
+#define IDC_BTN_WEBGAME_REFRESH         285
+#define IDC_BTN_WEBGAME_TO_FULL         286
+#define IDC_BTN_WEBGAME_EXIT_FULL       287
+#define IDC_BTN_WEBGAME_MUTE            288
+#define IDC_BTN_WEBGAME_UNMUTE          289
+#define IDC_BTN_WEBGAME_CLEAR_CACHE     290
+#define IDC_BTN_WEBGAME_SITE            291
+#define IDC_BTN_WEBGAME_CUSTOM_SERVICE  292
+#define IDC_BTN_WEBGAME_PAY             293
+#define ID_MENU_WEB_GAME_CUSTOM_SERVICE 296
+#define ID_CHECK_UPDATE                 297
+#define IDD_DLG_ABOUT		            298
+#define ID_BTN_ABOUT_OK					299
+#define IDD_DIALOG_CHECK_NEW_VER		300
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        147
-#define _APS_NEXT_COMMAND_VALUE         32785
+#define _APS_NEXT_COMMAND_VALUE         32797
 #define _APS_NEXT_CONTROL_VALUE         1018
 #define _APS_NEXT_SYMED_VALUE           140
 #endif

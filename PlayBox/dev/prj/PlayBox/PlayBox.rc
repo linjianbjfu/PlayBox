@@ -85,10 +85,28 @@ FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
 END
 
-IDD_DLG_MINOREXIT DIALOGEX 0, 0, 186, 90
+IDD_DLG_MINOREXIT DIALOGEX 0, 0, 320, 180
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
+END
+
+IDD_DLG_ABOUT DIALOGEX 0, 0, 186, 90
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_DIALOG_CHECK_NEW_VER DIALOGEX 0, 0, 196, 44
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "检测新版本"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,52,24,41,12
+    PUSHBUTTON      "取消",IDCANCEL,105,24,41,12
+    LTEXT           "Static",IDC_STATIC_TEXT_MSG,6,8,172,10
+    LTEXT           "查看最新版本",IDC_STATIC_LINK_TO_NEW,136,8,52,10
 END
 
 IDD_MSG_DLG DIALOGEX 0, 0, 186, 93
@@ -201,6 +219,12 @@ GUIDELINES DESIGNINFO
 BEGIN
     IDD_DLG_MINOREXIT, DIALOG
     BEGIN
+        RIGHTMARGIN, 186
+        BOTTOMMARGIN, 90
+    END
+
+    IDD_DLG_ABOUT, DIALOG
+    BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 179
         TOPMARGIN, 7
@@ -234,9 +258,18 @@ IDR_MENU_TITLE MENU
 BEGIN
     POPUP "TITLE"
     BEGIN
-        MENUITEM "界面总在最前",                IDC_TOPPANEL_HOLD
-        MENUITEM "选项设置",                    ID_MEMU_SETTING
-        MENUITEM "退出",                        ID_APP_EXIT
+        MENUITEM "退出登录",                    ID_MEMU_LOGON_OUT
+        MENUITEM "问题反馈",                    ID_MEMU_PROBLEM_REPORT
+        MENUITEM "设置",                        ID_MEMU_SETTING
+        POPUP "帮助"
+        BEGIN
+            MENUITEM "页游客服",                    ID_MENU_WEB_GAME_CUSTOM_SERVICE
+
+            MENUITEM "官方网站",                    ID_MEMU_MAIN_PAGE
+            MENUITEM "关于我们",                    ID_MEMU_HELP_ABOUT
+        END
+        MENUITEM "检查更新",                    ID_CHECK_UPDATE
+        MENUITEM "退出酷游",                    ID_APP_EXIT
     END
 END
 

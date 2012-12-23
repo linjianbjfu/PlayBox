@@ -35,7 +35,7 @@ private:
 	string	_command_playwebgame(string& strContent);
 	string	_command_refresh( string& strContent );
 	string	_command_playexegame (string & strContent);
-	string  _command_opennewtab (string & strContent);
+	string  _command_openBrowser (string & strContent);
 	string  _command_checkdlstatus (string & strContent);
 	void	NotifyWebRefresh( const  char* psz);
 };

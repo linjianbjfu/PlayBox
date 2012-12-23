@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "resource.h"
 #include "SubSkinButton.h"
 #include "WndColorMgr.h"
 #include "../../Gui/CommonControl/SkinButton2.h"

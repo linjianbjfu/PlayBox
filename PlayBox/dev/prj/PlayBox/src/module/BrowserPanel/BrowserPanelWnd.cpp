@@ -26,7 +26,8 @@ BrowserPanelWnd::~BrowserPanelWnd()
 	delete m_pBtnRefresh;
 	delete m_pBtnFav;
 	delete m_pEditAddress;
-	delete m_pWndBrowser;
+	//do not delete m_pWndBrowser
+	//delete m_pWndBrowser;
 }
 
 BEGIN_MESSAGE_MAP(BrowserPanelWnd, CBasicWnd)
@@ -37,6 +38,7 @@ BEGIN_MESSAGE_MAP(BrowserPanelWnd, CBasicWnd)
 	ON_BN_CLICKED(IDC_BTN_BROWSER_FORWARD,OnClickedForward)
 	ON_BN_CLICKED(IDC_BTN_BROWSER_REFRESH,OnClickedRefresh)
 	ON_BN_CLICKED(IDC_BTN_BROWSER_FAV,OnClickedFav)
+	ON_WM_KEYDOWN()
 	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
@@ -91,4 +93,22 @@ void BrowserPanelWnd::OnClickedRefresh()
 void BrowserPanelWnd::OnClickedFav()
 {
 	//
+}
+
+void BrowserPanelWnd::Navigate(string strUrl)
+{
+	if (strUrl.empty())
+	{
+		strUrl = "about:blank";
+	}
+	m_pWndBrowser->Navigate(strUrl);
+}
+
+void BrowserPanelWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	if( ( GetKeyState(VK_CONTROL) & 0xF0000000) &&
+		( nChar=='A' || nChar=='a') )
+	{
+		return;
+	}
 }

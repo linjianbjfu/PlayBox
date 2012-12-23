@@ -68,6 +68,58 @@ BOOL CTopPanelControl::IsHold()
 	return m_pWndTopPanel->m_bMainWndHold;
 }
 
+void CTopPanelControl::ShowMenu(CPoint p)
+{
+	if(m_pWndTopPanel != NULL)
+	{				
+		ShowMenu(&m_pWndTopPanel->m_pShowMenu, p);
+	}
+}
+
+void CTopPanelControl::ShowMenu(CShowMenu **ppShowMenu, CPoint p)
+{
+	*ppShowMenu = new CShowMenu(m_pWndTopPanel, IDR_MENU_TITLE, 0);
+	CShowMenu *pMenu = (*ppShowMenu);
+	//处理登录菜单
+	//if(IUserMan::User_IsLogin())
+	//{
+	//	pMenu->DisableItem( ID_MEMU_LOGON_IN );
+	//}
+	//else
+	//{
+	//	pMenu->DisableItem( ID_MEMU_LOGON_OUT );
+	//}
+	
+	if( !AfxGetUIManager()->UICanExit() )
+		pMenu->DisableItem(ID_APP_EXIT);
+
+	//处理 总在最前菜单
+	//if(m_pWndTopPanel->m_bMainWndHold)
+	//	pMenu->CheckItem( IDC_TOPPANEL_HOLD );
+
+	m_pWndTopPanel->m_vecSubjects.clear();
+	m_pWndTopPanel->m_vecSubjectShowNames.clear();
+
+	SubjectData* pSubData	= AfxGetUIManager()->UIGetSkinMgr()->GetSubject();
+	OneSubject*	 CurSub		= AfxGetUIManager()->UIGetSkinMgr()->GetCurSubject();
+
+	for(size_t idx = 0;idx < pSubData->vecSubject.size();idx++ )
+	{
+		if( pSubData->vecSubject[idx].dSystemPos > 0 && !pSubData->vecSubject[idx].bNeedDown )
+		{
+			m_pWndTopPanel->m_vecSubjects.push_back( pSubData->vecSubject[idx].strSubName );
+			m_pWndTopPanel->m_vecSubjectShowNames.push_back( pSubData->vecSubject[idx].strShowName );
+		}
+	}
+
+	m_pWndTopPanel->m_vecSkins.clear();
+	GetAllSkinName( m_pWndTopPanel->m_vecSkins );	
+
+	pMenu->ShowMenu( p );	
+	delete pMenu;
+	(*ppShowMenu) = NULL;
+}
+
 //获取到所有的皮肤的名称，注意：不是路径
 void CTopPanelControl::GetAllSkinName( vector<string>& vSkinName )
 {

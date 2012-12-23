@@ -14,11 +14,14 @@ public:
 	BrowserPanelWnd();
 	virtual ~BrowserPanelWnd();
 
+	void Navigate(string strUrl);
+
 protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void	OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
 	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void	OnDestroy();
+	afx_msg void	OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void	OnClickedBack();
 	afx_msg void	OnClickedForward();
 	afx_msg void	OnClickedRefresh();

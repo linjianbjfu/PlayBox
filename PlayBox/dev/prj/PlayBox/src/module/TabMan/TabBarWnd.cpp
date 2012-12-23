@@ -5,7 +5,7 @@
 #include "../../gui/util/BalloonHelp.h"
 #include "../../gui/util/WToolTips.h"
 
-#define ONE_TAB_MAX_WIDTH	150
+#define ONE_TAB_MAX_WIDTH	100
 #define WIDTH_TEXT_LEFT_MARGIN 5 //tab上文字距离左边的间距
 #define HEITH_CLOSE_TO_TOP  6	 //关闭按钮和上边的距离
 #define	WIDTH_CLOSE_TO_RIGHT 4	 //关闭按钮和右边的距离
@@ -354,10 +354,6 @@ void CTabBarWnd::CalcTabPosition()
 	if( rc.Width() == 0 || rc.Height() == 0 || m_vecTi.size() == 0 )
 		return;
 
-	//rc左边，右边空出一些地方
-	rc.left += 5;
-	rc.right -= 5;
-	
 	//iWidth	每个btn的宽度
 	int iWidth = (int)(rc.Width() / m_vecTi.size());
 	if( iWidth > ONE_TAB_MAX_WIDTH )
@@ -367,7 +363,7 @@ void CTabBarWnd::CalcTabPosition()
 
 	CRect rcBtn( rc );
 	CRect rcClose;
-	int iStartPos = 5; //最左边空出5个像素
+	int iStartPos = 9; //最左边空出9个像素
 	int iNewWindowStartPos = iStartPos;
 	//所有btn，包括btn上的关闭按钮
 	for( int i = 0; i < m_vecTi.size(); i++ )
@@ -435,9 +431,9 @@ void CTabBarWnd::OnLButtonDown(UINT nFlags, CPoint point)
 	if ( m_bOverNewWindow )
 	{
 		TAB_ITEM tItem;
-		tItem.eumType = TAB_GAME;
-		tItem.strName = "test";
-		tItem.strParam = "test";
+		tItem.eumType = TAB_BROWSER;
+		tItem.strName = "新开窗口";
+		tItem.strParam = "";
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
 	}
 	__super::OnLButtonDown(nFlags, point);

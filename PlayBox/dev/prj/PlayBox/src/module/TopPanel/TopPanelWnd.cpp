@@ -4,6 +4,7 @@
 #include "YL_StringUtil.h"
 #include "TopPanel_Control.h"
 #include "../../Core/CDataManager.h"
+#include "../../gui/util/ShowMenu.h"
 #include "../../AppConfig/config/ConfigAppDef.h"
 #include "../../AppConfig/config/ConfigLayoutDef.h"
 #include "../../AppConfig/config/ConfigSettingDef.h"
@@ -16,6 +17,8 @@
 #include "tools.h"
 #include "MinOrExit.h"
 #include "../../PlayBoxDlg.h"
+#include "../AboutPanel/AboutDlg.h"
+#include "CheckNewVerDlg.h"
 
 static const char* s_STRBUTTONLAYER		= "Normal_Large";
 static const char* s_STRBUTTON_NORMAL	= "Normal";
@@ -24,6 +27,7 @@ static const char* s_STRBUTTON_LARGE	= "Large";
 IMPLEMENT_DYNAMIC(CTopPanelWnd, CBasicWnd)
 CTopPanelWnd::CTopPanelWnd():m_bHideMainWindow(FALSE)
 {
+	m_pShowMenu = NULL;
 	AfxGetUserConfig()->GetConfigBoolValue( CONF_APP_MODULE_NAME,CONF_APP_MAINWND_HOLD,m_bMainWndHold);
 	AfxGetMessageManager()->AttachMessage( ID_MESSAGE_LAYOUTMGR,(ILayoutChangeObserver*) this);
 	AfxGetMessageManager()->AttachMessage( ID_MESSAGE_PANEL_CHANGE,(IPanelChangeObserver*) this);
@@ -39,7 +43,10 @@ CTopPanelWnd::~CTopPanelWnd()
 BEGIN_MESSAGE_MAP(CTopPanelWnd, CBasicWnd)
 	ON_WM_CREATE()
 	ON_WM_DESTROY()
+	ON_WM_CHAR()
+	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONDBLCLK()
+	ON_WM_LBUTTONDOWN()
 	ON_BN_CLICKED(ID_BTN_CLOSE, OnBnClickedClose)
 	ON_BN_CLICKED(ID_BTN_LARGE,OnBnClickedLarge)
 	ON_BN_CLICKED(ID_BTN_NORMAL,OnBnClickedNormal)
@@ -48,13 +55,28 @@ BEGIN_MESSAGE_MAP(CTopPanelWnd, CBasicWnd)
 	ON_BN_CLICKED(IDC_TOPPANEL_HOLD, OnBnClickedHold)
 	ON_COMMAND(ID_APP_EXIT, OnAppExit)
 	ON_COMMAND(ID_MEMU_SETTING, OnSetting)
-	ON_WM_CHAR()
+	ON_COMMAND(ID_MEMU_LOGON_OUT, OnLogonOut)
+	ON_COMMAND(ID_MEMU_MAIN_PAGE, OnMenuMainPage)
+	ON_COMMAND(ID_MEMU_PROBLEM_REPORT, OnMenuProblemReport)
+	ON_COMMAND(ID_MENU_WEB_GAME_CUSTOM_SERVICE, OnMenuWebGameCustomService)
+	ON_COMMAND(ID_MEMU_HELP_ABOUT, OnHelpAbout)
+	ON_COMMAND(ID_CHECK_UPDATE, OnCheckNewVersion)
+
 	ON_MESSAGE(MSG_GETLAYOUT,OnGetLayout)
 	ON_MESSAGE(MSG_SAVELAYOUT,OnSaveLayout)
-	ON_WM_MOUSEMOVE()
-	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
+void CTopPanelWnd::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct)
+{
+	if(lpMeasureItemStruct->CtlType==ODT_MENU && IsMenu((HMENU)lpMeasureItemStruct->itemID))
+	{
+		if( m_pShowMenu != NULL )
+		{
+			m_pShowMenu->MeasureItem( lpMeasureItemStruct);		
+		}
+	}
+	__super::OnMeasureItem( nIDCtl,lpMeasureItemStruct);
+}
 int CTopPanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	CRect rectNULL(0,0,0,0);
@@ -236,7 +258,13 @@ void CTopPanelWnd::OnBnClickedMin()
 
 void CTopPanelWnd::OnBnClickedSetting()
 {
-	PostMessage( WM_COMMAND,ID_MEMU_SETTING,0);
+	//PostMessage( WM_COMMAND,ID_MEMU_SETTING,0);
+	RECT rect;
+	POINT point;
+	m_btnSetting.GetWindowRect( &rect );
+	point.x = rect.left;
+	point.y = rect.bottom;
+	CTopPanelControl::GetInstance()->ShowMenu(&m_pShowMenu, point);
 }
 
 static void FindIEOpen (string strUrl)
@@ -365,6 +393,70 @@ void CTopPanelWnd::OnSetting()
 			RegisterBossKey(iKeyValue);
 		}
 	}
+}
+
+void CTopPanelWnd::OnMenuMainPage()
+{
+	string strValue;
+	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_CONFIG_MAIN_PAGE, strValue );
+	if (!strValue.empty())
+	{
+		TAB_ITEM tabItem;
+		tabItem.strName = "官方网站";
+		tabItem.eumType = TAB_BROWSER;
+		tabItem.strParam = "url=" + strValue;
+		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
+	}
+}
+
+void CTopPanelWnd::OnMenuProblemReport()
+{
+	string strValue;
+	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_CONFIG_PROBLEM_REPORT, strValue );
+	if (!strValue.empty())
+	{
+		TAB_ITEM tabItem;
+		tabItem.strName = "问题反馈";
+		tabItem.eumType = TAB_BROWSER;
+		tabItem.strParam = "url=" + strValue;
+		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
+	}
+}
+
+void CTopPanelWnd::OnMenuWebGameCustomService()
+{
+	string strValue;
+	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_CONFIG_WEB_GAME_CUSTOM_SERVICE, strValue );
+	if (!strValue.empty())
+	{
+		TAB_ITEM tabItem;
+		tabItem.strName = "页游客服";
+		tabItem.eumType = TAB_BROWSER;
+		tabItem.strParam = "url=" + strValue;
+		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
+	}
+}
+
+void CTopPanelWnd::OnHelpAbout()
+{
+	//open about dialog
+	CAboutDlg dlg( GetParent() );
+	AfxGetUIManager()->UIAddDialog(&dlg);
+	int ifexit = dlg.DoModal();
+	AfxGetUIManager()->UIRemoveDialog(&dlg);
+}
+
+void CTopPanelWnd::OnLogonOut()
+{
+//	IUserMan::User_Logout();
+}
+
+void CTopPanelWnd::OnCheckNewVersion()
+{
+	CCheckNewVerDlg dlg;
+	AfxGetUIManager()->UIAddDialog( (DWORD)&dlg);
+	dlg.DoModal();
+	AfxGetUIManager()->UIRemoveDialog( (DWORD)&dlg);
 }
 
 void CTopPanelWnd::OnBnClickedHold()

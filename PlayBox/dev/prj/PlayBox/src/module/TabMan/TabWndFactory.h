@@ -11,7 +11,6 @@ class BrowserPanelWnd;
 class TabWndFactory
 {
 private:
-	vector<CWnd*>		m_vecWnd;	//Wnd»º´æ
 	CWnd*				m_pWndParent;
 	int					m_idWnd;	//´°¿ÚID
 public:

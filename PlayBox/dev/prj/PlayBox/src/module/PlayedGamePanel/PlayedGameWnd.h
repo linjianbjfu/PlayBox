@@ -2,17 +2,15 @@
 #include "LocalMusicCoverList.h"
 #include "../../gui/util/ShowMenu.h"
 #include "../../gui/util/WToolTips.h"
-#include "../../datainterface/IQQItemCountChangeObserver.h"
 #include "../../gui/CommonControl/SkinButton2.h"
 #include "../../datainterface/IDownDataDef.h"
 
-class PlayedGameWnd : public CLocalMusicCoverList,
-					public IQQItemCountChangeObserver
+class PlayedGameWnd : public CLocalMusicCoverList
 {
 	DECLARE_DYNAMIC(PlayedGameWnd)
 public:
 	PlayedGameWnd();
-	~PlayedGameWnd();
+	virtual ~PlayedGameWnd();
 private:
 	CShowMenu*		m_pMenu;
 	CCWToolTips		m_tootip;
@@ -40,6 +38,5 @@ protected:
 public:
 	afx_msg void OnDestroy();
 	void	Recycle();
-	virtual void IQQItemChangeOb_CountChange( unsigned int iNewCount );
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 };

@@ -18,15 +18,13 @@ PlayedGameWnd::PlayedGameWnd()
 : m_iMouseDownItem(-1)
 , m_szKey("-1")
 , m_szKeyWord("")
-, m_iMovePreItem(-1)
-{
-	m_bTrackMouse = false;
-	AfxGetMessageManager()->AttachMessage( ID_MESSAGE_QQ_ITEM_CHANGE,(IQQItemCountChangeObserver*)this );
+, m_iMovePreItem(-1),
+m_bTrackMouse(false)
+{	
 }
 
 PlayedGameWnd::~PlayedGameWnd()
 {
-	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_QQ_ITEM_CHANGE,(IQQItemCountChangeObserver*)this );
 }
 
 BEGIN_MESSAGE_MAP(PlayedGameWnd, CLocalMusicCoverList)
@@ -130,7 +128,7 @@ void PlayedGameWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 		LMC_ItemInfo ii = m_DataMgr.m_vItem[vSel[0]];
 
 		TAB_ITEM tItem;
-		tItem.eumType = TAB_GAME;
+		tItem.eumType = TAB_FLASHGAME;
 		tItem.strName = string(ii.strItemName);
 		tItem.strParam = string("method=playswfgame\n\n") + "id=" + ii.strGID + "\n"
 			+ "name=" + tItem.strName + "\n";
@@ -385,11 +383,6 @@ LPARAM PlayedGameWnd::OnMouseLeave(WPARAM wp, LPARAM lp)
 void PlayedGameWnd::Recycle()
 {
 	ShowWindow( SW_HIDE ); //这样才能让PlayedGameWnd中的OnShowWindow时获取数据
-}
-
-void PlayedGameWnd::IQQItemChangeOb_CountChange( unsigned int iNewCount )
-{
-	ReGetData();
 }
 
 BOOL PlayedGameWnd::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)

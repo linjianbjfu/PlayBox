@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+#include "resource.h"
 #include "../../gui/CommonControl/HyperLinkCtrl.h"
 // CCheckNewVerDlg dialog
 

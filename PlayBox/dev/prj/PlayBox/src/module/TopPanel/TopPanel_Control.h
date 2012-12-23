@@ -1,9 +1,6 @@
 #ifndef _TOP_PANEL_CONTROL_H
 #define _TOP_PANEL_CONTROL_H
 
-#define STR_SKIN_SMALL_PICTURE "\\small.jpg"
-#define STR_SKIN_OLD_SMALL_BMP "\\small.bmp"
-
 enum{
 	TOPPANEL_NOWPLAYING,
 	TOPPANEL_COMMEND,
@@ -24,6 +21,8 @@ public:
 	static void					DeleteInstance();
 
 	void				SetTopPanel(CTopPanelWnd* pWnd){m_pWndTopPanel = pWnd;};
+	void				ShowMenu(CShowMenu **ppShowMenu, CPoint p);
+	void				ShowMenu(CPoint p);
 	void				DoMin();
 	void				GetAllSkinName( vector<string>& vSkinName );
 	void				HoldWindow();

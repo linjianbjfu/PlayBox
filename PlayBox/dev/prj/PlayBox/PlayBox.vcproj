@@ -1178,6 +1178,12 @@
 				Name="TopPanel"
 				Filter="">
 				<File
+					RelativePath=".\src\module\TopPanel\CheckNewVerDlg.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\TopPanel\CheckNewVerDlg.h">
+				</File>
+				<File
 					RelativePath=".\src\module\TopPanel\CPanelChange_Data.cpp">
 				</File>
 				<File
@@ -1410,6 +1416,12 @@
 				Name="BottomPanel"
 				Filter="">
 				<File
+					RelativePath=".\src\module\BottomPanel\BottomAdPanel.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\BottomPanel\BottomAdPanel.h">
+				</File>
+				<File
 					RelativePath=".\src\module\BottomPanel\BottomPanelWnd.cpp">
 				</File>
 				<File
@@ -1424,6 +1436,16 @@
 				</File>
 				<File
 					RelativePath=".\src\module\BrowserPanel\BrowserPanelWnd.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="AboutPanel"
+				Filter="">
+				<File
+					RelativePath=".\src\module\AboutPanel\AboutDlg.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\AboutPanel\AboutDlg.h">
 				</File>
 			</Filter>
 		</Filter>

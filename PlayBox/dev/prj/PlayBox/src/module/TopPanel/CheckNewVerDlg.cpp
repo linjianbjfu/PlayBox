@@ -209,7 +209,6 @@ LRESULT CCheckNewVerDlg::OnCheckResult(WPARAM wParam, LPARAM lParam)
 			pOK_Wnd->ShowWindow(SW_SHOW);
 		}
 	}
-
 	return 0;
 }
 
@@ -235,7 +234,7 @@ BOOL CCheckNewVerDlg::OnInitDialog()
 	CWnd *pMSG_Wnd = GetDlgItem(IDC_STATIC_TEXT_MSG);
 	if(pMSG_Wnd != NULL)
 	{
-		pMSG_Wnd->SetWindowText("            正在检测新版信息...");
+		pMSG_Wnd->SetWindowText("正在检测新版信息...");
 	}
 
 	_beginthread(CheckThread , 0, m_hWnd);

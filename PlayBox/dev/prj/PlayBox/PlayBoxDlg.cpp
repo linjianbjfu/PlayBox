@@ -428,8 +428,6 @@ void CPlayBoxDlg::OnMouseMove( UINT nFlags, CPoint point )
 
 BOOL CPlayBoxDlg::_needChangeCursor(const CPoint& Pt )
 {
-	return FALSE; //不允许拖拽改变大小
-
 	RECT fullRect;
 	::GetWindowRect(m_hWnd,&fullRect);//获得当前窗口相对于整个屏幕空间的rect			
 
