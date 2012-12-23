@@ -45,52 +45,44 @@ void CWebManager::CallGBoxFromWeb(const string& strCommand,string& strRes)
 
 	size_t iHeader = strCommand.find("\n");
 	if( iHeader == string::npos)
-	{
 		return;
-	}
+	
 	strHeader	= strCommand.substr(0,iHeader);
-	strContent	= strCommand.substr(iHeader+2);
+	strContent	= strCommand.substr(iHeader+1);
 	//header
 	CString str(strHeader.c_str());
-	CString resToken;
-	int curPos = 0;
+	CString strLeft,strRight;
+	_string_help( str,strLeft,strRight );
 
-	resToken= str.Tokenize("\n\n",curPos);
-	while (resToken != "")
+	if( strLeft == "method" )
 	{
-		CString strLeft,strRight;
-		_string_help( resToken,strLeft,strRight );
-
-		if( strLeft == "method" )
+		if( strRight == "flashgame")//点击玩flash游戏
 		{
-			if( strRight == "flashgame")//点击玩flash游戏
-			{
-				strRes = _command_playswfgame( strContent );
-				return;			
-			}else
-			if( strRight == "webgame")//点击玩web游戏（也可玩嵌在网页里的flash游戏）
-			{
-				strRes = _command_playwebgame( strContent );
-				return;			
-			}else
-			if( strRight == "refresh" )
-			{
-				strRes = _command_refresh( strContent );
-				return;
-			}else
-			if (strRight == "browser")
-			{
-				strRes = _command_openBrowser (strContent);
-				return;
-			}else
-			if (strRight == "checkdlstatus")
-			{
-				strRes = _command_checkdlstatus (strContent);
-				return;
-			}
+			strRes = _command_playswfgame( strContent );
+			return;			
+		}else
+		if( strRight == "webgame")//点击玩web游戏（也可玩嵌在网页里的flash游戏）
+		{
+			strRes = _command_playwebgame( strContent );
+			return;			
+		}else
+		if( strRight == "refresh" )
+		{
+			strRes = _command_refresh( strContent );
+			return;
+		}else
+		if (strRight == "browser")
+		{
+			strRes = _command_openBrowser(strContent);
+			return;
+		}else
+		if (strRight == "checkdlstatus")
+		{
+			strRes = _command_checkdlstatus (strContent);
+			return;
 		}
-		resToken = str.Tokenize("\n", curPos);
-	};   
+	}
+
 }
 
 void CWebManager::NotifyWebRefresh( const  char* psz)
@@ -160,11 +152,8 @@ string CWebManager::_command_playwebgame(string& strContent)
 {	
 	string strID   = GetValue( strContent, "id" );
 	string strName = GetValue( strContent, "name" );
-	string strUrl  = GetValue( strContent, "url" );	
 	
-	if( strID.length() > 0 && IsNumber( strID ) && 
-		!strName.empty() && 
-		!strUrl.empty() )	
+	if( strID.length() > 0 && IsNumber( strID ) && !strName.empty() )	
 	{
 		TAB_ITEM tItem;
 		tItem.eumType = TAB_WEBGAME;
@@ -179,12 +168,10 @@ string CWebManager::_command_playwebgame(string& strContent)
 
 string CWebManager::_command_openBrowser (string & strContent)
 {
-	string strUrl = GetValue (strContent, "url");
-
 	TAB_ITEM tItem;
 	tItem.eumType = TAB_BROWSER;
 	tItem.strName = "酷游浏览器";
-	tItem.strParam = "url="+strUrl;
+	tItem.strParam = strContent;
 	GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
 	return "";
 }

@@ -140,10 +140,8 @@ void MyWebBrowserWnd::Navigate( string strUrl )
 	m_strURL = CString( strUrl.c_str() );
 
 	m_dwStartShowTime = GetTickCount();
-	SetTimer( TIMER_CHECK_NAVIGATE, ELAPSE_TIMER_CHECK_NAVIGATE, NULL );
-	
+	//SetTimer( TIMER_CHECK_NAVIGATE, ELAPSE_TIMER_CHECK_NAVIGATE, NULL );	
 	Navigate2( strUrl.c_str() );
-	YL_Log("log_httpr.txt",LOG_DEBUG,"Web BEGIN","%s",strUrl.c_str());
 	m_bSucceed = TRUE;
 }
 
@@ -257,7 +255,6 @@ void MyWebBrowserWnd::OnTimer(UINT nIDEvent)
 			m_flash.ShowWindow(SW_HIDE);
 		}
 
-// 		Refresh ();
 		Refresh2 (REFRESH_IFEXPIRED);
 	}
 	__super::OnTimer(nIDEvent);

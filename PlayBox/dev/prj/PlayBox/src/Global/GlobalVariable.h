@@ -24,8 +24,9 @@ struct TAB_ITEM
 struct WEB_GAME
 {
 	string		strID;
+	string		strSvrID;
 	string		strName;
-	string		strGameUrl;
+	string		strPicUrl;
 };
 
 struct SWF_GAME

@@ -3,6 +3,7 @@
 #include "../../gui/CommonControl/BasicWnd.h"
 #include "../../DataInterface/IPanelChangeObserver.h"
 #include "../../LayoutMgr/ISkinMgr.h"
+#include "Global/GlobalVariable.h"
 
 class MyWebBrowserWnd;
 class CxSkinButton;

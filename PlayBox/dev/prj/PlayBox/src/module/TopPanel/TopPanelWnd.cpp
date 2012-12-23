@@ -267,69 +267,6 @@ void CTopPanelWnd::OnBnClickedSetting()
 	CTopPanelControl::GetInstance()->ShowMenu(&m_pShowMenu, point);
 }
 
-static void FindIEOpen (string strUrl)
-{
-	char szProgramPath[MAX_PATH] = {0};
-	SHGetSpecialFolderPath (AfxGetMainWindow ()->GetSafeHwnd (), szProgramPath, CSIDL_PROGRAM_FILES, FALSE);
-	if (strlen (szProgramPath))
-	{
-		strcat (szProgramPath, "\\Internet Explorer\\iexplore.exe");
-		if (YL_FileInfo::IsValid (szProgramPath))
-		{
-			ShellExecute(NULL, "open", szProgramPath, strUrl.c_str(),"", SW_SHOWNORMAL);
-		}
-		else
-		{
-			HKEY hkRoot,hSubKey; //定义注册表根关键字及子关键字
-			char ValueName[256];
-			unsigned char DataValue[256];
-			unsigned long cbValueName=256;
-			unsigned long cbDataValue=256;
-			char ShellChar[256]; //定义命令行
-			DWORD dwType;
-
-			//打开注册表根关键字
-			if(RegOpenKey(HKEY_CLASSES_ROOT,NULL,&hkRoot)==ERROR_SUCCESS)
-			{
-				//打开子关键字
-				if(RegOpenKeyEx(hkRoot,
-					"htmlfile\\shell\\open\\command",
-					0,
-					KEY_ALL_ACCESS,
-					&hSubKey)==ERROR_SUCCESS)
-				{
-					//读取注册表，获取默认浏览器的命令行     
-					RegEnumValue(hSubKey, 
-						0,
-						ValueName,
-						&cbValueName,
-						NULL,
-						&dwType,
-						DataValue,
-						&cbDataValue);
-					// 调用参数（主页地址）赋值
-					strcpy(ShellChar,(char *)DataValue);
-
-					int nStart = 0;
-					while (ShellChar && !isalpha (ShellChar[nStart]))
-						nStart++;
-
-					CString str;
-					str.Format(_T("%s"), ShellChar);
-					int end = str.Find ("exe");
-					end += 3;
-					str = str.Mid (nStart, end - nStart);
-
-					ShellExecute(NULL, "open", str, strUrl.c_str(),"", SW_SHOWNORMAL);
-				}
-			}
-
-			RegCloseKey(hSubKey);
-			RegCloseKey(hkRoot);
-		}
-	}
-}
-
 void CTopPanelWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	if( m_bNormal)

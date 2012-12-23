@@ -6,14 +6,7 @@
 #include "../../DataInterface/IPanelChangeObserver.h"
 #include "../../LayoutMgr/ISkinMgr.h"
 
-static const int   s_INT_SKINMENU_ID	= 100;
-static const int   s_INT_SUBJECT_ID		= 150;
-
-#define MAX_SHOW_NEW_SKIN        3
-
-class IFlashHolderData;
 class CShowMenu;
-class IPanelChange;
 
 class CTopPanelWnd : public CBasicWnd,
 					 public ILayoutChangeObserver,

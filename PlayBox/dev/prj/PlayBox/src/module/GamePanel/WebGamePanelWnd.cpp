@@ -105,10 +105,17 @@ void WebGamePanelWnd::LoadSkin()
 void WebGamePanelWnd::SetTabItem( TAB_ITEM ti )
 {
 	m_webGame.strID = CWebManager::GetInstance()->GetValue( ti.strParam, "id" );
-	m_webGame.strName = ti.strName;
-	m_webGame.strGameUrl = CWebManager::GetInstance()->GetValue( ti.strParam, "url" );
-	
-	m_pWndWebGame->Navigate(m_webGame.strGameUrl);
+	m_webGame.strSvrID = CWebManager::GetInstance()->GetValue( ti.strParam, "svrid" );
+	m_webGame.strName = CWebManager::GetInstance()->GetValue( ti.strParam, "name" );
+	m_webGame.strPicUrl = CWebManager::GetInstance()->GetValue( ti.strParam, "picurl" );
+	string strValue;
+	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_CONFIG_WEB_GAME_URL, strValue );
+	if (!strValue.empty())
+	{
+		string strUrl = strValue + "?id=" + m_webGame.strID + 
+			"&svrid=" + m_webGame.strSvrID;
+		m_pWndWebGame->Navigate(strUrl);
+	}
 }
 
 void WebGamePanelWnd::Init()

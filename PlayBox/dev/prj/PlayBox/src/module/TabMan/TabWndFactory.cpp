@@ -33,35 +33,6 @@ TabWndFactory::TabWndFactory()
 
 TabWndFactory::~TabWndFactory()
 {
-	//目前m_vecWnd里面是空的，每次使用完都会即时销毁
-	//for( vector<CWnd*>::iterator it1 = m_vecWnd.begin(); 
-	//	it1 != m_vecWnd.end(); it1++ )
-	//{
-	//	CWnd* pWnd = (CWnd*)(*it1);
-	//	if( dynamic_cast<PlayedGameWnd*>(pWnd) )
-	//	{
-	//		PlayedGameWnd* pWnd1 = (PlayedGameWnd*)pWnd;
-	//		pWnd1->DestroyWindow();
-	//		delete pWnd1;
-	//	}else
-	//	if( dynamic_cast<GamePanelWnd*>(pWnd) )
-	//	{
-	//		GamePanelWnd* pWnd1 = (GamePanelWnd*)pWnd;
-	//		pWnd1->DestroyWindow();
-	//		delete pWnd1;
-	//	}else
-	//	if( dynamic_cast<WebGamePanelWnd*>(pWnd) )
-	//	{
-	//		WebGamePanelWnd* pWnd1 = (WebGamePanelWnd*)pWnd;
-	//		pWnd1->DestroyWindow();
-	//		delete pWnd1;
-	//	}else
-	//	if( dynamic_cast<MyWebBrowserWnd*>(pWnd) )
-	//	{
-	//		MyWebBrowserWnd* pWnd1 = (MyWebBrowserWnd*)pWnd;
-	//		pWnd1->DestroyWindow();
-	//	}
-	//}
 }
 
 void TabWndFactory::SetParent(CWnd* pWnd)
@@ -124,7 +95,6 @@ BrowserPanelWnd* TabWndFactory::CreateWndBrowserPanel( )
 void TabWndFactory::Recycle( CWnd* pWnd )
 {
 	pWnd->DestroyWindow();
-	//目前m_vecWnd里面是空的，每次使用完都会即时销毁
 	if( dynamic_cast<GamePanelWnd*>(pWnd) )
 	{
 		GamePanelWnd* pWnd1 = (GamePanelWnd*)pWnd;

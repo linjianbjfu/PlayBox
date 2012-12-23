@@ -138,10 +138,6 @@ void GamePanelWnd::SetTabItem( TAB_ITEM ti )
 	m_swfGame.strName = CWebManager::GetInstance()->GetValue( ti.strParam, "name" );
 	m_swfGame.strPicUrl = CWebManager::GetInstance()->GetValue( ti.strParam, "picurl" );
 	m_swfGame.strSwfUrl = CWebManager::GetInstance()->GetValue( ti.strParam, "swfurl" );
-	m_swfGame.strIntro  = CWebManager::GetInstance()->GetValue( ti.strParam, "intro" );;
-	
-	//Try to load here.
-	//MessageBox("Hello from GamePanelWnd::SetTabItem","Info");
 	SetGameEntry( m_swfGame );
 }
 
@@ -463,14 +459,8 @@ void GamePanelWnd::SetGameEntry( SWF_GAME sg )
 	}
 }
 
-
 void GamePanelWnd::PlayMovie( string strID, string strPath )
 {
-	YL_Log("GamePanelWnd.txt", LOG_DEBUG, "GamePanelWnd::PlayMovie", "===IN");
-	YL_Log("GamePanelWnd.txt", LOG_DEBUG, "GamePanelWnd", "strPath:%s", strPath.c_str());
-	//Try to debug here
-	//MessageBox("Hello from GamePanelWnd::PlayMovie","Info");
-	
 	//播放swf	
 	if( m_pGameFlash->GetMovie().Compare( strPath.c_str() ) == 0  )
 	{
@@ -479,9 +469,6 @@ void GamePanelWnd::PlayMovie( string strID, string strPath )
 	m_pGameFlash->SetMovie(strPath.c_str());
 	m_pGameFlash->Play();
 	m_pGameFlash->SetFocus();
-	//记录FIRST_SWF_GAME
-	LogPlaySwfGameAct();
-	YL_Log("GamePanelWnd.txt", LOG_DEBUG, "GamePanelWnd::PlayMovie", "===OUT");
 }
 
 CString GamePanelWnd::UINT2CString(UINT ui)
@@ -503,35 +490,6 @@ CString GamePanelWnd::UINT2CString(UINT ui)
 	return str;
 }
 
-
-void GamePanelWnd::LogPlaySwfGameAct()
-{
-	char FIRST_SWF_GAME[2];
-	memset(FIRST_SWF_GAME, 0, 2);
-	YL_EncFileReg::ReadString( HKEY_PLAYBOX_ROOT,STR_REG_SOFT,"FIRST_SWF_GAME",FIRST_SWF_GAME,2 );
-
-	if( strlen( FIRST_SWF_GAME ) == 0 )
-	{
-		char szID[128];
-		if( CLhcImg::GetUserID( szID,128) && strcmp(szID,"0") != 0  )
-		{
-			char temp[2];
-			strcpy(temp, "1");
-			YL_EncFileReg::WriteString( HKEY_PLAYBOX_ROOT,STR_REG_SOFT,"FIRST_SWF_GAME",temp );
-			LogRealMsg( "FIRST_SWF_GAME","");
-
-		}
-	}
-	//每玩一次游戏，记录一次
-	string strPlayLog;
-	YL_StringUtil::Format( strPlayLog, "gameid:%s|name:%s", m_swfGame.strID.c_str(), m_swfGame.strName.c_str() );
-	LogRealMsg( "PLAY_SWF_GAME", strPlayLog.c_str() );
-	//玩过的游戏总数加1
-	int nListen = 0;
-	AfxGetUserConfig()->GetConfigIntValue( CONF_APP_MODULE_NAME, CONF_APP_PLAYED_GAME, nListen );
-	nListen++;
-	AfxGetUserConfig()->SetConfigIntValue( CONF_APP_MODULE_NAME, CONF_APP_PLAYED_GAME, nListen );
-}
 
 
 CString GamePanelWnd::GetLeftTime( unsigned int uiSize, unsigned int uiSpeed, unsigned int uiFinished )

@@ -89,7 +89,6 @@ private:
 	int	m_iStep;
 	
 	CString UINT2CString(UINT ui);
-	void	LogPlaySwfGameAct();
 	CString GetLeftTime( unsigned int uiSize, unsigned int uiSpeed, unsigned int uiFinished );
 	void	InitFlashParams(CShockwaveFlash*	pGameFlash);
 public:

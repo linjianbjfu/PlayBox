@@ -88,7 +88,11 @@ void CTabPageControl::ITabBarOb_CreateNewTab(TAB_ITEM & item)
 	{
 		BrowserPanelWnd *pWnd = TabWndFactory::GetInstance()->CreateWndBrowserPanel();
 		string strUrl = CWebManager::GetInstance()->GetValue( item.strParam, "url" );
-		pWnd->Navigate( item.strParam );
+		if (strUrl.empty())
+		{
+			strUrl = "about:blank";
+		}
+		pWnd->Navigate( strUrl );
 		pWndTmp = pWnd;
 	}else if( item.eumType == TAB_PLAYED_GAME )
 	{
@@ -101,7 +105,6 @@ void CTabPageControl::ITabBarOb_CreateNewTab(TAB_ITEM & item)
 		ot.first = item;
 		ot.second = pWndTmp;
 		m_mapTab.push_back( ot );
-
 		ITabBarOb_OpenExistTab( item );
 	}
 }
@@ -112,9 +115,8 @@ static void _string_help(const CString& strInput,CString& strLeft,CString& strRi
 
 	int iPosEq = strInput.Find('=');
 	if( iPosEq == -1 )
-	{
 		return;
-	}
+
 	strLeft		= strInput.Left(iPosEq);
 	strRight	= strInput.Mid(iPosEq+1,strInput.GetLength()-iPosEq-1);
 }
@@ -145,10 +147,9 @@ void CTabPageControl::ITabBarOb_OpenExistTab(TAB_ITEM & item)
 	for( vector<ONE_TAB>::iterator it = m_mapTab.begin();
 		it != m_mapTab.end(); it++ )
 	{
-		bool bShow = it->first.strName == item.strName && 
+		bool bShow = (it->first.strName == item.strName && 
 			it->first.eumType == item.eumType && 
-			it->first.strParam == item.strParam;
-
+			it->first.strParam == item.strParam);
 		it->second->ShowWindow( bShow ? SW_SHOW : SW_HIDE );
 	}
 }
@@ -189,37 +190,18 @@ void CTabPageControl::ResizePage()
 	//当前显示的tabitem
 	TAB_ITEM ti;
 	GLOBAL_TABBARDATA->ITabBar_GetCurItem( ti );
-
 	//父窗口大小
 	CRect rc;
 	m_pWndParent->GetClientRect(&rc);
-	//rc.bottom -= 30;
-
-	//空矩形
-	CRect rcNull(0,0,0,0);
 
 	for( vector<ONE_TAB>::iterator it = m_mapTab.begin();
 		it != m_mapTab.end(); it++ )
 	{
-		if( it->first.eumType == ti.eumType
-			&& it->first.strName == ti.strName )
-		{
-			if (ti.eumType == TAB_PLAYED_GAME)
-			{
-				it->second->MoveWindow (rc, FALSE);
-				it->second->ShowWindow (SW_SHOW);
-			}
-			else
-			{
-				it->second->MoveWindow(rc, FALSE);
-				it->second->ShowWindow (SW_SHOW);
-			}
-		}else
-		{
-// 			it->second->MoveWindow(rcNull, FALSE);
-			it->second->MoveWindow (rc, FALSE);
-			it->second->ShowWindow (SW_HIDE);
-		}
+		it->second->MoveWindow (rc, FALSE);
+		bool bShow = (it->first.eumType == ti.eumType
+			&& it->first.strName == ti.strName
+			&& it->first.strParam == ti.strParam);
+		it->second->ShowWindow(bShow ? SW_SHOW : SW_HIDE);
 	}
 }
 
@@ -236,12 +218,12 @@ void CTabPageControl::OpenHomePage()
 		ti.strName = "游戏大厅";
 		string strUrl;
 		AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME,CONF_SETTING_CONFIG_HOME_PAGE,strUrl);
-		if( strUrl.length() == 0 )
-		{
-			YL_StringUtil::Format( strUrl, "%s", "http://box.7k7k.com/client/" );
-		}
-		
-		YL_StringUtil::Format( ti.strParam, "url=%s", strUrl.c_str() );
+		char dir[MAX_PATH];
+		memset(dir, 0, MAX_PATH);
+		if(!CLhcImg::GetHomePath(dir, MAX_PATH))
+			return;
+
+		YL_StringUtil::Format( ti.strParam, "url=%s\\Resources\\StandardUI\\%s", dir, strUrl.c_str() );
 		ti.eumType  = TAB_HOME;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab( ti );
 	}
