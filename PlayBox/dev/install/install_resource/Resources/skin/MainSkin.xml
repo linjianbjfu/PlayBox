@@ -79,7 +79,7 @@
 		<paneitem name="UnMute"     type="button" tooltip="打开声音" bmp="UnMute"     start_x_left="168"  start_y_top="8" x_delta="70" y_delta="25" />
 		<paneitem name="Pause"      type="button" tooltip="暂停"     bmp="Pause"      start_x_left="242"  start_y_top="8" x_delta="70" y_delta="25" />
 		
-		<paneitem name="GameFlash"    type="wnd"  start_x_left="0" end_x_right="0" start_y_top="40" end_y_bottom="51"  />
+		<paneitem name="GameFlash"    type="wnd"  start_x_left="0" end_x_right="260" start_y_top="40" end_y_bottom="40"  />
 		<paneitem name="FlashGameBottom"   type="wnd"  start_x_left="0" end_x_right="260" start_y_bottom="40" end_y_bottom="0" /> 
 		<paneitem name="FlashGameRight"    type="wnd"  start_x_right="260" end_x_right="0" start_y_top="40" end_y_bottom="0"/>
 	</controlpanel>
@@ -93,7 +93,7 @@
 		<paneitem name="BrowserBack"     type="button" tooltip="后退" bmp="BrowserBack" start_x_left="20"  start_y_top="8" x_delta="28" y_delta="25" />
 		<paneitem name="BrowserForward"  type="button" tooltip="前进" bmp="BrowserForward" start_x_left="52" start_y_top="8" x_delta="28" y_delta="25" />
 		<paneitem name="BrowserRefresh"  type="button" tooltip="刷新" bmp="BrowserRefresh" start_x_left="84"  start_y_top="8" x_delta="28" y_delta="25" />
-		<paneitem name="BrowserAddressBar"  type="Edit" start_x_left="116"  start_y_top="8" x_delta="70" y_delta="25" />
+		<paneitem name="BrowserAddressBar"  type="Edit" start_x_left="116"  end_x_right="42" start_y_top="8" y_delta="25" />
 		<paneitem name="BrowserFav"  type="button" tooltip="收藏" bmp="BrowserFav"  start_x_right="32"  start_y_top="8" x_delta="28" y_delta="25" />
 		<paneitem name="BrowserWeb" type = "wnd" start_x_left="0"  start_y_top="40" end_x_right="0" end_y_bottom="0" />
 	</controlpanel>

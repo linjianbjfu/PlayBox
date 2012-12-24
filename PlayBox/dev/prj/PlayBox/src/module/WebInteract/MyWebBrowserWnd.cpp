@@ -140,7 +140,7 @@ void MyWebBrowserWnd::Navigate( string strUrl )
 	m_strURL = CString( strUrl.c_str() );
 
 	m_dwStartShowTime = GetTickCount();
-	//SetTimer( TIMER_CHECK_NAVIGATE, ELAPSE_TIMER_CHECK_NAVIGATE, NULL );	
+	SetTimer( TIMER_CHECK_NAVIGATE, ELAPSE_TIMER_CHECK_NAVIGATE, NULL );	
 	Navigate2( strUrl.c_str() );
 	m_bSucceed = TRUE;
 }
@@ -228,7 +228,7 @@ void MyWebBrowserWnd::OnTimer(UINT nIDEvent)
 	if( nIDEvent == TIMER_CHECK_NAVIGATE )
 	{
 		DWORD dwCurTime = GetTickCount();
-		if( dwCurTime - m_dwStartShowTime > 4000 )
+		if( dwCurTime - m_dwStartShowTime > 6000 )
 		{
 			KillTimer( nIDEvent );
 			if( m_bReady == FALSE )
