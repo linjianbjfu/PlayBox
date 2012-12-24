@@ -235,10 +235,24 @@ void WebGamePanelWnd::OnClickedRefresh()
 
 void WebGamePanelWnd::OnClickedToFull()
 {
+	if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
+	{
+		GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
+	}else
+	{
+		GLOBAL_PANELCHANGEDATA->IPanelChange_ToFullScreen( GetParent() );
+	}
 }
 
 void WebGamePanelWnd::OnClickedExitFull()
 {
+	if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
+	{
+		GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
+	}else
+	{
+		GLOBAL_PANELCHANGEDATA->IPanelChange_ToFullScreen( GetParent() );
+	}
 }
 
 void WebGamePanelWnd::OnClickedMute()
