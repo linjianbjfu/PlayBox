@@ -167,6 +167,13 @@ BEGIN
                     WS_TABSTOP,29,26,40,10
 END
 
+IDD_DLG_CLEANCHACHE DIALOGEX 0, 0, 187, 93
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_STATIC_BMP_LOADING,"Static",SS_BITMAP,63,32,20,20
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -249,6 +256,14 @@ END
 //
 
 IDB_FRAME_LINE          BITMAP                  "res\\bitmap1.bmp"
+IDB_BMP_LOADING1        BITMAP                  "res\\bmpLoading1.bmp"
+IDB_BMP_LOADING2        BITMAP                  "res\\bmpLoading2.bmp"
+IDB_BMP_LOADING3        BITMAP                  "res\\bmpLoading3.bmp"
+IDB_BMP_LOADING4        BITMAP                  "res\\bmpLoading4.bmp"
+IDB_BMP_LOADING5        BITMAP                  "res\\bmpLoading5.bmp"
+IDB_BMP_LOADING6        BITMAP                  "res\\bmpLoading6.bmp"
+IDB_BMP_LOADING7        BITMAP                  "res\\bmpLoading7.bmp"
+IDB_BMP_LOADING8        BITMAP                  "res\\bmpLoading8.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //

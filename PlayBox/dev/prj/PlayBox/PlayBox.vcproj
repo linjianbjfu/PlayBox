@@ -198,6 +198,30 @@
 				RelativePath=".\res\bitmap1.bmp">
 			</File>
 			<File
+				RelativePath=".\res\bmpLoading1.bmp">
+			</File>
+			<File
+				RelativePath=".\res\bmpLoading2.bmp">
+			</File>
+			<File
+				RelativePath=".\res\bmpLoading3.bmp">
+			</File>
+			<File
+				RelativePath=".\res\bmpLoading4.bmp">
+			</File>
+			<File
+				RelativePath=".\res\bmpLoading5.bmp">
+			</File>
+			<File
+				RelativePath=".\res\bmpLoading6.bmp">
+			</File>
+			<File
+				RelativePath=".\res\bmpLoading7.bmp">
+			</File>
+			<File
+				RelativePath=".\res\bmpLoading8.bmp">
+			</File>
+			<File
 				RelativePath=".\res\cursor1.cur">
 			</File>
 			<File
@@ -1446,6 +1470,19 @@
 				</File>
 				<File
 					RelativePath=".\src\module\AboutPanel\AboutDlg.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="CleanCachePanel"
+				Filter="">
+				<File
+					RelativePath=".\src\module\CleanCachePanel\CleanCacheDlg.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\CleanCachePanel\CleanCacheDlg.h">
+				</File>
+				<File
+					RelativePath=".\src\module\CleanCachePanel\CleanCacheDlgDef.h">
 				</File>
 			</Filter>
 		</Filter>

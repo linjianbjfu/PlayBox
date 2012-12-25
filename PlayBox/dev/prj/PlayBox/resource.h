@@ -15,7 +15,7 @@
 #define IDD_DLG_MINOREXIT               11
 #define IDD_MSG_DLG                     12
 #define IDD_HOST                        13
-#define ID_MENU_SKIN_APPLY				14
+#define ID_MENU_SKIN_APPLY              14
 #define ID_MENU_SKIN_DELETE             15
 #define ID_MENU_MORE_SKIN               16
 #define ID_WND_GAMEPLAYING              17
@@ -100,6 +100,15 @@
 #define IDC_STATIC_TEXT_MSG             96
 #define IDC_STATIC_LINK_TO_NEW          97
 #define IDC_BUTTON_APPLY                98
+#define IDD_DLG_CLEANCHACHE             147
+#define IDB_BMP_LOADING1                148
+#define IDB_BMP_LOADING2                149
+#define IDB_BMP_LOADING3                150
+#define IDB_BMP_LOADING4                151
+#define IDB_BMP_LOADING5                152
+#define IDB_BMP_LOADING6                153
+#define IDB_BMP_LOADING7                154
+#define IDB_BMP_LOADING8                155
 #define IDC_CONFIG_BTN_DEFAULT          190
 #define IDC_CONFIG_LIST                 191
 #define IDC_STATIC_PROBLEM              192
@@ -201,16 +210,18 @@
 #define IDC_BTN_WEBGAME_PAY             293
 #define ID_MENU_WEB_GAME_CUSTOM_SERVICE 296
 #define ID_CHECK_UPDATE                 297
-#define IDD_DLG_ABOUT		            298
-#define ID_BTN_ABOUT_OK					299
-#define IDD_DIALOG_CHECK_NEW_VER		300
+#define IDD_DLG_ABOUT                   298
+#define ID_BTN_ABOUT_OK                 299
+#define IDD_DIALOG_CHECK_NEW_VER        300
+#define IDC_STATIC_BMP_LOADING          1018
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        147
+#define _APS_NEXT_RESOURCE_VALUE        156
 #define _APS_NEXT_COMMAND_VALUE         32797
-#define _APS_NEXT_CONTROL_VALUE         1018
+#define _APS_NEXT_CONTROL_VALUE         1019
 #define _APS_NEXT_SYMED_VALUE           140
 #endif
 #endif

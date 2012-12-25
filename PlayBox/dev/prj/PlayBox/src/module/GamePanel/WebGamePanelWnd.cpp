@@ -11,6 +11,7 @@
 #include "../../Gui/CommonControl/EditEx.h"
 #include "util/Sound.h"
 #include "AppConfig/config/ConfigSettingDef.h"
+#include "src/module/CleanCachePanel/CleanCacheDlg.h"
 
 IMPLEMENT_DYNAMIC(WebGamePanelWnd, CBasicWnd)
 WebGamePanelWnd::WebGamePanelWnd()
@@ -95,6 +96,17 @@ int WebGamePanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	pLayoutMgr->CreateControlPane( this, "webgamepanel", "normal" );
 	pLayoutMgr->CreateBmpPane( this,"webgamepanel","normal" );
 
+	if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
+	{
+		m_pBtnToFull->ShowWindow(SW_HIDE);
+		m_pBtnExitFull->ShowWindow(SW_SHOW);
+	}
+	else
+	{
+		m_pBtnToFull->ShowWindow(SW_SHOW);
+		m_pBtnExitFull->ShowWindow(SW_HIDE);
+	}
+
 	return 0;
 }
 
@@ -164,6 +176,9 @@ void WebGamePanelWnd::IPanelChangeOb_ToFullScreen( CWnd* pWnd )
 	SetWindowPos(&wndTopMost,m_rectFullScreen.left,m_rectFullScreen.top,
 		m_rectFullScreen.Width(),m_rectFullScreen.Height(),SWP_SHOWWINDOW);
 	m_bFullScreen = true;
+
+	m_pBtnToFull->ShowWindow(SW_HIDE);
+	m_pBtnExitFull->ShowWindow(SW_SHOW);
 }
 
 void WebGamePanelWnd::SetMainWindow(bool isTopMost)
@@ -215,6 +230,9 @@ void WebGamePanelWnd::IPanelChangeOb_ExitFullScreen( CWnd* pWnd )
 	{
 		AfxGetMainWindow()->SetWindowPos(&wndTopMost,-1,-1,-1,-1, SWP_NOSIZE|SWP_NOMOVE);
 	}
+
+	m_pBtnToFull->ShowWindow(SW_SHOW);
+	m_pBtnExitFull->ShowWindow(SW_HIDE);
 	YL_Log("WebGamePanelWnd.txt", LOG_DEBUG, "WebGamePanelWnd::IPanelChangeOb_ExitFullScreen", "===OUT");
 }
 
@@ -235,12 +253,9 @@ void WebGamePanelWnd::OnClickedRefresh()
 
 void WebGamePanelWnd::OnClickedToFull()
 {
-	if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
+	if( !GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
 	{
-		GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
-	}else
-	{
-		GLOBAL_PANELCHANGEDATA->IPanelChange_ToFullScreen( GetParent() );
+		GLOBAL_PANELCHANGEDATA->IPanelChange_ToFullScreen( this );
 	}
 }
 
@@ -249,9 +264,6 @@ void WebGamePanelWnd::OnClickedExitFull()
 	if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
 	{
 		GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
-	}else
-	{
-		GLOBAL_PANELCHANGEDATA->IPanelChange_ToFullScreen( GetParent() );
 	}
 }
 
@@ -269,7 +281,10 @@ void WebGamePanelWnd::OnClickedUnMute()
 
 void WebGamePanelWnd::OnClickedClearCache()
 {
-
+	CCleanCacheDlg dlg;
+	AfxGetUIManager()->UIAddDialog(&dlg);
+	dlg.DoModal();
+	AfxGetUIManager()->UIRemoveDialog(&dlg);
 }
 
 void WebGamePanelWnd::OnClickedSite()
