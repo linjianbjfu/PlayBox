@@ -107,6 +107,19 @@ int WebGamePanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		m_pBtnExitFull->ShowWindow(SW_HIDE);
 	}
 
+	bool bIsMute = CSound::GetInstance()->GetMute( 1 );
+	if ( bIsMute )
+	{
+		m_pBtnMute->ShowWindow(SW_HIDE);
+		m_pBtnUnMute->ShowWindow(SW_SHOW);
+	}
+	else
+	{
+		m_pBtnMute->ShowWindow(SW_SHOW);
+		m_pBtnUnMute->ShowWindow(SW_HIDE);
+	}
+	
+
 	return 0;
 }
 
@@ -271,17 +284,30 @@ void WebGamePanelWnd::OnClickedMute()
 {
 	bool bIsMute = CSound::GetInstance()->GetMute( 1 );
 	CSound::GetInstance()->SetMute( 1, !bIsMute );
+
+	if (!bIsMute)
+	{
+		CSound::GetInstance()->SetMute( 1, TRUE );
+		m_pBtnMute->ShowWindow(SW_HIDE);
+		m_pBtnUnMute->ShowWindow(SW_SHOW);
+	}
 }
 
 void WebGamePanelWnd::OnClickedUnMute()
 {
 	bool bIsMute = CSound::GetInstance()->GetMute( 1 );
-	CSound::GetInstance()->SetMute( 1, !bIsMute );
+
+	if (bIsMute)
+	{
+		CSound::GetInstance()->SetMute( 1, FALSE );
+		m_pBtnMute->ShowWindow(SW_SHOW);
+		m_pBtnUnMute->ShowWindow(SW_HIDE);
+	}
 }
 
 void WebGamePanelWnd::OnClickedClearCache()
 {
-	CCleanCacheDlg dlg;
+	CCleanCacheDlg dlg(this);
 	AfxGetUIManager()->UIAddDialog(&dlg);
 	dlg.DoModal();
 	AfxGetUIManager()->UIRemoveDialog(&dlg);
