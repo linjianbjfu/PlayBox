@@ -186,6 +186,11 @@ void MyWebBrowserWnd::OnNavigateComplete2( LPCTSTR strURL )
 	}
 }
 
+void MyWebBrowserWnd::OnTitleChange(LPCTSTR lpszText)
+{
+	//
+}
+
 BOOL MyWebBrowserWnd::PreTranslateMessage(MSG* pMsg)
 {
 	if(WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST)

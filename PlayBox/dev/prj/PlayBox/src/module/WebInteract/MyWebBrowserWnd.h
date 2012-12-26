@@ -28,6 +28,7 @@ public:
 
 	virtual void OnNavigateError(LPCTSTR lpszURL, LPCTSTR lpszFrame, DWORD dwError, BOOL *pbCancel);
 	virtual void OnNavigateComplete2( LPCTSTR strURL );
+	virtual void OnTitleChange(LPCTSTR lpszText);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	virtual void OnDocumentComplete(LPCTSTR lpszURL);	
 	virtual void IWebRefreshOb_Refresh(const char* psz);
