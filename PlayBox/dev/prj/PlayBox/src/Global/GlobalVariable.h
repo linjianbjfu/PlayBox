@@ -19,6 +19,7 @@ struct TAB_ITEM
 	string		strName;
 	TAB_TYPE	eumType;
 	string		strParam;
+	string		strTitle;
 };
 
 struct WEB_GAME

@@ -13,6 +13,12 @@ using std::string;
 
 #define WM_CALL_JAVASCRIPT	WM_USER+1001
 
+// 页面跳转 
+// 
+// WPARAM : (LPCTSTR) string of url		(可以为NULL)
+// LPARAM : (LPCTSTR) string of title	(可以为NULL)
+#define WM_PAGE_CHANGED	(WM_USER+501)
+
 class MyWebBrowserWnd : public CHtmlView,
 						public IWebRefreshObserver
 {
@@ -31,7 +37,8 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	virtual void OnDocumentComplete(LPCTSTR lpszURL);	
 	virtual void IWebRefreshOb_Refresh(const char* psz);
-
+	virtual void OnNewWindow2(LPDISPATCH* ppDisp, BOOL* Cancel);
+	virtual void OnTitleChange(LPCTSTR lpszText);
 	void	Navigate( string strUrl );
 	void	Init();
 	void	Recycle();

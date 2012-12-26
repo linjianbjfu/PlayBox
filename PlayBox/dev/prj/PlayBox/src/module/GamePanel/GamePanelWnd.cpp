@@ -756,14 +756,6 @@ void GamePanelWnd::ShowHideEseFull(bool isShow)
 		&& (curValue<1)
 		&& (allValue<5))
 	{
-		CRect rctClient;
-		CRect rctTextBk;
-		GetWindowRect(&rctClient);
-		m_pEscFullTipDlg->GetWindowRect(&rctTextBk);
-
-		rctTextBk.left = rctClient.left + (rctClient.Width()-rctTextBk.Width()) / 2;
-		m_pEscFullTipDlg->SetWindowPos(NULL, rctTextBk.left, rctTextBk.top, 0, 0, SWP_NOSIZE);
-
 		curValue++;
 		m_pEscFullTipDlg->ShowDlg( TRUE );
 

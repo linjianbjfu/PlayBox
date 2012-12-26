@@ -26,6 +26,9 @@ protected:
 	afx_msg void	OnClickedForward();
 	afx_msg void	OnClickedRefresh();
 	afx_msg void	OnClickedFav();	
+	afx_msg LRESULT OnPageChanging(WPARAM wParam, LPARAM lParam);
+
+
 private:
 	CxSkinButton*		m_pBtnBack;
 	CxSkinButton*		m_pBtnForward;
@@ -33,4 +36,6 @@ private:
 	CxSkinButton*		m_pBtnFav;
 	CEditEx*			m_pEditAddress;
 	MyWebBrowserWnd*	m_pWndBrowser;
+public:
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

@@ -104,11 +104,23 @@ BOOL ESCFullDlg::OnInitDialog()
 
 void ESCFullDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {
-	SetWindowPos(&wndTopMost,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
+
+	// 调整自身位置
+	CWnd *pDeskTopWnd = GetDesktopWindow();
+	CRect rctParent, rctSelf;
+
+	GetWindowRect(rctSelf);
+	if (pDeskTopWnd)
+	{
+		pDeskTopWnd->GetWindowRect(&rctParent);
+		rctSelf.left = rctParent.left + ( (rctParent.Width()-rctSelf.Width())/2 );
+		rctSelf.top = rctParent.top + 50;
+	}
+
+	SetWindowPos(&wndTopMost,rctSelf.left,rctSelf.top,0,0,SWP_NOSIZE);
 	SetWindowLong(this->GetSafeHwnd(),GWL_EXSTYLE,GetWindowLong(this->GetSafeHwnd(),GWL_EXSTYLE)|WS_EX_LAYERED);
 
 	::SetLayeredWindowAttributes(GetSafeHwnd(),RGB(255,0,255),150,LWA_COLORKEY|LWA_ALPHA);
-
 
 	if(bShow==true)
 	{	
@@ -127,17 +139,6 @@ void ESCFullDlg::ShowDlg(BOOL bShow)
 {
 	if( bShow )
 	{
-		// 将text居中
-		CRect rctClient;
-		CRect rctText;
-		GetWindowRect(&rctClient);
-		m_pEscTextDlg->GetWindowRect(&rctText);
-
-		rctText.left = rctClient.left + (rctClient.Width()-rctText.Width()) / 2;
-		rctText.top = rctClient.top + (rctClient.Height()-rctText.Height()) / 2;
-
-		m_pEscTextDlg->SetWindowPos(NULL, rctText.left, rctText.top, 0, 0, SWP_NOSIZE);
-
 		ShowWindow(SW_SHOW);
 		m_pEscTextDlg->ShowWindow(SW_SHOW);
 	}

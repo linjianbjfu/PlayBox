@@ -7,6 +7,7 @@
 #include "../../gui/CommonControl/xSkinButton.h"
 #include "../../gui/CommonControl/xStaticText.h"
 #include "../../Gui/CommonControl/EditEx.h"
+#include ".\browserpanelwnd.h"
 
 IMPLEMENT_DYNAMIC(BrowserPanelWnd, CBasicWnd)
 BrowserPanelWnd::BrowserPanelWnd()
@@ -40,6 +41,7 @@ BEGIN_MESSAGE_MAP(BrowserPanelWnd, CBasicWnd)
 	ON_BN_CLICKED(IDC_BTN_BROWSER_FAV,OnClickedFav)
 	ON_WM_KEYDOWN()
 	ON_WM_TIMER()
+	ON_MESSAGE(WM_PAGE_CHANGED, OnPageChanging)
 END_MESSAGE_MAP()
 
 int BrowserPanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -111,4 +113,42 @@ void BrowserPanelWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	{
 		return;
 	}
+}
+BOOL BrowserPanelWnd::PreTranslateMessage(MSG* pMsg)
+{
+	switch (pMsg->message)
+	{
+	case WM_KEYDOWN:
+		{
+			if (pMsg->hwnd == m_pEditAddress->GetSafeHwnd()
+				&& pMsg->wParam == VK_RETURN)
+			{
+				CString str;
+				m_pEditAddress->GetWindowText(str);
+				Navigate(str.GetBuffer(0));
+				str.ReleaseBuffer();
+			}
+		}
+		break;
+	}
+
+	return CBasicWnd::PreTranslateMessage(pMsg);
+}
+
+LRESULT BrowserPanelWnd::OnPageChanging(WPARAM wParam, LPARAM lParam)
+{
+	// TRACE(TEXT("\r\n%s\r\n"), (LPCTSTR)wParam);
+	if (wParam != 0)
+	{
+		m_pEditAddress->SetWindowText((LPCTSTR)wParam);
+	}
+	if (lParam != 0)
+	{
+		TAB_ITEM iItem;
+		GLOBAL_TABBARDATA->ITabBar_GetCurItem(iItem);
+		iItem.strTitle = (LPCTSTR)lParam;
+		GLOBAL_TABBARDATA->ITabBar_ChangeTab(iItem);
+	}
+	// GLOBAL_TABBARDATA->ITabBar_ChangeTab(iItem);
+	return 0;
 }

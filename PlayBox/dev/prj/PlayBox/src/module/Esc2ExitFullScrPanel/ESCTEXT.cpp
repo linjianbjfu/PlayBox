@@ -26,6 +26,7 @@ void ESCTEXT::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(ESCTEXT, CDialog)
 	ON_WM_PAINT()
+	ON_WM_SHOWWINDOW()
 END_MESSAGE_MAP()
 
 
@@ -91,4 +92,21 @@ BOOL ESCTEXT::PreTranslateMessage(MSG* pMsg)
 	}
 
 	return CDialog::PreTranslateMessage(pMsg);
+}
+
+void ESCTEXT::OnShowWindow(BOOL bShow, UINT nStatus)
+{
+	// 调整自身位置
+	CWnd *pParent = GetParent();
+
+	CRect rctParent, rctSelf;
+	pParent->GetWindowRect(&rctParent);
+	GetWindowRect(rctSelf);
+
+	rctSelf.left = rctParent.left + ( (rctParent.Width()-rctSelf.Width())/2 );
+	rctSelf.top = rctParent.top + ( (rctParent.Height()-rctSelf.Height())/2 );
+
+	SetWindowPos(&wndTopMost,rctSelf.left,rctSelf.top,0,0,SWP_NOSIZE);
+
+	CDialog::OnShowWindow(bShow, nStatus);
 }

@@ -220,6 +220,7 @@ void MyWebBrowserWnd::OnDocumentComplete(LPCTSTR lpszURL)
 			CHTTPControl::HTTPFinish_TodayRecommend();
 		}
 	}
+	GetParent()->SendMessage(WM_PAGE_CHANGED, (WPARAM)lpszURL, 0);
 	__super::OnDocumentComplete(lpszURL);
 }
 
@@ -288,3 +289,36 @@ void MyWebBrowserWnd::SetHomePage( bool bHomePage )
 	m_bHomePage = bHomePage;
 }
 
+void MyWebBrowserWnd::OnNewWindow2(LPDISPATCH* ppDisp, BOOL* Cancel)
+{	// 限制打开新窗口
+	CComPtr<IHTMLDocument2> pHTMLDocument2;  
+
+	m_pBrowserApp->get_Document((IDispatch **)&pHTMLDocument2);  
+	if (pHTMLDocument2!=NULL)  
+	{  
+		CComPtr<IHTMLElement> pIHTMLElement;  
+		pHTMLDocument2->get_activeElement(&pIHTMLElement);  
+
+		if (pIHTMLElement!=NULL)  
+		{  
+			VARIANT url;  
+			HRESULT hr=pIHTMLElement->getAttribute(L"href", 0, &url);  
+			if (SUCCEEDED(hr))  
+			{  
+				url.vt = VT_I2;
+				USES_CONVERSION;
+				Navigate(W2T(url.bstrVal));
+				if (SUCCEEDED(hr))  
+				{  
+					*Cancel=TRUE;  
+				}  
+			}  
+		} 
+	}
+}
+
+void MyWebBrowserWnd::OnTitleChange(LPCTSTR lpszText)
+{
+	GetParent()->SendMessage(WM_PAGE_CHANGED, 0, (LPARAM)lpszText );
+	__super::OnTitleChange(lpszText);
+}

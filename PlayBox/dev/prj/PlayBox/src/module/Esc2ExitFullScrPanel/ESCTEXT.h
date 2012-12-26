@@ -25,4 +25,5 @@ public:
 	afx_msg void OnPaint();
 	virtual BOOL OnInitDialog();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 };
