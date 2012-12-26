@@ -3,9 +3,7 @@
 #include "../../Core/AfxGlobals.h"
 #include "../../Global/GlobalSwfPath.h"
 #include "../../util/MarkupArchive.h"
-#include "../../../../CommonLib/common/YL_Base64.h"
 #include "../../../../CommonLib/common/LhcImg.h"
-#include "../../LayoutMgr/ChangeColor/IChangeColorMgr.h"
 #include "../../AppConfig/config/ConfigSettingDef.h"
 #include "../../AppConfig/config/ConfigAppDef.h"
 #include "../HTTPControl/JudgeFirewall.h"
@@ -26,17 +24,11 @@
 IMPLEMENT_DYNAMIC(MyWebBrowserWnd, CHtmlView)
 MyWebBrowserWnd::MyWebBrowserWnd(BOOL bShowLoading/* = TRUE*/):m_strURL("")
 {
-	m_bSucceed = TRUE;
-	m_bReady = FALSE;
-	m_dwStartShowTime = 0;
-	m_bHomePage = false; //默认不是主页
 	m_bShowLoading = bShowLoading;
-	AfxGetMessageManager()->AttachMessage(ID_MESSAGE_REFRESH, (IWebRefreshObserver*)this);
 }
 
 MyWebBrowserWnd::~MyWebBrowserWnd()
 {
-	AfxGetMessageManager()->DetachMessage(ID_MESSAGE_REFRESH, (IWebRefreshObserver*)this);
 }
 
 BEGIN_MESSAGE_MAP(MyWebBrowserWnd, CHtmlView)
@@ -87,13 +79,10 @@ BOOL MyWebBrowserWnd::CreateControlSite(COleControlContainer* pContainer,COleCon
 
 void MyWebBrowserWnd::Init()
 {
-	KillTimer( TIMER_CHECK_NAVIGATE );
-	m_bSucceed = TRUE;
-	m_bReady = FALSE;
+	//KillTimer( TIMER_CHECK_NAVIGATE );
 	m_strURL = "";
-	m_dwStartShowTime = 0;
-	if (::IsWindow (m_flash.m_hWnd))
-		m_flash.ShowWindow(SW_SHOW);
+	//if (::IsWindow (m_flash.m_hWnd))
+	//	m_flash.ShowWindow(SW_SHOW);
 }
 
 void MyWebBrowserWnd::Recycle()
@@ -136,13 +125,10 @@ BOOL MyWebBrowserWnd::OnEraseBkgnd(CDC* pDC)
 void MyWebBrowserWnd::Navigate( string strUrl )
 {	
 	Init();
-	//RegisterLHProtocol();
-	m_strURL = CString( strUrl.c_str() );
-
-	m_dwStartShowTime = GetTickCount();
-	SetTimer( TIMER_CHECK_NAVIGATE, ELAPSE_TIMER_CHECK_NAVIGATE, NULL );	
+	if (::IsWindow (m_flash.m_hWnd))
+		m_flash.ShowWindow(SW_SHOW);
+	//SetTimer( TIMER_CHECK_NAVIGATE, ELAPSE_TIMER_CHECK_NAVIGATE, NULL );	
 	Navigate2( strUrl.c_str() );
-	m_bSucceed = TRUE;
 }
 
 void MyWebBrowserWnd::OnNavigateError(LPCTSTR lpszURL, LPCTSTR lpszFrame, DWORD dwError, BOOL *pbCancel)
@@ -151,58 +137,22 @@ void MyWebBrowserWnd::OnNavigateError(LPCTSTR lpszURL, LPCTSTR lpszFrame, DWORD 
 	{
 		ShowErrorPage( );
 	}
-	SetTimer( TIMER_HIDE_LOADING, ELAPSE_TIMER_HIDE_LOADING, NULL );
-	if( m_bHomePage )
-	{
-		CHTTPControl::HTTPFinish_TodayRecommend();
-	}
 }
 
 void MyWebBrowserWnd::ShowErrorPage()
 {
 	string str = m_strErrorPagePath + string(m_strURL);
 	Navigate2(str.c_str(), 0, NULL);
-	m_bSucceed = FALSE;
-
-	LogUserActMsg("ERROR", "WEB_COMMEND_ERR");
-	CJudgeFirewall::SetHTTPRes( HTTP_WEB_COMMAND,0 );
 }
 
 void MyWebBrowserWnd::OnNavigateComplete2( LPCTSTR strURL )
 {
-	if( m_strURL == strURL || strstr(strURL, "SwfGamePlaying.htm") != NULL )
-	{
-		char szBuf[32];
-		sprintf(szBuf,"T:%d",GetTickCount() - m_dwStartShowTime );
-		LogUserActMsg("WEBLOADRECOM",szBuf);
-		CJudgeFirewall::SetHTTPRes( HTTP_WEB_COMMAND,1 );
-
-		m_bReady = TRUE;
-		SetTimer( TIMER_HIDE_LOADING, ELAPSE_TIMER_HIDE_LOADING, NULL );
-	}else	
-	if(strstr(strURL, "error404") != 0)
-	{
-		Refresh2(REFRESH_NORMAL);
-	}
+	SetTimer( TIMER_HIDE_LOADING, ELAPSE_TIMER_HIDE_LOADING, NULL );
 }
 
 void MyWebBrowserWnd::OnTitleChange(LPCTSTR lpszText)
 {
 	//
-}
-
-BOOL MyWebBrowserWnd::PreTranslateMessage(MSG* pMsg)
-{
-	if(WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST)
-    {
-        if(pMsg->wParam==VK_RETURN)
-		{
-			TranslateMessage(pMsg);
-			DispatchMessage(pMsg);
-			return 0;
-		}
-    }
-	return __super::PreTranslateMessage(pMsg);
 }
 
 void MyWebBrowserWnd::OnSize(UINT nType, int cx, int cy)
@@ -215,34 +165,12 @@ void MyWebBrowserWnd::OnSize(UINT nType, int cx, int cy)
 
 void MyWebBrowserWnd::OnDocumentComplete(LPCTSTR lpszURL)
 {
-	YL_Log("log_webrec.txt",LOG_DEBUG,"OnDocumentComplete: ", "%s", lpszURL);
-	if( lpszURL == m_strURL || strstr(lpszURL, "SwfGamePlaying.htm") != NULL) 
-	{
-		m_bReady = TRUE;
-		SetTimer( TIMER_HIDE_LOADING, ELAPSE_TIMER_HIDE_LOADING, NULL );
-		if( m_bHomePage )
-		{
-			CHTTPControl::HTTPFinish_TodayRecommend();
-		}
-	}
+	SetTimer( TIMER_HIDE_LOADING, ELAPSE_TIMER_HIDE_LOADING, NULL );
 	__super::OnDocumentComplete(lpszURL);
 }
 
 void MyWebBrowserWnd::OnTimer(UINT nIDEvent)
 {
-	if( nIDEvent == TIMER_CHECK_NAVIGATE )
-	{
-		DWORD dwCurTime = GetTickCount();
-		if( dwCurTime - m_dwStartShowTime > 6000 )
-		{
-			KillTimer( nIDEvent );
-			if( m_bReady == FALSE )
-			{
-				ShowErrorPage();
-				SetTimer( TIMER_HIDE_LOADING, ELAPSE_TIMER_HIDE_LOADING, NULL );
-			}
-		}
-	}else
 	if( nIDEvent == TIMER_HIDE_LOADING )
 	{
 		KillTimer( nIDEvent );
@@ -270,26 +198,7 @@ LRESULT MyWebBrowserWnd::OnCallJavaScript(WPARAM w,LPARAM l)
 	CHtmlView* phtml = (CHtmlView*)w;
 // 	string* pStr = (string*)l;
 	CallJSParam * pParam = (CallJSParam*) l;
-
 	CWebManager::GetInstance()->CallWebFromGBox( phtml, pParam/**pStr */);
 	/*delete pStr;*/
-
 	return 0;
 }
-
-void MyWebBrowserWnd::IWebRefreshOb_Refresh( const char* psz )
-{
-	if( m_bSucceed == FALSE )
-	{
-		if( strstr( psz, m_strURL.GetString() ) != NULL )
-		{
-			Navigate( m_strURL.GetString() );
-		}
-	}
-}
-
-void MyWebBrowserWnd::SetHomePage( bool bHomePage )
-{
-	m_bHomePage = bHomePage;
-}
-

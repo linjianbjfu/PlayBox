@@ -2,7 +2,6 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 #include "../../gui/CommonControl/BasicWnd.h"
-#include "../../DataInterface/IWebRefreshObserver.h"
 #include "FlashLoadingWnd.h"
 #include "afxhtml.h"
 #include "Custsite.h"
@@ -13,8 +12,7 @@ using std::string;
 
 #define WM_CALL_JAVASCRIPT	WM_USER+1001
 
-class MyWebBrowserWnd : public CHtmlView,
-						public IWebRefreshObserver
+class MyWebBrowserWnd : public CHtmlView
 {
 	DECLARE_DYNAMIC(MyWebBrowserWnd)
 
@@ -29,15 +27,11 @@ public:
 	virtual void OnNavigateError(LPCTSTR lpszURL, LPCTSTR lpszFrame, DWORD dwError, BOOL *pbCancel);
 	virtual void OnNavigateComplete2( LPCTSTR strURL );
 	virtual void OnTitleChange(LPCTSTR lpszText);
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	virtual void OnDocumentComplete(LPCTSTR lpszURL);	
-	virtual void IWebRefreshOb_Refresh(const char* psz);
 
 	void	Navigate( string strUrl );
 	void	Init();
 	void	Recycle();
-	void	SetHomePage( bool bHomePage );
-
 protected:
 	DECLARE_MESSAGE_MAP()
 
@@ -47,13 +41,9 @@ protected:
 
 public:
 	afx_msg LRESULT	OnCallJavaScript(WPARAM,LPARAM);	
-	
 	void			ShowErrorPage();
-	//void			RegisterLHProtocol();
-
 	BOOL			m_bSucceed;
 	BOOL			m_bReady;	//ÍøÒ³documentComplete
-	DWORD			m_dwStartShowTime;
 	CString			m_strURL;
 	CFlashWnd		m_flash;
 	BOOL			m_bShowLoading;
