@@ -18,6 +18,8 @@
 #include "../../Gui/CommonControl/ShockwaveFlash.h"
 #include "DownPercentWnd.h"
 #include "util/Sound.h"
+#include "src/module/Esc2ExitFullScrPanel/ESCFullDlg.h"
+#include "src/AppConfig/config/ConfigLayoutDef.h"
 
 IMPLEMENT_DYNAMIC(GamePanelWnd, CBasicWnd)
 GamePanelWnd::GamePanelWnd()
@@ -43,6 +45,8 @@ GamePanelWnd::GamePanelWnd()
 	m_pWndRight = new MyWebBrowserWnd();
 	m_pWndBottom = new MyWebBrowserWnd();
 
+	m_pEscFullTipDlg = new ESCFullDlg;
+
 	AfxGetMessageManager()->AttachMessage( ID_MESSAGE_LAYOUTMGR,(ILayoutChangeObserver*) this);
 	AfxGetMessageManager()->AttachMessage( ID_MESSAGE_PANEL_CHANGE,(IPanelChangeObserver*) this);
 	AfxGetMessageManager()->AttachMessage( ID_MESSAGE_HTTP_DOWN,(IHttpDownObserver*) this);
@@ -62,6 +66,13 @@ GamePanelWnd::~GamePanelWnd()
 	//delete m_pWndRight;
 	//delete m_pWndBottom;
 
+	if( IsWindow( m_pEscFullTipDlg->m_hWnd) )
+	{
+		m_pEscFullTipDlg->DestroyWindow();
+
+	}
+	delete m_pEscFullTipDlg;
+
 	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_LAYOUTMGR,(ILayoutChangeObserver*) this);
 	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_PANEL_CHANGE,(IPanelChangeObserver*) this);
 	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_HTTP_DOWN,(IHttpDownObserver*) this);
@@ -71,13 +82,13 @@ BEGIN_MESSAGE_MAP(GamePanelWnd, CBasicWnd)
 	ON_WM_CREATE()
 	ON_WM_DESTROY()
 	ON_WM_SIZE()
+	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_BTN_REPLAY,OnClickedReplay)
 	ON_BN_CLICKED(IDC_BTN_FULL_SCREEN,OnClickedFullScreen)
 	ON_BN_CLICKED(IDC_BTN_EXIT_FULL_SCREEN,OnClickedExitFullScreen)
 	ON_BN_CLICKED(IDC_BTN_MUTE,OnClickedMute)
 	ON_BN_CLICKED(IDC_BTN_UN_MUTE,OnClickedUnMute)
 	ON_BN_CLICKED(IDC_BTN_PAUSE,OnClickedPause)
-	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 void GamePanelWnd::InitFlashParams(CShockwaveFlash*	pGameFlash)
@@ -123,6 +134,8 @@ int GamePanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	pLayoutMgr->CreateControlPane( this, "gamepanel", "normal" );
 	pLayoutMgr->CreateBmpPane( this,"gamepanel","normal" );
+
+	m_pEscFullTipDlg->Create(IDD_DIALOG_ESCFULLSCR, this);
 
 	UpdateAllWnd();
 	return 0;
@@ -206,7 +219,10 @@ void GamePanelWnd::IPanelChangeOb_ToFullScreen( CWnd* pWnd )
 	m_bFullScreen = true;
 
 	//游戏界面获取焦点
-	m_pGameFlash->SetFocus();
+	// m_pGameFlash->SetFocus();
+
+	ShowHideEseFull(true);
+	SetTimer(ID_TIMER_ESCFULL_TIP, TIME_TIMER_ESCFULL_TIP, NULL);
 
 	YL_Log("GamePanelWnd.txt", LOG_DEBUG, "GamePanelWnd::IPanelChangeOb_ToFullScreen", "===OUT");
 }
@@ -262,7 +278,11 @@ void GamePanelWnd::IPanelChangeOb_ExitFullScreen( CWnd* pWnd )
 	}
 	UpdateAllWnd();
 	//游戏界面获取焦点
-	m_pGameFlash->SetFocus();
+	// m_pGameFlash->SetFocus();
+
+	KillTimer(ID_TIMER_ESCFULL_TIP);
+	ShowHideEseFull(false);
+
 	YL_Log("GamePanelWnd.txt", LOG_DEBUG, "GamePanelWnd::IPanelChangeOb_ExitFullScreen", "===OUT");
 }
 
@@ -710,7 +730,7 @@ void GamePanelWnd::OnClickedFullScreen()
 		GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
 	}else
 	{
-		GLOBAL_PANELCHANGEDATA->IPanelChange_ToFullScreen( GetParent() );
+		GLOBAL_PANELCHANGEDATA->IPanelChange_ToFullScreen( this );
 	}	
 }
 
@@ -721,6 +741,59 @@ void GamePanelWnd::OnClickedExitFullScreen()
 		GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
 	}else
 	{
-		GLOBAL_PANELCHANGEDATA->IPanelChange_ToFullScreen( GetParent() );
+		GLOBAL_PANELCHANGEDATA->IPanelChange_ToFullScreen( this );
 	}
+}
+
+void GamePanelWnd::ShowHideEseFull(bool isShow)
+{
+	//全屏时，disable两个按钮EQ和Desklyric
+	/////////////////////////
+	int allValue=0;
+	static int curValue=0;
+	AfxGetUserConfig()->GetConfigIntValue(CONF_LAYOUT_MODULE_NAME, CONF_LAYOUT_ESC_ALL, allValue);
+	if( isShow
+		&& (curValue<1)
+		&& (allValue<5))
+	{
+		CRect rctClient;
+		CRect rctTextBk;
+		GetWindowRect(&rctClient);
+		m_pEscFullTipDlg->GetWindowRect(&rctTextBk);
+
+		rctTextBk.left = rctClient.left + (rctClient.Width()-rctTextBk.Width()) / 2;
+		m_pEscFullTipDlg->SetWindowPos(NULL, rctTextBk.left, rctTextBk.top, 0, 0, SWP_NOSIZE);
+
+		curValue++;
+		m_pEscFullTipDlg->ShowDlg( TRUE );
+
+		if(allValue==0)
+		{
+			LogRealMsg( "ENTER_FULLSCREEN","Yes" );
+		}
+		allValue=allValue+1;
+		allValue = 0;
+		AfxGetUserConfig()->SetConfigIntValue(CONF_LAYOUT_MODULE_NAME,CONF_LAYOUT_ESC_ALL,allValue,true);
+
+	}else if( (isShow==false)
+		&& (curValue<=1) )
+	{
+		m_pEscFullTipDlg->ShowDlg( FALSE );
+	}
+}
+
+BOOL GamePanelWnd::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: Add your specialized code here and/or call the base class
+
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		if (pMsg->wParam == VK_ESCAPE)
+		{
+			OnClickedExitFullScreen();
+			return TRUE;
+		}
+	}
+
+	return __super::PreTranslateMessage(pMsg);
 }

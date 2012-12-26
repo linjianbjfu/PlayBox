@@ -12,6 +12,9 @@
 #include "util/Sound.h"
 #include "AppConfig/config/ConfigSettingDef.h"
 #include "src/module/CleanCachePanel/CleanCacheDlg.h"
+#include "src/module/Esc2ExitFullScrPanel/ESCFullDlg.h"
+#include "src/AppConfig/config/ConfigLayoutDef.h"
+#include ".\webgamepanelwnd.h"
 
 IMPLEMENT_DYNAMIC(WebGamePanelWnd, CBasicWnd)
 WebGamePanelWnd::WebGamePanelWnd()
@@ -30,6 +33,8 @@ WebGamePanelWnd::WebGamePanelWnd()
 	m_pBtnCustomService	= new CxSkinButton();
 	m_pBtnPay	= new CxSkinButton();
 
+	m_pEscFullTipDlg	= new ESCFullDlg;
+
 	AfxGetMessageManager()->AttachMessage( ID_MESSAGE_PANEL_CHANGE,(IPanelChangeObserver*) this);
 }
 
@@ -44,6 +49,14 @@ WebGamePanelWnd::~WebGamePanelWnd()
 	delete m_pBtnSite;
 	delete m_pBtnCustomService;
 	delete m_pBtnPay;
+
+	if( IsWindow( m_pEscFullTipDlg->m_hWnd) )
+	{
+		m_pEscFullTipDlg->DestroyWindow();
+
+	}
+	delete m_pEscFullTipDlg;
+
 	//do not delete m_pWndWebGame
 	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_PANEL_CHANGE,(IPanelChangeObserver*) this);
 }
@@ -52,6 +65,7 @@ BEGIN_MESSAGE_MAP(WebGamePanelWnd, CBasicWnd)
 	ON_WM_CREATE()
 	ON_WM_DESTROY()
 	ON_WM_ERASEBKGND()
+	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_BTN_WEBGAME_REFRESH,OnClickedRefresh)
 	ON_BN_CLICKED(IDC_BTN_WEBGAME_TO_FULL,OnClickedToFull)
 	ON_BN_CLICKED(IDC_BTN_WEBGAME_EXIT_FULL,OnClickedExitFull)
@@ -118,7 +132,8 @@ int WebGamePanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		m_pBtnMute->ShowWindow(SW_SHOW);
 		m_pBtnUnMute->ShowWindow(SW_HIDE);
 	}
-	
+
+	m_pEscFullTipDlg->Create(IDD_DIALOG_ESCFULLSCR, this);
 
 	return 0;
 }
@@ -192,6 +207,9 @@ void WebGamePanelWnd::IPanelChangeOb_ToFullScreen( CWnd* pWnd )
 
 	m_pBtnToFull->ShowWindow(SW_HIDE);
 	m_pBtnExitFull->ShowWindow(SW_SHOW);
+	ShowHideEseFull(true);
+	//m_pEscFullTipDlg->SetWindowPos(&wndTop, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+	SetTimer(ID_TIMER_ESCFULL_TIP, TIME_TIMER_ESCFULL_TIP, NULL);
 }
 
 void WebGamePanelWnd::SetMainWindow(bool isTopMost)
@@ -246,6 +264,8 @@ void WebGamePanelWnd::IPanelChangeOb_ExitFullScreen( CWnd* pWnd )
 
 	m_pBtnToFull->ShowWindow(SW_SHOW);
 	m_pBtnExitFull->ShowWindow(SW_HIDE);
+	KillTimer(ID_TIMER_ESCFULL_TIP);
+	ShowHideEseFull(false);
 	YL_Log("WebGamePanelWnd.txt", LOG_DEBUG, "WebGamePanelWnd::IPanelChangeOb_ExitFullScreen", "===OUT");
 }
 
@@ -309,8 +329,14 @@ void WebGamePanelWnd::OnClickedClearCache()
 {
 	CCleanCacheDlg dlg(this);
 	AfxGetUIManager()->UIAddDialog(&dlg);
-	dlg.DoModal();
+	int ret = dlg.DoModal();
 	AfxGetUIManager()->UIRemoveDialog(&dlg);
+
+	if (ret == IDOK)
+	{
+		// 重启游戏
+		OnClickedRefresh();
+	}
 }
 
 void WebGamePanelWnd::OnClickedSite()
@@ -353,4 +379,66 @@ void WebGamePanelWnd::OnClickedPay()
 		tabItem.strParam = "url=" + strValue;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
 	}
+}
+
+void WebGamePanelWnd::OnTimer(UINT_PTR nIDEvent)
+{
+	if (nIDEvent == ID_TIMER_ESCFULL_TIP)
+	{
+		KillTimer(nIDEvent);
+		ShowHideEseFull(false);
+	}
+}
+
+void WebGamePanelWnd::ShowHideEseFull(bool isShow)
+{
+	//全屏时，disable两个按钮EQ和Desklyric
+	/////////////////////////
+	int allValue=0;
+	static int curValue=0;
+	AfxGetUserConfig()->GetConfigIntValue(CONF_LAYOUT_MODULE_NAME, CONF_LAYOUT_ESC_ALL, allValue);
+	if( isShow
+		&& (curValue<1)
+		&& (allValue<5))
+	{
+		CRect rctClient;
+		CRect rctTextBk;
+		GetWindowRect(&rctClient);
+		m_pEscFullTipDlg->GetWindowRect(&rctTextBk);
+
+		rctTextBk.left = rctClient.left + (rctClient.Width()-rctTextBk.Width()) / 2;
+		m_pEscFullTipDlg->SetWindowPos(NULL, rctTextBk.left, rctTextBk.top, 0, 0, SWP_NOSIZE);
+
+		curValue++;
+		m_pEscFullTipDlg->ShowDlg( TRUE );
+
+		if(allValue==0)
+		{
+			LogRealMsg( "ENTER_FULLSCREEN","Yes" );
+		}
+		allValue=allValue+1;
+		allValue = 0;
+		AfxGetUserConfig()->SetConfigIntValue(CONF_LAYOUT_MODULE_NAME,CONF_LAYOUT_ESC_ALL,allValue,true);
+
+	}else if( (isShow==false)
+		&& (curValue<=1) )
+	{
+		m_pEscFullTipDlg->ShowDlg( FALSE );
+	}
+}
+
+BOOL WebGamePanelWnd::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: Add your specialized code here and/or call the base class
+
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		if (pMsg->wParam == VK_ESCAPE)
+		{
+			OnClickedExitFull();
+			return TRUE;
+		}
+	}
+
+	return __super::PreTranslateMessage(pMsg);
 }

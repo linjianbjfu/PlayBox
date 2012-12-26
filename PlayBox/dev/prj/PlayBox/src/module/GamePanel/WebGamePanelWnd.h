@@ -4,9 +4,19 @@
 #include "../../DataInterface/IPanelChangeObserver.h"
 #include "../../LayoutMgr/ISkinMgr.h"
 #include "Global/GlobalVariable.h"
+#include "src/module/Esc2ExitFullScrPanel/ESCFullDlg.h"
 
 class MyWebBrowserWnd;
 class CxSkinButton;
+class ESCFullDlg;
+
+#if! defined(__ESC_FULL_SCR_TIP_TIMER_DEF__)
+#define __ESC_FULL_SCR_TIP_TIMER_DEF__
+
+#define ID_TIMER_ESCFULL_TIP	10086
+#define TIME_TIMER_ESCFULL_TIP	3000
+
+#endif // __ESC_FULL_SCR_TIP_TIMER_DEF__
 
 class WebGamePanelWnd : public CBasicWnd,
 						public IPanelChangeObserver
@@ -34,9 +44,13 @@ protected:
 	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void	OnDestroy();
 	afx_msg BOOL	OnEraseBkgnd(CDC* pDC);
+	afx_msg void	OnTimer(UINT_PTR nIDEvent);
+
+	void	ShowHideEseFull(bool isShow);
 public:
 	virtual void	IPanelChangeOb_ToFullScreen( CWnd* pWnd );
 	virtual void	IPanelChangeOb_ExitFullScreen( CWnd* pWnd );
+	virtual BOOL	PreTranslateMessage(MSG* pMsg);
 	void	SetMainWindow(bool isTopMost);
 private:
 	MyWebBrowserWnd*	m_pWndWebGame;
@@ -50,6 +64,8 @@ private:
 	CxSkinButton*		m_pBtnCustomService;
 	CxSkinButton*		m_pBtnPay;
 
+	ESCFullDlg*			m_pEscFullTipDlg;
+
 	WEB_GAME			m_webGame;
 	bool				m_isMainWindowTopMost;
 	bool				m_bFullScreen;	//ÊÇ·ñÈ«ÆÁ
@@ -58,5 +74,4 @@ private:
 	CWnd*				m_pWndParent;
 public:
 	void	Recycle();
-	
 };
