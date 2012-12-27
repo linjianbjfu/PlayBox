@@ -6,6 +6,7 @@
 class MyWebBrowserWnd;
 class CxSkinButton;
 class CEditEx;
+class CLocalSearchEdit;
 
 class BrowserPanelWnd : public CBasicWnd
 {
@@ -34,7 +35,7 @@ private:
 	CxSkinButton*		m_pBtnForward;
 	CxSkinButton*		m_pBtnRefresh;
 	CxSkinButton*		m_pBtnFav;
-	CEditEx*			m_pEditAddress;
+	CLocalSearchEdit*	m_pEditAddress;
 	MyWebBrowserWnd*	m_pWndBrowser;
 public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);

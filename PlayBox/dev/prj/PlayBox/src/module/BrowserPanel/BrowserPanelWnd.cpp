@@ -8,6 +8,7 @@
 #include "../../gui/CommonControl/xStaticText.h"
 #include "../../Gui/CommonControl/EditEx.h"
 #include ".\browserpanelwnd.h"
+#include "src/GUI/CommonControl/LocalSearchEdit.h"
 
 IMPLEMENT_DYNAMIC(BrowserPanelWnd, CBasicWnd)
 BrowserPanelWnd::BrowserPanelWnd()
@@ -16,7 +17,7 @@ BrowserPanelWnd::BrowserPanelWnd()
 	m_pBtnForward = new CxSkinButton();
 	m_pBtnRefresh = new CxSkinButton();
 	m_pBtnFav = new CxSkinButton();
-	m_pEditAddress = new CEditEx();
+	m_pEditAddress = new CLocalSearchEdit();
 	m_pWndBrowser = new MyWebBrowserWnd();
 }
 

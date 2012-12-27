@@ -852,6 +852,12 @@
 					RelativePath=".\src\Gui\CommonControl\ie_explorer.h">
 				</File>
 				<File
+					RelativePath=".\src\Gui\CommonControl\LocalSearchEdit.cpp">
+				</File>
+				<File
+					RelativePath=".\src\Gui\CommonControl\LocalSearchEdit.h">
+				</File>
+				<File
 					RelativePath=".\src\Gui\CommonControl\MyBtnTreeCtrl.cpp">
 				</File>
 				<File
