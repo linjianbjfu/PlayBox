@@ -215,7 +215,13 @@
 #define IDD_DLG_ABOUT                   298
 #define ID_BTN_ABOUT_OK                 299
 #define IDD_DIALOG_CHECK_NEW_VER        300
-#define IDC_STATIC_BMP_LOADING          1018
+#define IDC_STATIC_BMP_LOADING          301
+#define IDC_BTN_GAMECENTER_MAIN_PAGE	302
+#define IDC_BTN_GAMECENTER_FLASHGAME	303
+#define IDC_BTN_GAMECENTER_WEBGAME		304
+#define IDC_BTN_GAMECENTER_SEARCH		305
+#define IDC_EDIT_GAMECENTER_SEARCH		306
+#define IDC_WND_GAMECENTER_BROWSER		307
 
 // Next default values for new objects
 // 

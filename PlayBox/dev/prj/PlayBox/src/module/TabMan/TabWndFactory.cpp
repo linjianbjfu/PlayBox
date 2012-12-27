@@ -5,6 +5,7 @@
 #include "../WebInteract/MyWebBrowserWnd.h"
 #include "../PlayedGamePanel/PlayedGameWnd.h"
 #include "../BrowserPanel/BrowserPanelWnd.h"
+#include "../GameCenterPanel/GameCenterPanelWnd.h"
 
 TabWndFactory * TabWndFactory::m_pSelf = NULL;
 
@@ -52,33 +53,26 @@ PlayedGameWnd* TabWndFactory::CreateWndPlayedGame( )
 	return pWnd;
 }
 
+#define CREATE_SPECIAL_PANEL(PANEL_TYPE) \
+	CRect rc; \
+	m_pWndParent->GetClientRect( &rc ); \
+	PANEL_TYPE* pWnd = new PANEL_TYPE(); \
+	pWnd->Create(NULL,NULL,WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS,rc,m_pWndParent, m_idWnd++); \
+	return pWnd;
+
 GamePanelWnd* TabWndFactory::CreateWndGamePanel( )
 {
-	CRect rc;
-	m_pWndParent->GetClientRect( &rc );
-	GamePanelWnd* pWnd = new GamePanelWnd();
-	pWnd->Create(NULL,NULL,WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS,rc,m_pWndParent, m_idWnd++);
-	return pWnd;
+	CREATE_SPECIAL_PANEL(GamePanelWnd);
 }
 
 WebGamePanelWnd* TabWndFactory::CreateWndWebGamePanel( )
 {
-	CRect rc;
-	m_pWndParent->GetClientRect( &rc );
-	WebGamePanelWnd* pWnd = new WebGamePanelWnd();
-	pWnd->Create(NULL,NULL,WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS,rc,m_pWndParent, m_idWnd++);
-	return pWnd;
+	CREATE_SPECIAL_PANEL(WebGamePanelWnd);
 }
 
-MyWebBrowserWnd* TabWndFactory::CreateWndMyWebBrowser( )
+GameCenterPanelWnd* TabWndFactory::CreateWndGameCenterPanel( )
 {
-	CRect rc;
-	m_pWndParent->GetClientRect( &rc );
-	MyWebBrowserWnd* pWnd = new MyWebBrowserWnd();
-	CRect rcNull(0,0,0,0);
-	pWnd->Create(NULL,NULL,WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS,rcNull,m_pWndParent, m_idWnd++);
-	pWnd->MoveWindow( &rc );
-	return pWnd;
+	CREATE_SPECIAL_PANEL(GameCenterPanelWnd);
 }
 
 BrowserPanelWnd* TabWndFactory::CreateWndBrowserPanel( )

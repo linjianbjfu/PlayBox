@@ -1507,6 +1507,16 @@
 					RelativePath=".\src\module\Esc2ExitFullScrPanel\ESCTEXT.h">
 				</File>
 			</Filter>
+			<Filter
+				Name="GameCenterPanel"
+				Filter="">
+				<File
+					RelativePath=".\src\module\GameCenterPanel\GameCenterPanelWnd.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\GameCenterPanel\GameCenterPanelWnd.h">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="datainterface"

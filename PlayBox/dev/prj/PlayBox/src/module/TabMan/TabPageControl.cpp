@@ -18,6 +18,7 @@
 
 #include <algorithm>
 #include "../BrowserPanel/BrowserPanelWnd.h"
+#include "../GameCenterPanel/GameCenterPanelWnd.h"
 
 CTabPageControl * CTabPageControl::m_pTabPageControl = NULL;
 
@@ -63,14 +64,9 @@ void CTabPageControl::ITabBarOb_CreateNewTab(TAB_ITEM & item)
 	CWnd* pWndTmp = NULL;
 	if( item.eumType == TAB_HOME )
 	{
-		string strUrl = CWebManager::GetInstance()->GetValue( item.strParam, "url" );
-		if( strUrl.length() != 0 )
-		{
-			MyWebBrowserWnd* pWnd = TabWndFactory::GetInstance()->CreateWndMyWebBrowser();
-			pWnd->Navigate( strUrl );
-			pWnd->SetHomePage( true );
-			pWndTmp = pWnd;
-		}
+		GameCenterPanelWnd* pWnd = TabWndFactory::GetInstance()->CreateWndGameCenterPanel();
+		pWnd->Navigate();
+		pWndTmp = pWnd;
 	}else
 	if( item.eumType == TAB_FLASHGAME )
 	{
@@ -216,14 +212,6 @@ void CTabPageControl::OpenHomePage()
 	{
 		TAB_ITEM ti;
 		ti.strName = "ÓÎÏ·´óÌü";
-		string strUrl;
-		AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME,CONF_SETTING_CONFIG_HOME_PAGE,strUrl);
-		char dir[MAX_PATH];
-		memset(dir, 0, MAX_PATH);
-		if(!CLhcImg::GetHomePath(dir, MAX_PATH))
-			return;
-
-		YL_StringUtil::Format( ti.strParam, "url=%s\\Resources\\StandardUI\\%s", dir, strUrl.c_str() );
 		ti.eumType  = TAB_HOME;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab( ti );
 	}
@@ -241,6 +229,3 @@ void CTabPageControl::CallJS (LPVOID lpVoid)
 		}
 	}
 }
-
-
-
