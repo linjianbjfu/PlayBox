@@ -109,6 +109,8 @@
 #define IDB_BMP_LOADING6                153
 #define IDB_BMP_LOADING7                154
 #define IDB_BMP_LOADING8                155
+#define IDD_DIALOG_ESCTEXT              156
+#define IDD_DIALOG_ESCFULLSCR           157
 #define IDC_CONFIG_BTN_DEFAULT          190
 #define IDC_CONFIG_LIST                 191
 #define IDC_STATIC_PROBLEM              192
@@ -225,7 +227,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        156
+#define _APS_NEXT_RESOURCE_VALUE        158
 #define _APS_NEXT_COMMAND_VALUE         32797
 #define _APS_NEXT_CONTROL_VALUE         1019
 #define _APS_NEXT_SYMED_VALUE           140

@@ -44,6 +44,7 @@ public:
 	afx_msg UINT OnNcHitTest(CPoint point);
 	afx_msg void OnBnClickedCleanCache();
 	afx_msg void OnBnClickedCancel();
+	afx_msg void OnBnClickedRestart();
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg LRESULT OnCleanCacheDone(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);

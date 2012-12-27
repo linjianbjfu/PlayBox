@@ -150,11 +150,6 @@ void MyWebBrowserWnd::OnNavigateComplete2( LPCTSTR strURL )
 	SetTimer( TIMER_HIDE_LOADING, ELAPSE_TIMER_HIDE_LOADING, NULL );
 }
 
-void MyWebBrowserWnd::OnTitleChange(LPCTSTR lpszText)
-{
-	//
-}
-
 void MyWebBrowserWnd::OnSize(UINT nType, int cx, int cy)
 {
 	if (IsWindow (m_flash.m_hWnd))
@@ -166,6 +161,7 @@ void MyWebBrowserWnd::OnSize(UINT nType, int cx, int cy)
 void MyWebBrowserWnd::OnDocumentComplete(LPCTSTR lpszURL)
 {
 	SetTimer( TIMER_HIDE_LOADING, ELAPSE_TIMER_HIDE_LOADING, NULL );
+	GetParent()->SendMessage(WM_PAGE_CHANGED, (WPARAM)lpszURL, 0);
 	__super::OnDocumentComplete(lpszURL);
 }
 
@@ -201,4 +197,38 @@ LRESULT MyWebBrowserWnd::OnCallJavaScript(WPARAM w,LPARAM l)
 	CWebManager::GetInstance()->CallWebFromGBox( phtml, pParam/**pStr */);
 	/*delete pStr;*/
 	return 0;
+}
+
+void MyWebBrowserWnd::OnNewWindow2(LPDISPATCH* ppDisp, BOOL* Cancel)
+{	// 限制打开新窗口
+	CComPtr<IHTMLDocument2> pHTMLDocument2;  
+
+	m_pBrowserApp->get_Document((IDispatch **)&pHTMLDocument2);  
+	if (pHTMLDocument2!=NULL)  
+	{  
+		CComPtr<IHTMLElement> pIHTMLElement;  
+		pHTMLDocument2->get_activeElement(&pIHTMLElement);  
+
+		if (pIHTMLElement!=NULL)  
+		{  
+			VARIANT url;  
+			HRESULT hr=pIHTMLElement->getAttribute(L"href", 0, &url);  
+			if (SUCCEEDED(hr))  
+			{  
+				url.vt = VT_I2;
+				USES_CONVERSION;
+				Navigate(W2T(url.bstrVal));
+				if (SUCCEEDED(hr))  
+				{  
+					*Cancel=TRUE;  
+				}  
+			}  
+		} 
+	}
+}
+
+void MyWebBrowserWnd::OnTitleChange(LPCTSTR lpszText)
+{
+	GetParent()->SendMessage(WM_PAGE_CHANGED, 0, (LPARAM)lpszText );
+	__super::OnTitleChange(lpszText);
 }

@@ -12,10 +12,15 @@ using std::string;
 
 #define WM_CALL_JAVASCRIPT	WM_USER+1001
 
-class MyWebBrowserWnd : public CHtmlView
+// 页面跳转 
+// 
+// WPARAM : (LPCTSTR) string of url		(可以为NULL)
+// LPARAM : (LPCTSTR) string of title	(可以为NULL)
+#define WM_PAGE_CHANGED	(WM_USER+501)
+
+class MyWebBrowserWnd : public CHtmlView 
 {
 	DECLARE_DYNAMIC(MyWebBrowserWnd)
-
 public:
 	MyWebBrowserWnd(BOOL bShowLoading = TRUE);
 	virtual ~MyWebBrowserWnd();
@@ -28,7 +33,7 @@ public:
 	virtual void OnNavigateComplete2( LPCTSTR strURL );
 	virtual void OnTitleChange(LPCTSTR lpszText);
 	virtual void OnDocumentComplete(LPCTSTR lpszURL);	
-
+	virtual void OnNewWindow2(LPDISPATCH* ppDisp, BOOL* Cancel);
 	void	Navigate( string strUrl );
 	void	Init();
 	void	Recycle();
@@ -42,6 +47,7 @@ protected:
 public:
 	afx_msg LRESULT	OnCallJavaScript(WPARAM,LPARAM);	
 	void			ShowErrorPage();
+
 	BOOL			m_bSucceed;
 	BOOL			m_bReady;	//网页documentComplete
 	CString			m_strURL;

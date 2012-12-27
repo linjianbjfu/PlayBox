@@ -1486,6 +1486,22 @@
 				</File>
 			</Filter>
 			<Filter
+				Name="Esc2ExitFullScrPanel"
+				Filter="">
+				<File
+					RelativePath=".\src\module\Esc2ExitFullScrPanel\ESCFullDlg.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\Esc2ExitFullScrPanel\ESCFullDlg.h">
+				</File>
+				<File
+					RelativePath=".\src\module\Esc2ExitFullScrPanel\ESCTEXT.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\Esc2ExitFullScrPanel\ESCTEXT.h">
+				</File>
+			</Filter>
+			<Filter
 				Name="GameCenterPanel"
 				Filter="">
 				<File

@@ -201,7 +201,7 @@ void CTabBarWnd::DrawBar( CDC* pDc )
 		DrawTabItemRect( pDc, m_vecTab[i], m_pBmpRectNormalLeft,
 			m_pBmpRectNormalMiddle, m_pBmpRectNormalRight, 
 			m_vecClose[i], m_pBmpCloseNormal,
-			m_vecTi[i].strName, false );
+			m_vecTi[i].strTitle, false );
 	}
 	//2画当前rect和close
 	if( m_iTabCur != -1 )
@@ -209,7 +209,7 @@ void CTabBarWnd::DrawBar( CDC* pDc )
 		DrawTabItemRect( pDc, m_vecTab[m_iTabCur], m_pBmpRectDownLeft,
 			m_pBmpRectDownMiddle, m_pBmpRectDownRight, 
 			m_vecClose[m_iTabCur], m_pBmpSelCloseNormal, 
-			m_vecTi[m_iTabCur].strName, true );
+			m_vecTi[m_iTabCur].strTitle, true );
 	}
 	//3画鼠标over的rect
 	if( m_iTabOver != -1 && m_iTabOver != m_iTabCur )
@@ -217,7 +217,7 @@ void CTabBarWnd::DrawBar( CDC* pDc )
 		DrawTabItemRect( pDc, m_vecTab[m_iTabOver], m_pBmpRectOverLeft,
 			m_pBmpRectOverMiddle, m_pBmpRectOverRight, 
 			m_vecClose[m_iTabOver], m_pBmpCloseNormal, 
-			m_vecTi[m_iTabOver].strName, false );
+			m_vecTi[m_iTabOver].strTitle, false );
 	}
 	//4画鼠标over的close
 	if( m_iCloseOver != -1 && m_iCloseOver != 0 )

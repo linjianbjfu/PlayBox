@@ -88,6 +88,13 @@ void CTabBarData::ITabBar_ChangeTab(TAB_ITEM &item)
 		GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
 	}
 	//////////////////////
+
+	// 如果没有指定title,让title等于name
+	if (item.strTitle.empty())
+	{
+		item.strTitle = item.strName;
+	}
+	
 	vector<TAB_ITEM>::iterator it = m_vecItem.begin();
 	for( ; it != m_vecItem.end(); it++ )
 	{
@@ -101,6 +108,7 @@ void CTabBarData::ITabBar_ChangeTab(TAB_ITEM &item)
 	if( it != m_vecItem.end() )
 	{
 		m_iPos = int(it - m_vecItem.begin());
+		m_vecItem[m_iPos] = item;
 		NotifyOpenExistTab(item);
 	}else
 	{
