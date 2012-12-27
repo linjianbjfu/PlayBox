@@ -10,9 +10,18 @@
 #include "../../common/YL_UserId.h"
 #include "../../common/tools.h"
 #include "../../include/YL_HTTPRequest.h"
+#include <shlobj.h>
+
+#define PLAYBOX	"\\Play Box"
+#define CONF_DB "\\cpinfo.db"
+#define CHANNEL_SECTION "qudao"
+#define CHANNEL_KEY			"Tyep"
+
 
 //#pragma comment( linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"" )
+#define _PLAY_TOOL_LOG	 
 
+FILE * fp_log = NULL;
 
 BOOL APIENTRY DllMain( HANDLE hModule, 
                        DWORD  ul_reason_for_call, 
@@ -31,31 +40,59 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 }
 
 
-
 int __stdcall CallTools(int argc, _TCHAR* argv1 = NULL,_TCHAR *argv2 = NULL,_TCHAR *argv3 = NULL,_TCHAR *argv4 = NULL)
 {
 	FILE  *fp = NULL;
+#ifdef _PLAY_TOOL_LOG	
 	char szLogPath[MAX_PATH];
 	::GetCurrentDirectory(MAX_PATH,szLogPath);
-	strcat(szLogPath,"\\ToolsLea.txt");
+	strcat(szLogPath,"\\Tools.log");
+#ifndef DEBUG
 	fp = fopen(szLogPath,"w+");
-
-
-	/*fp= fopen("D:\\Hello.txt","w+");*/
+#else
+	fp= fopen("D:\\Debug.txt","w+");
+#endif
 	if(fp != NULL)
 	{
 		fprintf(fp,"%s\n","CallTools Invoked");
-		/*fprintf(fp,"%s\n",szLogPath);*/
+		fp_log = fp;
+#ifdef DEBUG
+		fprintf(fp,"%s\n",szLogPath);
+#endif
 	}
-	
-	if( argc == 2
-		&& stricmp( argv1, "UNINSTALL" ) == 0 )
+#endif	
+	if( argc == 2)
 	{
-		string msg = "UNINSTALL";
-		string strMsg = FormatMsg(2, msg);
-		SendRealMsg( strMsg );
-		fprintf(fp,"%s----argv1:\n","UNISTALL Invoked",argv1);
+		if(stricmp( argv1, "UNINSTALL" ) == 0 )
+		{
+			string msg = "UNINSTALL";
+			//string strMsg = FormatMsg(2, msg);
+			SendRealMsg( msg,2 );
+		}
+		else if(stricmp(argv1,"INSTALL")== 0 )
+		{
+			string msg = "INSTALL";
+			SendRealMsg(msg,0);
+		}
+		else if(stricmp(argv1,"FIRST RUN")==0)
+		{
+			string msg = "FIRST RUN";
+			SendRealMsg(msg,3);
+		}
+		else if(stricmp(argv1,"ONLINE") == 0)
+		{
+			string msg = string(argv1);
+			SendRealMsg(msg,1);
+		}
+		else if(stricmp(argv1,"REINSTALL") == 0)
+		{
+			string msg = string(argv1);
+			SendRealMsg(msg,4);
+		}
+#ifdef _PLAY_TOOL_LOG	
+		fprintf(fp,"%s Invoked.\n",argv1);
 		fclose(fp);
+#endif
 		return 0;
 	}
 
@@ -66,9 +103,11 @@ int __stdcall CallTools(int argc, _TCHAR* argv1 = NULL,_TCHAR *argv2 = NULL,_TCH
 		string strKey     = string( argv3 );
 		string strValue   = string( argv4 );
 		YL_EncFileReg::WriteString( strSection.c_str(), strKey.c_str(), strValue.c_str() );
+#ifdef _PLAY_TOOL_LOG	
 		fprintf(fp,"%s----argv1:%s,argv2:%s,argv3:%s,argv4:%s\n","WRITE Invoked",\
 			argv1,argv2,argv3,argv4);
 		fclose(fp);
+#endif
 		return 0;
 	}
 	if( argc == 4 
@@ -77,18 +116,23 @@ int __stdcall CallTools(int argc, _TCHAR* argv1 = NULL,_TCHAR *argv2 = NULL,_TCH
 		string strSection = string( argv2 );
 		string strKey     = string( argv3 );
 		YL_EncFileReg::DeleteValue( HKEY_LOCAL_MACHINE, strSection.c_str(), strKey.c_str() );
+#ifdef _PLAY_TOOL_LOG	
 		fprintf(fp,"%s----argv1:%s,argv2:%s,argv3:%s\n","Del Invoked",\
 			argv1,argv2,argv3);
 		fclose(fp);
+#endif
+		
 		return 0;
 	}
+#ifdef _PLAY_TOOL_LOG	
 	fclose(fp);
-	return 1;
+#endif
 	//发送最后一次日志
 	//Update4SendLog("");
+	return 1;
 }
 
-string FormatMsg(int nMsgType, const string& msg)
+/*string FormatMsg(int nMsgType, const string& msg)
 {
 	//format <SRC:$ver|ACT:msg{$src}|U:$id>
 	string strFMsg, str;
@@ -111,8 +155,8 @@ string FormatMsg(int nMsgType, const string& msg)
 		break;
 	}
 	return strFMsg;
-}
-void SendRealMsg( string& strMsg )
+}*/
+void SendRealMsg( string& strMsg,int iMsgType )
 {
 	//Base64 加密
 	char* chInput = new char[BASE64_LENGTH(strMsg.length())+1];
@@ -128,16 +172,36 @@ void SendRealMsg( string& strMsg )
 	}
 
 	char szID[INT_LENGTH], szVersion[VERSION_LENGTH], szInstallSRC[SRC_LENGTH];
+	TCHAR szConfigFile[MAX_PATH];
 	CLhcImg::GetUserID( szID, INT_LENGTH );
 	CLhcImg::GetSoftwareVersion( szVersion, VERSION_LENGTH );
 	CLhcImg::GetInstallSRC( szInstallSRC, SRC_LENGTH );
 
+	//Get the market channel.
+	TCHAR szMarkCh[MAX_PATH];
+	GetMyDoucuments(szConfigFile);
+	strcat(szConfigFile,PLAYBOX);
+	strcat(szConfigFile,CONF_DB);
+	if(!GetPrivateProfileString(CHANNEL_SECTION,CHANNEL_KEY,NULL,szMarkCh,MAX_PATH,szConfigFile))
+	{
+
+	}
+
+	//Format the string.
 	string strURL;
-	YL_StringUtil::Format( strURL, "%s/ulog?type=ilog&ver=%s&id=%s&source=%s",
+	YL_StringUtil::Format( strURL, "%sget_info.php?a=%d&id=%s&qd=%s&v=%s",
 		szLogServer,
-		szVersion,
+		iMsgType,
 		szID,
-		szInstallSRC );
+		szMarkCh,
+		szVersion);
+	//Post the URL.
+#ifdef DEBUG
+	if(fp_log != NULL)
+	{
+		fprintf(fp_log,"The formated URL is \n %s \n",strURL.c_str());
+	}
+#endif
 
 	bool bRet = client.Request(strURL.c_str(), YL_CHTTPRequest::REQUEST_POST, 10*1000, (unsigned char*)chInput, strlen(chInput));
 	delete[] chInput;
@@ -167,4 +231,9 @@ void Update4SendLog(void *pparam)
 		}
 		FreeLibrary(hLib);
 	}
+}
+BOOL GetMyDoucuments(TCHAR *szPath)
+{
+	memset(szPath,0,MAX_PATH);
+	return (SHGetSpecialFolderPath(NULL,(LPSTR)szPath,CSIDL_PERSONAL,0));
 }
