@@ -55,11 +55,80 @@ BOOL CPlayBoxApp::InitInstance()
 	//CoInternetSetFeatureEnabled( FEATURE_DISABLE_NAVIGATION_SOUNDS, SET_FEATURE_ON_THREAD, TRUE );
 
 
-	m_strCmdLine = GetCommandLine();
+	//Get the command when started 
+	/*m_strCmdLine = GetCommandLine();
 	YL_Log("debug.txt",LOG_DEBUG,"commandline","%s",(LPCTSTR)m_strCmdLine);
-	m_strCmdLine.MakeLower();
+	m_strCmdLine.MakeLower();*/
+	LPWSTR *szArgList = NULL;
+	int nArgs = 0;
+	bool bStartupRun =false;
+	
+	szArgList = CommandLineToArgvW(GetCommandLineW(), &nArgs);
 
-	bool bStartupRun = m_strCmdLine.Find ("startuprun") != -1;
+	if(szArgList != NULL&&nArgs>1)
+	{
+		if(_stricmp ((CONST char *)szArgList[1],"startuprun")==0)
+		{
+			bStartupRun = true;
+		}
+		else
+		{
+			char szHomePath[MAX_PATH], szTool[MAX_PATH];
+			memset(szHomePath, 0 , MAX_PATH);
+			memset(szTool, 0, MAX_PATH);
+			if(!CLhcImg::GetHomePath(szHomePath, MAX_PATH))
+			{
+				YL_Log("debug.txt",LOG_DEBUG,"commandline","Cannot get the home path.");
+				return FALSE;
+			}
+			_snprintf(szTool, MAX_PATH-1, "%s\\Tool.dll", szHomePath);
+			HMODULE hLib = LoadLibrary(szTool);
+			if(hLib != NULL)
+			{
+				LPCALLTOOLS lpCallTools = (LPCALLTOOLS)GetProcAddress(hLib, "CallTools");
+				if(lpCallTools != NULL)
+				{
+					CString szArg1,szArg2,szArg3,szArg4;
+					
+					switch(nArgs)
+					{
+					case 2:
+						szArg1=szArgList[1];
+						lpCallTools((int )nArgs,szArg1.GetBuffer(),NULL,NULL,NULL);
+						szArg1.ReleaseBuffer();
+						break;
+					case 4:
+						szArg1=szArgList[1];
+						szArg2=szArgList[2];
+						szArg3=szArgList[3];
+						lpCallTools((int )nArgs,szArg1.GetBuffer(),szArg2.GetBuffer(),szArg3.GetBuffer(),NULL);
+						szArg1.ReleaseBuffer();
+						szArg2.ReleaseBuffer();
+						szArg3.ReleaseBuffer();
+						break;
+					case 5:
+						szArg1=szArgList[1];
+						szArg2=szArgList[2];
+						szArg3=szArgList[3];
+						szArg4 =szArgList[4];
+						lpCallTools((int )nArgs,szArg1.GetBuffer(),szArg2.GetBuffer(),szArg3.GetBuffer(),szArg4.GetBuffer());
+						szArg1.ReleaseBuffer();
+						szArg2.ReleaseBuffer();
+						szArg3.ReleaseBuffer();
+						szArg4.ReleaseBuffer();
+						break;
+					default:
+						break;
+					}
+					
+				}
+				FreeLibrary(hLib);
+			}
+		}
+		LocalFree(szArgList);
+	}
+
+	/* = m_strCmdLine.Find ("startuprun") != -1;*/
 
 	// ≥ı ºªØ gdi+
 	HINSTANCE lib = LoadLibrary("GdiPlus.dll");

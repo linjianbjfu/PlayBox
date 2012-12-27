@@ -1,0 +1,3 @@
+LIBRARY	Tools_1
+EXPORTS
+CallTools @1
