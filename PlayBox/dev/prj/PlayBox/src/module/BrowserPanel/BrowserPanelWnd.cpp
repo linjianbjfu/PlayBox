@@ -9,6 +9,7 @@
 #include "../../Gui/CommonControl/EditEx.h"
 #include ".\browserpanelwnd.h"
 #include "src/GUI/CommonControl/LocalSearchEdit.h"
+#include "src/GUI/util/ShowMenu.h"
 
 IMPLEMENT_DYNAMIC(BrowserPanelWnd, CBasicWnd)
 BrowserPanelWnd::BrowserPanelWnd()
@@ -43,6 +44,7 @@ BEGIN_MESSAGE_MAP(BrowserPanelWnd, CBasicWnd)
 	ON_WM_KEYDOWN()
 	ON_WM_TIMER()
 	ON_MESSAGE(WM_PAGE_CHANGED, OnPageChanging)
+	ON_COMMAND_RANGE(IDC_MENU_ITEM_BEGIN_ID, IDC_MENU_ITEM_END_ID, OnClickeFavUrlMenu)
 END_MESSAGE_MAP()
 
 int BrowserPanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -55,8 +57,25 @@ int BrowserPanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_pBtnForward->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_BROWSER_FORWARD);
 	m_pBtnRefresh->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_BROWSER_REFRESH);
 	m_pBtnFav->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_BROWSER_FAV);
-	m_pEditAddress->Create(WS_VISIBLE,rectNull,this,IDC_BTN_BROWSER_ADDRESS_BAR);
+	m_pEditAddress->Create(WS_CHILD|WS_VISIBLE|WS_TABSTOP,rectNull,this,IDC_BTN_BROWSER_ADDRESS_BAR);
 	m_pWndBrowser->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN,rectNull,this,IDC_BROWSER_WEB );
+
+	m_editFont.CreateFont(14,      // nHeight
+		0,                         // nWidth
+		0,                         // nEscapement
+		0,                         // nOrientation
+		FW_NORMAL,                 // nWeight
+		FALSE,                     // bItalic
+		FALSE,                     // bUnderline
+		0,                         // cStrikeOut
+		ANSI_CHARSET,              // nCharSet
+		OUT_DEFAULT_PRECIS,        // nOutPrecision
+		CLIP_DEFAULT_PRECIS,       // nClipPrecision
+		DEFAULT_QUALITY,           // nQuality
+		DEFAULT_PITCH | FF_SWISS,  // nPitchAndFamily
+		"宋体");
+	m_pEditAddress->SetFont(&m_editFont);
+	m_pEditAddress->SetMargins(3, 0);
 
 	ILayoutMgr* pLayoutMgr =  AfxGetUIManager()->UIGetLayoutMgr();	
 	pLayoutMgr->RegisterCtrl( this, "BrowserBack", m_pBtnBack );
@@ -95,7 +114,7 @@ void BrowserPanelWnd::OnClickedRefresh()
 
 void BrowserPanelWnd::OnClickedFav()
 {
-	//
+	ShowFavUrlMenu();
 }
 
 void BrowserPanelWnd::Navigate(string strUrl)
@@ -152,4 +171,151 @@ LRESULT BrowserPanelWnd::OnPageChanging(WPARAM wParam, LPARAM lParam)
 	}
 	// GLOBAL_TABBARDATA->ITabBar_ChangeTab(iItem);
 	return 0;
+}
+
+int BrowserPanelWnd::AddFavUrlToMenu( int &nStartItemID, int nStartPos, const char* szPath, CMenu* pMenu )
+{
+	vector<string>	m_arrSubDir;
+	CString strPath = szPath;
+	int curCnt = 0;
+
+	if(strPath[strPath.GetLength() - 1] != _T('\\'))
+		strPath += _T('\\');
+	CString strFind = strPath + "*.*";
+
+	WIN32_FIND_DATA	findData;
+	HANDLE	hFile = NULL;
+
+	hFile = FindFirstFile(strFind, &findData);
+	if (hFile != INVALID_HANDLE_VALUE)
+	{
+		do 
+		{
+			if ( strcmp(".", findData.cFileName )==0
+				|| strcmp("..", findData.cFileName)==0)
+			{
+				continue;
+			}
+
+			// 略过隐藏文件和系统文件
+			if ( (findData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
+				|| (findData.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM))
+			{
+				continue;
+			}
+
+			// 目录
+			if (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+			{
+				string strSubDir = strPath;
+				strSubDir += findData.cFileName;
+				m_arrSubDir.push_back(strSubDir);
+			}
+
+			// 文件
+			CString strFileName = findData.cFileName;
+			strFileName.MakeLower();
+			if (strFileName.Right(4) == ".url")
+			{
+				char szUrl[MAX_PATH] = {0};
+				::GetPrivateProfileString(_T("InternetShortcut"), _T("URL"),
+					"", szUrl, 400,
+					strPath+strFileName);
+
+				strFileName = strFileName.Left(strFileName.GetLength() - 4);
+
+				m_arrFavMenuItemParam.push_back(szUrl);
+				pMenu->AppendMenu(MF_STRING|MF_ENABLED, nStartItemID++, strFileName.GetBuffer(0));
+				strFileName.ReleaseBuffer();
+				curCnt++;
+			}
+
+		} while (FindNextFile(hFile, &findData));
+	}
+	FindClose(hFile);
+
+	vector<string>::iterator it = m_arrSubDir.begin();
+	for (; it != m_arrSubDir.end(); it++)
+	{
+		CMenu *pSubMenu = new CMenu;
+		pSubMenu->CreatePopupMenu();
+
+		int n = AddFavUrlToMenu(nStartItemID, 0, it->c_str(), pSubMenu);
+		if (n > 0)
+		{
+			string dir = *it;
+			size_t pos = dir.rfind('\\');
+			dir = dir.substr(pos+1, dir.length()-pos);
+			pMenu->InsertMenu(nStartItemID++, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT)pSubMenu->m_hMenu, dir.c_str());
+			pSubMenu->Detach();
+			m_arrFavMenuItemParam.push_back(it->c_str());
+			curCnt++;
+		}
+		delete pSubMenu;
+	}
+
+	return curCnt;
+}
+
+void BrowserPanelWnd::ShowFavUrlMenu()
+{
+	char szPath[MAX_PATH] = {0};
+
+	if ( SHGetSpecialFolderPath(NULL, szPath, CSIDL_FAVORITES, FALSE) )
+	{
+		CMenu menu;
+		menu.CreatePopupMenu();
+		if ( 1 )
+		{
+			int nBeginID = IDC_MENU_ITEM_BEGIN_ID;
+			m_arrFavMenuItemParam.clear();
+
+			menu.AppendMenu(MF_STRING|MF_ENABLED, nBeginID++, "添加到收藏夹");
+			m_arrFavMenuItemParam.push_back("Favorate");
+
+			menu.AppendMenu(MF_SEPARATOR, nBeginID++);
+			m_arrFavMenuItemParam.push_back("Separator");
+
+			AddFavUrlToMenu(nBeginID, 2, szPath, &menu);
+
+			CRect rct;
+			m_pBtnFav->GetWindowRect(rct);
+			menu.TrackPopupMenu(0, rct.right, rct.bottom, this);
+			menu.DestroyMenu();
+		}
+	}
+}
+
+void BrowserPanelWnd::OnClickeFavUrlMenu(UINT nID)
+{
+	if (nID == IDC_MENU_ITEM_BEGIN_ID)
+	{
+		// 添加到收藏夹
+		CString strURL;
+		TAB_ITEM item;
+		char szPath[MAX_PATH] = {0};
+		m_pEditAddress->GetWindowText(strURL);	// 获取地址栏的地址
+		GLOBAL_TABBARDATA->ITabBar_GetCurItem(item);	// 获取tab页标题
+
+		if ( SHGetSpecialFolderPath(NULL, szPath, CSIDL_FAVORITES, FALSE) )
+		{
+			CString strFile = szPath;
+			if(strFile[strFile.GetLength() - 1] != _T('\\'))
+				strFile += _T('\\');
+			strFile += item.strTitle.c_str();
+			strFile += ".url";
+			
+			// 写入快捷方式到收藏夹
+			::WritePrivateProfileString("InternetShortcut", "URL",
+				strURL.GetBuffer(0),
+				strFile.GetBuffer(0));
+			strURL.ReleaseBuffer();
+			strFile.ReleaseBuffer();
+		}
+	}
+	else
+	{
+		string url = m_arrFavMenuItemParam[nID-IDC_MENU_ITEM_BEGIN_ID];
+		Navigate(url);
+	}
 }

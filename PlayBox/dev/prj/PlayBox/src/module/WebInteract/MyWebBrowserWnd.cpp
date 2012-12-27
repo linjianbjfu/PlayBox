@@ -25,6 +25,7 @@ IMPLEMENT_DYNAMIC(MyWebBrowserWnd, CHtmlView)
 MyWebBrowserWnd::MyWebBrowserWnd(BOOL bShowLoading/* = TRUE*/):m_strURL("")
 {
 	m_bShowLoading = bShowLoading;
+	m_lpDisp = NULL;
 }
 
 MyWebBrowserWnd::~MyWebBrowserWnd()
@@ -147,7 +148,7 @@ void MyWebBrowserWnd::ShowErrorPage()
 
 void MyWebBrowserWnd::OnNavigateComplete2( LPCTSTR strURL )
 {
-	SetTimer( TIMER_HIDE_LOADING, ELAPSE_TIMER_HIDE_LOADING, NULL );
+// 	SetTimer( TIMER_HIDE_LOADING, ELAPSE_TIMER_HIDE_LOADING, NULL );
 }
 
 void MyWebBrowserWnd::OnSize(UINT nType, int cx, int cy)
@@ -160,9 +161,38 @@ void MyWebBrowserWnd::OnSize(UINT nType, int cx, int cy)
 
 void MyWebBrowserWnd::OnDocumentComplete(LPCTSTR lpszURL)
 {
-	SetTimer( TIMER_HIDE_LOADING, ELAPSE_TIMER_HIDE_LOADING, NULL );
-	GetParent()->SendMessage(WM_PAGE_CHANGED, (WPARAM)lpszURL, 0);
+//	SetTimer( TIMER_HIDE_LOADING, ELAPSE_TIMER_HIDE_LOADING, NULL );
+// 	GetParent()->SendMessage(WM_PAGE_CHANGED, (WPARAM)lpszURL, 0);
 	__super::OnDocumentComplete(lpszURL);
+}
+
+void MyWebBrowserWnd::NavigateComplete2(LPDISPATCH pDisp, VARIANT* URL)
+{
+	if(!m_lpDisp)
+	{
+		m_lpDisp = pDisp;
+		USES_CONVERSION;
+		GetParent()->SendMessage(WM_PAGE_CHANGED, (WPARAM)W2T(URL->bstrVal), 0);
+	}
+}
+
+void MyWebBrowserWnd::DocumentComplete(LPDISPATCH pDisp, VARIANT* URL)
+{
+	LPDISPATCH lpWBDisp = NULL;
+	HRESULT    hr = NULL;
+
+	hr = m_pBrowserApp->QueryInterface(IID_IDispatch, (void**)&lpWBDisp);
+	ASSERT(SUCCEEDED(hr));
+
+	if (m_lpDisp &&(m_lpDisp == pDisp))
+	{
+		m_lpDisp = NULL;//Reset glpDisp
+		SetTimer( TIMER_HIDE_LOADING, ELAPSE_TIMER_HIDE_LOADING, NULL );
+	}
+
+	lpWBDisp->Release();
+
+	__super::DocumentComplete(pDisp, URL);
 }
 
 void MyWebBrowserWnd::OnTimer(UINT nIDEvent)

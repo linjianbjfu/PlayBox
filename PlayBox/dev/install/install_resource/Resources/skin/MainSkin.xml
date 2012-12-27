@@ -216,5 +216,7 @@
 	<color name="PlayedGameBkColor" value="ffffff"/>
 	<color name="PlayedGameNameColor" value="333333"/>
 	<color name="PlayedGameFrameBorder" value="ffaf26"/>
+	<color name="SearchInputEditBK" value="93A3A3" />
+	<color name="SearchInputEditText" value="000000" />
 </colors>
 </root>

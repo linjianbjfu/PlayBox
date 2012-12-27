@@ -29,6 +29,8 @@ public:
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName,DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID,CCreateContext* pContext = NULL);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 
+	virtual void NavigateComplete2(LPDISPATCH pDisp, VARIANT* URL);
+	virtual void DocumentComplete(LPDISPATCH pDisp, VARIANT* URL);
 	virtual void OnNavigateError(LPCTSTR lpszURL, LPCTSTR lpszFrame, DWORD dwError, BOOL *pbCancel);
 	virtual void OnNavigateComplete2( LPCTSTR strURL );
 	virtual void OnTitleChange(LPCTSTR lpszText);
@@ -57,4 +59,6 @@ private:
 	bool			m_bHomePage;
 	CCustomOccManager*		m_Mgr;	
 	string			m_strErrorPagePath;
+
+	LPDISPATCH		m_lpDisp;//用于判断网页加载是否真正完毕
 };

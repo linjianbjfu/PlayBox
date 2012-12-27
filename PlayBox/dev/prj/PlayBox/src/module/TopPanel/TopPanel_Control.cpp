@@ -89,7 +89,7 @@ void CTopPanelControl::ShowMenu(CShowMenu **ppShowMenu, CPoint p)
 	//{
 	//	pMenu->DisableItem( ID_MEMU_LOGON_OUT );
 	//}
-	
+
 	if( !AfxGetUIManager()->UICanExit() )
 		pMenu->DisableItem(ID_APP_EXIT);
 
