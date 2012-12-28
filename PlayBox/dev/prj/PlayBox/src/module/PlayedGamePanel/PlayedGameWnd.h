@@ -1,42 +1,38 @@
 #pragma once
-#include "LocalMusicCoverList.h"
-#include "../../gui/util/ShowMenu.h"
-#include "../../gui/util/WToolTips.h"
-#include "../../gui/CommonControl/SkinButton2.h"
-#include "../../datainterface/IDownDataDef.h"
+#include "../../gui/CommonControl/BasicWnd.h"
 
-class PlayedGameWnd : public CLocalMusicCoverList
+class CxSkinButton;
+class PlayedGameListPanelWnd;
+class MyWebBrowserWnd;
+class CUserLogedInWnd;
+class CUserLogedOutWnd;
+
+class PlayedGameWnd : public CBasicWnd
 {
 	DECLARE_DYNAMIC(PlayedGameWnd)
 public:
 	PlayedGameWnd();
 	virtual ~PlayedGameWnd();
-private:
-	CShowMenu*		m_pMenu;
-	CCWToolTips		m_tootip;
-	bool			m_bTrackMouse;
-	int				m_iMouseDownItem;
-	CSkinButton2*	m_playBtn;
-	string			m_szKey;
-	string			m_szKeyWord;
-	int				m_iMovePreItem;
 protected:
-	int	 ReGetData();
-	void DrawPlayBtn(CRect rc,BOOL blNormal=TRUE);
-
 	DECLARE_MESSAGE_MAP()
-	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
-	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
-	afx_msg int	 OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-	afx_msg LRESULT	OnMouseLeave(WPARAM wParam, LPARAM lParam);
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
-public:
-	afx_msg void OnDestroy();
-	void	Recycle();
-	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
+	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg void	OnDestroy();
+	afx_msg void	OnClickedTimerOrder();
+	afx_msg void	OnClickedToWebGame();
+	afx_msg void	OnClickedToFlashGame();
+	afx_msg void	OnClickedToDownloadManager();
+	afx_msg void	OnClickedToCollectedGame();
+	afx_msg void	OnClickedToDelete();
+
+private:
+	CxSkinButton*	m_pBtnTimeOrder;
+	CxSkinButton*	m_pBtnToWebGame;
+	CxSkinButton*	m_pBtnToFlashGame;
+	CxSkinButton*	m_pBtnToDownloadManager;
+	CxSkinButton*	m_pBtnToCollectedGame;
+	CxSkinButton*	m_pBtnToDelete;
+	PlayedGameListPanelWnd*	m_pWndGameListWnd;
+	MyWebBrowserWnd*	m_pWndRecommand;
+	CUserLogedInWnd*	m_pWndLogedIn;
+	CUserLogedOutWnd*	m_pWndLogedOut;
 };

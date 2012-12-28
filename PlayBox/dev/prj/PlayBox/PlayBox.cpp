@@ -85,43 +85,43 @@ BOOL CPlayBoxApp::InitInstance()
 			HMODULE hLib = LoadLibrary(szTool);
 			if(hLib != NULL)
 			{
-				LPCALLTOOLS lpCallTools = (LPCALLTOOLS)GetProcAddress(hLib, "CallTools");
-				if(lpCallTools != NULL)
-				{
-					CString szArg1,szArg2,szArg3,szArg4;
-					
-					switch(nArgs)
-					{
-					case 2:
-						szArg1=szArgList[1];
-						lpCallTools((int )nArgs,szArg1.GetBuffer(),NULL,NULL,NULL);
-						szArg1.ReleaseBuffer();
-						break;
-					case 4:
-						szArg1=szArgList[1];
-						szArg2=szArgList[2];
-						szArg3=szArgList[3];
-						lpCallTools((int )nArgs,szArg1.GetBuffer(),szArg2.GetBuffer(),szArg3.GetBuffer(),NULL);
-						szArg1.ReleaseBuffer();
-						szArg2.ReleaseBuffer();
-						szArg3.ReleaseBuffer();
-						break;
-					case 5:
-						szArg1=szArgList[1];
-						szArg2=szArgList[2];
-						szArg3=szArgList[3];
-						szArg4 =szArgList[4];
-						lpCallTools((int )nArgs,szArg1.GetBuffer(),szArg2.GetBuffer(),szArg3.GetBuffer(),szArg4.GetBuffer());
-						szArg1.ReleaseBuffer();
-						szArg2.ReleaseBuffer();
-						szArg3.ReleaseBuffer();
-						szArg4.ReleaseBuffer();
-						break;
-					default:
-						break;
-					}
-					
-				}
+				//LPCALLTOOLS lpCallTools = (LPCALLTOOLS)GetProcAddress(hLib, "CallTools");
+				//if(lpCallTools != NULL)
+				//{
+				//	CString szArg1,szArg2,szArg3,szArg4;
+				//	
+				//	switch(nArgs)
+				//	{
+				//	case 2:
+				//		szArg1=szArgList[1];
+				//		lpCallTools((int )nArgs,szArg1.GetBuffer(),NULL,NULL,NULL);
+				//		szArg1.ReleaseBuffer();
+				//		break;
+				//	case 4:
+				//		szArg1=szArgList[1];
+				//		szArg2=szArgList[2];
+				//		szArg3=szArgList[3];
+				//		lpCallTools((int )nArgs,szArg1.GetBuffer(),szArg2.GetBuffer(),szArg3.GetBuffer(),NULL);
+				//		szArg1.ReleaseBuffer();
+				//		szArg2.ReleaseBuffer();
+				//		szArg3.ReleaseBuffer();
+				//		break;
+				//	case 5:
+				//		szArg1=szArgList[1];
+				//		szArg2=szArgList[2];
+				//		szArg3=szArgList[3];
+				//		szArg4 =szArgList[4];
+				//		lpCallTools((int )nArgs,szArg1.GetBuffer(),szArg2.GetBuffer(),szArg3.GetBuffer(),szArg4.GetBuffer());
+				//		szArg1.ReleaseBuffer();
+				//		szArg2.ReleaseBuffer();
+				//		szArg3.ReleaseBuffer();
+				//		szArg4.ReleaseBuffer();
+				//		break;
+				//	default:
+				//		break;
+				//	}
+				//	
+				//}
 				FreeLibrary(hLib);
 			}
 		}

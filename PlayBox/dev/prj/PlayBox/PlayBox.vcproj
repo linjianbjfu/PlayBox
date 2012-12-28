@@ -1426,6 +1426,12 @@
 					RelativePath=".\src\module\PlayedGamePanel\LocalMusicCoverList.h">
 				</File>
 				<File
+					RelativePath=".\src\module\PlayedGamePanel\PlayedGameListPanelWnd.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\PlayedGamePanel\PlayedGameListPanelWnd.h">
+				</File>
+				<File
 					RelativePath=".\src\module\PlayedGamePanel\PlayedGameWnd.cpp">
 				</File>
 				<File
@@ -1515,6 +1521,22 @@
 				</File>
 				<File
 					RelativePath=".\src\module\GameCenterPanel\GameCenterPanelWnd.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="UserMan"
+				Filter="">
+				<File
+					RelativePath=".\src\module\UserMan\UserLogedInPanelWnd.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\UserMan\UserLogedInPanelWnd.h">
+				</File>
+				<File
+					RelativePath=".\src\module\UserMan\UserLogedOutPanelWnd.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\UserMan\UserLogedOutPanelWnd.h">
 				</File>
 			</Filter>
 		</Filter>
