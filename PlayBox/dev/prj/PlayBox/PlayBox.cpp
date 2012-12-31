@@ -85,6 +85,8 @@ BOOL CPlayBoxApp::InitInstance()
 			HMODULE hLib = LoadLibrary(szTool);
 			if(hLib != NULL)
 			{
+//				int __stdcall CallTools(int argc, _TCHAR* argv1 ,_TCHAR *argv2 ,_TCHAR *argv3 ,_TCHAR *argv4);
+				typedef int (WINAPI* LPCALLTOOLS)(int argc, _TCHAR* argv1 ,_TCHAR *argv2 ,_TCHAR *argv3 ,_TCHAR *argv4);
 				LPCALLTOOLS lpCallTools = (LPCALLTOOLS)GetProcAddress(hLib, "CallTools");
 				if(lpCallTools != NULL)
 				{

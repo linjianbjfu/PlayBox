@@ -67,6 +67,44 @@
 	</background>
 </wndpanel>
 
+<wndpanel name="playedgamepanel" mode="normal">
+	<background name="normal" ori="NO_POS" background_color="ffffff">
+		<paneitem name="PlayedGameCtrlPanelTextBk" type="bmp" start_x_left="34" start_y_top="43" x_delta="74" y_delta="18" />
+		<paneitem name="PlayedGameSeperatorBk" type="bmp" start_x_right="259" start_y_top="0" x_delta="1" end_y_bottom="0" />
+		<paneitem name="PlayedGameSeperatorBk" type="bmp" start_x_right="259" start_y_top="109" end_x_right="0" y_delta="1" />
+	</background>
+	<controlpanel name="normal" ori="NO_POS">
+		<paneitem name="PlayedGameTimeOrder" type="button" tooltip="按时间排序" bmp="PlayedGameTimeOrder" start_x_right="502"  start_y_top="36" x_delta="30" y_delta="24" />
+		<paneitem name="PlayedGameToWebGame" type="button" tooltip="显示网页游戏" bmp="PlayedGameToWebGame" start_x_right="472"  start_y_top="36" x_delta="30" y_delta="24" />
+		<paneitem name="PlayedGameToFlashGame" type="button" tooltip="显示小游戏" bmp="PlayedGameToFlashGame" start_x_right="442"  start_y_top="36" x_delta="30" y_delta="24" />
+		<paneitem name="PlayedGameToDownloadManager" type="button" tooltip="下载管理" bmp="PlayedGameToDownloadManager" start_x_right="412"  start_y_top="36" x_delta="30" y_delta="24" />
+		<paneitem name="PlayedGameToCollectedGame" type="button" tooltip="显示收藏" bmp="PlayedGameToCollectedGame" start_x_right="382"  start_y_top="36" x_delta="30" y_delta="24" />
+		<paneitem name="PlayedGameDelete" type="button" tooltip="删除" bmp="PlayedGameDelete" start_x_right="338"  start_y_top="36" x_delta="30" y_delta="24" />
+		<paneitem name="PlayedGameGameListPanel" type = "wnd" start_x_left="0"  start_y_top="94" end_x_right="259" end_y_bottom="0" />
+		<panemulti name="UserMan_LogedIn_LogedOut" ori="VERT" current="UserMan_LogedOut" start_x_right="258" start_y_top="0" x_delta="258" y_delta="109">
+			<paneitem name="UserMan_LogedIn" type="wnd" greedy="1"/>	
+			<paneitem name="UserMan_LogedOut" type="wnd" greedy="1"/>
+		</panemulti>
+		<paneitem name="PlayedGameRecommandWebPanel"   type="wnd"  start_x_right="258" x_delta="258" start_y_top="110" end_y_bottom="0" /> 
+	</controlpanel>
+</wndpanel>
+
+<wndpanel name="usermanlogedinpanel" mode="normal">
+	<background name="normal" ori="NO_POS" background_color="ffffff">
+		<paneitem name="UserManLogoutBk" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_bottom="0" />
+	</background>
+</wndpanel>
+
+<wndpanel name="usermanlogedoutpanel" mode="normal">
+	<background name="normal" ori="NO_POS" background_color="ffffff">
+		<paneitem name="UserManLogoutBk" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_bottom="0" />
+	</background>
+	<controlpanel name="normal" ori="NO_POS">
+		<paneitem name="UserManLogin" type="button" tooltip="登录"  bmp="UserManLogin" start_x_left="79" start_y_top="45" x_delta="51" y_delta="25" />
+		<paneitem name="UserManRegister" type="button" tooltip="注册"  bmp="UserManRegister" start_x_left="130"  start_y_top="45" x_delta="49" y_delta="25" />
+	</controlpanel>
+</wndpanel>
+
 <wndpanel name="gamepanel" mode="normal">
 	<background name="normal" ori="NO_POS" background_color="dae8f4">
 		<paneitem name="FlashGameControlBarBg" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_top="40" />
