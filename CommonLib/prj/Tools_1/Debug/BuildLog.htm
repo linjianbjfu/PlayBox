@@ -11,7 +11,19 @@ Build Log
 </h3>
 </pre></table><table width=100% bgcolor=#DFDFE5><tr><td><font face=arial size=+2>
 Command Lines
-</font></table><table width=* cellspacing=0 cellpadding=0><tr><td width=0 bgcolor=#EDEDF5>&nbsp;</td><td width=0 bgcolor=#FFFFFF>&nbsp;</td><td width=*><pre>Creating temporary file "e:\PlayBox\CommonLib\prj\Tools_1\Debug\RSP000001.rsp" with contents
+</font></table><table width=* cellspacing=0 cellpadding=0><tr><td width=0 bgcolor=#EDEDF5>&nbsp;</td><td width=0 bgcolor=#FFFFFF>&nbsp;</td><td width=*><pre>Creating temporary file "d:\PlayBox\CommonLib\prj\Tools_1\Debug\RSP000017.rsp" with contents
+[
+/Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "TOOLS_1_EXPORTS" /D "_WINDLL" /D "_MBCS" /Gm /EHsc /RTC1 /MTd /YX"stdafx.h" /Fp"Debug/Tool.pch" /Fo"Debug/" /Fd"Debug/vc70.pdb" /W3 /c /Wp64 /ZI /TP
+.\Tools_1.cpp
+]
+Creating command line "cl.exe @d:\PlayBox\CommonLib\prj\Tools_1\Debug\RSP000017.rsp /nologo"
+Creating temporary file "d:\PlayBox\CommonLib\prj\Tools_1\Debug\RSP000018.rsp" with contents
+[
+/Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "TOOLS_1_EXPORTS" /D "_WINDLL" /D "_MBCS" /Gm /EHsc /RTC1 /MTd /Yc"stdafx.h" /Fp"Debug/Tool.pch" /Fo"Debug/" /Fd"Debug/vc70.pdb" /W3 /c /Wp64 /ZI /TP
+.\stdafx.cpp
+]
+Creating command line "cl.exe @d:\PlayBox\CommonLib\prj\Tools_1\Debug\RSP000018.rsp /nologo"
+Creating temporary file "d:\PlayBox\CommonLib\prj\Tools_1\Debug\RSP000019.rsp" with contents
 [
 /OUT:"C:\Program Files (x86)\YoungPlayBox\Tool.dll" /INCREMENTAL /NOLOGO /DLL /DEF:"Tools_1.def" /DEBUG /PDB:"Debug/Tools_1.pdb" /SUBSYSTEM:WINDOWS /IMPLIB:"Debug/Tools_1.lib" /MACHINE:X86  kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
 .\Debug\stdafx.obj
@@ -30,13 +42,25 @@ Command Lines
 .\Debug\oiosocket2.obj
 .\Debug\YL_HTTPRequest.obj
 ]
-Creating command line "link.exe @e:\PlayBox\CommonLib\prj\Tools_1\Debug\RSP000001.rsp"
+Creating command line "link.exe @d:\PlayBox\CommonLib\prj\Tools_1\Debug\RSP000019.rsp"
 </pre></table><table width=100% bgcolor=#DFDFE5><tr><td><font face=arial size=+2>
 Output Window
-</font></table><table width=* cellspacing=0 cellpadding=0><tr><td width=0 bgcolor=#EDEDF5>&nbsp;</td><td width=0 bgcolor=#FFFFFF>&nbsp;</td><td width=*><pre>Linking...
+</font></table><table width=* cellspacing=0 cellpadding=0><tr><td width=0 bgcolor=#EDEDF5>&nbsp;</td><td width=0 bgcolor=#FFFFFF>&nbsp;</td><td width=*><pre>Compiling...
+Skipping... (no relevant changes detected)
+stdafx.cpp
+Compiling...
+Tools_1.cpp
+d:\PlayBox\CommonLib\prj\Tools_1\Tools_1.cpp(206) : warning C4267: 'argument' : conversion from 'size_t' to 'unsigned int', possible loss of data
+Linking...
+   Creating library Debug/Tools_1.lib and object Debug/Tools_1.exp
+Tools_1.exp : warning LNK4070: /OUT:Tools_1.dll directive in .EXP differs from output filename 'C:\Program Files (x86)\YoungPlayBox\Tool.dll'; ignoring directive
+Tools_1.obj : warning LNK4217: locally defined symbol ??1YL_CHTTPRequest@@QAE@XZ (public: __thiscall YL_CHTTPRequest::~YL_CHTTPRequest(void)) imported in function "void __cdecl SendRealMsg(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &,int)" (?SendRealMsg@@YAXAAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z)
+Tools_1.obj : warning LNK4217: locally defined symbol ?Request@YL_CHTTPRequest@@QAE_NABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@W4REQUEST_TYPE@1@JPAEI@Z (public: bool __thiscall YL_CHTTPRequest::Request(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,enum YL_CHTTPRequest::REQUEST_TYPE,long,unsigned char *,unsigned int)) imported in function "void __cdecl SendRealMsg(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &,int)" (?SendRealMsg@@YAXAAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z)
+Tools_1.obj : warning LNK4217: locally defined symbol ??0YL_CHTTPRequest@@QAE@XZ (public: __thiscall YL_CHTTPRequest::YL_CHTTPRequest(void)) imported in function "void __cdecl SendRealMsg(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &,int)" (?SendRealMsg@@YAXAAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z)
+LINK : warning LNK4039: section 'SHARED' specified with /SECTION option does not exist
 </pre></table><table width=100% bgcolor=#DFDFE5><tr><td><font face=arial size=+2>
 Results
 </font></table><table width=* cellspacing=0 cellpadding=0><tr><td width=0 bgcolor=#EDEDF5>&nbsp;</td><td width=0 bgcolor=#FFFFFF>&nbsp;</td><td width=*><pre>
-Build log was saved at "file://e:\PlayBox\CommonLib\prj\Tools_1\Debug\BuildLog.htm"
-Tools_1 - 0 error(s), 0 warning(s)</pre></table><table   width=100% height=20 bgcolor=#CFCFE5><tr><td><font face=arial size=+2>
+Build log was saved at "file://d:\PlayBox\CommonLib\prj\Tools_1\Debug\BuildLog.htm"
+Tools_1 - 0 error(s), 6 warning(s)</pre></table><table   width=100% height=20 bgcolor=#CFCFE5><tr><td><font face=arial size=+2>
 </font></table></body></html>
