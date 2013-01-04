@@ -7,11 +7,7 @@ class MyWebBrowserWnd;
 class CxSkinButton;
 class CEditEx;
 class CLocalSearchEdit;
-
-// 收藏夹--菜单 ID
-// 本对话框其他按钮ID不应与此段重复
-#define IDC_MENU_ITEM_BEGIN_ID		0xE000
-#define IDC_MENU_ITEM_END_ID		0xFFF0
+class CFavUrlMenuDlg;
 
 class BrowserPanelWnd : public CBasicWnd
 {
@@ -33,7 +29,9 @@ protected:
 	afx_msg void	OnClickedRefresh();
 	afx_msg void	OnClickedFav();	
 	afx_msg LRESULT OnPageChanging(WPARAM wParam, LPARAM lParam);
-	afx_msg void	OnClickeFavUrlMenu(UINT nID);
+
+	// WM_MENU_CICKED : (WM_USER+120)
+	afx_msg LRESULT OnClickeFavMenuItem(WPARAM wParam, LPARAM lParam);
 
 	void	ShowFavUrlMenu();
 
@@ -53,6 +51,7 @@ private:
 	CLocalSearchEdit*	m_pEditAddress;
 	CFont				m_editFont;
 	MyWebBrowserWnd*	m_pWndBrowser;
+	CFavUrlMenuDlg*		m_pFavUrlDlg;
 
 	vector<string>		m_arrFavMenuItemParam;
 

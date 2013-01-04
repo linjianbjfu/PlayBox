@@ -10,6 +10,7 @@
 #include ".\browserpanelwnd.h"
 #include "src/GUI/CommonControl/LocalSearchEdit.h"
 #include "src/GUI/util/ShowMenu.h"
+#include "src/module/BrowserPanel/FavUrlMenuDlg.h"
 
 IMPLEMENT_DYNAMIC(BrowserPanelWnd, CBasicWnd)
 BrowserPanelWnd::BrowserPanelWnd()
@@ -20,6 +21,7 @@ BrowserPanelWnd::BrowserPanelWnd()
 	m_pBtnFav = new CxSkinButton();
 	m_pEditAddress = new CLocalSearchEdit();
 	m_pWndBrowser = new MyWebBrowserWnd();
+	m_pFavUrlDlg = NULL;
 }
 
 BrowserPanelWnd::~BrowserPanelWnd()
@@ -37,14 +39,14 @@ BEGIN_MESSAGE_MAP(BrowserPanelWnd, CBasicWnd)
 	ON_WM_CREATE()
 	ON_WM_DESTROY()
 	ON_WM_SIZE()
+	ON_WM_KEYDOWN()
+	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_BTN_BROWSER_BACK,OnClickedBack)
 	ON_BN_CLICKED(IDC_BTN_BROWSER_FORWARD,OnClickedForward)
 	ON_BN_CLICKED(IDC_BTN_BROWSER_REFRESH,OnClickedRefresh)
 	ON_BN_CLICKED(IDC_BTN_BROWSER_FAV,OnClickedFav)
-	ON_WM_KEYDOWN()
-	ON_WM_TIMER()
 	ON_MESSAGE(WM_PAGE_CHANGED, OnPageChanging)
-	ON_COMMAND_RANGE(IDC_MENU_ITEM_BEGIN_ID, IDC_MENU_ITEM_END_ID, OnClickeFavUrlMenu)
+	ON_MESSAGE(WM_MENU_CICKED, OnClickeFavMenuItem)
 END_MESSAGE_MAP()
 
 int BrowserPanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -76,6 +78,7 @@ int BrowserPanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		"宋体");
 	m_pEditAddress->SetFont(&m_editFont);
 	m_pEditAddress->SetMargins(3, 0);
+	m_pEditAddress->ModifyStyle(ES_MULTILINE, 0);
 
 	ILayoutMgr* pLayoutMgr =  AfxGetUIManager()->UIGetLayoutMgr();	
 	pLayoutMgr->RegisterCtrl( this, "BrowserBack", m_pBtnBack );
@@ -259,52 +262,37 @@ int BrowserPanelWnd::AddFavUrlToMenu( int &nStartItemID, int nStartPos, const ch
 
 void BrowserPanelWnd::ShowFavUrlMenu()
 {
-	char szPath[MAX_PATH] = {0};
-
-	if ( SHGetSpecialFolderPath(NULL, szPath, CSIDL_FAVORITES, FALSE) )
+	if (m_pFavUrlDlg != NULL)
 	{
-		CMenu menu;
-		menu.CreatePopupMenu();
-		if ( 1 )
-		{
-			int nBeginID = IDC_MENU_ITEM_BEGIN_ID;
-			m_arrFavMenuItemParam.clear();
-
-			menu.AppendMenu(MF_STRING|MF_ENABLED, nBeginID++, "添加到收藏夹");
-			m_arrFavMenuItemParam.push_back("Favorate");
-
-			menu.AppendMenu(MF_SEPARATOR, nBeginID++);
-			m_arrFavMenuItemParam.push_back("Separator");
-
-			AddFavUrlToMenu(nBeginID, 2, szPath, &menu);
-
-			CRect rct;
-			m_pBtnFav->GetWindowRect(rct);
-			menu.TrackPopupMenu(0, rct.right, rct.bottom, this);
-			menu.DestroyMenu();
-		}
+		delete m_pFavUrlDlg;
+		m_pFavUrlDlg = NULL;
 	}
+	m_pFavUrlDlg = new CFavUrlMenuDlg(IDD_DLG_FAV_URL, NULL, TRUE, this);
+	m_pFavUrlDlg->Create(IDD_DLG_FAV_URL, this);
+
+	CRect rctBtnFav;
+	m_pBtnFav->GetWindowRect(&rctBtnFav);
+	m_pFavUrlDlg->ShowMenu(CPoint(rctBtnFav.right-2, rctBtnFav.bottom+2));
 }
 
-void BrowserPanelWnd::OnClickeFavUrlMenu(UINT nID)
+LRESULT BrowserPanelWnd::OnClickeFavMenuItem(WPARAM wParam, LPARAM lParam)
 {
-	if (nID == IDC_MENU_ITEM_BEGIN_ID)
+	switch (LOWORD(wParam))
 	{
-		// 添加到收藏夹
-		CString strURL;
-		TAB_ITEM item;
-		char szPath[MAX_PATH] = {0};
-		m_pEditAddress->GetWindowText(strURL);	// 获取地址栏的地址
-		GLOBAL_TABBARDATA->ITabBar_GetCurItem(item);	// 获取tab页标题
-
-		if ( SHGetSpecialFolderPath(NULL, szPath, CSIDL_FAVORITES, FALSE) )
+	case ITEM_TYPE_BTN_ADD:  // 添加到收藏夹
 		{
-			CString strFile = szPath;
-			if(strFile[strFile.GetLength() - 1] != _T('\\'))
-				strFile += _T('\\');
-			strFile += item.strTitle.c_str();
-			strFile += ".url";
-			
+			CString strURL;
+			TAB_ITEM item;
+			char szPath[MAX_PATH] = {0};
+			m_pEditAddress->GetWindowText(strURL);	// 获取地址栏的地址
+			GLOBAL_TABBARDATA->ITabBar_GetCurItem(item);	// 获取tab页标题
+
+			CString strFile = (char*)lParam;
+			if (strFile.Right(1) != "\\") {
+				strFile += "\\";
+			}
+			strFile = strFile + item.strTitle.c_str() + ".url";
+
 			// 写入快捷方式到收藏夹
 			::WritePrivateProfileString("InternetShortcut", "URL",
 				strURL.GetBuffer(0),
@@ -312,10 +300,24 @@ void BrowserPanelWnd::OnClickeFavUrlMenu(UINT nID)
 			strURL.ReleaseBuffer();
 			strFile.ReleaseBuffer();
 		}
+		break;
+	case ITEM_TYPE_BTN_OPEN:
+	case ITEM_TYPE_URL:
+		{
+			string urlFile = (char*)lParam;
+			char szUrl[MAX_PATH] = {0};
+
+			// 获取url
+			::GetPrivateProfileString("InternetShortcut", "URL", "about:blank", szUrl, MAX_PATH, urlFile.c_str());
+			Navigate(szUrl);
+		}
+		break;
+	case ITEM_TYPE_BTN_REMOE:
+		{
+			// 删除快捷方式
+			DeleteFile((char*)lParam);
+		}
+		break;
 	}
-	else
-	{
-		string url = m_arrFavMenuItemParam[nID-IDC_MENU_ITEM_BEGIN_ID];
-		Navigate(url);
-	}
+	return 0;
 }
