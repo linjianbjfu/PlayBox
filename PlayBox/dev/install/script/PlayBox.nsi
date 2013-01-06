@@ -215,8 +215,8 @@ Section "-YPLAYBOX" realSection
 	File  ..\install_resource\Tool.exe
 	File  /r /x .svn /x *.db ..\install_resource\Resources
 	
-	File  ..\install_resource\instpage.gif
-	AnimGif::play /NOUNLOAD "$INSTDIR\instpage.gif"
+	;File  ..\install_resource\instpage.gif
+	;AnimGif::play /NOUNLOAD "$INSTDIR\instpage.gif"
 	IntOp $R1 0 + 0
 	IntCmp $R1 0 +2
 		System::Call 'kernel32::CloseHandle(i $R1) i .r2'
