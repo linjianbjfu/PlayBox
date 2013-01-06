@@ -60,7 +60,15 @@ void CLocalSearchEdit::OnPaint()
 	ScreenToClient(&r);
 	dc.SelectObject(GetFont());
 	dc.FillSolidRect(r, clrBk);
-	r.OffsetRect(3,2);
+	r.OffsetRect(3,0);
+
+	dc.SelectObject(GetFont());
+	TEXTMETRIC tm;
+	dc.GetTextMetrics(&tm);
+	int nFontHeight = tm.tmHeight + tm.tmExternalLeading;
+	int nMargin = (r.Height() - nFontHeight) / 2;
+	r.DeflateRect(0, nMargin);
+	SetRectNP(&r);
 
 	if( text.Trim().GetLength() == 0 )
 	{
@@ -69,14 +77,14 @@ void CLocalSearchEdit::OnPaint()
 			text = LOCAL_SEARCH_EDIT_TOOLTIP;
 		}
 		dc.SetTextColor(clrTip);		
-		dc.DrawText(text, text.GetLength(), r, DT_NOPREFIX|DT_VCENTER);
+		dc.DrawText(text, text.GetLength(), r, DT_NOPREFIX|DT_VCENTER|DT_SINGLELINE);
 	}else
 	{
 		if(text.Find(LOCAL_SEARCH_EDIT_TOOLTIP) == 0 )
 			dc.SetTextColor(clrTip);
 		else
 			dc.SetTextColor(clrText);
-		dc.DrawText(text, text.GetLength(), r, DT_NOPREFIX|DT_VCENTER);
+		dc.DrawText(text, text.GetLength(), r, DT_NOPREFIX|DT_VCENTER|DT_SINGLELINE);
 	}
 	////////////////////////
 
@@ -201,8 +209,9 @@ void CLocalSearchEdit::OnEnKillfocus()
 	Invalidate();
 }
 
+
 void CLocalSearchEdit::OnEnSetfocus()
-{
+{/*
 	m_bFocus = true;
 	SetEditBorder();
 	POINT pt;
@@ -224,8 +233,10 @@ void CLocalSearchEdit::OnEnSetfocus()
 		CDC *pDC = GetDC();
 		CRect rcClient;
 		GetClientRect(&rcClient);
-		pDC->DrawText(str, -1, &rcClient, DT_NOPREFIX|DT_VCENTER|DT_CALCRECT);
-
+		rcClient.OffsetRect(3, 2);
+		pDC->SelectObject(GetFont());
+		pDC->DrawText(str, -1, &rcClient, DT_NOPREFIX|DT_VCENTER|DT_SINGLELINE);
+		rcClient.OffsetRect(-3, -2);
 		ClientToScreen(&rcClient);
 		CPoint pt;
 		::GetCursorPos(&pt);
@@ -238,7 +249,7 @@ void CLocalSearchEdit::OnEnSetfocus()
 	if( str == "" )
 	{
 		Invalidate();
-	}
+	}*/
 }
 
 void CLocalSearchEdit::SetEditBorder()

@@ -270,6 +270,33 @@ void BrowserPanelWnd::ShowFavUrlMenu()
 	m_pFavUrlDlg = new CFavUrlMenuDlg(IDD_DLG_FAV_URL, NULL, TRUE, this);
 	m_pFavUrlDlg->Create(IDD_DLG_FAV_URL, this);
 
+	COLORREF rgbText,rgbBorder,rgbCursel,rgbBackGnd;
+	rgbText = AfxGetUIManager()->UIGetSkinMgr()->GetColor("FavDirText");
+	rgbBorder=AfxGetUIManager()->UIGetSkinMgr()->GetColor("FavDirBorder");
+	rgbCursel=AfxGetUIManager()->UIGetSkinMgr()->GetColor("FavDirCursel");
+	rgbBackGnd=AfxGetUIManager()->UIGetSkinMgr()->GetColor("FavDirBackGnd");
+
+	CFont font;
+	LOGFONT logfont;
+
+	font.CreateFont(12,      // nHeight
+		0,                         // nWidth
+		0,                         // nEscapement
+		0,                         // nOrientation
+		FW_NORMAL,                 // nWeight
+		FALSE,                     // bItalic
+		FALSE,                     // bUnderline
+		0,                         // cStrikeOut
+		ANSI_CHARSET,              // nCharSet
+		OUT_DEFAULT_PRECIS,        // nOutPrecision
+		CLIP_DEFAULT_PRECIS,       // nClipPrecision
+		DEFAULT_QUALITY,           // nQuality
+		DEFAULT_PITCH | FF_SWISS,  // nPitchAndFamily
+		"ËÎÌו");
+	font.GetLogFont(&logfont);
+
+	m_pFavUrlDlg->SetUIParam(logfont, BORDER_WIDTH_DEFAULT, SPACING_HEIGHT_DEFAULT, rgbText, rgbBackGnd, rgbCursel, rgbBorder);
+
 	CRect rctBtnFav;
 	m_pBtnFav->GetWindowRect(&rctBtnFav);
 	m_pFavUrlDlg->ShowMenu(CPoint(rctBtnFav.right-2, rctBtnFav.bottom+2));

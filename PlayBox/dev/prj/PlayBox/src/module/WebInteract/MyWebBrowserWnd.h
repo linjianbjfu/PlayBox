@@ -29,13 +29,12 @@ public:
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName,DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID,CCreateContext* pContext = NULL);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 
-	virtual void NavigateComplete2(LPDISPATCH pDisp, VARIANT* URL);
 	virtual void DocumentComplete(LPDISPATCH pDisp, VARIANT* URL);
 	virtual void OnNavigateError(LPCTSTR lpszURL, LPCTSTR lpszFrame, DWORD dwError, BOOL *pbCancel);
 	virtual void OnNavigateComplete2( LPCTSTR strURL );
 	virtual void OnTitleChange(LPCTSTR lpszText);
-	virtual void OnDocumentComplete(LPCTSTR lpszURL);	
 	virtual void OnNewWindow2(LPDISPATCH* ppDisp, BOOL* Cancel);
+	virtual void OnDownloadBegin();
 	void	Navigate( string strUrl );
 	void	Init();
 	void	Recycle();

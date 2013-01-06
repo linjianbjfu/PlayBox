@@ -325,8 +325,6 @@ BOOL CFavUrlMenuDlg::OnEraseBkgnd(CDC* pDC)
 	}
 	pDC->RoundRect(rctWnd, CPoint(m_nBorderWidth, m_nBorderWidth));
 	pDC->SelectObject(pOldPen);
-	
-
 	pen.DeleteObject();
 	pDC->SelectObject(pOldBrush);
 	brush.DeleteObject();
@@ -350,14 +348,23 @@ BOOL CFavUrlMenuDlg::OnEraseBkgnd(CDC* pDC)
 				int x = rctItem.right - m_nSpacingHeigth;
 				CPoint ptA(x, y);
 				
-				y = y - rctItem.Height()/2 + 2;
+				y = y - rctItem.Height()/2 + m_nSpacingHeigth/2;
 				x -= rctItem.Height()/2;
 				CPoint ptB(x, y);
-				CPoint ptC(x, y+rctItem.Height() - 4);
+				CPoint ptC(x, y+rctItem.Height() - m_nSpacingHeigth);
 
-				LineAtoB(pDC, ptA, ptB);
-				LineAtoB(pDC, ptB, ptC);
-				LineAtoB(pDC, ptC, ptA);
+				CBrush brush;
+				brush.CreateSolidBrush(m_rgbBorder);
+				CBrush* pOld = pDC->SelectObject(&brush);
+				pDC->BeginPath();
+				pDC->MoveTo(ptA.x,ptA.y);
+				pDC->LineTo(ptB.x,ptB.y);
+				pDC->LineTo(ptC.x,ptC.y);
+				pDC->LineTo(ptA.x,ptA.y);
+				pDC->EndPath();
+				pDC->FillPath();
+				pDC->SelectObject(&pOld);
+				brush.DeleteObject();
 			}
 		}
 		else

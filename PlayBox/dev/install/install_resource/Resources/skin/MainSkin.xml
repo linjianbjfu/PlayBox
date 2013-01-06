@@ -126,12 +126,15 @@
 <wndpanel name="browserpanel" mode="normal">
 	<background name="normal" ori="NO_POS" background_color="dae8f4">
 		<paneitem name="FlashGameControlBarBg" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_top="40" />
+		<paneitem name="BrowserAddressBarBgLeft" type="bmp" start_x_left="116" x_delta="3" start_y_top="8" y_delta="25" />
+		<paneitem name="BrowserAddressBarBgMid" type="bmp" start_x_left="119" end_x_right="45" start_y_top="8" y_delta="25" />
+		<paneitem name="BrowserAddressBarBgRight" type="bmp" start_x_right="45" x_delta="3" start_y_top="8" y_delta="25" />
 	</background>
 	<controlpanel name="normal" ori="NO_POS">
 		<paneitem name="BrowserBack"     type="button" tooltip="后退" bmp="BrowserBack" start_x_left="20"  start_y_top="8" x_delta="28" y_delta="25" />
 		<paneitem name="BrowserForward"  type="button" tooltip="前进" bmp="BrowserForward" start_x_left="52" start_y_top="8" x_delta="28" y_delta="25" />
 		<paneitem name="BrowserRefresh"  type="button" tooltip="刷新" bmp="BrowserRefresh" start_x_left="84"  start_y_top="8" x_delta="28" y_delta="25" />
-		<paneitem name="BrowserAddressBar"  type="Edit" start_x_left="116"  end_x_right="42" start_y_top="8" y_delta="25" />
+		<paneitem name="BrowserAddressBar"  type="Edit" start_x_left="119"  end_x_right="46" start_y_top="10" y_delta="20" />
 		<paneitem name="BrowserFav"  type="button" tooltip="收藏" bmp="BrowserFav"  start_x_right="32"  start_y_top="8" x_delta="28" y_delta="25" />
 		<paneitem name="BrowserWeb" type = "wnd" start_x_left="0"  start_y_top="40" end_x_right="0" end_y_bottom="0" />
 	</controlpanel>
@@ -254,7 +257,11 @@
 	<color name="PlayedGameBkColor" value="ffffff"/>
 	<color name="PlayedGameNameColor" value="333333"/>
 	<color name="PlayedGameFrameBorder" value="ffaf26"/>
-	<color name="SearchInputEditBK" value="93A3A3" />
+	<color name="SearchInputEditBK" value="ffffff" />
 	<color name="SearchInputEditText" value="000000" />
+	<color name="FavDirBorder" value="93ccfc" />
+	<color name="FavDirCursel" value="E5F6FD" />
+	<color name="FavDirBackGnd" value="FFFFFF" />
+	<color name="FavDirText" value="000000" />
 </colors>
 </root>

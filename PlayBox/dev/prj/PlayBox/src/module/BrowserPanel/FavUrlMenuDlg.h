@@ -9,7 +9,7 @@
 #define RGB_CURSEL_DEFAULT			RGB(0xE5, 0xF6, 0xFD)
 
 #define BORDER_WIDTH_DEFAULT		1
-#define SPACING_HEIGHT_DEFAULT		4
+#define SPACING_HEIGHT_DEFAULT		7
 
 #define IDC_ITEM_ID_BEGIN		2560
 #define IDC_ITEM_ID_END			4095
@@ -72,13 +72,7 @@ protected:
 	int GetUrls(CString strPath, CArray<ITEM, ITEM&> &arrItems);
 	int IsPtInItem(CPoint pt);	// 判断鼠标在那个item里,不在任何一个item则返回-1
 
-	virtual void SetUIParam(LOGFONT font,
-		unsigned uBorderWidth = BORDER_WIDTH_DEFAULT,
-		unsigned uSpacingWidth = SPACING_HEIGHT_DEFAULT,
-		COLORREF rgbText = RGB_TEXT_DEFAULT,
-		COLORREF rgbBackGround = RGB_BACKGROUND_DEFAULT,
-		COLORREF rgbCurSel = RGB_CURSEL_DEFAULT,
-		COLORREF rgbBorder = RGB_BORDER_DEFAULT);
+
 
 	void	LineAtoB(CDC *pDC, CPoint ptA, CPoint ptB);
 
@@ -99,6 +93,14 @@ protected:
 	afx_msg void OnClose();
 	DECLARE_MESSAGE_MAP()
 public:
+
+	virtual void SetUIParam(LOGFONT font,
+			unsigned uBorderWidth = BORDER_WIDTH_DEFAULT,
+			unsigned uSpacingWidth = SPACING_HEIGHT_DEFAULT,
+			COLORREF rgbText = RGB_TEXT_DEFAULT,
+			COLORREF rgbBackGround = RGB_BACKGROUND_DEFAULT,
+			COLORREF rgbCurSel = RGB_CURSEL_DEFAULT,
+			COLORREF rgbBorder = RGB_BORDER_DEFAULT);
 
 	virtual BOOL ShowMenu(CPoint pt);
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);

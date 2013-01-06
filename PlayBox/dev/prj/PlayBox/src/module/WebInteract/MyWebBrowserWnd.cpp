@@ -159,21 +159,11 @@ void MyWebBrowserWnd::OnSize(UINT nType, int cx, int cy)
 	__super::OnSize(nType,cx,cy);
 }
 
-void MyWebBrowserWnd::OnDocumentComplete(LPCTSTR lpszURL)
+void MyWebBrowserWnd::OnDownloadBegin()
 {
-//	SetTimer( TIMER_HIDE_LOADING, ELAPSE_TIMER_HIDE_LOADING, NULL );
-// 	GetParent()->SendMessage(WM_PAGE_CHANGED, (WPARAM)lpszURL, 0);
-	__super::OnDocumentComplete(lpszURL);
-}
-
-void MyWebBrowserWnd::NavigateComplete2(LPDISPATCH pDisp, VARIANT* URL)
-{
-	if(!m_lpDisp)
-	{
-		m_lpDisp = pDisp;
-		USES_CONVERSION;
-		GetParent()->SendMessage(WM_PAGE_CHANGED, (WPARAM)W2T(URL->bstrVal), 0);
-	}
+	CString url = GetLocationURL();
+	GetParent()->SendMessage(WM_PAGE_CHANGED, (WPARAM)url.GetBuffer(0), 0);
+	url.ReleaseBuffer();
 }
 
 void MyWebBrowserWnd::DocumentComplete(LPDISPATCH pDisp, VARIANT* URL)
@@ -184,7 +174,7 @@ void MyWebBrowserWnd::DocumentComplete(LPDISPATCH pDisp, VARIANT* URL)
 	hr = m_pBrowserApp->QueryInterface(IID_IDispatch, (void**)&lpWBDisp);
 	ASSERT(SUCCEEDED(hr));
 
-	if (m_lpDisp &&(m_lpDisp == pDisp))
+	if (lpWBDisp == pDisp)
 	{
 		m_lpDisp = NULL;//Reset glpDisp
 		SetTimer( TIMER_HIDE_LOADING, ELAPSE_TIMER_HIDE_LOADING, NULL );
