@@ -47,6 +47,7 @@ BOOL CLocalSearchEdit::OnChildNotify(UINT message, WPARAM wParam, LPARAM lParam,
 
 void CLocalSearchEdit::OnPaint() 
 {
+	return __super::OnPaint();
 	CPaintDC dc(this);
 	CRect r;
 	CString text;
@@ -218,13 +219,15 @@ void CLocalSearchEdit::OnEnSetfocus()
 	::GetCursorPos(&pt);
 	HWND hwnd = ::WindowFromPoint(pt);
 
+	Invalidate();
+
 	CString str;
 	GetWindowText(str);
-	if(str.Find(LOCAL_SEARCH_EDIT_TOOLTIP) == 0 && hwnd == m_hWnd)
-	{
-		SetWindowText("");
-		str = "";
-	}
+// 	if(str.Find(LOCAL_SEARCH_EDIT_TOOLTIP) == 0 && hwnd == m_hWnd)
+// 	{
+// 		SetWindowText("");
+// 		str = "";
+// 	}
 	//选中当前的搜索词
 	int iLength = str.GetLength();
 	if( iLength != 0 )
@@ -235,7 +238,7 @@ void CLocalSearchEdit::OnEnSetfocus()
 		GetClientRect(&rcClient);
 		rcClient.OffsetRect(3, 2);
 		pDC->SelectObject(GetFont());
-		pDC->DrawText(str, -1, &rcClient, DT_NOPREFIX|DT_VCENTER|DT_SINGLELINE);
+		pDC->DrawText(str, &rcClient, DT_NOPREFIX|DT_VCENTER|DT_SINGLELINE);
 		rcClient.OffsetRect(-3, -2);
 		ClientToScreen(&rcClient);
 		CPoint pt;

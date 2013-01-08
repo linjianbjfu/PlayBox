@@ -348,7 +348,7 @@ void WebGamePanelWnd::OnClickedSite()
 		TAB_ITEM tabItem;
 		tabItem.strName = "¹Ù·½ÍøÕ¾";
 		tabItem.eumType = TAB_BROWSER;
-		tabItem.strParam = "url=" + strValue;
+		tabItem.strParam = "url=" + strValue + m_webGame.strID;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
 	}
 }
@@ -376,7 +376,7 @@ void WebGamePanelWnd::OnClickedPay()
 		TAB_ITEM tabItem;
 		tabItem.strName = "³äÖµ";
 		tabItem.eumType = TAB_BROWSER;
-		tabItem.strParam = "url=" + strValue;
+		tabItem.strParam = "url=" + strValue + m_webGame.strID;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
 	}
 }

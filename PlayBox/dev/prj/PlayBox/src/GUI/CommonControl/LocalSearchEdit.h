@@ -2,7 +2,7 @@
  
 //#include "LocalSearchKeyTipDlg.h"
 
-#define LOCAL_SEARCH_EDIT_TOOLTIP  "可搜索歌手，歌名，专辑"
+#define LOCAL_SEARCH_EDIT_TOOLTIP  ""
 #define MSG_EDIT_BORDER_CHANGE	WM_USER + 118
 
 class CLocalSearchEdit : public CEdit
