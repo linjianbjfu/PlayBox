@@ -341,7 +341,8 @@ void GamePanelWnd::HttpDownOb_DownFinish( string& strID, string& strSwfPath )
 	}
 
 	//获取数据
-	GLOBAL_LOCALGAME->ILocalGameData_AddGame( strID, m_swfGame.strName, strPicLocalDesPath, strSwfPath, m_swfGame.strIntro, 0 );
+	
+	GLOBAL_LOCALGAME->ILocalGameData_AddGame( strID, m_swfGame.strName, strPicLocalDesPath, strSwfPath, m_swfGame.strIntro, 0, 1 );
 
 	OneLocalGame olg;
 	GLOBAL_LOCALGAME->ILocalGameData_GetGameByID( strID, olg );

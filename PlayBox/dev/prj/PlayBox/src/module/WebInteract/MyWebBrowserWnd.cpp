@@ -229,16 +229,16 @@ void MyWebBrowserWnd::OnNewWindow2(LPDISPATCH* ppDisp, BOOL* Cancel)
 		CComPtr<IHTMLElement> pIHTMLElement;  
 		pHTMLDocument2->get_activeElement(&pIHTMLElement);  
 
-		if (pIHTMLElement!=NULL)  
+		if (pIHTMLElement != NULL)  
 		{  
 			VARIANT url;  
 			HRESULT hr=pIHTMLElement->getAttribute(L"href", 0, &url);  
-			if (SUCCEEDED(hr))  
+			if (hr == S_OK)  
 			{  
 				url.vt = VT_I2;
 				USES_CONVERSION;
 				Navigate(W2T(url.bstrVal));
-				if (SUCCEEDED(hr))  
+				if (SUCCEEDED(hr)) 
 				{  
 					*Cancel=TRUE;  
 				}  

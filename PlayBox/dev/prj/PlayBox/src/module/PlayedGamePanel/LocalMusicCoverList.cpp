@@ -202,7 +202,7 @@ void CLocalMusicCoverList::SetImgState(LMCImgState is)
 	OnMemoryDraw();
 }
 
-int CLocalMusicCoverList::InsertItem(CDibBitmap* pImg, CString strItemName, CString strdetail, string strGID, BOOL blSel/* =FALSE */)
+int CLocalMusicCoverList::InsertItem(CDibBitmap* pImg, CString strItemName, CString strdetail, string strGID, int nGameType, BOOL blSel/* =FALSE */)
 {
 	int iHeightSpaceS = m_iItemHeight+SPACEH + ITEMTXTH + SPACEH;
 	int iHeightSpaceMB = m_iItemHeight+SPACEH + ITEMTXTH + SPACEH + ITEMTXTH + SPACEH  ;	
@@ -213,12 +213,12 @@ int CLocalMusicCoverList::InsertItem(CDibBitmap* pImg, CString strItemName, CStr
 	{
 
 	}
-	return m_DataMgr.InsertItem(pImg,strItemName,strdetail, strGID, blSel);
+	return m_DataMgr.InsertItem(pImg,strItemName,strdetail, strGID, nGameType, blSel);
 }
 
-int CLocalMusicCoverList::InsertItem(LPCTSTR szImgPath, CString strItemName, CString strdetail, string strGID, BOOL blSel/* =FALSE */)
+int CLocalMusicCoverList::InsertItem(LPCTSTR szImgPath, CString strItemName, CString strdetail, string strGID, int nGameType, BOOL blSel/* =FALSE */)
 {
-	return m_DataMgr.InsertItem(szImgPath,strItemName,strdetail,strGID,blSel);
+	return m_DataMgr.InsertItem(szImgPath,strItemName,strdetail,strGID,nGameType,blSel);
 }
 
 vector<int> CLocalMusicCoverList::GetSelectItem()

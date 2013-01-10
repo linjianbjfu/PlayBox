@@ -127,13 +127,20 @@ void PlayedGameListPanelWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 	{
 		LMC_ItemInfo ii = m_DataMgr.m_vItem[vSel[0]];
 
-		TAB_ITEM tItem;
-		tItem.eumType = TAB_FLASHGAME;
-		tItem.strName = string(ii.strItemName);
-		tItem.strParam = string("method=playswfgame\n\n") + "id=" + ii.strGID + "\n"
-			+ "name=" + tItem.strName + "\n";
+		if (ii.iGameType == 1) // flash game
+		{
+			TAB_ITEM tItem;
+			tItem.eumType = TAB_FLASHGAME;
+			tItem.strName = string(ii.strItemName);
+			tItem.strParam = string("method=playswfgame\n\n") + "id=" + ii.strGID + "\n"
+				+ "name=" + tItem.strName + "\n";
 
-		GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
+			
+		}
+		else if (ii.iGameType == 2) // web game
+		{
+			// ...
+		}
 
 		//OnMemoryDraw ();
 	}
@@ -151,7 +158,7 @@ int PlayedGameListPanelWnd::ReGetData()
 	{
 		CString strDetail;
 		InsertItem( it1->strPicPath.c_str(), 
-			it1->strName.c_str(), strDetail, it1->strID, FALSE );
+			it1->strName.c_str(), strDetail, it1->strID, it1->nGameType, FALSE );
 	}
 	UpdateList();
 	OnMemoryDraw();

@@ -42,4 +42,5 @@ typedef struct _tagLMCItemInfo
 	CString		strItemdDetailinfo;	// 项的详细信息
 	CString		strImgPath;			// 图片路径
 	CRect		rc;					// 项图片的坐标，传出值
+	int			iGameType;			// 游戏类型 1:Flash游戏 2:网页游戏
 }LMC_ItemInfo;

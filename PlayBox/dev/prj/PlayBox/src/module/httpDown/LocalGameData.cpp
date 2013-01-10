@@ -121,6 +121,10 @@ void LocalGameData::LoadGameData()
 		//	olg.strID.c_str(), olg.strName.c_str(), olg.strIntro.c_str() );
 		olg.strPicPath = xml.GetAttrib( "Img" );
 		olg.strGamePath = xml.GetAttrib( "AppPath" );
+		
+		CString strGameType = xml.GetAttrib( _T("GameType") );
+		olg.nGameType = atoi(strGameType.GetBuffer(0) );
+		strGameType.ReleaseBuffer();
 
 		if( YL_FileInfo::IsValid( olg.strGamePath ) )
 		{
@@ -164,6 +168,11 @@ void LocalGameData::UnLoadGameData()
 		xml.SetAttrib( "Intro", it1->strIntro.c_str() );
 		xml.SetAttrib( "Img", it1->strPicPath.c_str() );
 		xml.SetAttrib( "AppPath", it1->strGamePath.c_str() );
+
+		CString str;
+		str.Format(_T("%d"), it1->nGameType);
+		xml.SetAttrib( _T("GameType"), str.GetBuffer(0));
+		str.ReleaseBuffer();
 		xml.OutOfElem();
 	}
 	xml.Close();
@@ -201,8 +210,8 @@ bool LocalGameData::ILocalGameData_GetGameByID( string strID, OneLocalGame& og )
 	}
 }
 
-bool LocalGameData::ILocalGameData_AddGame( string strID, string strName, 
-				string strPicPath, string strSwfPath, string strIntro, unsigned int type, string strMD5)
+bool LocalGameData::ILocalGameData_AddGame( string strID, string strName, string strPicPath, string strSwfPath,
+										   string strIntro, unsigned int type, int nGameType, string strMD5)
 {
 	//删除原有的信息
 	LocalGameList::iterator it1 = m_vecGame.begin();
@@ -223,6 +232,7 @@ bool LocalGameData::ILocalGameData_AddGame( string strID, string strName,
 	olg.strName = strName;
 	olg.strGamePath = strSwfPath;
 	olg.strIntro = strIntro;
+	olg.nGameType = nGameType;
 	YL_FileInfo::GetFileSize( olg.strGamePath.c_str(), &(olg.uiFileSize) );
 	olg.strPicPath  = strPicPath;	//获取图片
 
