@@ -6,6 +6,7 @@
 #include "xSkinButton.h"
 #include "PlayedGameListPanelWnd.h"
 #include "..\WebInteract\MyWebBrowserWnd.h"
+#include ".\playedgamewnd.h"
 
 IMPLEMENT_DYNAMIC(PlayedGameWnd, CBasicWnd)
 PlayedGameWnd::PlayedGameWnd()
@@ -44,6 +45,7 @@ BEGIN_MESSAGE_MAP(PlayedGameWnd, CBasicWnd)
 	ON_BN_CLICKED(ID_BTN_PLAYED_GAME_TO_DOWNLOAD_MANAGER,OnClickedToDownloadManager)
 	ON_BN_CLICKED(ID_BTN_PLAYED_GAME_TO_COLLECTED_GAME,OnClickedToCollectedGame)
 	ON_BN_CLICKED(ID_BTN_PLAYED_GAME_TO_DELETE,OnClickedToDelete)
+	ON_WM_SHOWWINDOW()
 END_MESSAGE_MAP()
 
 int PlayedGameWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -77,6 +79,10 @@ int PlayedGameWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	pLayoutMgr->CreateControlPane( this,"playedgamepanel","normal");
 	pLayoutMgr->CreateBmpPane( this,"playedgamepanel","normal" );
+
+	GLOBAL_LOCALGAME->ILocalGameData_GetAllGame(m_gameList);
+	m_pWndGameListWnd->ReSetGameList(m_gameList);
+
 	return 0;
 }
 
@@ -96,12 +102,18 @@ void PlayedGameWnd::OnClickedTimerOrder()
 
 void PlayedGameWnd::OnClickedToWebGame()
 {
-
+	GLOBAL_LOCALGAME->ILocalGameData_GetWebGame(m_gameList);
+	// 是否登录
+	// ...
+	m_pWndGameListWnd->ReSetGameList(m_gameList);
 }
 
 void PlayedGameWnd::OnClickedToFlashGame()
 {
-
+	GLOBAL_LOCALGAME->ILocalGameData_GetFlashGame(m_gameList);
+	// 是否登录
+	// ...
+	m_pWndGameListWnd->ReSetGameList(m_gameList);
 }
 
 void PlayedGameWnd::OnClickedToDownloadManager()
@@ -111,10 +123,12 @@ void PlayedGameWnd::OnClickedToDownloadManager()
 
 void PlayedGameWnd::OnClickedToCollectedGame()
 {
-
+	// 是否登录
+	// ...
 }
 
 void PlayedGameWnd::OnClickedToDelete()
-{
-
+{	// 删除按钮~ 现在是显示全部游戏
+	GLOBAL_LOCALGAME->ILocalGameData_GetAllGame(m_gameList);
+	m_pWndGameListWnd->ReSetGameList(m_gameList);
 }

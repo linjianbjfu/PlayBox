@@ -45,7 +45,7 @@ void PlayedGameListPanelWnd::OnShowWindow(BOOL bShow, UINT nStatus)
 {
 	if (bShow)
 	{
-		ReGetData();
+		// ReGetData();
 	}
 	__super::OnShowWindow(bShow, nStatus);
 }
@@ -127,19 +127,27 @@ void PlayedGameListPanelWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 	{
 		LMC_ItemInfo ii = m_DataMgr.m_vItem[vSel[0]];
 
-		if (ii.iGameType == 1) // flash game
+		if (ii.iGameType == OneLocalGame::TYPE_FLASH_GAME) // flash game
 		{
 			TAB_ITEM tItem;
 			tItem.eumType = TAB_FLASHGAME;
 			tItem.strName = string(ii.strItemName);
 			tItem.strParam = string("method=playswfgame\n\n") + "id=" + ii.strGID + "\n"
 				+ "name=" + tItem.strName + "\n";
-
-			
+			GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
 		}
-		else if (ii.iGameType == 2) // web game
+		else if (ii.iGameType == OneLocalGame::TYPE_WEB_GAME) // web game
 		{
-			// ...
+			TAB_ITEM tItem;
+			tItem.eumType = TAB_WEBGAME;
+			tItem.strName = string(ii.strItemName);
+			tItem.strParam = string("method=webgame\n\n")
+				+ "id=" + ii.strGID + "\n"
+				+ "svrid=" + ii.strSvrID + "\n"
+				+ "name=" + tItem.strName + "\n"
+				+ "picurl=" + ii.strImgPath.GetBuffer(0) + "\n";
+			ii.strImgPath.ReleaseBuffer();
+			GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
 		}
 
 		//OnMemoryDraw ();
@@ -158,7 +166,7 @@ int PlayedGameListPanelWnd::ReGetData()
 	{
 		CString strDetail;
 		InsertItem( it1->strPicPath.c_str(), 
-			it1->strName.c_str(), strDetail, it1->strID, it1->nGameType, FALSE );
+			it1->strName.c_str(), strDetail, it1->strID, it1->strSrvID, it1->nGameType, FALSE );
 	}
 	UpdateList();
 	OnMemoryDraw();
@@ -397,3 +405,25 @@ BOOL PlayedGameListPanelWnd::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	m_tootip.HideTooTips();
 	return __super::OnMouseWheel(nFlags, zDelta, pt);
 }
+
+
+void PlayedGameListPanelWnd::ReSetGameList(LocalGameList arrGames)
+{
+	m_DataMgr.ClearData();
+	
+	LocalGameList::iterator it = arrGames.begin();
+	for (; it != arrGames.end(); it++)
+	{
+		CString strDetail;
+		InsertItem(it->strPicPath.c_str(),
+				   it->strName.c_str(),
+				   strDetail,
+				   it->strID,
+				   it->strSrvID,
+				   it->nGameType,
+				   FALSE );
+	}
+	UpdateList();
+	OnMemoryDraw();
+}
+

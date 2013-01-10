@@ -12,8 +12,8 @@ public:
 	CLMCDataMgr();
 	~CLMCDataMgr();
 	
-	int InsertItem(CDibBitmap* pImg, CString strItemName, CString strdetail, string strGID, int nGameType, BOOL blSel=FALSE);
-	int InsertItem(CString strImgPath,CString strItemName, CString strdetail, string strGID, int nGameType, BOOL blSel=FALSE);
+	int InsertItem(CDibBitmap* pImg, CString strItemName, CString strdetail, string strGID, string strSrvID, int nGameType, BOOL blSel=FALSE);
+	int InsertItem(CString strImgPath,CString strItemName, CString strdetail, string strGID, string strSrvID, int nGameType, BOOL blSel=FALSE);
 	void ClearData();
 	BOOL RemoveItem(int iItem);
 	void UpDataItem();

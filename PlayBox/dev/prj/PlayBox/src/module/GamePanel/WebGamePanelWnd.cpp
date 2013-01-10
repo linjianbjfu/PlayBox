@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "resource.h"
 #include "YL_StringUtil.h"
+#include "YL_FileInfo.h"
+#include "YL_HTTPDownFile.h"
 #include "WebGamePanelWnd.h"
 #include "../WebInteract/MyWebBrowserWnd.h"
 #include "../../AppConfig/config/ConfigAppDef.h"
@@ -15,6 +17,7 @@
 #include "src/module/Esc2ExitFullScrPanel/ESCFullDlg.h"
 #include "src/AppConfig/config/ConfigLayoutDef.h"
 #include ".\webgamepanelwnd.h"
+
 
 IMPLEMENT_DYNAMIC(WebGamePanelWnd, CBasicWnd)
 WebGamePanelWnd::WebGamePanelWnd()
@@ -155,6 +158,38 @@ void WebGamePanelWnd::SetTabItem( TAB_ITEM ti )
 		string strUrl = strValue + "?id=" + m_webGame.strID + 
 			"&svrid=" + m_webGame.strSvrID;
 		m_pWndWebGame->Navigate(strUrl);
+
+		if ( YL_FileInfo::IsValid(m_webGame.strPicUrl) )
+		{ // picurl假如指向了本地文件,则是从本地游戏列表进入的游戏
+			return;
+		}
+
+		OneLocalGame og;
+		og.strName	= m_webGame.strName;
+		og.strID	= m_webGame.strID;
+		og.strSrvID	= m_webGame.strSvrID;
+		og.strGamePath=m_pWndWebGame->GetLocationURL();
+
+		string strSavePath;
+		AfxGetUserConfig()->GetConfigStringValue(CONF_APP_MODULE_NAME, CONF_APP_SWF_PATH, strSavePath);
+		if (strSavePath[strSavePath.length()-1] != '\\')
+		strSavePath += '\\';
+
+		YL_StringUtil::ReplaceAll( m_webGame.strPicUrl, " ", "%20" );
+		string strPicFormat;
+		YL_FileInfo::GetFileNameSuffix( m_webGame.strPicUrl, strPicFormat );
+
+
+		string strPicLocalDesPath;
+		YL_StringUtil::Format( strPicLocalDesPath, "%s%s_2.%s", 
+		strSavePath.c_str(), og.strID.c_str(), strPicFormat.c_str() );
+
+		og.strPicPath = strPicLocalDesPath;
+		YL_CHTTPDownFile httpDownFile;
+		httpDownFile.DownloadFile( m_webGame.strPicUrl,  strPicLocalDesPath);
+
+		og.nGameType= OneLocalGame::TYPE_WEB_GAME;
+		GLOBAL_LOCALGAME->ILocalGameData_AddGame(og);
 	}
 }
 

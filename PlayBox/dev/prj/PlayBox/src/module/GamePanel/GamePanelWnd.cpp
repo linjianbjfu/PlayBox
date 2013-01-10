@@ -340,9 +340,14 @@ void GamePanelWnd::HttpDownOb_DownFinish( string& strID, string& strSwfPath )
 		httpDownFile.DownloadFile( m_swfGame.strPicUrl, strPicLocalDesPath );
 	}
 
-	//获取数据
-	
-	GLOBAL_LOCALGAME->ILocalGameData_AddGame( strID, m_swfGame.strName, strPicLocalDesPath, strSwfPath, m_swfGame.strIntro, 0, 1 );
+	OneLocalGame og;
+	og.strID = strID;
+	og.strName = m_swfGame.strName;
+	og.strPicPath = strPicLocalDesPath;
+	og.strGamePath = strSwfPath;
+	og.strIntro = m_swfGame.strIntro;
+	og.nGameType = OneLocalGame::TYPE_FLASH_GAME;
+	GLOBAL_LOCALGAME->ILocalGameData_AddGame( og );
 
 	OneLocalGame olg;
 	GLOBAL_LOCALGAME->ILocalGameData_GetGameByID( strID, olg );

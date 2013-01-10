@@ -1,5 +1,6 @@
 #pragma once
 #include "../../gui/CommonControl/BasicWnd.h"
+#include "../../datainterface/ILocalGameData.h"
 
 class CxSkinButton;
 class PlayedGameListPanelWnd;
@@ -35,4 +36,5 @@ private:
 	MyWebBrowserWnd*	m_pWndRecommand;
 	CUserLogedInWnd*	m_pWndLogedIn;
 	CUserLogedOutWnd*	m_pWndLogedOut;
+	LocalGameList	m_gameList;
 };

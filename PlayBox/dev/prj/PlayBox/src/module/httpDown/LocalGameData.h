@@ -21,9 +21,11 @@ private:
 public:
 	virtual bool ILocalGameData_GetGameByID( string strID, OneLocalGame& og );
 	/*游戏信息和图片在该函数中获取*/
-	virtual bool ILocalGameData_AddGame( string strID, string strName, 
-		string strPicPath, string strSwfPath, string strIntro, unsigned int type, int nGameType, string strMD5 = "");
+	virtual bool ILocalGameData_AddGame( OneLocalGame og, string strMD5 = "");
 	virtual bool ILocalGameData_DelGame( string strID );
 	virtual bool ILocalGameData_GetAllGame( LocalGameList& lgl );
 	virtual unsigned int ILocalGameData_GetGameCount();
+
+	virtual int ILocalGameData_GetWebGame(LocalGameList& lgl);
+	virtual int ILocalGameData_GetFlashGame(LocalGameList& lgl);
 };

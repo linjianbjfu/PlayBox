@@ -4,6 +4,8 @@
 #include "../../gui/util/WToolTips.h"
 #include "../../gui/CommonControl/SkinButton2.h"
 #include "../../datainterface/IDownDataDef.h"
+#include "../../Core/CDataManager.h"
+#include "../../datainterface/ILocalGameData.h"
 
 class PlayedGameListPanelWnd : public CLocalMusicCoverList
 {
@@ -39,4 +41,6 @@ public:
 	afx_msg void OnDestroy();
 	void	Recycle();
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
+
+	void	ReSetGameList(LocalGameList arrGames);
 };
