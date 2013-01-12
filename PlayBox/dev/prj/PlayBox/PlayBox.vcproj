@@ -1718,12 +1718,11 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="GameCenterPanel"
-				Filter="">
-			</Filter>
-			<Filter
 				Name="UserMan"
 				Filter="">
+				<File
+					RelativePath=".\src\module\UserMan\UserInfo.h">
+				</File>
 				<File
 					RelativePath=".\src\module\UserMan\UserLogedInPanelWnd.cpp">
 				</File>
@@ -1735,6 +1734,12 @@
 				</File>
 				<File
 					RelativePath=".\src\module\UserMan\UserLogedOutPanelWnd.h">
+				</File>
+				<File
+					RelativePath=".\src\module\UserMan\UserManager.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\UserMan\UserManager.h">
 				</File>
 			</Filter>
 		</Filter>

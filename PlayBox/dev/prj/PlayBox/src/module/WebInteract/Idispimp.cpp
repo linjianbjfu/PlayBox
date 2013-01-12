@@ -9,7 +9,7 @@
 #include "idispimp.h"
 #include "WebManager.h"
 
-CString cszCB_CallLhBox = "call_lhbox";
+CString cszCB_CallLhBox = "kybox";
 #define DISPID_CB_calllhbox 1
 
 /*

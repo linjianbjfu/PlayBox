@@ -3,6 +3,7 @@
 #pragma once
 
 class YL_CHTTPRequest;
+class UserInfo;
 
 class CUserManager
 {
@@ -20,19 +21,26 @@ public:
 	};
 public:
 	void User_AppStartUp(BOOL bLogin = false);
-	static void User_Login();
-	static void User_Logout();
-	static void User_AppExit();
-	static BOOL User_IsLogin();
-	static void User_LoginFaild();
+	void User_Login();
+	void User_Logout();
+	void User_AppExit();
+	BOOL User_IsLogin();
+	void User_LoginFaild();
 	static DWORD WINAPI Thread_LogIn(void*ppar);
-	static void User_Login(LPCSTR pszName,LPCSTR pszPwd);
+	static DWORD WINAPI Thread_LogInFromFlash(void* ppar);
+	void User_Login(LPCSTR pszName,LPCSTR pszPwd);
 	static LOGIN_STATUS	 Login(YL_CHTTPRequest** pHTTP,const char* lpszRegID,const char* lpszRegPass, bool bAuto=false);
+	void ClearUserInfo();
+	void SetUserInfo(int iID, const std::string& strName, const std::string& strPassMD5);
+	void SetLogonState(bool bIsLogon);
 
 private:	
 	HANDLE	m_hThreadLogIn;
 	UserInfo* m_pUserInfo;
 	CUserManager();
+	char  m_szTmpName[100]; //线程传参使用
+	char  m_szTmpPWD[100];	//线程传参使用
+	bool m_bLogIn;
 };
 
 #endif // USERMANAGER_H
