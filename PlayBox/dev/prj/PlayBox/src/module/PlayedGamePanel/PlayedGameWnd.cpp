@@ -7,8 +7,8 @@
 #include "PlayedGameListPanelWnd.h"
 #include "..\WebInteract\MyWebBrowserWnd.h"
 #include ".\playedgamewnd.h"
-#include "/PlayBox_/EncConf/EncConf/common/YL_StringUtil.h"
-#include "/PlayBox_/EncConf/EncConf/common/tools.h"
+#include "YL_StringUtil.h"
+#include "tools.h"
 #include "AfxGlobals.h"
 #include "AppConfig\config\ConfigSettingDef.h"
 

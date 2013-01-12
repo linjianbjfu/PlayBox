@@ -3,8 +3,8 @@
 #include "UserLogedOutPanelWnd.h"
 #include "../../gui/util/CBufferDC.h"
 #include "../../Gui/CommonControl/xSkinButton.h"
-#include "/PlayBox_/PlayBox/dev/prj/PlayBox/src/module/UserMan/WebWnd.h"
-#include "/PlayBox_/PlayBox/dev/prj/PlayBox/src/AppConfig/config/ConfigAppDef.h"
+#include "WebWnd.h"
+#include "../../AppConfig/config/ConfigAppDef.h"
 
 IMPLEMENT_DYNAMIC(CUserLogedOutWnd, CBasicWnd)
 CUserLogedOutWnd::CUserLogedOutWnd()
