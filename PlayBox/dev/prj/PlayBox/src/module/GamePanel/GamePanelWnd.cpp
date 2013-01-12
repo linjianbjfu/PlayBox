@@ -350,7 +350,7 @@ void GamePanelWnd::HttpDownOb_DownFinish( string& strID, string& strSwfPath )
 	GLOBAL_LOCALGAME->ILocalGameData_AddGame( og );
 
 	OneLocalGame olg;
-	GLOBAL_LOCALGAME->ILocalGameData_GetGameByID( strID, olg );
+	GLOBAL_LOCALGAME->ILocalGameData_GetGameByID( strID, og.nGameType, olg );
 
 	//File has been downloaded ,Try to play the Movie now...
 	PlayMovie( olg.strID, olg.strGamePath );
@@ -459,7 +459,7 @@ void GamePanelWnd::SetGameEntry( SWF_GAME sg )
 	//MessageBox("Hello from GamePanelWnd::SetGameEntry","Info");
 
 	OneLocalGame olg;
-	if( GLOBAL_LOCALGAME->ILocalGameData_GetGameByID( m_swfGame.strID, olg ) )
+	if( GLOBAL_LOCALGAME->ILocalGameData_GetGameByID( m_swfGame.strID, OneLocalGame::TYPE_FLASH_GAME, olg ) )
 	{
 		m_bDown = false;
 		YL_Log("GamePanelWnd.txt", LOG_DEBUG, "GamePanelWnd::SetGameEntry", 

@@ -19,10 +19,10 @@ private:
 	void		UnLoadGameData();
 	void		NotifyQQItemCountChange();
 public:
-	virtual bool ILocalGameData_GetGameByID( string strID, OneLocalGame& og );
+	virtual bool ILocalGameData_GetGameByID( string strID, int nGameType, OneLocalGame& og );
 	/*游戏信息和图片在该函数中获取*/
 	virtual bool ILocalGameData_AddGame( OneLocalGame og, string strMD5 = "");
-	virtual bool ILocalGameData_DelGame( string strID );
+	virtual bool ILocalGameData_DelGame( string strID, int nGameType );
 	virtual bool ILocalGameData_GetAllGame( LocalGameList& lgl );
 	virtual unsigned int ILocalGameData_GetGameCount();
 

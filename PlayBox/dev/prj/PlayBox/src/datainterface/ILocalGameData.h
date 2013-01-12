@@ -19,7 +19,7 @@ struct OneLocalGame
 	unsigned int uiFileSize;
 	int nGameType; // 1:Flash	2:Web
 	string strSrvID; // srvid (webgame only)
-	
+	string strAddTime; // ÃÌº” ±º‰ eg:2013-1-13 12:50
 
 	OneLocalGame()
 	{
@@ -42,9 +42,9 @@ typedef vector<OneLocalGame> LocalGameList;
 class ILocalGameData : public IData
 {
 public:
-	virtual bool ILocalGameData_GetGameByID( string strID, OneLocalGame& og ) = 0;
+	virtual bool ILocalGameData_GetGameByID( string strID, int nGameType, OneLocalGame& og ) = 0;
 	virtual bool ILocalGameData_AddGame( OneLocalGame og, string strMD5 = "") = 0;
-	virtual bool ILocalGameData_DelGame( string strID ) = 0;
+	virtual bool ILocalGameData_DelGame( string strID , int nGameType) = 0;
 	virtual bool ILocalGameData_GetAllGame( LocalGameList& lgl ) = 0;
 	virtual unsigned int ILocalGameData_GetGameCount() = 0;
 

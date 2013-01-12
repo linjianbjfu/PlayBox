@@ -183,7 +183,7 @@ string CWebManager::_command_checkdlstatus (string &strContent)
 	OneLocalGame olg;
 
 	string strStatus  = 
-		GLOBAL_LOCALGAME->ILocalGameData_GetGameByID (strID, olg) ? "run" : "download";
+		GLOBAL_LOCALGAME->ILocalGameData_GetGameByID (strID, OneLocalGame::TYPE_FLASH_GAME, olg) ? "run" : "download";
 
 	vector<TAB_ITEM> vTab;
 	GLOBAL_TABBARDATA->ITabBar_GetTabBarData (vTab);

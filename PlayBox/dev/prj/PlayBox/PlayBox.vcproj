@@ -1544,6 +1544,12 @@
 				<File
 					RelativePath=".\src\module\UserMan\UserLogedOutPanelWnd.h">
 				</File>
+				<File
+					RelativePath=".\src\module\UserMan\WebWnd.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\UserMan\WebWnd.h">
+				</File>
 			</Filter>
 		</Filter>
 		<Filter

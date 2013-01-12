@@ -32,6 +32,8 @@ protected:
 
 	// WM_MENU_CICKED : (WM_USER+120)
 	afx_msg LRESULT OnClickeFavMenuItem(WPARAM wParam, LPARAM lParam);
+	// WM_NEWPAGE
+	afx_msg LRESULT OnNewPageWindow(WPARAM, LPARAM);
 
 	void	ShowFavUrlMenu();
 

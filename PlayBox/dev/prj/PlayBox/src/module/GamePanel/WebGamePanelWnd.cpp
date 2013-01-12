@@ -168,7 +168,7 @@ void WebGamePanelWnd::SetTabItem( TAB_ITEM ti )
 		og.strName	= m_webGame.strName;
 		og.strID	= m_webGame.strID;
 		og.strSrvID	= m_webGame.strSvrID;
-		og.strGamePath=m_pWndWebGame->GetLocationURL();
+		og.strGamePath=strUrl;
 
 		string strSavePath;
 		AfxGetUserConfig()->GetConfigStringValue(CONF_APP_MODULE_NAME, CONF_APP_SWF_PATH, strSavePath);

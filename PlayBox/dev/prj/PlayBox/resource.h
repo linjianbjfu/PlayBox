@@ -236,6 +236,8 @@
 #define ID_WND_USER_LOGED_OUT           317
 #define ID_BTN_USER_MAN_LOGIN           318
 #define ID_BTN_USER_MAN_REGISTER        319
+#define ID_BNT_WEB_WND_CLOSE			320
+#define ID_WEB_WND_WEBBROWSER			321
 
 // Next default values for new objects
 // 
