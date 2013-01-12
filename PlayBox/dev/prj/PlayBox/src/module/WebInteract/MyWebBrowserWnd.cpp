@@ -221,6 +221,7 @@ LRESULT MyWebBrowserWnd::OnCallJavaScript(WPARAM w,LPARAM l)
 
 void MyWebBrowserWnd::OnNewWindow2(LPDISPATCH* ppDisp, BOOL* Cancel)
 {	// 限制打开新窗口
+	return;
 	CComPtr<IHTMLDocument2> pHTMLDocument2;  
 
 	m_pBrowserApp->get_Document((IDispatch **)&pHTMLDocument2);  
