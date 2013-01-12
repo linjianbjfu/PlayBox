@@ -7,6 +7,8 @@
 #include "PlayedGameListPanelWnd.h"
 #include "..\WebInteract\MyWebBrowserWnd.h"
 #include ".\playedgamewnd.h"
+#include "AfxGlobals.h"
+#include "AppConfig\config\ConfigSettingDef.h"
 
 IMPLEMENT_DYNAMIC(PlayedGameWnd, CBasicWnd)
 PlayedGameWnd::PlayedGameWnd()
@@ -82,6 +84,16 @@ int PlayedGameWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	GLOBAL_LOCALGAME->ILocalGameData_GetAllGame(m_gameList);
 	m_pWndGameListWnd->ReSetGameList(m_gameList);
+
+	std::string strPlayedGameRightUrl;
+	AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
+		CONF_SETTING_CONFIG_PLAYED_GAME_RIGHT_URL,strPlayedGameRightUrl);
+	if (!strPlayedGameRightUrl.empty())
+	{
+		m_pWndRecommand->Navigate(strPlayedGameRightUrl);
+	} else {
+		m_pWndRecommand->Navigate("about:blank");
+	}
 
 	return 0;
 }

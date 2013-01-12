@@ -160,17 +160,8 @@
 
 <wndpanel name="gamecenterpanel" mode="normal">
 	<background name="normal" ori="NO_POS" background_color="dae8f4">
-		<paneitem name="FlashGameControlBarBg" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_top="40" />
-		<paneitem name="GameCenterSearchEditBorderLeft" type="bmp" start_x_right="240" x_delta="3" start_y_top="8" y_delta="24" />
-		<paneitem name="GameCenterSearchEditBorderMiddle" type="bmp" start_x_right="237" x_delta="177" start_y_top="8" y_delta="24" />
-		
 	</background>
 	<controlpanel name="normal" ori="NO_POS">
-		<paneitem name="GameCenterMainPage" type="button" tooltip="Ê×Ò³" bmp="GameCenterMainPage" start_x_left="35"  start_y_top="8" x_delta="90" y_delta="24" />
-		<paneitem name="GameCenterWebGame"  type="button" tooltip="ÍøÒ³ÓÎÏ·" bmp="GameCenterWebGame" start_x_left="129" start_y_top="8" x_delta="90" y_delta="24" />
-		<paneitem name="GameCenterFlashGame"  type="button" tooltip="Ð¡ÓÎÏ·" bmp="GameCenterFlashGame" start_x_left="223" start_y_top="8" x_delta="90" y_delta="24" />
-		<paneitem name="GameCenterSearchEdit"  type="Edit" start_x_right="237"  x_delta="176" start_y_top="10" y_delta="20" />
-		<paneitem name="GameCenterSearchBtn"  type="button" tooltip="ËÑË÷" bmp="GameCenterSearchBtn" start_x_right="60" start_y_top="8" x_delta="30" y_delta="24" />
 		<paneitem name="GameCenterBrowserWnd" type = "wnd" start_x_left="0"  start_y_top="40" end_x_right="0" end_y_bottom="0" />
 	</controlpanel>
 </wndpanel>

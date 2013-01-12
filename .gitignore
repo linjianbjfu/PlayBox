@@ -16,6 +16,11 @@
 *.cod
 *.exe
 *.rar
-
-
+*.map
+*/BuildLog.htm
+*/Release/*
+DocOp.dll
+Log.dll
+NetOp.dll
+PlayBox.exe
 

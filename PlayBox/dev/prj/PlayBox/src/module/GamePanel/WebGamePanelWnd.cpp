@@ -155,9 +155,10 @@ void WebGamePanelWnd::SetTabItem( TAB_ITEM ti )
 	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_CONFIG_WEB_GAME_URL, strValue );
 	if (!strValue.empty())
 	{
-		string strUrl = strValue + "?id=" + m_webGame.strID + 
-			"&svrid=" + m_webGame.strSvrID;
+		string strUrl = strValue + "id/" + m_webGame.strID + 
+			"/svrid/" + m_webGame.strSvrID;
 		m_pWndWebGame->Navigate(strUrl);
+		//再加上username pass 
 
 		if ( YL_FileInfo::IsValid(m_webGame.strPicUrl) )
 		{ // picurl假如指向了本地文件,则是从本地游戏列表进入的游戏
@@ -377,7 +378,7 @@ void WebGamePanelWnd::OnClickedClearCache()
 void WebGamePanelWnd::OnClickedSite()
 {
 	string strValue;
-	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_CONFIG_MAIN_PAGE, strValue );
+	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_CONFIG_WEB_GAME_OFFICE_SITE, strValue );
 	if (!strValue.empty())
 	{
 		TAB_ITEM tabItem;
