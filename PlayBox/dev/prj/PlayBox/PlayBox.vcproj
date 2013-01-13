@@ -1375,6 +1375,24 @@
 				RelativePath=".\src\util\MarkupArchive.h">
 			</File>
 			<File
+				RelativePath=".\src\util\md5.cpp">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="xpDebug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\src\util\md5.h">
+			</File>
+			<File
 				RelativePath=".\src\util\Mixer.cpp">
 			</File>
 			<File
@@ -1721,6 +1739,12 @@
 				Name="UserMan"
 				Filter="">
 				<File
+					RelativePath=".\src\module\UserMan\DlgLogin.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\UserMan\DlgLogin.h">
+				</File>
+				<File
 					RelativePath=".\src\module\UserMan\UserInfo.h">
 				</File>
 				<File
@@ -1736,16 +1760,16 @@
 					RelativePath=".\src\module\UserMan\UserLogedOutPanelWnd.h">
 				</File>
 				<File
-					RelativePath=".\src\module\UserMan\WebWnd.cpp">
-				</File>
-				<File
-					RelativePath=".\src\module\UserMan\WebWnd.h">
-				</File>
-				<File
 					RelativePath=".\src\module\UserMan\UserManager.cpp">
 				</File>
 				<File
 					RelativePath=".\src\module\UserMan\UserManager.h">
+				</File>
+				<File
+					RelativePath=".\src\module\UserMan\WebWnd.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\UserMan\WebWnd.h">
 				</File>
 			</Filter>
 		</Filter>

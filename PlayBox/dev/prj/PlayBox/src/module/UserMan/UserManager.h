@@ -1,46 +1,46 @@
-#ifndef  USERMANAGER_H
+#ifndef USERMANAGER_H
 #define USERMANAGER_H
 #pragma once
+#include "windows.h"
 
-class YL_CHTTPRequest;
 class UserInfo;
 
 class CUserManager
 {
 public:	
-	static void CreateInstance();
-	static CUserManager*	GetInstance();
-	static void	DeleteInstance();
-	
-	enum LOGIN_STATUS
+	CUserManager();
+	static CUserManager* GetInstance();
+	enum ErrDetail
 	{
-		LOG_SUCCEEDED = 0,
-		LOG_FAILED_USER_NOT_EXIST,
-		LOG_FAILED_PASS_WRONG,
-		LOG_FAILED_OTHER
+		SUCCEEDED = 0,
+		USER_NOT_EXIST,
+		USER_NAME_EMPTY,
+		PASS_WORD_EMPTY,
+		PASS_WRONG,
+		USER_CANCEL,
+		FAILED, //general fail
+	};
+	enum State
+	{
+		NOT_LOGGED_IN = 0, //未登录
+		HAVE_LANDED,       //已登陆
+		LOGIN_ON_THE_WAY,  //登录中
 	};
 public:
-	void User_AppStartUp(BOOL bLogin = false);
-	void User_Login();
+	void User_AppStartUp();//if config is auto login, then login
+	void User_Login(LPCSTR pszName,LPCSTR pszPwd);
+	void User_CancelLog();
 	void User_Logout();
 	void User_AppExit();
-	BOOL User_IsLogin();
-	void User_LoginFaild();
-	static DWORD WINAPI Thread_LogIn(void*ppar);
-	static DWORD WINAPI Thread_LogInFromFlash(void* ppar);
-	void User_Login(LPCSTR pszName,LPCSTR pszPwd);
-	static LOGIN_STATUS	 Login(YL_CHTTPRequest** pHTTP,const char* lpszRegID,const char* lpszRegPass, bool bAuto=false);
-	void ClearUserInfo();
-	void SetUserInfo(int iID, const std::string& strName, const std::string& strPassMD5);
-	void SetLogonState(bool bIsLogon);
+	bool User_IsLogin();
 
 private:	
 	HANDLE	m_hThreadLogIn;
 	UserInfo* m_pUserInfo;
-	CUserManager();
-	char  m_szTmpName[100]; //线程传参使用
-	char  m_szTmpPWD[100];	//线程传参使用
-	bool m_bLogIn;
-};
+	State m_state;
+	ErrDetail m_errDetail;
+	void UserLoginInternal(LPCSTR pszName,LPCSTR pszPwdMD5);
+	static DWORD WINAPI ThreadLogin(void* pPara);
+ };
 
 #endif // USERMANAGER_H

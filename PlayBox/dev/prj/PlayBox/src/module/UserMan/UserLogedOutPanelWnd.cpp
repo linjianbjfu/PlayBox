@@ -5,6 +5,7 @@
 #include "../../Gui/CommonControl/xSkinButton.h"
 #include "WebWnd.h"
 #include "../../AppConfig/config/ConfigAppDef.h"
+#include "DlgLogin.h"
 
 IMPLEMENT_DYNAMIC(CUserLogedOutWnd, CBasicWnd)
 CUserLogedOutWnd::CUserLogedOutWnd()
@@ -45,7 +46,8 @@ int CUserLogedOutWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void CUserLogedOutWnd::OnClickedLogin()
 {
-
+	CDlgLogin dlgLogin;
+	dlgLogin.DoModal();
 }
 
 void CUserLogedOutWnd::OnClickedRegister()

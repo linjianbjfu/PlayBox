@@ -180,9 +180,9 @@ void HttpDownCtrl::OnTimer(UINT nIDEvent)
 						pHttpDownFile->GetFileSize(), pHttpDownFile->GetSpeed()*1024 );
 				}else
 				{
+					vecGidFinish.push_back( strGid );
 					string strSwfPath = pHttpDownFile->GetParamLocalFile();
 					NotifyDownFinish( strGid, strSwfPath );
-					vecGidFinish.push_back( strGid );
 				}				
 			}
 		}

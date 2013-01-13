@@ -5,10 +5,8 @@
 class IUserMsgObserver : public IMessageObserver
 {
 public:
-	virtual void	UserMsg_AutoLogin(bool bAuto=false){};
-	virtual void	UserMsg_Login(){};
+	virtual void	UserMsg_Login(){};//登陆成功
 	virtual void	UserMsg_LogOut(){};
 	virtual void	UserMsg_LogFaild(){};
-	virtual void	UserMsg_LogReshow() {};
-	virtual void	UserMsg_BeginLogin(){};
+	virtual void	UserMsg_BeginLogin(){};	 //开始登陆
 };

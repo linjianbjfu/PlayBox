@@ -101,6 +101,12 @@ bool CLhcImg::GetConfigServer(char szUrl[], int urllen)
 	return true;
 }
 
+bool CLhcImg::GetRegServer(char szUrl[], int urllen)
+{
+	YL_EncFileReg::GetString( "ConfigServer", "regsvr", szUrl, urllen );
+	return true;
+}
+
 bool CLhcImg::GetSoftwareVersion(char szSoftVersion[], int verlen)
 {
 	YL_EncFileReg::GetString( "Config", "Version", szSoftVersion, verlen );

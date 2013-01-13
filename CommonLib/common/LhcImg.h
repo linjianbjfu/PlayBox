@@ -16,6 +16,8 @@ public:
 	static bool GetLogServer(char szUrl[], int urllen);
 	static bool GetUpLogServer(char szUrl[], int urllen);
 	static bool GetConfigServer(char szUrl[], int urllen);
+	static bool GetRegServer(char szUrl[], int urllen);
+	
 	// server list
 	static bool GetSoftwareVersion(char szSoftVersion[], int verlen);
 	static bool GetUserID(char szID[], int idlen);
