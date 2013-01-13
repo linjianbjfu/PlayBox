@@ -221,6 +221,7 @@ LRESULT MyWebBrowserWnd::OnCallJavaScript(WPARAM w,LPARAM l)
 
 void MyWebBrowserWnd::OnNewWindow2(LPDISPATCH* ppDisp, BOOL* Cancel)
 {	// 限制打开新窗口
+	return;
 	CComPtr<IHTMLDocument2> pHTMLDocument2;  
 
 	m_pBrowserApp->get_Document((IDispatch **)&pHTMLDocument2);  
@@ -232,15 +233,18 @@ void MyWebBrowserWnd::OnNewWindow2(LPDISPATCH* ppDisp, BOOL* Cancel)
 		if (pIHTMLElement != NULL)  
 		{  
 			VARIANT url;  
-			HRESULT hr=pIHTMLElement->getAttribute(L"href", 0, &url);  
-			if (hr == S_OK)  
-			{  
-				url.vt = VT_I2;
+			HRESULT hr=pIHTMLElement->getAttribute(L"href", 2, &url);  
+			if (hr == S_OK)
+			{
 				USES_CONVERSION;
-				Navigate(W2T(url.bstrVal));
+				url.vt = VT_I2;
+				
+				GetParent()->SendMessage(WM_NEWPAGE, (WPARAM)W2T(url.bstrVal), 0);
+
+				//Navigate(W2T(url.bstrVal));
 				if (SUCCEEDED(hr)) 
 				{  
-					*Cancel=TRUE;  
+					*Cancel=TRUE;
 				}  
 			}  
 		} 

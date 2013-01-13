@@ -12,4 +12,6 @@ protected:
 	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
 private:
 	
+public:
+	afx_msg void OnPaint();
 };

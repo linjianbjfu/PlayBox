@@ -37,8 +37,8 @@ public:
 	// 参数：nGameType	游戏类型(1-Flash游戏、2-网页游戏)
 	// 参数：strSrvID (webgame only)
 	// 返回值：int 每一项的标识
-	int InsertItem(CDibBitmap* pImg, CString strItemName, CString strdetail, string strGID, string strSrvID, int nGameType, BOOL blSel=FALSE);
-	int InsertItem(LPCTSTR szImgPath, CString strItemName, CString strdetail, string strGID, string strSrvID, int nGameType, BOOL blSel=FALSE);
+	int InsertItem(CDibBitmap* pImg, CString strItemName, CString strdetail, string strGID, string strSrvID, string strAddTime, int nGameType, BOOL blSel=FALSE);
+	int InsertItem(LPCTSTR szImgPath, CString strItemName, CString strdetail, string strGID, string strSrvID, string strAddTime, int nGameType, BOOL blSel=FALSE);
 	// 功能：获取选中Item的Index
 	// 返回值：vector<int> 一组Index 
 	vector<int> GetSelectItem();

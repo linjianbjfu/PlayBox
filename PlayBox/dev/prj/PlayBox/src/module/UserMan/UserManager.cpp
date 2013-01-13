@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "UserManager.h"
 #include "YL_Base64.h"
+#include "YL_HTTPRequest.h"
+#include "UserInfo.h"
 #include "../../AppConfig/config/ConfigSettingDef.h"
 #include "../../DataInterface/IUserMsgObserver.h"
 
@@ -8,7 +10,8 @@ static CUserManager* g_pUserMgr = NULL;
 
 CUserManager::CUserManager()
   : m_hThreadLogIn(NULL),
-    m_pUserInfo(NULL)
+    m_pUserInfo(NULL),
+	m_bLogIn(false)
 {
 }
 
@@ -19,6 +22,32 @@ CUserManager*	CUserManager::GetInstance()
 	return g_pUserMgr;
 }
 
+void	CUserManager::DeleteInstance()
+{
+	delete g_pUserMgr;
+	g_pUserMgr = NULL;
+}
+
+DWORD WINAPI CUserManager::Thread_LogInFromFlash(void*ppar)
+{
+	YL_CHTTPRequest* httpRequest = new YL_CHTTPRequest;
+	if( strlen(GetInstance()->m_szTmpName) ==0 || strlen(GetInstance()->m_szTmpPWD) == 0 )
+	{
+		list<IMessageObserver*> listOb;
+		AfxGetMessageManager()->QueryObservers( ID_MESSAGE_USER,listOb);
+		for( list<IMessageObserver*>::iterator itOb = listOb.begin();itOb != listOb.end();itOb++ )
+		{
+			IUserMsgObserver* pOb = dynamic_cast<IUserMsgObserver*>(*itOb);
+			pOb->UserMsg_LogReshow();
+		}
+
+		delete httpRequest;
+		return 1;
+	}
+	CUserManager::Login(&httpRequest,GetInstance()->m_szTmpName,GetInstance()->m_szTmpPWD);
+	delete httpRequest;
+	return 0;
+}
 DWORD WINAPI CUserManager::Thread_LogIn(void*ppar)
 {
 	YL_CHTTPRequest* httpRequest = new YL_CHTTPRequest;
@@ -45,7 +74,7 @@ DWORD WINAPI CUserManager::Thread_LogIn(void*ppar)
 	if( strlen(szUserID) ==0 || strlen(szAfterBase64DecodePassword) == 0 )
 	{
 		list<IMessageObserver*> listOb;
-		AfxGetMessageManager()->QueryObservers( KWID_MESSAGE_USER,listOb);
+		AfxGetMessageManager()->QueryObservers( ID_MESSAGE_USER,listOb);
 		for( list<IMessageObserver*>::iterator itOb = listOb.begin();itOb != listOb.end();itOb++ )
 		{
 			IUserMsgObserver* pOb = dynamic_cast<IUserMsgObserver*>(*itOb);
@@ -83,7 +112,6 @@ void CUserManager::User_Login(LPCSTR pszName,LPCSTR pszPwd)
 	strcpy(GetInstance()->m_szTmpPWD,pszPwd);
 	GetInstance()->m_hThreadLogIn = CreateThread(0,0,Thread_LogInFromFlash,0,0,0);	
 }
-
 void CUserManager::User_AppExit()
 {
 	
@@ -114,7 +142,7 @@ void CUserManager::User_Logout()
 
 BOOL CUserManager::User_IsLogin()
 {
-	return GLOBAL_USERDATA->User_IsLogin();
+	return m_bLogIn;
 }
 
 void CUserManager::User_LoginFaild()
@@ -124,14 +152,32 @@ void CUserManager::User_LoginFaild()
 	{
 		return ;
 	}
-	GLOBAL_USERDATA->User_SetLogin(false);
+	m_bLogIn = false;
+	
 	list<IMessageObserver*> listOb;
-	AfxGetMessageManager()->QueryObservers( KWID_MESSAGE_USER,listOb);
+	AfxGetMessageManager()->QueryObservers( ID_MESSAGE_USER,listOb);
 	for( list<IMessageObserver*>::iterator itOb = listOb.begin();itOb != listOb.end();itOb++ )
 	{
 		IUserMsgObserver* pOb = dynamic_cast<IUserMsgObserver*>(*itOb);
 		pOb->UserMsg_LogFaild();
 	}
+}
+
+void CUserManager::ClearUserInfo()
+{
+	m_pUserInfo->clear();
+}
+
+void CUserManager::SetUserInfo(int iID, const std::string& strName, const std::string& strPassMD5)
+{
+	m_pUserInfo->iID = iID;
+	m_pUserInfo->strName = strName;
+	m_pUserInfo->strPassMD5 = strPassMD5;
+}
+
+void CUserManager::SetLogonState(bool bIsLogon)
+{
+	m_bLogIn = bIsLogon;
 }
 
 CUserManager::LOGIN_STATUS CUserManager::Login(YL_CHTTPRequest** ppHTTP,const char* lpszRegID,const char* lpszRegPass, bool bAutoLogin)
@@ -140,7 +186,7 @@ CUserManager::LOGIN_STATUS CUserManager::Login(YL_CHTTPRequest** ppHTTP,const ch
 		|| strlen(lpszRegID) == 0 || strlen(lpszRegPass) == 0 )
 	{
 		list<IMessageObserver*> listOb;
-		AfxGetMessageManager()->QueryObservers( KWID_MESSAGE_USER,listOb);
+		AfxGetMessageManager()->QueryObservers( ID_MESSAGE_USER,listOb);
 		for( list<IMessageObserver*>::iterator itOb = listOb.begin();itOb != listOb.end();itOb++ )
 		{
 			IUserMsgObserver* pOb = dynamic_cast<IUserMsgObserver*>(*itOb);
@@ -150,7 +196,7 @@ CUserManager::LOGIN_STATUS CUserManager::Login(YL_CHTTPRequest** ppHTTP,const ch
 	}
 	
 	list<IMessageObserver*> listOb;
-	AfxGetMessageManager()->QueryObservers( KWID_MESSAGE_USER,listOb);
+	AfxGetMessageManager()->QueryObservers( ID_MESSAGE_USER,listOb);
 	for( list<IMessageObserver*>::iterator itOb = listOb.begin();itOb != listOb.end();itOb++ )
 	{
 		IUserMsgObserver* pOb = dynamic_cast<IUserMsgObserver*>(*itOb);
@@ -162,7 +208,7 @@ CUserManager::LOGIN_STATUS CUserManager::Login(YL_CHTTPRequest** ppHTTP,const ch
 
 	char szVersion[128];
 	memset(szVersion,0,128);
-	CKwcImg::GetSoftwareVersion(szVersion,128);
+	CLhcImg::GetSoftwareVersion(szVersion,128);
 
 	int iLen = (int)strlen(lpszRegID);
 
@@ -199,13 +245,17 @@ CUserManager::LOGIN_STATUS CUserManager::Login(YL_CHTTPRequest** ppHTTP,const ch
 	}
 
 	string strUserSvr;
-	CKwcImg::GetUserServer(strUserSvr);
+	AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
+		CONF_SETTING_CONFIG_USER_SVR, strUserSvr);
+	
 	char szURL[512];
 	memset(szURL,0,512);
 	if(bAutoLogin)
-		_snprintf(szURL,511,"%s/US/Login?uname=%s&pwd=%s&ver=%s&auto=1&" + strFormat,strUserSvr.c_str(),szEncoderID,szEncoderPass,szEncoderVersion,strLog);
+		_snprintf(szURL,511,"%s/US/Login?uname=%s&pwd=%s&ver=%s&auto=1&"	\
+		+ strFormat,strUserSvr.c_str(),szEncoderID,szEncoderPass,szEncoderVersion,strLog);
 	else
-		_snprintf(szURL,511,"%s/US/Login?uname=%s&pwd=%s&ver=%s&" + strFormat ,strUserSvr.c_str(),szEncoderID,szEncoderPass,szEncoderVersion,strLog);
+		_snprintf(szURL,511,"%s/US/Login?uname=%s&pwd=%s&ver=%s&"	 \
+		+ strFormat ,strUserSvr.c_str(),szEncoderID,szEncoderPass,szEncoderVersion,strLog);
 
 	delete[] szEncoderID;	
 	delete[] szEncoderVersion;
@@ -213,7 +263,7 @@ CUserManager::LOGIN_STATUS CUserManager::Login(YL_CHTTPRequest** ppHTTP,const ch
 	if( (*ppHTTP)->Request( szURL, YL_CHTTPRequest::REQUEST_GET, 20*1000 ) != TRUE)
 	{
 		delete[] szEncoderPass;
-		User_LoginFaild();
+		g_pUserMgr->User_LoginFaild();
 		return CUserManager::LOG_FAILED_OTHER;
 	}
 
@@ -222,14 +272,14 @@ CUserManager::LOGIN_STATUS CUserManager::Login(YL_CHTTPRequest** ppHTTP,const ch
 	pbyIndex = (*ppHTTP)->GetContent(size);
 
 
-	GLOBAL_USERDATA->GetUserInfo()->Clear();
+	g_pUserMgr->ClearUserInfo();
 	if( pbyIndex != NULL && *pbyIndex == '1' )
 	{
 		CUserManager* pUserMan = CUserManager::GetInstance();
 		if( pUserMan == NULL )
 		{
 			delete[] szEncoderPass;
-			User_LoginFaild();
+			g_pUserMgr->User_LoginFaild();
 			return CUserManager::LOG_FAILED_OTHER;
 		}
 	
@@ -250,7 +300,7 @@ CUserManager::LOGIN_STATUS CUserManager::Login(YL_CHTTPRequest** ppHTTP,const ch
 		pStart = strstr(szReBuffer,"\r\n");
 		if( pStart == NULL )
 		{
-			User_LoginFaild();
+			g_pUserMgr->User_LoginFaild();
 			goto FAILED;
 		}
 
@@ -258,10 +308,8 @@ CUserManager::LOGIN_STATUS CUserManager::Login(YL_CHTTPRequest** ppHTTP,const ch
 
 		strcpy(szNetID,pStart);
 		
-		GLOBAL_USERDATA->GetUserInfo()->dwUserID = atol(szNetID);
-		_tcscpy(GLOBAL_USERDATA->GetUserInfo()->szName,lpszRegID);   //记录用户名
-		_tcscpy(GLOBAL_USERDATA->GetUserInfo()->szPWD,lpszRegPass);  //记录密码
-		GLOBAL_USERDATA->User_SetLogin(true);
+		g_pUserMgr->SetUserInfo(atol(szNetID), lpszRegID, lpszRegPass);
+		g_pUserMgr->SetLogonState(true);
 
 		string strValue = string( lpszRegID );
 		AfxGetUserConfig()->SetConfigStringValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_LOGIN_USER_NAME, strValue, true );
@@ -273,7 +321,7 @@ CUserManager::LOGIN_STATUS CUserManager::Login(YL_CHTTPRequest** ppHTTP,const ch
 		AfxGetUserConfig()->SetConfigStringValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_NETID, strValue, true );
 
 		list<IMessageObserver*> listOb;
-		AfxGetMessageManager()->QueryObservers( KWID_MESSAGE_USER,listOb);
+		AfxGetMessageManager()->QueryObservers( ID_MESSAGE_USER,listOb);
 		for( list<IMessageObserver*>::iterator itOb = listOb.begin();itOb != listOb.end();itOb++ )
 		{
 			IUserMsgObserver* pOb = dynamic_cast<IUserMsgObserver*>(*itOb);
@@ -297,7 +345,7 @@ CUserManager::LOGIN_STATUS CUserManager::Login(YL_CHTTPRequest** ppHTTP,const ch
 		szReBuffer[size] = '\0';
 		delete[] szEncoderPass;
 
-		User_LoginFaild();
+		g_pUserMgr->User_LoginFaild();
 		if( strstr(szReBuffer,"USER_NOT_EXIST") != NULL )
 		{
 			return CUserManager::LOG_FAILED_USER_NOT_EXIST;

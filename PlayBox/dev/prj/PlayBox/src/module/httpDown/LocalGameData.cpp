@@ -122,6 +122,7 @@ void LocalGameData::LoadGameData()
 		olg.strPicPath = xml.GetAttrib( "Img" );
 		olg.strGamePath = xml.GetAttrib( "AppPath" );
 		olg.strSrvID = xml.GetAttrib("srvid");
+		olg.strAddTime = xml.GetAttrib("add_time");
 		CString strGameType = xml.GetAttrib( _T("GameType") );
 		olg.nGameType = atoi(strGameType.GetBuffer(0) );
 		strGameType.ReleaseBuffer();
@@ -175,6 +176,7 @@ void LocalGameData::UnLoadGameData()
 		xml.SetAttrib( "Img", it1->strPicPath.c_str() );
 		xml.SetAttrib( "AppPath", it1->strGamePath.c_str() );
 		xml.SetAttrib( "srvid", it1->strSrvID.c_str());
+		xml.SetAttrib( "add_time", it1->strAddTime.c_str());
 
 		CString str;
 		str.Format(_T("%d"), it1->nGameType);
@@ -188,27 +190,36 @@ void LocalGameData::UnLoadGameData()
 	CopyFile( strTmp.c_str(), m_strDataFilePath.c_str(), FALSE );
 }
 
-bool LocalGameData::ILocalGameData_GetGameByID( string strID, OneLocalGame& og )
+bool LocalGameData::ILocalGameData_GetGameByID( string strID, int nGameType, OneLocalGame& og )
 {
 	LocalGameList::iterator it1 = m_vecGame.begin();
 	for( ; it1 != m_vecGame.end(); it1 ++ )
 	{
-		if( strID == it1->strID)
+		if( strID == it1->strID
+			&& nGameType == it1->nGameType)
 		{
 			break;
 		}
 	}
 	if( it1 != m_vecGame.end() )
 	{
-		if( YL_FileInfo::IsValid( it1->strGamePath ) )
+		if (it1->nGameType == OneLocalGame::TYPE_WEB_GAME)
 		{
 			og = *it1;
 			return true;
-		}else
+		}
+		else if (it1->nGameType == OneLocalGame::TYPE_FLASH_GAME)
 		{
-			m_vecGame.erase( it1 );
-			og.clear();
-			return false;
+			if( YL_FileInfo::IsValid( it1->strGamePath ) )
+			{
+				og = *it1;
+				return true;
+			}else
+			{			
+				m_vecGame.erase( it1 );
+				og.clear();
+				return false;
+			}
 		}
 	}else
 	{
@@ -233,22 +244,32 @@ bool LocalGameData::ILocalGameData_AddGame( OneLocalGame og, string strMD5)
 	{
 		return false;
 	}
-	//加入本地游戏数据
 	OneLocalGame olg = og;
+	
+	// 获取系统日期
+	struct tm* tmLocal;
+	time_t t = time(NULL);;
+	tmLocal = localtime(&t);
+
+	YL_StringUtil::Format(olg.strAddTime, "%d-%d-%d %d:%d",
+		tmLocal->tm_year+1900, tmLocal->tm_mon+1, tmLocal->tm_mday, // date
+		tmLocal->tm_hour, tmLocal->tm_min);// time
 	
 	YL_FileInfo::GetFileSize( olg.strGamePath.c_str(), &(olg.uiFileSize) );
 
+	//加入本地游戏数据
 	m_vecGame.push_back( olg );
 	NotifyQQItemCountChange();
 	return true;
 }
 
-bool LocalGameData::ILocalGameData_DelGame( string strID )
+bool LocalGameData::ILocalGameData_DelGame( string strID, int nGameType )
 {
 	LocalGameList::iterator it1 = m_vecGame.begin();
 	for( ; it1 != m_vecGame.end(); it1 ++ )
 	{
-		if( strID == it1->strID )
+		if( strID == it1->strID 
+			&& nGameType == it1->nGameType)
 		{
 			break;
 		}
@@ -283,14 +304,14 @@ unsigned int LocalGameData::ILocalGameData_GetGameCount()
 
 void LocalGameData::NotifyQQItemCountChange()
 {
-// 	list<IMessageObserver*> listOb;
-// 	AfxGetMessageManager()->QueryObservers( ID_MESSAGE_QQ_ITEM_CHANGE,listOb);
-// 
-// 	for( list<IMessageObserver*>::iterator itOb = listOb.begin();itOb != listOb.end();itOb++ )
-// 	{
-// 		IQQItemCountChangeObserver* pOb = dynamic_cast<IQQItemCountChangeObserver*>(*itOb);
-// 		pOb->IQQItemChangeOb_CountChange( m_vecGame.size() );
-// 	}
+//  	list<IMessageObserver*> listOb;
+//  	AfxGetMessageManager()->QueryObservers( ID_MESSAGE_QQ_ITEM_CHANGE,listOb);
+//  
+//  	for( list<IMessageObserver*>::iterator itOb = listOb.begin();itOb != listOb.end();itOb++ )
+//  	{
+//  		IQQItemCountChangeObserver* pOb = dynamic_cast<IQQItemCountChangeObserver*>(*itOb);
+//  		pOb->IQQItemChangeOb_CountChange( m_vecGame.size() );
+//  	}
 }
 
 int LocalGameData::ILocalGameData_GetWebGame(LocalGameList& lgl)

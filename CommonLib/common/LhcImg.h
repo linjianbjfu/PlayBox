@@ -12,7 +12,6 @@ class CLhcImg
 {
 public:
 	static bool GetHomePath(char szPath[], int pathlen);
-	static bool GetRegServer(char szSvr[], int svrlen);
 	static bool GetUpdateServer(char szSvr[], int svrlen);
 	static bool GetLogServer(char szUrl[], int urllen);
 	static bool GetUpLogServer(char szUrl[], int urllen);

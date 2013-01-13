@@ -47,6 +47,7 @@ BEGIN_MESSAGE_MAP(BrowserPanelWnd, CBasicWnd)
 	ON_BN_CLICKED(IDC_BTN_BROWSER_FAV,OnClickedFav)
 	ON_MESSAGE(WM_PAGE_CHANGED, OnPageChanging)
 	ON_MESSAGE(WM_MENU_CICKED, OnClickeFavMenuItem)
+	ON_MESSAGE(WM_NEWPAGE, OnNewPageWindow)
 END_MESSAGE_MAP()
 
 int BrowserPanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -173,6 +174,18 @@ LRESULT BrowserPanelWnd::OnPageChanging(WPARAM wParam, LPARAM lParam)
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab(iItem);
 	}
 	// GLOBAL_TABBARDATA->ITabBar_ChangeTab(iItem);
+	return 0;
+}
+
+LRESULT BrowserPanelWnd::OnNewPageWindow(WPARAM wParam, LPARAM lParam)
+{
+	TAB_ITEM item;
+	item.eumType = TAB_BROWSER;
+	item.strName = _T("¿áÓÎä¯ÀÀÆ÷");
+	item.strParam = "url=";
+	item.strParam += (char*)wParam;
+
+	GLOBAL_TABBARDATA->ITabBar_ChangeTab(item);
 	return 0;
 }
 

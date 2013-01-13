@@ -15,6 +15,9 @@ public:
 	PlayedGameWnd();
 	virtual ~PlayedGameWnd();
 protected:
+	time_t str2time(const string & strTime); // string like: "2013-1-13 12:50"
+	bool m_bSortTimeByAsc;
+
 	DECLARE_MESSAGE_MAP()
 	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void	OnDestroy();

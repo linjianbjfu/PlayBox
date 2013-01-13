@@ -5,8 +5,8 @@ using std::vector;
 class PlayedGameWnd;
 class GamePanelWnd;
 class WebGamePanelWnd;
-class GameCenterPanelWnd;
 class BrowserPanelWnd;
+class MyWebBrowserWnd;
 
 class TabWndFactory
 {
@@ -26,7 +26,7 @@ public:
 	PlayedGameWnd*		CreateWndPlayedGame( );
 	GamePanelWnd*		CreateWndGamePanel( );
 	WebGamePanelWnd*	CreateWndWebGamePanel( );
-	GameCenterPanelWnd*	CreateWndGameCenterPanel( );
+	MyWebBrowserWnd*	CreateWndGameCenterPanel( );
 	BrowserPanelWnd*	CreateWndBrowserPanel( );
 	void Recycle( CWnd* pWnd );
 };

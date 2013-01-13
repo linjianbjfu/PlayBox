@@ -3,6 +3,8 @@
 #include "UserLogedOutPanelWnd.h"
 #include "../../gui/util/CBufferDC.h"
 #include "../../Gui/CommonControl/xSkinButton.h"
+#include "WebWnd.h"
+#include "../../AppConfig/config/ConfigAppDef.h"
 
 IMPLEMENT_DYNAMIC(CUserLogedOutWnd, CBasicWnd)
 CUserLogedOutWnd::CUserLogedOutWnd()
@@ -28,7 +30,7 @@ int CUserLogedOutWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if(__super::OnCreate(lpCreateStruct) == -1)
 		return -1;
-	
+
 	CRect rectNULL(0,0,0,0);
 	m_pBtnLogin->Create(NULL,NULL,rectNULL,this,ID_BTN_USER_MAN_LOGIN);
 	m_pBtnRegister->Create(NULL,NULL,rectNULL,this,ID_BTN_USER_MAN_REGISTER);
@@ -48,5 +50,15 @@ void CUserLogedOutWnd::OnClickedLogin()
 
 void CUserLogedOutWnd::OnClickedRegister()
 {
+	// 获取注册地址
+	string strUrl;
+	AfxGetUserConfig()->GetConfigStringValue(CONF_APP_MODULE_NAME, CONF_APP_REGIST_URL, strUrl);
 
+	// 获取注册页面大小
+	CRect rctPageSize(0, 0, 518, 298);
+
+	CWebDlg dlg(this);
+	AfxGetUIManager()->UIAddDialog(&dlg);
+	dlg.DoModal(_T("注册"), strUrl.c_str(), rctPageSize.Width(), rctPageSize.Height());
+	AfxGetUIManager()->UIRemoveDialog(&dlg);
 }

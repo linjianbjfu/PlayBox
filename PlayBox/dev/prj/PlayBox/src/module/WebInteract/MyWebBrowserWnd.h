@@ -18,6 +18,9 @@ using std::string;
 // LPARAM : (LPCTSTR) string of title	(ø…“‘Œ™NULL)
 #define WM_PAGE_CHANGED	(WM_USER+501)
 
+// WPARAM : (LPSTR) string of url
+#define WM_NEWPAGE	(WM_USER+502)
+
 class MyWebBrowserWnd : public CHtmlView 
 {
 	DECLARE_DYNAMIC(MyWebBrowserWnd)

@@ -20,6 +20,7 @@
 #include "util/Sound.h"
 #include "src/module/Esc2ExitFullScrPanel/ESCFullDlg.h"
 #include "src/AppConfig/config/ConfigLayoutDef.h"
+#include "AppConfig/config/ConfigSettingDef.h"
 
 IMPLEMENT_DYNAMIC(GamePanelWnd, CBasicWnd)
 GamePanelWnd::GamePanelWnd()
@@ -350,7 +351,7 @@ void GamePanelWnd::HttpDownOb_DownFinish( string& strID, string& strSwfPath )
 	GLOBAL_LOCALGAME->ILocalGameData_AddGame( og );
 
 	OneLocalGame olg;
-	GLOBAL_LOCALGAME->ILocalGameData_GetGameByID( strID, olg );
+	GLOBAL_LOCALGAME->ILocalGameData_GetGameByID( strID, og.nGameType, olg );
 
 	//File has been downloaded ,Try to play the Movie now...
 	PlayMovie( olg.strID, olg.strGamePath );
@@ -459,7 +460,7 @@ void GamePanelWnd::SetGameEntry( SWF_GAME sg )
 	//MessageBox("Hello from GamePanelWnd::SetGameEntry","Info");
 
 	OneLocalGame olg;
-	if( GLOBAL_LOCALGAME->ILocalGameData_GetGameByID( m_swfGame.strID, olg ) )
+	if( GLOBAL_LOCALGAME->ILocalGameData_GetGameByID( m_swfGame.strID, OneLocalGame::TYPE_FLASH_GAME, olg ) )
 	{
 		m_bDown = false;
 		YL_Log("GamePanelWnd.txt", LOG_DEBUG, "GamePanelWnd::SetGameEntry", 
@@ -472,8 +473,25 @@ void GamePanelWnd::SetGameEntry( SWF_GAME sg )
 		//this->SetTimer(ADS_TIMER_ID,ADS_TIME,NULL);
 		PlayMovie( olg.strID, olg.strGamePath );
 		UpdateAllWnd();
-		m_pWndRight->Navigate("so.360.cn");
-		m_pWndBottom->Navigate("www.sogou.com");
+		std::string strFlashGameRightUrl;
+		AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
+			CONF_SETTING_CONFIG_FLASH_GAME_RIGHT_URL,strFlashGameRightUrl);
+		if (!strFlashGameRightUrl.empty())
+		{
+			m_pWndRight->Navigate(strFlashGameRightUrl+m_swfGame.strID);
+		} else {
+			m_pWndRight->Navigate("about:blank");
+		}
+
+		std::string strFlashGameBottomtUrl;
+		AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
+			CONF_SETTING_CONFIG_FLASH_GAME_RIGHT_URL,strFlashGameBottomtUrl);
+		if (!strFlashGameBottomtUrl.empty())
+		{
+			m_pWndBottom->Navigate(strFlashGameBottomtUrl+m_swfGame.strID);
+		} else {
+			m_pWndBottom->Navigate("about:blank");
+		}
 	}else
 	{
 		m_bDown = true;

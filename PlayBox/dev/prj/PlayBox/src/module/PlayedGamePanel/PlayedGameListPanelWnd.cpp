@@ -96,6 +96,13 @@ BOOL PlayedGameListPanelWnd::OnCommand(WPARAM wParam, LPARAM lParam)
 			}
 			vector<int> vAlbum;
 			vAlbum = GetSelectItem();
+
+			for (int i=0;i<vAlbum.size();i++)
+			{
+				string strGID = m_DataMgr.m_vItem[vAlbum[i]].strGID;
+				GLOBAL_LOCALGAME->ILocalGameData_DelGame(strGID, m_DataMgr.m_vItem[vAlbum[i]].nGameType);
+			}
+			/*
 			RidVector rv;
 			for (int i=0;i<vAlbum.size();i++)
 			{
@@ -107,8 +114,8 @@ BOOL PlayedGameListPanelWnd::OnCommand(WPARAM wParam, LPARAM lParam)
 			{
 				GLOBAL_LOCALGAME->ILocalGameData_DelGame(*it);
 			}
-
 			rv.clear ();
+			*/
 
 			UpdateList();
 			OnMemoryDraw();
@@ -127,7 +134,7 @@ void PlayedGameListPanelWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 	{
 		LMC_ItemInfo ii = m_DataMgr.m_vItem[vSel[0]];
 
-		if (ii.iGameType == OneLocalGame::TYPE_FLASH_GAME) // flash game
+		if (ii.nGameType == OneLocalGame::TYPE_FLASH_GAME) // flash game
 		{
 			TAB_ITEM tItem;
 			tItem.eumType = TAB_FLASHGAME;
@@ -136,7 +143,7 @@ void PlayedGameListPanelWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 				+ "name=" + tItem.strName + "\n";
 			GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
 		}
-		else if (ii.iGameType == OneLocalGame::TYPE_WEB_GAME) // web game
+		else if (ii.nGameType == OneLocalGame::TYPE_WEB_GAME) // web game
 		{
 			TAB_ITEM tItem;
 			tItem.eumType = TAB_WEBGAME;
@@ -166,7 +173,7 @@ int PlayedGameListPanelWnd::ReGetData()
 	{
 		CString strDetail;
 		InsertItem( it1->strPicPath.c_str(), 
-			it1->strName.c_str(), strDetail, it1->strID, it1->strSrvID, it1->nGameType, FALSE );
+			it1->strName.c_str(), strDetail, it1->strID, it1->strSrvID, it1->strAddTime,it1->nGameType, FALSE );
 	}
 	UpdateList();
 	OnMemoryDraw();
@@ -197,17 +204,19 @@ void PlayedGameListPanelWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		for( ; i<vItem.size(); i++  )
 		{
 			LMC_ItemInfo ii = GetItemInfoByIndex( vItem[i] );
-			rv.push_back (ii.strGID);
+
+			GLOBAL_LOCALGAME->ILocalGameData_DelGame(ii.strGID, ii.nGameType);
+//			rv.push_back (ii.strGID);
 // 			GLOBAL_LOCALGAME->ILocalGameData_DelGame( ii.strGID );
 		}
-
+/*
 		for (RidVector::iterator it = rv.begin (); it != rv.end (); it++)
 		{
 			GLOBAL_LOCALGAME->ILocalGameData_DelGame(*it);
 		}
 
 		rv.clear ();
-
+*/
 		UpdateList();
 		OnMemoryDraw();
 
@@ -315,7 +324,7 @@ void PlayedGameListPanelWnd::OnMouseMove(UINT nFlags, CPoint point)
 		memset (&og, 0, sizeof (OneLocalGame));
 		og.strName = ii.strItemName;
 
-		if( GLOBAL_LOCALGAME->ILocalGameData_GetGameByID( ii.strGID, og ) )
+		if( GLOBAL_LOCALGAME->ILocalGameData_GetGameByID( ii.strGID, ii.nGameType, og ) )
 		{
 			info.Format("Ãû³Æ: %s$#ÓÎÏ·¼ò½é:%s", og.strName.c_str(), og.strIntro.c_str() );
 		}else
@@ -420,6 +429,7 @@ void PlayedGameListPanelWnd::ReSetGameList(LocalGameList arrGames)
 				   strDetail,
 				   it->strID,
 				   it->strSrvID,
+				   it->strAddTime,
 				   it->nGameType,
 				   FALSE );
 	}
