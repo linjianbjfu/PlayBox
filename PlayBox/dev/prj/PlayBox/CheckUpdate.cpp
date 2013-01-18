@@ -13,6 +13,7 @@
 #include "YL_HTTPRequest.h"
 #include "LhcImg.h"
 #include "YL_DirInfo.h"
+#include "YL_EncFileReg.h"
 
 #define UPDATE_CONF	"\\Update.ini"
 #define UPDATE_SECTION "Update"
@@ -194,6 +195,7 @@ UINT __cdecl checkUpdate(LPVOID pParam)
 	char szUpdateServUrl[1024]={0},szUpdateServ[1024]={0};
 	char szUserID[INT_SERV_LEN]={0},szVer[16]={0},szInstTime[]={"2013-01-12"},szMarketChannel[]={"all"};
 	HWND hWnd = (HWND)pParam;
+#ifndef DEBUG
 	CLhcImg::GetUpdateServer(szUpdateServ,INT_SERV_LEN);
 	assert(std::strlen(szUpdateServ )!= 0);
 	/*if(std::strlen(szUpdateServ) == 0)
@@ -206,14 +208,19 @@ UINT __cdecl checkUpdate(LPVOID pParam)
 	assert(std::strlen(szUserID) != 0);
 	CLhcImg::GetSoftwareVersion(szVer,16);
 	assert(std::strlen(szVer) != 0);
-	/*_snprintf(szUpdateServ,1024,"%s","http://g.najiuwan.com/up");
-	_snprintf(szVer,16,"%s","1.10");*/
+#else  DEBUG
+	_snprintf(szUpdateServ,1024,"%s","http://g.najiuwan.com/up");
+	_snprintf(szVer,16,"%s","1.10");
+#endif
 	
 	
 	
+#ifndef DEBUG
 	_snprintf(szUpdateServUrl,1024,"%s/up.php?type=box&qudao=%s&instime=%s&action=1",szUpdateServ,szMarketChannel,szInstTime);
-	//_snprintf(szUpdateUrl,1024,"%s/up.php?type=box&id=%s&qd=%s&v=%s&instime=%s",\
-		m_szUpdateServ,szUserID,szMarketChannel,szVer,szInstTime);
+#else
+	_snprintf(szUpdateServUrl,1024,"%s/up.php?type=box&id=%s&qd=%s&v=%s&instime=%s",\
+		szUpdateServ,szUserID,szMarketChannel,szVer,szInstTime);
+#endif
 	if( http.Request( szUpdateServUrl ,YL_CHTTPRequest::REQUEST_GET,30*1000 ) )
 	{
 		FILE *fp = NULL;
@@ -284,6 +291,33 @@ UINT __cdecl downloadPackage(LPVOID lPvoid)
 	strcat(szCurPath,UPDATE_PATH);
 	YL_DirInfo::MakeDir(string(szCurPath));
 	strcat(szCurPath,"\\UpdateInstall.exe");
+	//At least 15minutes can the update process be loaded.
+	char szLastTime[16],szCurTime[16];
+	YL_EncFileReg::GetString("LastUpdateTime","Update",szLastTime,16,"0");
+	SYSTEMTIME st ={0};
+	GetLocalTime(&st);
+	_snprintf(szCurTime,16,"%4d%2d%2d%2d%2d%2d",st.wYear,st.wMonth,st.wDay,\
+		st.wHour,st.wMinute,st.wSecond);
+	int iBetween = (atoi(szCurTime) - atoi(szLastTime));
+	if( iBetween > 15*60)
+	{
+		YL_EncFileReg::WriteString("LastUpdateTime","Update",szCurTime);
+		SHFILEOPSTRUCT FileOp={0}; 
+		FileOp.fFlags = FOF_ALLOWUNDO |  
+			FOF_NOCONFIRMATION; //No confirm.
+		FileOp.pFrom = szCurPath; 
+		FileOp.pTo = NULL;     
+		FileOp.wFunc = FO_DELETE;    
+		SHFileOperation(&FileOp);
+	}
+	else
+	{
+		update_param_t* pPara = new update_param_t;
+		memset(pPara,0,sizeof(update_param_t));
+		pPara->isNewer = false;
+		SendMessage(hWnd,USER_MSG_CHECKUPDATE,(WPARAM)pPara,NULL);
+		return 1;
+	}
 	YL_CHTTPDownFile* pHTTPDownFile = new YL_CHTTPDownFile;
 	//AsyncDownloadFile
 	SendMessage(hWnd,USER_MSG_DOWNLOAD,(WPARAM)pHTTPDownFile,NULL);
