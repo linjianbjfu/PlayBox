@@ -498,6 +498,7 @@ LRESULT CCheckUpdate::OnUserMsg(WPARAM wParam, LPARAM lParam)
 	{
 		//Change into Current Version is newest interface.
 		m_pBmpBkChkCur = m_pBmpBkChkNoUp;
+		m_bDown = false;
 		Invalidate();
 		m_pBtnChkDone->ShowWindow(SW_SHOW);
 		m_pBtnChkCancel->ShowWindow(SW_HIDE);
