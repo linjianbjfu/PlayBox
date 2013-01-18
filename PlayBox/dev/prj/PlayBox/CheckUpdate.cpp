@@ -194,20 +194,20 @@ UINT __cdecl checkUpdate(LPVOID pParam)
 	char szUpdateServUrl[1024]={0},szUpdateServ[1024]={0};
 	char szUserID[INT_SERV_LEN]={0},szVer[16]={0},szInstTime[]={"2013-01-12"},szMarketChannel[]={"all"};
 	HWND hWnd = (HWND)pParam;
-	//CLhcImg::GetUpdateServer(szUpdateServ,INT_SERV_LEN);
-	//assert(std::strlen(m_szUpdateServ )!= 0);
-	///*if(std::strlen(m_szUpdateServ) == 0)
-	//{
-	//	MessageBox("Update server not found.","Warning!",MB_OK|MB_ICONEXCLAMATION);
-	//	SendMessage(WM_CLOSE);
-	//	return ;
-	//}*/
-	//CLhcImg::GetUserID(szUserID,INT_USER_LEN);
-	//assert(std::strlen(szUserID) != 0);
-	//CLhcImg::GetSoftwareVersion(szVer,16);
-	//assert(std::strlen(szVer) != 0);
-	_snprintf(szUpdateServ,1024,"%s","http://g.najiuwan.com/up");
-	_snprintf(szVer,16,"%s","1.10");
+	CLhcImg::GetUpdateServer(szUpdateServ,INT_SERV_LEN);
+	assert(std::strlen(szUpdateServ )!= 0);
+	/*if(std::strlen(szUpdateServ) == 0)
+	{
+		MessageBox("Update server not found.","Warning!",MB_OK|MB_ICONEXCLAMATION);
+		SendMessage(WM_CLOSE);
+		return ;
+	}*/
+	CLhcImg::GetUserID(szUserID,INT_USER_LEN);
+	assert(std::strlen(szUserID) != 0);
+	CLhcImg::GetSoftwareVersion(szVer,16);
+	assert(std::strlen(szVer) != 0);
+	/*_snprintf(szUpdateServ,1024,"%s","http://g.najiuwan.com/up");
+	_snprintf(szVer,16,"%s","1.10");*/
 	
 	
 	
