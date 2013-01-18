@@ -250,6 +250,19 @@
 	</controlpanel>
 </wndpanel>
 
+<wndpanel name="CheckUpdateDlg" mode="normal">
+	<background name="bkCheckUpdate" ori="NO_POS" background_color="FFFFFF">
+		<paneitem name="bkChkCheckingUpdate type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_bottom="0" dont_change_color="1"/>
+	</background>
+	<controlpanel name="normal" ori="NO_POS">
+		<paneitem name="CheckUpdateDlg_btnInstall" type="button" bmp="btnChkInstall" start_x_left="70" start_y_top="139" x_delta="86" y_delta="26" dont_change_color="1" />
+		<paneitem name="CheckUpdateDlg_btnCancel" type="button" bmp="minorexitcancle"	start_x_left="170" start_y_top="140" x_delta="86" y_delta="26" dont_change_color="1" />
+		<paneitem name="CheckUpdateDlg_btnDone" type="button" bmp="AboutDlgOK"	start_x_left="117"	start_y_top="130" x_delta="86" y_delta="26" dont_change_color="1" />
+		<paneitem name="CheckUpdateDlg_btnIsDown" type="button" bmp="AboutDlgOK" start_x_left="70" start_y_top="139" x_delta="86" y_delta="26" dont_change_color="1" />
+		<paneitem name="CheckUpdateDlg_btnClose" type="button" bmp="minorexitclose" start_x_left="300" start_y_top="8"  x_delta="14" y_delta="14" dont_change_color="1"/> 
+	</controlpanel>
+</wndpanel>
+
 <colors>
 	<color name="MenuLeftBk" value="ECF6FF"/>
 	<color name="MenuBk" value="FFFFFF"/>
