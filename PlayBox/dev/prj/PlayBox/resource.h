@@ -113,6 +113,8 @@
 #define IDD_DIALOG_ESCFULLSCR           157
 #define IDD_DIALOG3                     158
 #define IDD_DLG_FAV_URL                 158
+#define IDD_DIALOG4                     159
+#define IDD_DIALOG_CHKUPDATE            159
 #define IDC_CONFIG_BTN_DEFAULT          190
 #define IDC_CONFIG_LIST                 191
 #define IDC_STATIC_PROBLEM              192
@@ -236,26 +238,18 @@
 #define ID_WND_USER_LOGED_OUT           317
 #define ID_BTN_USER_MAN_LOGIN           318
 #define ID_BTN_USER_MAN_REGISTER        319
-#define ID_BNT_WEB_WND_CLOSE			320
-#define ID_WEB_WND_WEBBROWSER			321
-#define IDD_DLG_LOGIN				    322
-#define ID_BTN_LOGIN_CLOSE				323
-#define IDC_EDIT_LOGIN_USER_NAME		324
-#define IDC_EDIT_LOGIN_PASS_WORD		325
-#define ID_BTN_LOGIN_REG				326
-#define ID_BTN_LOGIN_FORGET_PASS		327
-#define ID_BTN_REMEMBER_PASS_CHECK		328
-#define ID_BTN_REMEMBER_PASS_UNCHECK	329
-#define ID_BTN_AUTO_LOGIN_CHECK			330
-#define ID_BTN_AUTO_LOGIN_UNCHECK		331
-#define ID_BTN_LOGIN_LOGIN				332
-#define ID_BTN_LOGIN_CANCEL				333
+
+#define IDC_BTN_CHK_CANCEL		320
+#define IDC_BTN_CHK_INSTALL		321
+#define IDC_BTN_CHK_DONE			322
+#define IDC_BTN_CHK_ISDOWN		323
+#define IDC_BTN_CHK_CLOSE			324
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        159
+#define _APS_NEXT_RESOURCE_VALUE        160
 #define _APS_NEXT_COMMAND_VALUE         32797
 #define _APS_NEXT_CONTROL_VALUE         1019
 #define _APS_NEXT_SYMED_VALUE           140
