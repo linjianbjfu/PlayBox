@@ -215,7 +215,7 @@ UINT __cdecl checkUpdate(LPVOID pParam)
 	
 	
 	
-#ifndef DEBUG
+#ifdef DEBUG
 	_snprintf(szUpdateServUrl,1024,"%s/up.php?type=box&qudao=%s&instime=%s&action=1",szUpdateServ,szMarketChannel,szInstTime);
 #else
 	_snprintf(szUpdateServUrl,1024,"%s/up.php?type=box&id=%s&qd=%s&v=%s&instime=%s",\
