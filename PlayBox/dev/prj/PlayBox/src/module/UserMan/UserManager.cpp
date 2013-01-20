@@ -24,22 +24,20 @@ static gameType2StringEnumPair g_gameTypePair[] =
 	{"recent_played_game", OneGame::RECENT_PLAY} 
 };
 
-#define NOTIFY(method) \
+#define BEGIN_SET_STATE_AND_NOTIFY(s, e) \
 	do { \
+		g_pUserMgr->m_state = s; \
+		g_pUserMgr->m_errDetail = e; \
 		list<IMessageObserver*> listOb; \
 		AfxGetMessageManager()->QueryObservers( ID_MESSAGE_USER,listOb); \
 		for( list<IMessageObserver*>::iterator itOb = listOb.begin(); \
 			itOb != listOb.end();itOb++ ) \
 		{ \
-			IUserMsgObserver* pOb = dynamic_cast<IUserMsgObserver*>(*itOb); \
-			pOb->method; \
+			IUserMsgObserver* pOb = dynamic_cast<IUserMsgObserver*>(*itOb);
+
+#define END_SET_STATE_AND_NOTIFY() \
 		} \
 	} while(0);
-
-#define SET_STATE_AND_NOTIFY(s, e, method) \
-	g_pUserMgr->m_state = s; \
-	g_pUserMgr->m_errDetail = e; \
-	NOTIFY(IUserMsgObserver::method);
 
 struct LoginThreadPara
 {
@@ -75,7 +73,9 @@ void CUserManager::User_AppStartUp()
 
 	if (strUserName.empty())
 	{
-		SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, USER_NAME_EMPTY, UserMsg_LogFaild());
+		BEGIN_SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, USER_NAME_EMPTY)
+			pOb->UserMsg_LogFaild();
+		END_SET_STATE_AND_NOTIFY()
 		return;
 	}
 
@@ -84,7 +84,9 @@ void CUserManager::User_AppStartUp()
 		CONF_SETTING_LOGIN_PASSWORD, strBase64MD5Pass);
 	if (strBase64MD5Pass.empty())
 	{
-		SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, PASS_WORD_EMPTY, UserMsg_LogFaild());
+		BEGIN_SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, PASS_WORD_EMPTY)
+			pOb->UserMsg_LogFaild();
+		END_SET_STATE_AND_NOTIFY()
 		return;
 	}
 
@@ -125,9 +127,9 @@ void CUserManager::User_CancelLog()
 		WaitForSingleObject(g_pUserMgr->m_hThreadLogIn,1000);
 		CloseHandle(g_pUserMgr->m_hThreadLogIn);
 		m_hThreadLogIn = NULL;
-		m_state = NOT_LOGGED_IN;
-		m_errDetail = USER_CANCEL;
-		NOTIFY(IUserMsgObserver::UserMsg_LogFaild());
+		BEGIN_SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, USER_CANCEL)
+			pOb->UserMsg_LogFaild();
+		END_SET_STATE_AND_NOTIFY()
 	}
 }
 
@@ -141,7 +143,9 @@ void CUserManager::User_AppExit()
 void CUserManager::User_Logout()
 {
 	GLOBAL_GAME->IGameData_ChangeLoginState(false);
-	SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, SUCCEEDED, UserMsg_LogOut());
+	BEGIN_SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, SUCCEEDED)
+		pOb->UserMsg_LogOut();
+	END_SET_STATE_AND_NOTIFY()
 }
 
 bool CUserManager::User_IsLogin()
@@ -152,7 +156,9 @@ bool CUserManager::User_IsLogin()
 DWORD CUserManager::ThreadLogin(void* pPara)
 {
 	LoginThreadPara* threadPara = (LoginThreadPara*)pPara;
-	SET_STATE_AND_NOTIFY(LOGIN_ON_THE_WAY, SUCCEEDED, UserMsg_BeginLogin());
+	BEGIN_SET_STATE_AND_NOTIFY(LOGIN_ON_THE_WAY, SUCCEEDED)
+		pOb->UserMsg_BeginLogin();
+	END_SET_STATE_AND_NOTIFY()
 
 	std::string strUserSvr;
 	AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME,
@@ -166,7 +172,9 @@ DWORD CUserManager::ThreadLogin(void* pPara)
 	if(!http.Request( strUrl, YL_CHTTPRequest::REQUEST_GET, 20*1000 ))
 	{
 		delete threadPara;
-		SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, NET_ERROR, UserMsg_LogFaild());
+		BEGIN_SET_STATE_AND_NOTIFY(LOGIN_ON_THE_WAY, NET_ERROR)
+			pOb->UserMsg_LogFaild();
+		END_SET_STATE_AND_NOTIFY()
 	}
 	//µÇÂ½³É¹¦
 	BYTE *pbyIndex = NULL;
@@ -193,14 +201,20 @@ DWORD CUserManager::ThreadLogin(void* pPara)
 			AfxGetUserConfig()->SetConfigStringValue( CONF_SETTING_MODULE_NAME, 
 				CONF_SETTING_LOGIN_PASSWORD, szBase64MD5, true );
 
-			SET_STATE_AND_NOTIFY(HAVE_LANDED, SUCCEEDED, UserMsg_Login());
+			BEGIN_SET_STATE_AND_NOTIFY(HAVE_LANDED, SUCCEEDED)
+				pOb->UserMsg_Login();
+			END_SET_STATE_AND_NOTIFY()
 		} else
 		{
-			SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, SERVER_SAID_LOGIN_FAIL, UserMsg_LogFaild());
+			BEGIN_SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, SERVER_SAID_LOGIN_FAIL)
+				pOb->UserMsg_LogFaild();
+			END_SET_STATE_AND_NOTIFY()
 		}
 	}else
 	{
-		SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, NET_ERROR, UserMsg_LogFaild());
+		BEGIN_SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, NET_ERROR)
+			pOb->UserMsg_LogFaild();
+		END_SET_STATE_AND_NOTIFY()
 	}
 	return 0;
 }
@@ -251,7 +265,6 @@ void CUserManager::ParseJson(const std::string strJson, bool& bLoginSuc)
 					olg.strName = jsonGame[i]["name"].asString();
 					olg.strPicPath = jsonGame[i]["thumbnail_url"].asString();					
 					olg.strID = jsonGame[i]["id"].asString();
-					olg.nGameType = g_gameTypePair[j].nGameType;
 					lgl.push_back(olg);
 				}
 			}		

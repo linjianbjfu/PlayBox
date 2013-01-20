@@ -49,7 +49,7 @@ int CUserLogedInWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 void CUserLogedInWnd::OnPaint()
 {
 	CPaintDC dc(this);
-	AfxGetUIManager()->UIOnPaint(&dc);
+	AfxGetUIManager()->UIGetLayoutMgr()->PaintBkGround(m_hWnd, &dc);
 	if (m_pUserInfo->strName.empty())
 		return;
 	CRect rcInfo(80, 24, 260, 44);

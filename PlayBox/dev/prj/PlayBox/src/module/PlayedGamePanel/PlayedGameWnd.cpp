@@ -30,7 +30,7 @@ PlayedGameWnd::PlayedGameWnd()
 	m_pWndRecommand = new MyWebBrowserWnd();
 	m_pWndLogedIn	= new CUserLogedInWnd();
 	m_pWndLogedOut	= new CUserLogedOutWnd();
-	AfxGetMessageManager()->AttachMessage(ID_MESSAGE_USER, this);
+	AfxGetMessageManager()->AttachMessage(ID_MESSAGE_USER, (IUserMsgObserver*)this);
 }
 
 PlayedGameWnd::~PlayedGameWnd()
@@ -43,7 +43,7 @@ PlayedGameWnd::~PlayedGameWnd()
 	delete m_pWndLogedIn;
 	delete m_pWndLogedOut;
 	//do not delete m_pWndRecommand
-	AfxGetMessageManager()->DetachMessage(ID_MESSAGE_USER, this);
+	AfxGetMessageManager()->DetachMessage(ID_MESSAGE_USER, (IUserMsgObserver*)this);
 }
 
 BEGIN_MESSAGE_MAP(PlayedGameWnd, CBasicWnd)

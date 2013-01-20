@@ -176,7 +176,7 @@ void CGameDataImp::UnLoadGameData()
 
 bool CGameDataImp::IGameData_GetGameByID(const std::string& strID, int nGameType, OneGame& og)
 {
-	assert(nGameType == OneGame::WEB_GAME || nGameType == OneGame::FLASH_GAME);
+	assert(!((nGameType & OneGame::WEB_GAME) && (nGameType & OneGame::FLASH_GAME)));
 	GameList::iterator it1 = m_vecGame.begin();
 	for( ; it1 != m_vecGame.end(); it1 ++ )
 	{
@@ -308,7 +308,7 @@ unsigned int CGameDataImp::IGameData_GetGameCount()
 void CGameDataImp::IGameData_SetLoginGameList(GameList& lgl)
 {
 	m_vecLoginGame.clear();
-	std::copy(lgl.begin(), lgl.end(), m_vecLoginGame.begin());
+	std::copy(lgl.begin(), lgl.end(), back_inserter(m_vecLoginGame));
 }
 
 void CGameDataImp::IGameData_ChangeLoginState(bool bLogin)
