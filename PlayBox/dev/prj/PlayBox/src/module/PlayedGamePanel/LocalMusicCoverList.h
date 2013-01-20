@@ -34,7 +34,7 @@ public:
 	// 参数：pImg	显示图片
 	// 参数：strItemName 项的名称
 	// 参数：blSel	是否选中
-	// 参数：nGameType	游戏类型(1-Flash游戏、2-网页游戏)
+	// 参数：nGameType	游戏类型
 	// 参数：strSrvID (webgame only)
 	// 返回值：int 每一项的标识
 	int InsertItem(CDibBitmap* pImg, CString strItemName, CString strdetail, string strGID, string strSrvID, string strAddTime, int nGameType, BOOL blSel=FALSE);

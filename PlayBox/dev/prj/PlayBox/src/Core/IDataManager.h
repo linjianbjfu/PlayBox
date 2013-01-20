@@ -1,19 +1,14 @@
 #ifndef _I_DATA_MANAGER_H
 #define _I_DATA_MANAGER_H
-
 #include "./src/core/AfxGlobals.h"
 
 class IData;
- 
 
 //数据管理类
 class IDataManager
 {
 public:
 	virtual ~IDataManager(){};
-
-public:
-
 	//由系统调用，通知数据管理类程序启动
 	virtual void	DataManAppStart() = 0;
 
@@ -29,6 +24,5 @@ public:
 	//数据类将自己从数据管理类管理的接口中移除
 	virtual void	RemoveDataObject( const DWORD& guidDataObject ) = 0;
 };
-
 
 #endif

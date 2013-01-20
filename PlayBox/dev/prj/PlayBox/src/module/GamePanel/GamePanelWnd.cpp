@@ -9,7 +9,7 @@
 #include "../WebInteract/MyWebBrowserWnd.h"
 #include "../WebInteract/WebManager.h"
 #include "../../AppConfig/config/ConfigAppDef.h"
-#include "../../DataInterface/ILocalGameData.h"
+#include "../../DataInterface/IGameData.h"
 #include "../../core/CDataManager.h"
 #include "../../Global/GlobalSwfPath.h"
 #include "../../gui/CommonControl/xSkinButton.h"
@@ -45,7 +45,6 @@ GamePanelWnd::GamePanelWnd()
 
 	m_pWndRight = new MyWebBrowserWnd();
 	m_pWndBottom = new MyWebBrowserWnd();
-
 	m_pEscFullTipDlg = new ESCFullDlg;
 
 	AfxGetMessageManager()->AttachMessage( ID_MESSAGE_LAYOUTMGR,(ILayoutChangeObserver*) this);
@@ -68,10 +67,8 @@ GamePanelWnd::~GamePanelWnd()
 	//delete m_pWndBottom;
 
 	if( IsWindow( m_pEscFullTipDlg->m_hWnd) )
-	{
 		m_pEscFullTipDlg->DestroyWindow();
 
-	}
 	delete m_pEscFullTipDlg;
 
 	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_LAYOUTMGR,(ILayoutChangeObserver*) this);
@@ -132,7 +129,6 @@ int GamePanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	pLayoutMgr->RegisterCtrl (this, "Pause", m_pBtnPause);
 	pLayoutMgr->RegisterCtrl (this, "FlashGameBottom", m_pWndBottom);
 	pLayoutMgr->RegisterCtrl (this, "FlashGameRight", m_pWndRight);
-
 	pLayoutMgr->CreateControlPane( this, "gamepanel", "normal" );
 	pLayoutMgr->CreateBmpPane( this,"gamepanel","normal" );
 
@@ -176,10 +172,9 @@ void GamePanelWnd::OnDestroy()
 	m_pWndBottom->DestroyWindow();
 	m_pWndRight->DestroyWindow();
 	//删除播放swf的htm文件
-	if( m_strCopyedHtmlPath.length() != 0 )
-	{
+	if( !m_strCopyedHtmlPath.empty() )
 		::DeleteFile( m_strCopyedHtmlPath.c_str() );
-	}
+
 	__super::OnDestroy();
 }
 
@@ -224,8 +219,6 @@ void GamePanelWnd::IPanelChangeOb_ToFullScreen( CWnd* pWnd )
 
 	ShowHideEseFull(true);
 	SetTimer(ID_TIMER_ESCFULL_TIP, TIME_TIMER_ESCFULL_TIP, NULL);
-
-	YL_Log("GamePanelWnd.txt", LOG_DEBUG, "GamePanelWnd::IPanelChangeOb_ToFullScreen", "===OUT");
 }
 
 void GamePanelWnd::SetMainWindow(bool isTopMost)
@@ -240,7 +233,6 @@ void GamePanelWnd::SetMainWindow(bool isTopMost)
 		AfxGetMainWindow()->SetWindowPos(&wndNoTopMost,-1,-1,-1,-1, SWP_NOSIZE|SWP_NOMOVE);
 		AfxGetUserConfig()->SetConfigBoolValue( CONF_APP_MODULE_NAME,CONF_APP_MAINWND_HOLD,false);
 	}
-	YL_Log("GamePanelWnd.txt", LOG_DEBUG, "GamePanelWnd::SetMainWindow", "===OUT");
 }
 
 void GamePanelWnd::IPanelChangeOb_ExitFullScreen( CWnd* pWnd )
@@ -283,8 +275,6 @@ void GamePanelWnd::IPanelChangeOb_ExitFullScreen( CWnd* pWnd )
 
 	KillTimer(ID_TIMER_ESCFULL_TIP);
 	ShowHideEseFull(false);
-
-	YL_Log("GamePanelWnd.txt", LOG_DEBUG, "GamePanelWnd::IPanelChangeOb_ExitFullScreen", "===OUT");
 }
 
 void GamePanelWnd::HttpDownOb_DownStart( string& strID )
@@ -296,13 +286,11 @@ void GamePanelWnd::HttpDownOb_DownStart( string& strID )
 	UpdateAllWnd();
 
 	m_pWndDownPercent->SetFailed( false );
-
 	vector<string> vecText;
 	vecText.push_back( "开始下载" );
 
 	m_pWndDownPercent->SetText( vecText );
 	m_pWndDownPercent->SetDownPercent( 0 );
-	YL_Log("GamePanelWnd.txt", LOG_DEBUG, "GamePanelWnd::HttpDownOb_DownStart", "===OUT");
 }
 
 void GamePanelWnd::HttpDownOb_DownFinish( string& strID, string& strSwfPath )
@@ -310,7 +298,6 @@ void GamePanelWnd::HttpDownOb_DownFinish( string& strID, string& strSwfPath )
 	if( strID != m_swfGame.strID )
 		return;
 
-	YL_Log("GamePanelWnd.txt", LOG_DEBUG, "GamePanelWnd::HttpDownOb_DownFinish", "===IN");
 	//进度窗口参数
 	m_pWndDownPercent->SetFailed( false );
 	vector<string> vecText;
@@ -341,23 +328,22 @@ void GamePanelWnd::HttpDownOb_DownFinish( string& strID, string& strSwfPath )
 		httpDownFile.DownloadFile( m_swfGame.strPicUrl, strPicLocalDesPath );
 	}
 
-	OneLocalGame og;
+	OneGame og;
 	og.strID = strID;
 	og.strName = m_swfGame.strName;
 	og.strPicPath = strPicLocalDesPath;
 	og.strGamePath = strSwfPath;
 	og.strIntro = m_swfGame.strIntro;
-	og.nGameType = OneLocalGame::TYPE_FLASH_GAME;
-	GLOBAL_LOCALGAME->ILocalGameData_AddGame( og );
+	og.nGameType = OneGame::FLASH_GAME | OneGame::RECENT_PLAY;
+	GLOBAL_GAME->IGameData_AddGame( og );
 
-	OneLocalGame olg;
-	GLOBAL_LOCALGAME->ILocalGameData_GetGameByID( strID, og.nGameType, olg );
+	OneGame olg;
+	GLOBAL_GAME->IGameData_GetGameByID( strID, og.nGameType, olg );
 
 	//File has been downloaded ,Try to play the Movie now...
 	PlayMovie( olg.strID, olg.strGamePath );
 	m_bDown = false;
 	UpdateAllWnd();
-	YL_Log("GamePanelWnd.txt", LOG_DEBUG, "GamePanelWnd::HttpDownOb_DownFinish", "===OUT");
 }
 
 void GamePanelWnd::HttpDownOb_DownFailed( string& strID, HTTP_DOWN_FAILED_REASON r )
@@ -365,7 +351,6 @@ void GamePanelWnd::HttpDownOb_DownFailed( string& strID, HTTP_DOWN_FAILED_REASON
 	if( strID != m_swfGame.strID )
 		return;
 
-	YL_Log("GamePanelWnd.txt", LOG_DEBUG, "GamePanelWnd::HttpDownOb_DownFailed", "===IN");
 	m_bDown = true;
 	UpdateAllWnd();
 
@@ -432,12 +417,10 @@ void GamePanelWnd::HttpDownOb_DownProgress( string& strID, double dPercent,
 	
 	string strTmp;
 	if( unFileSize == 0 )
-	{
 		YL_StringUtil::Format( strTmp, "连接中..." );
-	}else
-	{
+	else
 		YL_StringUtil::Format( strTmp, "%d%%", (int)(dPercent*100) );
-	}	
+
 	strText += strTmp;
 	vecText.push_back( strText );
 	//下载速度
@@ -450,24 +433,15 @@ void GamePanelWnd::HttpDownOb_DownProgress( string& strID, double dPercent,
 	m_pWndDownPercent->SetFailed( false );
 	m_pWndDownPercent->SetText( vecText );
 	m_pWndDownPercent->SetDownPercent( dPercent );
-	YL_Log("GamePanelWnd.txt", LOG_DEBUG, "GamePanelWnd::HttpDownOb_DownProgress", "===OUT");
 }
 
 void GamePanelWnd::SetGameEntry( SWF_GAME sg )
 {
 	m_swfGame = sg;
-	//Testing
-	//MessageBox("Hello from GamePanelWnd::SetGameEntry","Info");
-
-	OneLocalGame olg;
-	if( GLOBAL_LOCALGAME->ILocalGameData_GetGameByID( m_swfGame.strID, OneLocalGame::TYPE_FLASH_GAME, olg ) )
+	OneGame olg;
+	if( GLOBAL_GAME->IGameData_GetGameByID( m_swfGame.strID, OneGame::FLASH_GAME, olg ) )
 	{
 		m_bDown = false;
-		YL_Log("GamePanelWnd.txt", LOG_DEBUG, "GamePanelWnd::SetGameEntry", 
-			"m_swfGame.strID:%s,olg.strGamePath:%s", 
-			m_swfGame.strID.c_str(),
-			olg.strGamePath.c_str());
-
 		//If the Movie has been downloaded then play it.
 		//m_bDown = true;
 		//this->SetTimer(ADS_TIMER_ID,ADS_TIME,NULL);
@@ -477,21 +451,17 @@ void GamePanelWnd::SetGameEntry( SWF_GAME sg )
 		AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
 			CONF_SETTING_CONFIG_FLASH_GAME_RIGHT_URL,strFlashGameRightUrl);
 		if (!strFlashGameRightUrl.empty())
-		{
 			m_pWndRight->Navigate(strFlashGameRightUrl+m_swfGame.strID);
-		} else {
+		else
 			m_pWndRight->Navigate("about:blank");
-		}
 
 		std::string strFlashGameBottomtUrl;
 		AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
 			CONF_SETTING_CONFIG_FLASH_GAME_RIGHT_URL,strFlashGameBottomtUrl);
 		if (!strFlashGameBottomtUrl.empty())
-		{
 			m_pWndBottom->Navigate(strFlashGameBottomtUrl+m_swfGame.strID);
-		} else {
+		else
 			m_pWndBottom->Navigate("about:blank");
-		}
 	}else
 	{
 		m_bDown = true;
@@ -507,9 +477,7 @@ void GamePanelWnd::PlayMovie( string strID, string strPath )
 {
 	//播放swf	
 	if( m_pGameFlash->GetMovie().Compare( strPath.c_str() ) == 0  )
-	{
 		m_pGameFlash->SetMovie( GlobalSwfPath::Nothing() );
-	}
 	m_pGameFlash->SetMovie(strPath.c_str());
 	m_pGameFlash->Play();
 	m_pGameFlash->SetFocus();
@@ -524,17 +492,12 @@ CString GamePanelWnd::UINT2CString(UINT ui)
 		str.Format("%.2f MB", result);
 	}else
 	if( 0 != (ui/(1<<10)) )
-	{
 		str.Format("%d KB", ui/(1<<10));
-	}else
-	{
+	else
 		str.Format("%d B", ui);
-	}
 
 	return str;
 }
-
-
 
 CString GamePanelWnd::GetLeftTime( unsigned int uiSize, unsigned int uiSpeed, unsigned int uiFinished )
 {
@@ -634,7 +597,6 @@ void GamePanelWnd::OnClickedReplay()
 
 void GamePanelWnd::OnClickedPause()
 {
-
 }
 
 void GamePanelWnd::OnClickedCut()
@@ -750,23 +712,17 @@ void GamePanelWnd::OnTimer(UINT nIDEvent)
 void GamePanelWnd::OnClickedFullScreen()
 {
 	if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
-	{
 		GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
-	}else
-	{
+	else
 		GLOBAL_PANELCHANGEDATA->IPanelChange_ToFullScreen( this );
-	}	
 }
 
 void GamePanelWnd::OnClickedExitFullScreen()
 {
 	if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
-	{
 		GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
-	}else
-	{
+	else
 		GLOBAL_PANELCHANGEDATA->IPanelChange_ToFullScreen( this );
-	}
 }
 
 void GamePanelWnd::ShowHideEseFull(bool isShow)
@@ -791,17 +747,12 @@ void GamePanelWnd::ShowHideEseFull(bool isShow)
 		allValue = 0;
 		AfxGetUserConfig()->SetConfigIntValue(CONF_LAYOUT_MODULE_NAME,CONF_LAYOUT_ESC_ALL,allValue,true);
 
-	}else if( (isShow==false)
-		&& (curValue<=1) )
-	{
+	}else if(!isShow && curValue <= 1)
 		m_pEscFullTipDlg->ShowDlg( FALSE );
-	}
 }
 
 BOOL GamePanelWnd::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: Add your specialized code here and/or call the base class
-
 	if (pMsg->message == WM_KEYDOWN)
 	{
 		if (pMsg->wParam == VK_ESCAPE)
@@ -810,6 +761,5 @@ BOOL GamePanelWnd::PreTranslateMessage(MSG* pMsg)
 			return TRUE;
 		}
 	}
-
 	return __super::PreTranslateMessage(pMsg);
 }

@@ -165,7 +165,7 @@ void WebGamePanelWnd::SetTabItem( TAB_ITEM ti )
 			return;
 		}
 
-		OneLocalGame og;
+		OneGame og;
 		og.strName	= m_webGame.strName;
 		og.strID	= m_webGame.strID;
 		og.strSrvID	= m_webGame.strSvrID;
@@ -189,8 +189,8 @@ void WebGamePanelWnd::SetTabItem( TAB_ITEM ti )
 		YL_CHTTPDownFile httpDownFile;
 		httpDownFile.DownloadFile( m_webGame.strPicUrl,  strPicLocalDesPath);
 
-		og.nGameType= OneLocalGame::TYPE_WEB_GAME;
-		GLOBAL_LOCALGAME->ILocalGameData_AddGame(og);
+		og.nGameType= OneGame::WEB_GAME | OneGame::RECENT_PLAY;
+		GLOBAL_GAME->IGameData_AddGame(og);
 	}
 }
 

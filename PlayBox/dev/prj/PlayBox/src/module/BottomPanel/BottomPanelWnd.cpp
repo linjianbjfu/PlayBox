@@ -19,9 +19,8 @@ END_MESSAGE_MAP()
 int CBottomPanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if(__super::OnCreate(lpCreateStruct) == -1)
-	{
 		return -1;
-	}
+
 	ILayoutMgr* pLayoutMgr =  AfxGetUIManager()->UIGetLayoutMgr();
 	pLayoutMgr->CreateControlPane( this,"bottompanel","normal");
 	pLayoutMgr->CreateBmpPane( this,"bottompanel","normal" );

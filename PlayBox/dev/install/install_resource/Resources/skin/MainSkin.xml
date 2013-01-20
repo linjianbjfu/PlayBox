@@ -77,9 +77,7 @@
 		<paneitem name="PlayedGameTimeOrder" type="button" tooltip="按时间排序" bmp="PlayedGameTimeOrder" start_x_right="502"  start_y_top="36" x_delta="30" y_delta="24" />
 		<paneitem name="PlayedGameToWebGame" type="button" tooltip="显示网页游戏" bmp="PlayedGameToWebGame" start_x_right="472"  start_y_top="36" x_delta="30" y_delta="24" />
 		<paneitem name="PlayedGameToFlashGame" type="button" tooltip="显示小游戏" bmp="PlayedGameToFlashGame" start_x_right="442"  start_y_top="36" x_delta="30" y_delta="24" />
-		<paneitem name="PlayedGameToDownloadManager" type="button" tooltip="下载管理" bmp="PlayedGameToDownloadManager" start_x_right="412"  start_y_top="36" x_delta="30" y_delta="24" />
-		<paneitem name="PlayedGameToCollectedGame" type="button" tooltip="显示收藏" bmp="PlayedGameToCollectedGame" start_x_right="382"  start_y_top="36" x_delta="30" y_delta="24" />
-		<paneitem name="PlayedGameDelete" type="button" tooltip="删除" bmp="PlayedGameDelete" start_x_right="338"  start_y_top="36" x_delta="30" y_delta="24" />
+		<paneitem name="PlayedGameToCollectedGame" type="button" tooltip="显示收藏" bmp="PlayedGameToCollectedGame" start_x_right="412"  start_y_top="36" x_delta="30" y_delta="24" />
 		<paneitem name="PlayedGameGameListPanel" type = "wnd" start_x_left="0"  start_y_top="94" end_x_right="259" end_y_bottom="0" />
 		<panemulti name="UserMan_LogedIn_LogedOut" ori="VERT" current="UserMan_LogedOut" start_x_right="258" start_y_top="0" x_delta="258" y_delta="109">
 			<paneitem name="UserMan_LogedIn" type="wnd" greedy="1"/>	

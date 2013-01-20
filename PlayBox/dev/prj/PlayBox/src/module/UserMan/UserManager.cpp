@@ -7,20 +7,39 @@
 #include "../../AppConfig/config/ConfigSettingDef.h"
 #include "../../DataInterface/IUserMsgObserver.h"
 #include "../../util/md5.h"
+#include "IGameData.h"
+#include "YL_FileInfo.h"
+#include "../json/json.h"
+#include "CDataManager.h"
 
 static CUserManager* g_pUserMgr = NULL;
+struct gameType2StringEnumPair
+{
+	char* szGameType;
+	int nGameType;
+};
+static gameType2StringEnumPair g_gameTypePair[] = 
+{
+	{"collect_game", OneGame::COLLECTED},
+	{"recent_played_game", OneGame::RECENT_PLAY} 
+};
 
 #define NOTIFY(method) \
-{ \
-	list<IMessageObserver*> listOb; \
-	AfxGetMessageManager()->QueryObservers( ID_MESSAGE_USER,listOb); \
-	for( list<IMessageObserver*>::iterator itOb = listOb.begin(); \
-		itOb != listOb.end();itOb++ ) \
-	{ \
-		IUserMsgObserver* pOb = dynamic_cast<IUserMsgObserver*>(*itOb); \
-		pOb->method; \
-	} \
-}
+	do { \
+		list<IMessageObserver*> listOb; \
+		AfxGetMessageManager()->QueryObservers( ID_MESSAGE_USER,listOb); \
+		for( list<IMessageObserver*>::iterator itOb = listOb.begin(); \
+			itOb != listOb.end();itOb++ ) \
+		{ \
+			IUserMsgObserver* pOb = dynamic_cast<IUserMsgObserver*>(*itOb); \
+			pOb->method; \
+		} \
+	} while(0);
+
+#define SET_STATE_AND_NOTIFY(s, e, method) \
+	g_pUserMgr->m_state = s; \
+	g_pUserMgr->m_errDetail = e; \
+	NOTIFY(IUserMsgObserver::method);
 
 struct LoginThreadPara
 {
@@ -56,8 +75,7 @@ void CUserManager::User_AppStartUp()
 
 	if (strUserName.empty())
 	{
-		g_pUserMgr->m_errDetail = USER_NAME_EMPTY;
-		NOTIFY(IUserMsgObserver::UserMsg_LogFaild());
+		SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, USER_NAME_EMPTY, UserMsg_LogFaild());
 		return;
 	}
 
@@ -66,8 +84,7 @@ void CUserManager::User_AppStartUp()
 		CONF_SETTING_LOGIN_PASSWORD, strBase64MD5Pass);
 	if (strBase64MD5Pass.empty())
 	{
-		g_pUserMgr->m_errDetail = PASS_WORD_EMPTY;
-		NOTIFY(IUserMsgObserver::UserMsg_LogFaild());
+		SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, PASS_WORD_EMPTY, UserMsg_LogFaild());
 		return;
 	}
 
@@ -123,10 +140,8 @@ void CUserManager::User_AppExit()
 
 void CUserManager::User_Logout()
 {
-	m_state = NOT_LOGGED_IN;
-	m_errDetail = SUCCEEDED;
-
-	NOTIFY(IUserMsgObserver::UserMsg_LogOut());
+	GLOBAL_GAME->IGameData_ChangeLoginState(false);
+	SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, SUCCEEDED, UserMsg_LogOut());
 }
 
 bool CUserManager::User_IsLogin()
@@ -137,7 +152,7 @@ bool CUserManager::User_IsLogin()
 DWORD CUserManager::ThreadLogin(void* pPara)
 {
 	LoginThreadPara* threadPara = (LoginThreadPara*)pPara;
-	NOTIFY(IUserMsgObserver::UserMsg_BeginLogin());
+	SET_STATE_AND_NOTIFY(LOGIN_ON_THE_WAY, SUCCEEDED, UserMsg_BeginLogin());
 
 	std::string strUserSvr;
 	AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME,
@@ -151,7 +166,7 @@ DWORD CUserManager::ThreadLogin(void* pPara)
 	if(!http.Request( strUrl, YL_CHTTPRequest::REQUEST_GET, 20*1000 ))
 	{
 		delete threadPara;
-		NOTIFY(IUserMsgObserver::UserMsg_LogFaild());
+		SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, NET_ERROR, UserMsg_LogFaild());
 	}
 	//登陆成功
 	BYTE *pbyIndex = NULL;
@@ -160,37 +175,94 @@ DWORD CUserManager::ThreadLogin(void* pPara)
 
 	if(pbyIndex && size != 0)
 	{
-		//解析pbyIndex
-		//不符合格式，或明确说登陆失败
-		if (!g_pUserMgr->m_pUserInfo)
-			g_pUserMgr->m_pUserInfo = new UserInfo;
-
-		g_pUserMgr->m_pUserInfo->strName = threadPara->strUserName;
-		g_pUserMgr->m_pUserInfo->strPassMD5 = threadPara->strPassWord;
-		g_pUserMgr->m_state = HAVE_LANDED;
-		g_pUserMgr->m_errDetail = SUCCEEDED;
-
 		std::string strContent = std::string((char*)pbyIndex, size);
 		//解析json
+		strContent = YL_FileInfo::GetFileContent("D:\\temp.json");
+		bool bLoginSuc = false;
+		ParseJson(strContent, bLoginSuc);
+		if (bLoginSuc)
+		{
+			SetUserInfo(threadPara->strUserName.c_str(), threadPara->strPassWord.c_str());
+			AfxGetUserConfig()->SetConfigStringValue( CONF_SETTING_MODULE_NAME, 
+				CONF_SETTING_LOGIN_USER_NAME, g_pUserMgr->m_pUserInfo->strName, true );
 
-		g_pUserMgr->m_state = HAVE_LANDED;
+			char szBase64MD5[256];
+			ZeroMemory(szBase64MD5, 256);
+			YL_Base64Encode( szBase64MD5, g_pUserMgr->m_pUserInfo->strPassMD5.c_str(),
+				g_pUserMgr->m_pUserInfo->strPassMD5.length());
+			AfxGetUserConfig()->SetConfigStringValue( CONF_SETTING_MODULE_NAME, 
+				CONF_SETTING_LOGIN_PASSWORD, szBase64MD5, true );
 
-		AfxGetUserConfig()->SetConfigStringValue( CONF_SETTING_MODULE_NAME, 
-			CONF_SETTING_LOGIN_USER_NAME, g_pUserMgr->m_pUserInfo->strName, true );
-		
-		char szBase64MD5[256];
-		ZeroMemory(szBase64MD5, 256);
-		YL_Base64Encode( szBase64MD5, g_pUserMgr->m_pUserInfo->strPassMD5.c_str(),
-			g_pUserMgr->m_pUserInfo->strPassMD5.length());
-		AfxGetUserConfig()->SetConfigStringValue( CONF_SETTING_MODULE_NAME, 
-			CONF_SETTING_LOGIN_PASSWORD, szBase64MD5, true );
-
-		NOTIFY(IUserMsgObserver::UserMsg_Login());
+			SET_STATE_AND_NOTIFY(HAVE_LANDED, SUCCEEDED, UserMsg_Login());
+		} else
+		{
+			SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, SERVER_SAID_LOGIN_FAIL, UserMsg_LogFaild());
+		}
 	}else
 	{
-		g_pUserMgr->m_state = NOT_LOGGED_IN;
-		g_pUserMgr->m_errDetail = FAILED;
-		NOTIFY(IUserMsgObserver::UserMsg_LogFaild());
+		SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, NET_ERROR, UserMsg_LogFaild());
 	}
 	return 0;
+}
+
+void CUserManager::SetUserInfo(LPCSTR lpszUserName, LPCSTR lpszPass)
+{
+	if (!g_pUserMgr->m_pUserInfo)
+		g_pUserMgr->m_pUserInfo = new UserInfo;
+
+	g_pUserMgr->m_pUserInfo->strName = lpszUserName;
+	g_pUserMgr->m_pUserInfo->strPassMD5 = lpszPass;
+}
+//parse the content received from server, and set bLoginSuc whether decided by server content
+void CUserManager::ParseJson(const std::string strJson, bool& bLoginSuc)
+{
+	bLoginSuc = false;
+	Json::Reader reader;
+	Json::Value root;  
+	if (reader.parse(strJson, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素  
+	{
+		bLoginSuc = root["login_success"].asBool();
+		if (!bLoginSuc)
+			return;
+		
+		GameList lgl;
+		for (int j=0; j<sizeof(g_gameTypePair)/sizeof(gameType2StringEnumPair); j++)
+		{
+			Json::Value jsonGame = root[g_gameTypePair[j].szGameType];
+			if (jsonGame.isArray())
+			{
+				for (int i=0; i<jsonGame.size(); i++)
+				{
+					OneGame olg;
+					std::string strGameType = jsonGame[i]["type"].asString();
+					olg.nGameType = g_gameTypePair[j].nGameType;
+					if (strGameType == "flashgame")
+					{
+						olg.nGameType |= OneGame::FLASH_GAME;
+						olg.strGamePath = jsonGame[i]["swf_url"].asString();
+					} else 
+					if (strGameType == "webgame")
+					{
+						olg.nGameType |= OneGame::WEB_GAME;
+						olg.strSrvID = jsonGame[i]["serverid"].asString();
+					} else 
+						continue;
+
+					olg.strName = jsonGame[i]["name"].asString();
+					olg.strPicPath = jsonGame[i]["thumbnail_url"].asString();					
+					olg.strID = jsonGame[i]["id"].asString();
+					olg.nGameType = g_gameTypePair[j].nGameType;
+					lgl.push_back(olg);
+				}
+			}		
+		}
+		if (!lgl.empty())
+			GLOBAL_GAME->IGameData_SetLoginGameList(lgl);
+		GLOBAL_GAME->IGameData_ChangeLoginState(true);
+	}
+}
+
+UserInfo* CUserManager::User_GetUserInfo() const
+{
+	return m_pUserInfo;
 }

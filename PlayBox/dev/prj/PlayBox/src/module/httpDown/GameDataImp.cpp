@@ -1,42 +1,41 @@
 #include "stdafx.h"
-#include "LocalGameData.h"
+#include "GameDataImp.h"
 #include "YL_StringUtil.h"
 #include "YL_DirInfo.h"
 #include "YL_FileInfo.h"
 #include "tools.h"
 #include "../../util/MarkupArchive.h"
-#include "../../DataInterface/IQQItemCountChangeObserver.h"
 #include "../PlayedGamePanel/LMCStructs.h"
+#include <assert.h>
 
-LocalGameData*	LocalGameData::m_pData = NULL;
+CGameDataImp*	CGameDataImp::m_pData = NULL;
 #define MAX_TAB_COUNT	3
 
-IData* LocalGameData::GetInstance()
+CGameDataImp::CGameDataImp() : m_vecGame(m_vecLocalGame){}
+
+IData* CGameDataImp::GetInstance()
 {
 	if(m_pData == NULL)
-		m_pData = new LocalGameData();
+		m_pData = new CGameDataImp;
 	return m_pData;
 }
 
-void LocalGameData::DelInstance()
+void CGameDataImp::DelInstance()
 {
 	if(m_pData != NULL)
 		delete m_pData;
 	m_pData = NULL;
 }
 
-void LocalGameData::DataAppStart()
+void CGameDataImp::DataAppStart()
 {
 	char szHomePath[MAX_PATH];
 	CLhcImg::GetHomePath( szHomePath, MAX_PATH );
-
 	YL_StringUtil::Format( m_strDataFilePath, "%s\\Resources\\Profiles\\usergame.xml", szHomePath );
-	YL_Log( "LocalGameData.txt", LOG_DEBUG, "DataAppStart",	"m_strDataFilePath:%s", m_strDataFilePath.c_str() );
-
 	LoadGameData();
 }
 
-void LocalGameData::DataAppExit()
+void CGameDataImp::DataAppExit()
 {
 	UnLoadGameData();
 }
@@ -85,24 +84,22 @@ static void MergeXml (CString strMaster, CString strUpdate)
 		xmlMaster.SetAttrib ("type", strGameType);
 		xmlMaster.SetAttrib ("MD5", strMD5);
 	}
-
 	xmlMaster.Save ();
-
 	xmlMaster.Close ();
 	xmlUpdate.Close ();
 }
 
 
-void LocalGameData::LoadGameData()
+void CGameDataImp::LoadGameData()
 {
 	m_vecGame.clear();
-	YL_Log( "LocalGameData.txt", LOG_DEBUG, "LoadGameData","m_strDataFilePath:%s", m_strDataFilePath.c_str() );
+	YL_Log( "CGameDataImp.txt", LOG_DEBUG, "LoadGameData","m_strDataFilePath:%s", m_strDataFilePath.c_str() );
 
 	CMarkupArchive xml;
 	if( !xml.Open(m_strDataFilePath.c_str()) )
 		return;
 
-	YL_Log( "LocalGameData.txt", LOG_DEBUG, "LoadGameData","CMarkupArchive::Open success" );
+	YL_Log( "CGameDataImp.txt", LOG_DEBUG, "LoadGameData","CMarkupArchive::Open success" );
 
 	char szHomePath[MAX_PATH];
 	CLhcImg::GetHomePath( szHomePath, MAX_PATH );
@@ -113,11 +110,11 @@ void LocalGameData::LoadGameData()
 
 	while( xml.FindChildElem() )
 	{
-		OneLocalGame olg;
+		OneGame olg;
 		olg.strID    = xml.GetAttrib( "Id" );
 		olg.strName  = xml.GetAttrib( "Name" );
 		olg.strIntro  = xml.GetAttrib( "Intro" );
-		//YL_Log( "LocalGameData.txt", LOG_DEBUG, "LoadGameData","id:%s|name:%s|intro:%s",
+		//YL_Log( "CGameDataImp.txt", LOG_DEBUG, "LoadGameData","id:%s|name:%s|intro:%s",
 		//	olg.strID.c_str(), olg.strName.c_str(), olg.strIntro.c_str() );
 		olg.strPicPath = xml.GetAttrib( "Img" );
 		olg.strGamePath = xml.GetAttrib( "AppPath" );
@@ -128,27 +125,14 @@ void LocalGameData::LoadGameData()
 		strGameType.ReleaseBuffer();
 
 		if( YL_FileInfo::IsValid( olg.strGamePath ) )
-		{
-			YL_Log( "LocalGameData.txt", LOG_DEBUG, "LoadGameData","文件存在:%s",
-				olg.strGamePath.c_str() );
-
 			m_vecGame.push_back( olg );
-		}
-		//else if (olg.strGamePath.find("http://", 0))
 		else if ( 0 == strnicmp(olg.strGamePath.c_str(), "http://", strlen("http://")) )
-		{
 			m_vecGame.push_back( olg );
-		}
-		else
-		{
-			YL_Log( "LocalGameData.txt", LOG_DEBUG, "LoadGameData","文件不存在:%s",
-				olg.strGamePath.c_str() );
-		}
 	}
 	xml.Close();
 }
 
-void LocalGameData::UnLoadGameData()
+void CGameDataImp::UnLoadGameData()
 {
 	string strTmp = m_strDataFilePath + ".1";
 	string strContent = "<?xml version=\"1.0\" encoding=\"GBK\"?><root/>";
@@ -166,7 +150,7 @@ void LocalGameData::UnLoadGameData()
 	xml.ResetPos();
 	xml.FindElem();
 
-	for( LocalGameList::iterator it1 = m_vecGame.begin(); it1 != m_vecGame.end(); it1++ )
+	for( GameList::iterator it1 = m_vecGame.begin(); it1 != m_vecGame.end(); it1++ )
 	{
 		xml.AddChildElem( "app" );		
 		xml.IntoElem();
@@ -190,25 +174,23 @@ void LocalGameData::UnLoadGameData()
 	CopyFile( strTmp.c_str(), m_strDataFilePath.c_str(), FALSE );
 }
 
-bool LocalGameData::ILocalGameData_GetGameByID( string strID, int nGameType, OneLocalGame& og )
+bool CGameDataImp::IGameData_GetGameByID(const std::string& strID, int nGameType, OneGame& og)
 {
-	LocalGameList::iterator it1 = m_vecGame.begin();
+	assert(nGameType == OneGame::WEB_GAME || nGameType == OneGame::FLASH_GAME);
+	GameList::iterator it1 = m_vecGame.begin();
 	for( ; it1 != m_vecGame.end(); it1 ++ )
 	{
-		if( strID == it1->strID
-			&& nGameType == it1->nGameType)
-		{
+		if((nGameType & it1->nGameType) && strID == it1->strID)
 			break;
-		}
 	}
 	if( it1 != m_vecGame.end() )
 	{
-		if (it1->nGameType == OneLocalGame::TYPE_WEB_GAME)
+		if (it1->nGameType & OneGame::WEB_GAME)
 		{
 			og = *it1;
 			return true;
 		}
-		else if (it1->nGameType == OneLocalGame::TYPE_FLASH_GAME)
+		else if (it1->nGameType & OneGame::FLASH_GAME)
 		{
 			if( YL_FileInfo::IsValid( it1->strGamePath ) )
 			{
@@ -228,24 +210,21 @@ bool LocalGameData::ILocalGameData_GetGameByID( string strID, int nGameType, One
 	}
 }
 
-bool LocalGameData::ILocalGameData_AddGame( OneLocalGame og, string strMD5)
+bool CGameDataImp::IGameData_AddGame(const OneGame& og)
 {
+	assert((og.nGameType & OneGame::FLASH_GAME) || (og.nGameType & OneGame::WEB_GAME));
+	int iFlashOrWeb = (og.nGameType & OneGame::FLASH_GAME) ? OneGame::FLASH_GAME : OneGame::WEB_GAME;
+
 	//删除原有的信息
-	LocalGameList::iterator it1 = m_vecGame.begin();
-	for( ; it1 != m_vecGame.end(); it1 ++ )
-	{
-		if( og.strID == it1->strID
-			&& og.nGameType == it1->nGameType)
-		{
+	GameList::iterator it1 = m_vecGame.begin();
+	for(; it1 != m_vecGame.end(); it1 ++ )
+		if((iFlashOrWeb & it1->nGameType) && og.strID == it1->strID)
 			break;
-		}
-	}
+
 	if( it1 != m_vecGame.end() )
-	{
 		return false;
-	}
-	OneLocalGame olg = og;
-	
+
+	OneGame olg = og;
 	// 获取系统日期
 	struct tm* tmLocal;
 	time_t t = time(NULL);;
@@ -259,21 +238,19 @@ bool LocalGameData::ILocalGameData_AddGame( OneLocalGame og, string strMD5)
 
 	//加入本地游戏数据
 	m_vecGame.push_back( olg );
-	NotifyQQItemCountChange();
 	return true;
 }
 
-bool LocalGameData::ILocalGameData_DelGame( string strID, int nGameType )
+bool CGameDataImp::IGameData_DelGame(const string& strID, int nGameType)
 {
-	LocalGameList::iterator it1 = m_vecGame.begin();
+	assert((nGameType & OneGame::FLASH_GAME) || (nGameType & OneGame::WEB_GAME));
+	int iFlashOrWeb = (nGameType & OneGame::FLASH_GAME) ? OneGame::FLASH_GAME : OneGame::WEB_GAME;
+
+	GameList::iterator it1 = m_vecGame.begin();
 	for( ; it1 != m_vecGame.end(); it1 ++ )
-	{
-		if( strID == it1->strID 
-			&& nGameType == it1->nGameType)
-		{
+		if((iFlashOrWeb & it1->nGameType) && strID == it1->strID)
 			break;
-		}
-	}
+
 	if( it1 != m_vecGame.end() )
 	{
 		//删除图片
@@ -282,60 +259,60 @@ bool LocalGameData::ILocalGameData_DelGame( string strID, int nGameType )
 		::DeleteFile( it1->strGamePath.c_str() );
 
 		m_vecGame.erase( it1 );
-		NotifyQQItemCountChange();
 		return true;
-	}else
-	{
-		return false;
-	}	
+	}
+	return false;
 }
 
-bool LocalGameData::ILocalGameData_GetAllGame( LocalGameList& lgl )
+bool CGameDataImp::IGameData_GetGame(GameList& lgl, int iGameType)
 {
 	lgl.clear();
-	copy( m_vecGame.begin(), m_vecGame.end(), back_inserter(lgl) );
+	assert(!((iGameType & OneGame::FLASH_GAME) && (iGameType & OneGame::WEB_GAME)));
+	assert(!((iGameType & OneGame::COLLECTED) && (iGameType & OneGame::RECENT_PLAY)));
+	int iFlashOrWeb = 0;
+	if (iGameType & OneGame::FLASH_GAME)
+		iFlashOrWeb = OneGame::FLASH_GAME;
+	else if(iGameType & OneGame::WEB_GAME)
+		iFlashOrWeb = OneGame::WEB_GAME;
+
+	int iCollectedOrRecentPlay = 0;
+	if (iGameType & OneGame::COLLECTED)
+		iCollectedOrRecentPlay = OneGame::COLLECTED;
+	else if(iGameType & OneGame::RECENT_PLAY)
+		iCollectedOrRecentPlay = OneGame::RECENT_PLAY;
+
+	if (iFlashOrWeb == 0 && iCollectedOrRecentPlay == 0)
+	{
+		copy( m_vecGame.begin(), m_vecGame.end(), back_inserter(lgl) );
+	}else
+	{
+		GameList::iterator it = m_vecGame.begin();
+		for (; it != m_vecGame.end(); it++)
+		{
+			if (iFlashOrWeb != 0)
+			{
+				//if (it->)
+				{
+				}
+			}
+		}
+	}
 	return true;
 }
 
-unsigned int LocalGameData::ILocalGameData_GetGameCount()
+unsigned int CGameDataImp::IGameData_GetGameCount()
 {
 	return (unsigned int)(m_vecGame.size());
 }
 
-void LocalGameData::NotifyQQItemCountChange()
+void CGameDataImp::IGameData_SetLoginGameList(GameList& lgl)
 {
-//  	list<IMessageObserver*> listOb;
-//  	AfxGetMessageManager()->QueryObservers( ID_MESSAGE_QQ_ITEM_CHANGE,listOb);
-//  
-//  	for( list<IMessageObserver*>::iterator itOb = listOb.begin();itOb != listOb.end();itOb++ )
-//  	{
-//  		IQQItemCountChangeObserver* pOb = dynamic_cast<IQQItemCountChangeObserver*>(*itOb);
-//  		pOb->IQQItemChangeOb_CountChange( m_vecGame.size() );
-//  	}
+	m_vecLoginGame.clear();
+	std::copy(lgl.begin(), lgl.end(), m_vecLoginGame.begin());
 }
 
-int LocalGameData::ILocalGameData_GetWebGame(LocalGameList& lgl)
+void CGameDataImp::IGameData_ChangeLoginState(bool bLogin)
 {
-	lgl.clear();
-	for (size_t i=0; i<m_vecGame.size(); i++)
-	{
-		if (m_vecGame[i].nGameType == OneLocalGame::TYPE_WEB_GAME)
-		{
-			lgl.push_back(m_vecGame[i]);
-		}
-	}
-	return true;
-}
-
-int LocalGameData::ILocalGameData_GetFlashGame(LocalGameList& lgl)
-{
-	lgl.clear();
-	for (size_t i=0; i<m_vecGame.size(); i++)
-	{
-		if (m_vecGame[i].nGameType == OneLocalGame::TYPE_FLASH_GAME)
-		{
-			lgl.push_back(m_vecGame[i]);
-		}
-	}
-	return true;
+	m_bLogin = bLogin;
+	m_vecGame = m_bLogin ? m_vecLoginGame : m_vecLocalGame;
 }
