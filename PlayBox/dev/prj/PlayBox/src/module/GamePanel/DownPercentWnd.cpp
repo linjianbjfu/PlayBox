@@ -22,7 +22,6 @@ DownPercentWnd::DownPercentWnd()
 	m_pBmpM    = NULL;
 	m_pImgAd   = NULL;
 	m_pWnd = NULL;
-
 	m_bNavi = true;
 
 	//×ÖÌå

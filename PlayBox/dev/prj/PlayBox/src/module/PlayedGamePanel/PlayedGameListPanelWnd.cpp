@@ -1,34 +1,24 @@
 #include "stdafx.h"
 #include "PlayedGameListPanelWnd.h"
 #include <algorithm>
-#include <set>
 #include <vector>
+#include "YL_StringUtil.h"
 #include "../../Core/CDataManager.h"
 #include "../../../../CommonLib/prj/Log/KwLogSvr.h"
-#include "YL_StringUtil.h"
 #include "../AppConfig/config/ConfigSettingDef.h"
 #include "../../AppConfig/config/ConfigAppDef.h"
-
-using std::set;
-using std::vector;
 
 IMPLEMENT_DYNAMIC(PlayedGameListPanelWnd, CLocalMusicCoverList)
 
 PlayedGameListPanelWnd::PlayedGameListPanelWnd()
 : m_iMouseDownItem(-1)
 , m_szKey("-1")
-, m_szKeyWord("")
 , m_iMovePreItem(-1),
-m_bTrackMouse(false)
-{	
-}
+m_bTrackMouse(false) {}
 
-PlayedGameListPanelWnd::~PlayedGameListPanelWnd()
-{
-}
+PlayedGameListPanelWnd::~PlayedGameListPanelWnd() {}
 
 BEGIN_MESSAGE_MAP(PlayedGameListPanelWnd, CLocalMusicCoverList)
-	ON_WM_SHOWWINDOW()
 	ON_WM_RBUTTONUP()
 	ON_WM_LBUTTONDBLCLK()
 	ON_WM_CREATE()
@@ -40,15 +30,6 @@ BEGIN_MESSAGE_MAP(PlayedGameListPanelWnd, CLocalMusicCoverList)
 	ON_WM_DESTROY()
 	ON_WM_MOUSEWHEEL()
 END_MESSAGE_MAP()
-
-void PlayedGameListPanelWnd::OnShowWindow(BOOL bShow, UINT nStatus)
-{
-	if (bShow)
-	{
-		// ReGetData();
-	}
-	__super::OnShowWindow(bShow, nStatus);
-}
 
 void PlayedGameListPanelWnd::OnRButtonUp(UINT nFlags, CPoint point)
 {
@@ -88,40 +69,21 @@ BOOL PlayedGameListPanelWnd::OnCommand(WPARAM wParam, LPARAM lParam)
 			if (!bPrompted)
 			{
 				bPrompted = TRUE;
-// 				int nRet = AfxMessageBox ("您确定要删除所选游戏吗？", MB_OKCANCEL);
 				int nRet = ::MessageBox (AfxGetMainWindow ()->m_hWnd, "您确定要删除所选游戏吗？",
 					"小宝贝游戏盒", MB_OKCANCEL);
 				if (nRet == IDCANCEL)
 					break;
 			}
-			vector<int> vAlbum;
+			std::vector<int> vAlbum;
 			vAlbum = GetSelectItem();
-
 			for (int i=0;i<vAlbum.size();i++)
 			{
 				string strGID = m_DataMgr.m_vItem[vAlbum[i]].strGID;
-				GLOBAL_LOCALGAME->ILocalGameData_DelGame(strGID, m_DataMgr.m_vItem[vAlbum[i]].nGameType);
+				GLOBAL_GAME->IGameData_DelGame(strGID, m_DataMgr.m_vItem[vAlbum[i]].nGameType);
 			}
-			/*
-			RidVector rv;
-			for (int i=0;i<vAlbum.size();i++)
-			{
-				string strGID = m_DataMgr.m_vItem[vAlbum[i]].strGID;
-				rv.push_back (strGID);
-			}
-
-			for (RidVector::iterator it = rv.begin (); it != rv.end (); it++)
-			{
-				GLOBAL_LOCALGAME->ILocalGameData_DelGame(*it);
-			}
-			rv.clear ();
-			*/
-
 			UpdateList();
 			OnMemoryDraw();
 		}
-		break;
-	default:
 		break;
 	}
 	return __super::OnCommand(wParam, lParam);
@@ -129,12 +91,11 @@ BOOL PlayedGameListPanelWnd::OnCommand(WPARAM wParam, LPARAM lParam)
 
 void PlayedGameListPanelWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
-	vector<int> vSel = GetSelectItem();
+	std::vector<int> vSel = GetSelectItem();
 	if ( vSel.size() > 0 )
 	{
 		LMC_ItemInfo ii = m_DataMgr.m_vItem[vSel[0]];
-
-		if (ii.nGameType == OneLocalGame::TYPE_FLASH_GAME) // flash game
+		if (ii.nGameType & OneGame::FLASH_GAME) // flash game
 		{
 			TAB_ITEM tItem;
 			tItem.eumType = TAB_FLASHGAME;
@@ -143,7 +104,7 @@ void PlayedGameListPanelWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 				+ "name=" + tItem.strName + "\n";
 			GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
 		}
-		else if (ii.nGameType == OneLocalGame::TYPE_WEB_GAME) // web game
+		else if (ii.nGameType & OneGame::WEB_GAME) // web game
 		{
 			TAB_ITEM tItem;
 			tItem.eumType = TAB_WEBGAME;
@@ -156,10 +117,7 @@ void PlayedGameListPanelWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 			ii.strImgPath.ReleaseBuffer();
 			GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
 		}
-
-		//OnMemoryDraw ();
 	}
-
 	__super::OnLButtonDblClk(nFlags, point);
 }
 
@@ -167,13 +125,16 @@ int PlayedGameListPanelWnd::ReGetData()
 {
 	m_DataMgr.ClearData();
 
-	LocalGameList lgl;
-	GLOBAL_LOCALGAME->ILocalGameData_GetAllGame( lgl );
-	for( LocalGameList::iterator it1 = lgl.begin(); it1 != lgl.end(); it1++ )
+	GameList lgl;
+	GLOBAL_GAME->IGameData_GetGame(lgl, 0);
+	for( GameList::iterator it1 = lgl.begin(); it1 != lgl.end(); it1++ )
 	{
 		CString strDetail;
 		InsertItem( it1->strPicPath.c_str(), 
-			it1->strName.c_str(), strDetail, it1->strID, it1->strSrvID, it1->strAddTime,it1->nGameType, FALSE );
+			it1->strName.c_str(), strDetail, 
+			it1->strID, it1->strSrvID, 
+			it1->strAddTime,it1->nGameType, 
+			FALSE );
 	}
 	UpdateList();
 	OnMemoryDraw();
@@ -189,7 +150,6 @@ int PlayedGameListPanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_tootip.CreateEx(WS_EX_TOOLWINDOW|WS_EX_TOPMOST,TOOLTIPS_CLASS,"",0,CRect(0,0,0,0),NULL,0);
 	m_tootip.m_hParent = GetSafeHwnd();
 	m_tootip.m_clrBK = RGB(255, 255, 225);	
-
 	return 0;
 }
 
@@ -197,33 +157,14 @@ void PlayedGameListPanelWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	if (nChar==VK_DELETE)
 	{
-		vector<int> vItem = GetSelectItem();
-		int i = 0;
-		RidVector rv;
-
-		for( ; i<vItem.size(); i++  )
+		std::vector<int> vItem = GetSelectItem();
+		for(int i = 0; i<vItem.size(); i++)
 		{
 			LMC_ItemInfo ii = GetItemInfoByIndex( vItem[i] );
-
-			GLOBAL_LOCALGAME->ILocalGameData_DelGame(ii.strGID, ii.nGameType);
-//			rv.push_back (ii.strGID);
-// 			GLOBAL_LOCALGAME->ILocalGameData_DelGame( ii.strGID );
+			GLOBAL_GAME->IGameData_DelGame(ii.strGID, ii.nGameType);
 		}
-/*
-		for (RidVector::iterator it = rv.begin (); it != rv.end (); it++)
-		{
-			GLOBAL_LOCALGAME->ILocalGameData_DelGame(*it);
-		}
-
-		rv.clear ();
-*/
 		UpdateList();
-		OnMemoryDraw();
-
-// 		if( i > 0 ) //如果有删除东西，就刷新
-// 		{
-// 			ReGetData();
-// 		}		
+		OnMemoryDraw();	
 	}
 	__super::OnKeyDown(nChar, nRepCnt, nFlags);
 }
@@ -251,10 +192,7 @@ void PlayedGameListPanelWnd::DrawPlayBtn(CRect rc,BOOL blNormal/* =TRUE */)
 		pImageOver = imgOver.Clone();
 	}
 	Graphics gc(GetDC()->m_hDC);
-	if (blNormal)
-		gc.DrawImage(pImageNormal,rcImg);
-	else
-		gc.DrawImage(pImageOver,rcImg);
+	gc.DrawImage(blNormal ? pImageNormal : pImageOver, rcImg);
 }
 
 void PlayedGameListPanelWnd::OnMouseMove(UINT nFlags, CPoint point)
@@ -270,9 +208,7 @@ void PlayedGameListPanelWnd::OnMouseMove(UINT nFlags, CPoint point)
 	}
 
 	if (m_blDrag||m_blTracker)
-	{
 		return __super::OnMouseMove(nFlags,point);
-	}
 
 	static CRect rcPre(0,0,0,0);	
 	int iItem;	
@@ -287,32 +223,13 @@ void PlayedGameListPanelWnd::OnMouseMove(UINT nFlags, CPoint point)
 		Graphics gc(GetDC()->m_hDC);
 		Rect rc(m_DataMgr.m_vItem[iItem].rc.right-32,m_DataMgr.m_vItem[iItem].rc.bottom-32,26,26);
 		CRect rcImg(rc.X,rc.Y,rc.Width+rc.X,rc.Height+rc.Y);
-		int ihitarea=-1;
-		if (rcImg.PtInRect(point))
+		int ihitarea = rcImg.PtInRect(point) ? 1 : 2;
+		if (iItem!=ipreITem ||ihitarea != ipreon)
 		{
-			ihitarea = 1;
+			RedrawWindow(&rcPre);
+			ipreon = ihitarea;
+			DrawPlayBtn(rcImg, !rcImg.PtInRect(point));
 		}
-		else
-		{
-			ihitarea = 2;
-		}
-
-		if (iItem!=ipreITem ||ihitarea!=ipreon)
-		{
-			if (rcImg.PtInRect(point) )
-			{
-				RedrawWindow(&rcPre);
-				ipreon = 1;
-				DrawPlayBtn(rcImg,FALSE);
-			}
-			else 
-			{
-				RedrawWindow(&rcPre);
-				ipreon = 2; 
-				DrawPlayBtn(rcImg,TRUE);
-			}
-		}
-
 		rcPre.SetRect(rc.X,rc.Y,rc.X+rc.Width,rc.Y+rc.Height);
 		m_iMovePreItem=iItem;
 		ipreITem = iItem;
@@ -320,24 +237,19 @@ void PlayedGameListPanelWnd::OnMouseMove(UINT nFlags, CPoint point)
 		CString info;
 		LMC_ItemInfo ii = m_DataMgr.m_vItem[iItem];
 
-		OneLocalGame og;
-		memset (&og, 0, sizeof (OneLocalGame));
+		OneGame og;
+		memset (&og, 0, sizeof (OneGame));
 		og.strName = ii.strItemName;
-
-		if( GLOBAL_LOCALGAME->ILocalGameData_GetGameByID( ii.strGID, ii.nGameType, og ) )
-		{
+		if( GLOBAL_GAME->IGameData_GetGameByID( ii.strGID, ii.nGameType, og ) )
 			info.Format("名称: %s$#游戏简介:%s", og.strName.c_str(), og.strIntro.c_str() );
-		}else
-		{
+		else
 			info.Format("名称: %s", ii.strItemName );
-		}
-		//ii.strGID
+
 		CPoint pt(0,0);
 		GetCursorPos(&pt);
 		if( m_tootip.m_lastPoint != pt )
-		{
 			m_tootip.HideTooTips();
-		}
+
 		m_tootip.ShowToolTips( info,pt);
 	}
 	if (!blHitTest)
@@ -350,7 +262,6 @@ void PlayedGameListPanelWnd::OnMouseMove(UINT nFlags, CPoint point)
 	__super::OnMouseMove(nFlags, point);
 }
 
-
 void PlayedGameListPanelWnd::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	__super::OnLButtonDown(nFlags, point);
@@ -362,15 +273,13 @@ void PlayedGameListPanelWnd::OnLButtonDown(UINT nFlags, CPoint point)
 		CRect rc=m_DataMgr.m_vItem[iItem].rc;
 		rc.SetRect(rc.right-32,rc.bottom-32,rc.right-7,rc.bottom-7);
 		if (rc.PtInRect(point))
-		{
 			DrawPlayBtn(rc,FALSE);
-			return ;
-		}
 	}
 }
 
 void PlayedGameListPanelWnd::OnLButtonUp(UINT nFlags, CPoint point)
 {
+	__super::OnLButtonUp(nFlags, point);
 	int iItem;
 	BOOL blHittest = HitTest(iItem,point);
 	if (blHittest)
@@ -378,17 +287,8 @@ void PlayedGameListPanelWnd::OnLButtonUp(UINT nFlags, CPoint point)
 		CRect rc=m_DataMgr.m_vItem[iItem].rc;
 		rc.SetRect(rc.right-32,rc.bottom-32,rc.right-7,rc.bottom-7);
 		if (rc.PtInRect(point))
-		{
-			//CString szArtist = m_DataMgr.m_vItem[iItem].strItemName;
-			//vector<Song> vSong;
-			//CPData::GetInstance()->GetSongByArtist(szArtist.GetBuffer(),vSong);
-			//for (int i=0;i<vSong.size();i++)
-			//	CLMCommon::PlayMusicUseMbox(vSong[i].strPath.c_str());
 			DrawPlayBtn(rc,FALSE);
-			return ;
-		}
 	}
-	__super::OnLButtonUp(nFlags, point);
 }
 
 void PlayedGameListPanelWnd::OnDestroy()
@@ -415,12 +315,10 @@ BOOL PlayedGameListPanelWnd::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	return __super::OnMouseWheel(nFlags, zDelta, pt);
 }
 
-
-void PlayedGameListPanelWnd::ReSetGameList(LocalGameList arrGames)
+void PlayedGameListPanelWnd::ReSetGameList(GameList arrGames)
 {
 	m_DataMgr.ClearData();
-	
-	LocalGameList::iterator it = arrGames.begin();
+	GameList::iterator it = arrGames.begin();
 	for (; it != arrGames.end(); it++)
 	{
 		CString strDetail;
@@ -436,4 +334,3 @@ void PlayedGameListPanelWnd::ReSetGameList(LocalGameList arrGames)
 	UpdateList();
 	OnMemoryDraw();
 }
-

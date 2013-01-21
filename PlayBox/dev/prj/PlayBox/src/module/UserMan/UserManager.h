@@ -18,6 +18,8 @@ public:
 		PASS_WORD_EMPTY,
 		PASS_WRONG,
 		USER_CANCEL,
+		SERVER_SAID_LOGIN_FAIL,
+		NET_ERROR,
 		FAILED, //general fail
 	};
 	enum State
@@ -33,6 +35,7 @@ public:
 	void User_Logout();
 	void User_AppExit();
 	bool User_IsLogin();
+	UserInfo* User_GetUserInfo() const;
 
 private:	
 	HANDLE	m_hThreadLogIn;
@@ -41,6 +44,8 @@ private:
 	ErrDetail m_errDetail;
 	void UserLoginInternal(LPCSTR pszName,LPCSTR pszPwdMD5);
 	static DWORD WINAPI ThreadLogin(void* pPara);
+	static void ParseJson(const std::string strJson, bool& bLoginSuc);
+	static void SetUserInfo(LPCSTR lpszUserName, LPCSTR lpszPass);
  };
 
 #endif // USERMANAGER_H

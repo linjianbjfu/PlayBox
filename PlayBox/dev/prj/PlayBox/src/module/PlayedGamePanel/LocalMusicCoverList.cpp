@@ -213,13 +213,12 @@ int CLocalMusicCoverList::InsertItem(CDibBitmap* pImg,
 {
 	int iHeightSpaceS = m_iItemHeight+SPACEH + ITEMTXTH + SPACEH;
 	int iHeightSpaceMB = m_iItemHeight+SPACEH + ITEMTXTH + SPACEH + ITEMTXTH + SPACEH  ;	
-	if (m_ImgState==LMCI_Small)
-	{
-	}
-	else if (m_ImgState==LMCI_Middle||m_ImgState==LMCI_Big)
-	{
-
-	}
+	//if (m_ImgState==LMCI_Small)
+	//{
+	//}
+	//else if (m_ImgState==LMCI_Middle||m_ImgState==LMCI_Big)
+	//{
+	//}
 	return m_DataMgr.InsertItem(pImg,strItemName,strdetail, strGID, strSrvID, strAddTime, nGameType, blSel);
 }
 
@@ -594,13 +593,10 @@ void CLocalMusicCoverList::MoveVWnd(BOOL blIsup)
 		blIsup?pt.y+=VSCROLLMIN:pt.y-=VSCROLLMIN;
 	
 	if (pt.y>=m_rect.top)
-	{
 		pt.y=m_rect.top;
-	}
 	else if(pt.y+m_rcRealRect.Height()<= m_rect.bottom)
-	{
 		pt.y = m_rect.Height() - m_rcRealRect.Height()-SPACEH;
-	}
+
 	m_csLockV.Lock();
 	m_vPtQueue.push_back(pt);
 	m_csLockV.Unlock();
@@ -612,10 +608,7 @@ void CLocalMusicCoverList::OnCalcSelectItem()
 	for (int i=0;i<m_DataMgr.m_vItem.size();i++)
 	{	
 		CRect rectInter;
-		if (rectInter.IntersectRect(&m_DataMgr.m_vItem[i].rc, &m_rcTracker))
-			m_DataMgr.m_vItem[i].blSel = TRUE;
-		else 
-			m_DataMgr.m_vItem[i].blSel = FALSE;
+		m_DataMgr.m_vItem[i].blSel = rectInter.IntersectRect(&m_DataMgr.m_vItem[i].rc, &m_rcTracker);
 	}
 }
 
@@ -646,13 +639,10 @@ void CLocalMusicCoverList::OnTimer(UINT_PTR nIDEvent)
 		m_csLockV.Unlock();
 	}
 	if (m_vScrDownTimer == nIDEvent)
-	{
 		MoveVWnd(FALSE);
-	}
+
 	if (m_vScrUpTimer == nIDEvent)
-	{
 		MoveVWnd(TRUE);
-	}
 
 	CWnd::OnTimer(nIDEvent);
 }
@@ -660,13 +650,7 @@ void CLocalMusicCoverList::OnTimer(UINT_PTR nIDEvent)
 BOOL CLocalMusicCoverList::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
 	if (m_rcRealRect.Height()>m_rect.Height())
-	{
-		if(zDelta<0)
-			MoveVWnd(FALSE);
-		else
-			MoveVWnd(TRUE);
-	}
-	
+		MoveVWnd(zDelta >= 0);
 	return CWnd::OnMouseWheel(nFlags, zDelta, pt);
 }
 
@@ -676,42 +660,29 @@ LRESULT CLocalMusicCoverList::OnTrackerChange(WPARAM wParam, LPARAM lParam)
 	GetCursorPos(&pt);
 	ScreenToClient(&pt);
 	if (pt.y>0 && pt.y<10)
-	{
 		MoveVWnd(TRUE);
-	}
 	else if (pt.y>m_rect.bottom-10 && pt.y<m_rect.bottom)
-	{
 		MoveVWnd(FALSE);	
-	}
 	return 0;
 }
 
 void CLocalMusicCoverList::OnMouseMove(UINT nFlags, CPoint point)
 {
-	/*SetFocus();*/
 	if (m_rcRealRect.Height()>m_rect.Height() && m_rcTracker.bottom>m_rect.bottom && point.y>m_rect.bottom)
 	{
 		MoveVWnd(FALSE);
-		// 		if (m_blTracker)
-		// 			m_vScrDownTimer = SetTimer(101,1,NULL);
 		return;
 	}
 	else
-	{
 		KillTimer(m_vScrDownTimer);
-	}
 
 	if (m_rcRealRect.Height()>m_rect.Height() &&m_rcTracker.top<m_rect.top&&point.y<m_rect.top)
 	{
 		MoveVWnd(TRUE);
-		// 		if (m_blTracker)
-		// 			m_vScrUpTimer = SetTimer(102,1,NULL);
 		return;
 	}
 	else
-	{
 		KillTimer(m_vScrUpTimer);
-	}
 	if (m_blTracker)
 	{
 		static long g_idrag=0;
@@ -730,20 +701,16 @@ void CLocalMusicCoverList::OnMouseMove(UINT nFlags, CPoint point)
 		}
 	}
 	if (m_blDrag)
-	{
 		OnMoveDraging();
-	}
 	CWnd::OnMouseMove(nFlags, point);
 }
 
 void CLocalMusicCoverList::OnMoveDraging()
 {
-
 }
 
 void CLocalMusicCoverList::OnEndDrag()
 {
-
 }
 
 void CLocalMusicCoverList::OnLButtonDown(UINT nFlags, CPoint point)
@@ -779,7 +746,6 @@ void CLocalMusicCoverList::OnLButtonDown(UINT nFlags, CPoint point)
 	{// 点击区域无数据
 		if (nFlags & MK_CONTROL)
 		{
-
 		}
 		else
 		{
@@ -848,7 +814,6 @@ void CLocalMusicCoverList::OnLButtonUp(UINT nFlags, CPoint point)
 
 	}
 	//End全部取消选择
-
 	CWnd::OnLButtonUp(nFlags, point);
 }
 
@@ -860,20 +825,15 @@ void CLocalMusicCoverList::OnRButtonUp(UINT nFlags, CPoint point)
 		// 右键区域有内容
 		vector<int> vSel = GetSelectItem();
 		if (find(vSel.begin(),vSel.end(),iItem)!=vSel.end())
-		{
 			return;
-		}
 		else
 		{
 			UnSelectAll();
 			m_DataMgr.m_vItem[iItem].blSel = TRUE;
 		}
 	}
-	else
-	{
-		// 右键区域无内容
-		UnSelectAll();
-	}
+	else		
+		UnSelectAll();// 右键区域无内容
 	OnMemoryDraw();
 	CWnd::OnRButtonUp(nFlags, point);
 }
@@ -882,18 +842,14 @@ void CLocalMusicCoverList::OnCoolSBCustomdraw(NMHDR* pNMHDR, LRESULT* pResult )
 {
 	NMCSBCUSTOMDRAW* pNMCD = reinterpret_cast<NMCSBCUSTOMDRAW*>(pNMHDR);	
 	if( m_pBitmapScrollHorz != NULL && m_pBitmapScrollVert != NULL )
-	{
 		*pResult = HandleCustomDraw(0, (NMCSBCUSTOMDRAW*)pNMHDR, m_pBitmapScrollVert,m_pBitmapScrollHorz );
-	}
 }
 
 void CLocalMusicCoverList::OnDestroy()
 {
 	CWnd::OnDestroy();
 	if( m_bInit )
-	{
 		UninitializeCoolSB( m_hWnd );
-	}
 }
 
 void CLocalMusicCoverList::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)

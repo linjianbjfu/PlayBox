@@ -5,7 +5,7 @@
 #include "../../gui/CommonControl/SkinButton2.h"
 #include "../../datainterface/IDownDataDef.h"
 #include "../../Core/CDataManager.h"
-#include "../../datainterface/ILocalGameData.h"
+#include "../../datainterface/IGameData.h"
 
 class PlayedGameListPanelWnd : public CLocalMusicCoverList
 {
@@ -27,20 +27,18 @@ protected:
 	void DrawPlayBtn(CRect rc,BOOL blNormal=TRUE);
 
 	DECLARE_MESSAGE_MAP()
-	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
-	afx_msg int	 OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-	afx_msg LRESULT	OnMouseLeave(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg int	 OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg void OnDestroy();
+	afx_msg LRESULT	OnMouseLeave(WPARAM wParam, LPARAM lParam);
+	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 public:
-	afx_msg void OnDestroy();
 	void	Recycle();
-	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
-
-	void	ReSetGameList(LocalGameList arrGames);
+	void	ReSetGameList(GameList arrGames);
 };
