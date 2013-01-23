@@ -191,10 +191,9 @@ void CTabBarWnd::DrawBar( CDC* pDc )
 		pBmp->SetCDibRect( rc );
 		pBmp->Draw( pDc, FALSE );
 	}
-	if( m_vecTab.size() == 0 )
-	{
+	if(m_vecTab.empty())
 		return;
-	}
+
 	//2画正常rect和close
 	for( int i = 0; i < m_vecTab.size(); i++ )
 	{
@@ -289,9 +288,7 @@ void CTabBarWnd::DrawTabItemRect( CDC* pDc, CRect& rcRect,
 
 		pDc->SetTextColor( colOld );
 		if( fontOld != NULL )
-		{
 			pDc->SelectObject( fontOld );
-		}
 	}
 	//画关闭按钮
 	pClose->SetCDibRect( rcClose );
@@ -325,9 +322,8 @@ void CTabBarWnd::ITabBarOb_OpenTabError( int iErrorCode )
 	//冒泡提示
 	int iCur = GLOBAL_TABBARDATA->ITabBar_GetCurPos();
 	if( iCur == 0 )
-	{
 		iCur = 1;
-	}
+
 	CRect rcClose = m_vecClose[iCur];
 	CPoint point;
 	point.x = rcClose.right - (rcClose.Width()/2);
@@ -357,9 +353,7 @@ void CTabBarWnd::CalcTabPosition()
 	//iWidth	每个btn的宽度
 	int iWidth = (int)(rc.Width() / m_vecTi.size());
 	if( iWidth > ONE_TAB_MAX_WIDTH )
-	{
 		iWidth = ONE_TAB_MAX_WIDTH;
-	}
 
 	CRect rcBtn( rc );
 	CRect rcClose;
@@ -372,17 +366,13 @@ void CTabBarWnd::CalcTabPosition()
 		rcBtn.right = rcBtn.left + iWidth;
 		iNewWindowStartPos = rcBtn.right;
 		if( i == m_iTabCur )
-		{
 			rcBtn.top = rcBtn.bottom - m_pBmpRectDownMiddle->GetHeight();
-		}else
-		{
+		else
 			rcBtn.top = rcBtn.bottom - m_pBmpRectNormalMiddle->GetHeight();
-		}
 		
 		m_vecTab.push_back( rcBtn );
 	
-		//if( i == 0 || i == 1 || i == 2 ) //头3个不能关闭
-		if( i == 0 )
+		if( i == 0 || i == 1 ) //头2个不能关闭
 		{
 			rcClose.right = rcBtn.right - WIDTH_CLOSE_TO_RIGHT;
 			rcClose.left  = rcClose.right;	
@@ -406,7 +396,6 @@ void CTabBarWnd::CalcTabPosition()
 void CTabBarWnd::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	AfxGetMainWindow()->Invalidate();
-
 	//是否落在了close上
 	if( m_iCloseOver != -1 
 		&& m_iCloseOver != 0 )
@@ -463,9 +452,8 @@ void CTabBarWnd::OnMouseMove(UINT nFlags, CPoint point)
 		CPoint pt(0,0);
 		GetCursorPos(&pt);
 		if( m_pToolTip->m_lastPoint != pt )
-		{
 			m_pToolTip->HideTooTips();
-		}
+
 		CString info = m_vecTi[m_iTabOver].strName.c_str();
 		m_pToolTip->ShowToolTips( info,pt);
 	}
@@ -498,4 +486,3 @@ void CTabBarWnd::OnDestroy()
 	m_pToolTip->DestroyWindow();
 	__super::OnDestroy();
 }
-

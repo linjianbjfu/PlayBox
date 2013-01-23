@@ -107,8 +107,8 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::GetHostInfo( DOCHOSTU
 
 	METHOD_PROLOGUE(CCustomControlSite, DocHostUIHandler)
 	//去掉滚动条
-	//pInfo->dwFlags = DOCHOSTUIFLAG_SCROLL_NO | DOCHOSTUIFLAG_NO3DBORDER;
-    //pInfo->dwDoubleClick = DOCHOSTUIDBLCLK_DEFAULT;
+	pInfo->dwFlags = DOCHOSTUIFLAG_SCROLL_NO | DOCHOSTUIFLAG_NO3DBORDER;
+    pInfo->dwDoubleClick = DOCHOSTUIDBLCLK_DEFAULT;
     return S_OK;
 }
 
@@ -234,8 +234,9 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::TranslateAccelerator(
 		}
 
 		//disable back space
-		if(lpMsg->wParam == VK_BACK)
-			return S_OK;
+		//禁用退格键 backspace
+		//if(lpMsg->wParam == VK_BACK)
+		//	return S_OK;
 
     return S_FALSE;
 }

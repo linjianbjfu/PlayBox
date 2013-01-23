@@ -457,8 +457,6 @@ void WebGamePanelWnd::ShowHideEseFull(bool isShow)
 
 BOOL WebGamePanelWnd::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: Add your specialized code here and/or call the base class
-
 	if (pMsg->message == WM_KEYDOWN)
 	{
 		if (pMsg->wParam == VK_ESCAPE)
@@ -467,6 +465,5 @@ BOOL WebGamePanelWnd::PreTranslateMessage(MSG* pMsg)
 			return TRUE;
 		}
 	}
-
 	return __super::PreTranslateMessage(pMsg);
 }

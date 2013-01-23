@@ -94,9 +94,7 @@ void MyWebBrowserWnd::Recycle()
 int MyWebBrowserWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if( __super::OnCreate( lpCreateStruct) == -1 )
-	{
 		return -1;
-	}
 
 	if (m_bShowLoading)
 	{
@@ -113,13 +111,10 @@ int MyWebBrowserWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 BOOL MyWebBrowserWnd::OnEraseBkgnd(CDC* pDC)
 {
-// 	COLORREF clBak = RGB (41, 41, 41);
 	COLORREF clBak = RGB (39, 39, 39);
 	CRect rcClient;
 	GetClientRect (&rcClient);
-
 	pDC->FillSolidRect (&rcClient, clBak);
-	
 	return TRUE;
 }
 
@@ -135,9 +130,7 @@ void MyWebBrowserWnd::Navigate( string strUrl )
 void MyWebBrowserWnd::OnNavigateError(LPCTSTR lpszURL, LPCTSTR lpszFrame, DWORD dwError, BOOL *pbCancel)
 {
 	if( strstr(lpszURL,"http://") != 0 )
-	{
 		ShowErrorPage( );
-	}
 }
 
 void MyWebBrowserWnd::ShowErrorPage()
@@ -203,7 +196,6 @@ void MyWebBrowserWnd::OnTimer(UINT nIDEvent)
 			m_flash.MoveWindow (&rcNull, FALSE);
 			m_flash.ShowWindow(SW_HIDE);
 		}
-
 		Refresh2 (REFRESH_IFEXPIRED);
 	}
 	__super::OnTimer(nIDEvent);
@@ -238,14 +230,10 @@ void MyWebBrowserWnd::OnNewWindow2(LPDISPATCH* ppDisp, BOOL* Cancel)
 			{
 				USES_CONVERSION;
 				url.vt = VT_I2;
-				
 				GetParent()->SendMessage(WM_NEWPAGE, (WPARAM)W2T(url.bstrVal), 0);
-
 				//Navigate(W2T(url.bstrVal));
 				if (SUCCEEDED(hr)) 
-				{  
 					*Cancel=TRUE;
-				}  
 			}  
 		} 
 	}

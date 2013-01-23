@@ -239,8 +239,8 @@ void CTopPanelWnd::OnBnClickedClose()
 	}
 	else
 	{
-		//AfxGetMainWindow()->ShowWindow( SW_HIDE );	//任务栏没图标
-		AfxGetMainWindow()->ShowWindow( SW_MINIMIZE );	//任务栏有图标
+		AfxGetMainWindow()->ShowWindow( SW_HIDE );	//任务栏没图标
+		//AfxGetMainWindow()->ShowWindow( SW_MINIMIZE );	//任务栏有图标
 	}
 }
 void CTopPanelWnd::OnBnClickedLarge()

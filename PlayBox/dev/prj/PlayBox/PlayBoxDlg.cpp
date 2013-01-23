@@ -569,35 +569,15 @@ BOOL CPlayBoxDlg::PreTranslateMessage(MSG* pMsg )
 	WPARAM wParam = pMsg->wParam;
 	LPARAM lParam = pMsg->lParam;
 
-	if( pMsg->message == WM_KEYDOWN )
-	{
-		YL_Log("gameplay.txt", LOG_DEBUG, "CPlayBoxDlg::PreTranslateMessage", "message:%s-hwnd:%d", "WM_KEYDOWN", pMsg->hwnd);
-		if( pMsg->wParam == VK_ESCAPE )
-		{
-			if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
-			{
-				GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
-			}
-		}
-	}
-
-	if( pMsg->message == WM_RBUTTONDOWN )
-	{
-		YL_Log("gameplay.txt", LOG_DEBUG, "CPlayBoxDlg::PreTranslateMessage", "message:%s-hwnd:%d", "右键", pMsg->hwnd);
-	}else
-	if( pMsg->message == WM_SETFOCUS )
-	{
-		YL_Log("gameplay.txt", LOG_DEBUG, "CPlayBoxDlg::PreTranslateMessage", "message:%s-hwnd:%d", "WM_SETFOCUS", pMsg->hwnd);
-	}
-
+	if( pMsg->message == WM_KEYDOWN
+		&& pMsg->wParam == VK_ESCAPE
+		&& GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen())
+		GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
 
 	if(pMsg->message == WM_SYSCOMMAND 
 		&& pMsg->wParam == SC_CLOSE 
 		&& AfxGetUIManager()->UICanExit())
-	{
 		pMsg->hwnd = m_hWnd;
-	}
-
 	return __super::PreTranslateMessage( pMsg );
 }
 
@@ -608,13 +588,11 @@ LRESULT CPlayBoxDlg::OnTrayNotification(WPARAM uID, LPARAM lEvent)
 
 void CPlayBoxDlg::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct)
 {
-	if(lpMeasureItemStruct->CtlType==ODT_MENU && IsMenu((HMENU)lpMeasureItemStruct->itemID))
-	{
-		if( m_ptrayIcon )
-		{
-			m_ptrayIcon->MeasureItem( lpMeasureItemStruct);
-		}			
-	}
+	if(lpMeasureItemStruct->CtlType==ODT_MENU 
+		&& IsMenu((HMENU)lpMeasureItemStruct->itemID)
+		&& m_ptrayIcon)
+		m_ptrayIcon->MeasureItem( lpMeasureItemStruct);
+
 	__super::OnMeasureItem( nIDCtl,lpMeasureItemStruct);
 }
 
@@ -623,19 +601,14 @@ void CPlayBoxDlg::OnTimer(UINT nIDEvent)
 	if(nIDEvent == TIMER_FOR_TRAY)
 	{
 		if(m_ptrayIcon->m_bRClick)
-		{
 			m_ptrayIcon->CreatePopup(m_hWnd);
-		}else
-		{
+		else
 			::SendMessage(m_hWnd, WM_COMMAND, ID_OPEN, 0);
-			TRACE("::SendMessage(m_hWnd, WM_COMMAND, ID_OPEN, 0);\n");
-		}
 		KillTimer(nIDEvent);
 	}
 	if( nIDEvent == TIMER_TRIM_MEM )
-	{
 		::SetProcessWorkingSetSize(::GetCurrentProcess(), -1, -1);
-	}
+
 	if( nIDEvent == TIMER_APP_QUIT )
 	{
 		KillTimer(m_uCloseTimer);
@@ -649,11 +622,9 @@ void CPlayBoxDlg::DrawMoveFrame(CRect rc)
 {
 	CWnd* pParentWnd = GetParent();
 	CWindowDC dc(pParentWnd);
-
 	CBitmap bmp;
 
 	bmp.LoadBitmap(IDB_FRAME_LINE);
-
 	CBrush brush(&bmp);
 	CBrush* pOldBrush = dc.SelectObject(&brush);
 
@@ -687,7 +658,6 @@ void CPlayBoxDlg::DrawMoveFrame(CRect rc)
 
 	dc.SelectObject(pOldBrush);
 }
-
 
 LRESULT CPlayBoxDlg::OnShowTrayIconBalloon(WPARAM wp, LPARAM lp)
 {
@@ -724,30 +694,21 @@ void CPlayBoxDlg::_AdjustDlgSize()
 	iWndNormalWidth		= iWndNormalWidth  < m_nMinCx ? m_nMinCx : iWndNormalWidth;
 
 	if( iXPos < 0 || iXPos > iDesktopWidth )
-	{
 		iXPos = 100;
-	}
 
 	if( iYPos < 0 || iYPos > iDesktopHeight )
-	{
 		iYPos = 100;
-	}
 
 	AfxGetUserConfig()->GetConfigBoolValue( CONF_LAYOUT_MODULE_NAME,CONF_LAYOUT_NORMAL,m_bNormal );	
 	if( m_bNormal)
-	{
 		::MoveWindow( AfxGetMainWindow()->m_hWnd,iXPos,iYPos,iWndNormalWidth,iWndNormalHeight,TRUE);
-	}else
-	{
+	else
 		::MoveWindow( AfxGetMainWindow()->m_hWnd,0,0,iDesktopWidth,iDesktopHeight,TRUE);
-	}
 
 	bool bHold;
 	AfxGetUserConfig()->GetConfigBoolValue( CONF_APP_MODULE_NAME,CONF_APP_MAINWND_HOLD,bHold );
 	if( bHold )
-	{
 		SetWindowPos(&wndTopMost,-1,-1,-1,-1, SWP_NOSIZE|SWP_NOMOVE);
-	}		
 }
 
 
@@ -815,7 +776,6 @@ void CPlayBoxDlg::OnTrayMenuSetting()
 void CPlayBoxDlg::OnTrayMenuOpen()
 {
 	HWND hMainWnd = m_hWnd;
-
 	if(!m_ptrayIcon->m_bDbClicked)//单击
 	{
 		//if( !IsWindowVisible() )//任务栏没图标时使用
@@ -830,8 +790,8 @@ void CPlayBoxDlg::OnTrayMenuOpen()
 			GLOBAL_PANELCHANGEDATA->IPanelChange_Min();
 		}
 		//只要点击右下角托盘，就调出主界面
-		//GLOBAL_PANELCHANGEDATA->IPanelChange_Restore();
-		//::SetForegroundWindow( GetSafeHwnd() );
+		GLOBAL_PANELCHANGEDATA->IPanelChange_Restore();
+		::SetForegroundWindow( GetSafeHwnd() );
 
 		m_bStartupRun = false;
 	}
