@@ -19,13 +19,15 @@
 #include "../../PlayBoxDlg.h"
 #include "../AboutPanel/AboutDlg.h"
 #include "CheckNewVerDlg.h"
+#include "CheckUpdate.h"
 
 static const char* s_STRBUTTONLAYER		= "Normal_Large";
 static const char* s_STRBUTTON_NORMAL	= "Normal";
 static const char* s_STRBUTTON_LARGE	= "Large";
 
 IMPLEMENT_DYNAMIC(CTopPanelWnd, CBasicWnd)
-CTopPanelWnd::CTopPanelWnd():m_bHideMainWindow(FALSE)
+CTopPanelWnd::CTopPanelWnd():m_bHideMainWindow(FALSE),
+m_pDLGCheckUpdate(NULL)
 {
 	m_pShowMenu = NULL;
 	AfxGetUserConfig()->GetConfigBoolValue( CONF_APP_MODULE_NAME,CONF_APP_MAINWND_HOLD,m_bMainWndHold);
@@ -349,7 +351,7 @@ void CTopPanelWnd::OnMenuMainPage()
 void CTopPanelWnd::OnMenuProblemReport()
 {
 	string strValue;
-	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_CONFIG_WEB_GAME_CUSTOM_SERVICE, strValue );
+	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_CONFIG_PROBLEM_REPORT, strValue );
 	if (!strValue.empty())
 	{
 		TAB_ITEM tabItem;
@@ -390,10 +392,22 @@ void CTopPanelWnd::OnLogonOut()
 
 void CTopPanelWnd::OnCheckNewVersion()
 {
-	CCheckNewVerDlg dlg;
+	//CCheckNewVerDlg dlg;
+	/*CCheckUpdate dlg;
 	AfxGetUIManager()->UIAddDialog( (DWORD)&dlg);
 	dlg.DoModal();
-	AfxGetUIManager()->UIRemoveDialog( (DWORD)&dlg);
+	AfxGetUIManager()->UIRemoveDialog( (DWORD)&dlg);*/
+	if( m_pDLGCheckUpdate != NULL)
+	{
+		m_pDLGCheckUpdate->ShowWindow(SW_SHOW);
+	}
+	else
+	{
+		m_pDLGCheckUpdate = new CCheckUpdate;
+		m_pDLGCheckUpdate->Create(IDD_DIALOG_CHKUPDATE,this);
+		SetChildCHKUpdate(m_pDLGCheckUpdate);
+		m_pDLGCheckUpdate->ShowWindow(SW_SHOW);
+	}
 }
 
 void CTopPanelWnd::OnBnClickedHold()
@@ -496,4 +510,36 @@ void CTopPanelWnd::RegisterBossKey(int iKeyValue)
 void CTopPanelWnd::UnRegisterBossKey()
 {
 	RegisterHotKey(ID_HOTKEY_BOSSKEY);
+}
+
+void CTopPanelWnd::SetChildCHKUpdate(CCheckUpdate *pCHKUpdate)
+{
+	if ((pCHKUpdate != NULL) &&(m_pDLGCheckUpdate != NULL))
+	{
+		if(pCHKUpdate == m_pDLGCheckUpdate)
+		{
+			AfxGetUIManager()->UIAddDialog(m_pDLGCheckUpdate);
+			return ;
+		}
+		else
+		{
+			AfxGetUIManager()->UIRemoveDialog(m_pDLGCheckUpdate);
+			m_pDLGCheckUpdate = pCHKUpdate;
+			AfxGetUIManager()->UIAddDialog(m_pDLGCheckUpdate);
+			return ;
+		}
+	}
+	else if((pCHKUpdate == NULL )&&(m_pDLGCheckUpdate != NULL))
+	{
+		AfxGetUIManager()->UIRemoveDialog( (DWORD)m_pDLGCheckUpdate);
+		m_pDLGCheckUpdate = pCHKUpdate;
+		return ;
+	}
+	else if((pCHKUpdate != NULL)&& (m_pDLGCheckUpdate == NULL))
+	{
+		m_pDLGCheckUpdate = pCHKUpdate;
+		AfxGetUIManager()->UIAddDialog(m_pDLGCheckUpdate);
+		return ;
+	}
+	
 }
