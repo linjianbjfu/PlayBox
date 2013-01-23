@@ -351,7 +351,8 @@ void CTopPanelWnd::OnMenuMainPage()
 void CTopPanelWnd::OnMenuProblemReport()
 {
 	string strValue;
-	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_CONFIG_PROBLEM_REPORT, strValue );
+	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME, 
+		CONF_SETTING_CONFIG_WEB_GAME_CUSTOM_SERVICE, strValue );
 	if (!strValue.empty())
 	{
 		TAB_ITEM tabItem;

@@ -2,7 +2,7 @@
 <root  ver="1.0.0" color="11a0e4">
 <rootpanel name="playbox" ori="VERT" sizeX="200" sizeY="592" sizeXMin="790" sizeYMin="580" border_l="1" border_r="1" border_t="1" border_b="1">
 	<pane name="topA" ori="HORZ" greedy="1" absolute_vert="1" relative_horz="1" sizeY="39" second-size="39"> 
-		<paneitem name="logopanel" absolute_horz="1" sizeX="30" sizeXMin="30"/>
+		<paneitem name="logopanel" absolute_horz="1" sizeX="39" sizeXMin="39"/>
 		<paneitem name="tabbarWnd" greedy="1"/>
 		<paneitem name="toppanel" absolute_horz="1" sizeX="120" sizeXMin="120"/>
 	</pane>
@@ -50,7 +50,7 @@
 <wndpanel name="logopanel" mode="normal">
 	<background name="normal" ori="NO_POS" background_color="dae8f4">
 		<paneitem name="TabBarBK" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_bottom="0" />
-		<paneitem name="Logo" type="bmp" start_x_left="4" start_y_top="8" x_delta="26" y_delta="24" />
+		<paneitem name="Logo" type="bmp" start_x_left="7" start_y_top="9" x_delta="26" y_delta="24" />
 	</background>
 </wndpanel>
 

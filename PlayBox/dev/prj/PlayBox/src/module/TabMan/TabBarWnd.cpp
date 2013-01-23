@@ -357,7 +357,7 @@ void CTabBarWnd::CalcTabPosition()
 
 	CRect rcBtn( rc );
 	CRect rcClose;
-	int iStartPos = 9; //最左边空出9个像素
+	int iStartPos = 0; //最左边空出iStartPos个像素
 	int iNewWindowStartPos = iStartPos;
 	//所有btn，包括btn上的关闭按钮
 	for( int i = 0; i < m_vecTi.size(); i++ )
