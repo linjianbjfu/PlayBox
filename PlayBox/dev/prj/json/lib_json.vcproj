@@ -15,6 +15,7 @@
 			OutputDirectory="../../lib_d"
 			IntermediateDirectory="../../lib_d"
 			ConfigurationType="4"
+			UseOfMFC="2"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
@@ -24,7 +25,7 @@
 				StringPooling="TRUE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="TRUE"
 				DisableLanguageExtensions="TRUE"
 				ForceConformanceInForLoopScope="FALSE"

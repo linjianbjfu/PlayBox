@@ -200,9 +200,6 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath=".\CheckUpdate.cpp">
-			</File>
-			<File
 				RelativePath=".\PlayBox.cpp">
 			</File>
 			<File
@@ -240,9 +237,6 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
-			<File
-				RelativePath=".\CheckUpdate.h">
-			</File>
 			<File
 				RelativePath=".\PlayBox.h">
 			</File>
@@ -1770,6 +1764,34 @@
 				</File>
 				<File
 					RelativePath=".\src\module\UserMan\WebWnd.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="CheckUpdate"
+				Filter="">
+				<File
+					RelativePath=".\src\module\CheckUpdate\CheckUpdate.cpp">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="xpDebug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\src\module\CheckUpdate\CheckUpdate.h">
 				</File>
 			</Filter>
 		</Filter>
