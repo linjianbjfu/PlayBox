@@ -93,9 +93,9 @@ string CWebManager::_command_refresh( string& strContent )
 	if( strUrl.length() != 0 )
 	{
 		NotifyWebRefresh( strUrl.c_str() );
-		return "res=ok\n\n";
+		return "res=ok";
 	}	
-	return "res=err\n\n";
+	return "res=err";
 }
 
 string CWebManager::_command_playswfgame(string& strContent)
@@ -127,9 +127,9 @@ string CWebManager::_command_playswfgame(string& strContent)
 		tItem.strName = strName;
 		tItem.strParam = strContent;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
-		return "res=ok\n\n";
+		return "res=ok";
 	}else
-		return "res=err\n\n";
+		return "res=err";
 }
 
 string CWebManager::_command_playwebgame(string& strContent)
@@ -144,9 +144,9 @@ string CWebManager::_command_playwebgame(string& strContent)
 		tItem.strName = strName;
 		tItem.strParam = strContent;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
-		return "res=ok\n\n";
+		return "res=ok";
 	}	
-	return "res=err\n\n";
+	return "res=err";
 }
 
 string CWebManager::_command_openBrowser (string & strContent)
@@ -166,9 +166,9 @@ string CWebManager::_command_login (string & strContent)
 	if (!strName.empty() && !strMD5Pass.empty())
 	{
 		CUserManager::GetInstance()->User_Login(strName.c_str(), strMD5Pass.c_str());
-		return "res=ok\n\n";
+		return "res=ok";
 	}else
-		return "res=err\n\n";
+		return "res=err";
 }
 
 string CWebManager::_command_checkdlstatus (string &strContent)

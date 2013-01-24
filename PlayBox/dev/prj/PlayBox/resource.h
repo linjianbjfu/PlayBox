@@ -5,9 +5,7 @@
 #define IDR_RT_MANIFEST1                1
 #define IDC_BTN_CLSOE                   2
 #define IDR_MENU_TRAY                   3
-#define MSG_SHOW_TRAYICONBALLOON        4
 #define IDD_PLAYBOX_DIALOG              5
-#define MSG_DELETE_TRAY                 6
 #define IDC_TOPPANEL_HOLD               7
 #define ID_MEMU_SETTING                 8
 #define ID_MEMU_MAIN_PAGE               9
@@ -256,6 +254,10 @@
 #define ID_BTN_LOGIN_CANCEL				335
 #define IDC_EDIT_LOGIN_USER_NAME		336
 #define IDC_EDIT_LOGIN_PASS_WORD		337
+
+//Message
+#define MSG_SHOW_TRAYICONBALLOON        WM_USER+1
+#define MSG_DELETE_TRAY                 WM_USER+2
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
