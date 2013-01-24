@@ -27,10 +27,12 @@ CDlgLogin::CDlgLogin(CWnd* pParent /*=NULL*/)
 		DEFAULT_PITCH | FF_SWISS,  // nPitchAndFamily
 		"ËÎÌו");
 	m_bkg= ::AfxGetUIManager()->UIGetSkinMgr()->GetDibBmp("LoginBK");
+	AfxGetMessageManager()->AttachMessage(ID_MESSAGE_USER, (IUserMsgObserver*)this);
 }
 
 CDlgLogin::~CDlgLogin()
 {
+	AfxGetMessageManager()->DetachMessage(ID_MESSAGE_USER, (IUserMsgObserver*)this);
 }
 
 BEGIN_MESSAGE_MAP(CDlgLogin, CDialog)
@@ -46,12 +48,20 @@ BEGIN_MESSAGE_MAP(CDlgLogin, CDialog)
 	ON_BN_CLICKED(ID_BTN_LOGIN_CANCEL,OnCancelClicked)
 END_MESSAGE_MAP()
 
-void CDlgLogin::InitEditControl(CEdit* pEdit, UINT nID)
+void CDlgLogin::InitEditControl(CEditGlow* pEdit, 
+								LPCSTR lpszPicPath,
+								LPCSTR lpszGlowPicPath)
 {
-	pEdit->Create(WS_CHILD|WS_VISIBLE|WS_TABSTOP,rectNULL,this,nID);
-	pEdit->SetFont(&m_editFont);
-	pEdit->SetMargins(3, 0);
-	pEdit->ModifyStyle(ES_MULTILINE, 0);
+	//pEdit->SetFont(&m_editFont);
+	//pEdit->SetMargins(3, 0);
+	ISkinMgr* pSkinMgr = AfxGetUIManager()->UIGetSkinMgr();
+	pEdit->SetPngBorder(std::string(pSkinMgr->GetDibBmp(lpszPicPath)->GetPath()),
+		std::string(pSkinMgr->GetDibBmp(lpszGlowPicPath)->GetPath()));
+
+	pEdit->SetTextColor(pSkinMgr->GetColor("SearchInputEditText"));
+	pEdit->SetBkColor(pSkinMgr->GetColor("SearchInputEditBK"));
+	pEdit->LimitText(128);
+	pEdit->m_bDrawBorderSelf = true;
 }
 
 #define CREATE_BTN(btn, nID) \
@@ -68,8 +78,10 @@ BOOL CDlgLogin::OnInitDialog()
 	AfxGetUserConfig()->GetConfigBoolValue(CONF_SETTING_MODULE_NAME,CONF_SETTING_REMEMBER_PASSWORD,m_bRememberPassChecked);
 	AfxGetUserConfig()->GetConfigBoolValue(CONF_SETTING_MODULE_NAME,CONF_SETTING_AUTO_LOGIN,m_bAutoLoginChecked);
 	
-	InitEditControl(&m_editUserName, IDC_EDIT_LOGIN_USER_NAME);
-	InitEditControl(&m_editPassWord, IDC_EDIT_LOGIN_PASS_WORD);
+	m_editUserName.Create(WS_CHILD|WS_VISIBLE|WS_TABSTOP|ES_PASSWORD,rectNULL,this,IDC_EDIT_LOGIN_USER_NAME);
+	m_editPassWord.Create(WS_CHILD|WS_VISIBLE|WS_TABSTOP,rectNULL,this,IDC_EDIT_LOGIN_PASS_WORD);
+	InitEditControl(&m_editUserName, "LoginEditBorderNormal", "LoginEditBorderGlow");
+	InitEditControl(&m_editPassWord, "LoginEditBorderNormal", "LoginEditBorderGlow");
 
 	CREATE_BTN(m_btnClose, ID_BTN_LOGIN_CLOSE);
 	CREATE_BTN(m_btnLoginReg, ID_BTN_LOGIN_REG);
@@ -111,6 +123,8 @@ void CDlgLogin::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
 	AfxGetUIManager()->UIGetLayoutMgr()->PaintBkGround( m_hWnd ,&dc,false ) ;	
+	m_editUserName.ShowSearchEditFrame(&dc,true);
+	m_editPassWord.ShowSearchEditFrame(&dc,true);
 }
 
 void CDlgLogin::OnCloseClicked()
@@ -180,4 +194,24 @@ void CDlgLogin::OnCancelClicked()
 {
 	CUserManager::GetInstance()->User_CancelLog();
 	CDialog::OnCancel();
+}
+
+void CDlgLogin::UserMsg_Login()
+{
+	PostMessage(WM_CLOSE, 0, 0);
+}
+
+void CDlgLogin::UserMsg_LogOut()
+{
+	PostMessage(WM_CLOSE, 0, 0);
+}
+
+void CDlgLogin::UserMsg_LogFaild()
+{
+	//show error reason
+}
+
+void CDlgLogin::UserMsg_BeginLogin()
+{
+	//clear error reason text
 }

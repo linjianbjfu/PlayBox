@@ -2,20 +2,20 @@
 #include "afxwin.h"
 #include "resource.h"
 #include "../../gui/CommonControl/xSkinButton.h"
+#include "EditGlow.h"
+#include "IUserMsgObserver.h"
 
 class CDibBitmap;
 
-class CDlgLogin : public CDialog
+class CDlgLogin : public CDialog, public IUserMsgObserver
 {
 	DECLARE_DYNAMIC(CDlgLogin)
-
 public:
 	CDlgLogin(CWnd* pParent = NULL);   // 标准构造函数
 	virtual ~CDlgLogin();
 
 // 对话框数据
 	enum { IDD = IDD_DLG_LOGIN };
-
 protected:
 	BOOL OnInitDialog();
 	afx_msg void OnPaint();
@@ -23,8 +23,8 @@ protected:
 private:
 	CFont m_editFont;
 	CxSkinButton m_btnClose;
-	CEdit m_editUserName;
-	CEdit m_editPassWord;
+	CEditGlow m_editUserName;
+	CEditGlow m_editPassWord;
 	CxSkinButton m_btnLoginReg;
 	CxSkinButton m_btnForgetPass;
 	CxSkinButton m_btnRememberPassCheck;
@@ -40,14 +40,17 @@ private:
 	afx_msg void OnCloseClicked();
 	afx_msg void OnRegClicked();
 	afx_msg void OnForgetPassClicked();
-
 	afx_msg void OnRememberPassCheckClicked();
 	afx_msg void OnRememberPassUnCheckClicked();
 	afx_msg void OnAutoLoginCheckClicked();
 	afx_msg void OnAutoLoginUnCheckClicked();
 	afx_msg void OnLoginClicked();
 	afx_msg void OnCancelClicked();
-private:
-	void InitEditControl(CEdit* pEdit, UINT nID);
 	void ValidateCheckBox();
+	void InitEditControl(CEditGlow* pEdit, 
+		LPCSTR lpszPicPath, LPCSTR lpszGlowPicPath);
+	void UserMsg_Login();
+	void UserMsg_LogOut();
+	void UserMsg_LogFaild();
+	void UserMsg_BeginLogin();
 };

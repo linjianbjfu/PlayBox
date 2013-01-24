@@ -31,6 +31,9 @@ public:
 	CEditGlow();
 	virtual ~CEditGlow();
 	void SetTextSize( UINT textSize);
+	void SetTextColor(COLORREF col);
+	void SetBkColor(COLORREF col);
+
 	CString	m_strTipString;
 	BOOL	m_bDrawBorderSelf;
 	BOOL	m_bFocus;

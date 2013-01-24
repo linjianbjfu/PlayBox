@@ -185,7 +185,7 @@ DWORD CUserManager::ThreadLogin(void* pPara)
 	{
 		std::string strContent = std::string((char*)pbyIndex, size);
 		//½âÎöjson
-		strContent = YL_FileInfo::GetFileContent("D:\\temp.json");
+		//strContent = YL_FileInfo::GetFileContent("D:\\temp.json");
 		bool bLoginSuc = false;
 		ParseJson(strContent, bLoginSuc);
 		if (bLoginSuc)
