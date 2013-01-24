@@ -200,15 +200,17 @@ BOOL CFavUrlMenuDlg::OnInitDialog()
 			nTextWidthMax = size.cx;
 		}
 	}
-	nTextWidthMax += 20;
+	nTextWidthMax =  (nTextWidthMax <90 ? nTextWidthMax+100: nTextWidthMax+30);
 	size.cx = nTextWidthMax;
 
 	m_rctFirsItem = CRect(CPoint(m_nBorderWidth, m_nBorderWidth), CSize(size.cx+m_nSpacingHeigth*2, size.cy+m_nSpacingHeigth));
+	m_rctFirsItem.top += 6;
+	m_rctFirsItem.bottom +=10;
 
 
 	CRect rctWnd(0, 0, 0, 0);
 	rctWnd.right = m_nBorderWidth*2 + m_rctFirsItem.Width();
-	rctWnd.bottom= m_nBorderWidth*2 + m_rctFirsItem.Height()*m_arrItems.GetSize();
+	rctWnd.bottom= m_nBorderWidth*2 + m_rctFirsItem.Height()*m_arrItems.GetSize() ;
 
 	if (m_nBorderWidth % 2)
 	{
@@ -252,8 +254,14 @@ void CFavUrlMenuDlg::OnPaint()
 		dcMem.DrawText(item.strName, rctText, DT_LEFT|DT_VCENTER|DT_SINGLELINE);
 
 		CRect rctPaint = m_rctFirsItem;
+		
 		rctPaint.top += m_rctFirsItem.Height()*m_nCurSel;
 		rctPaint.bottom += m_rctFirsItem.Height()*m_nCurSel;
+		if(m_nCurSel != 1)
+		{
+			rctPaint.top += rctPaint.Height()/5;
+			rctPaint.top -= rctPaint.Height();
+		}
 
 		dc.BitBlt(rctPaint.left, rctPaint.top, rctPaint.Width(), rctPaint.Height(), &dcMem, 0, 0, SRCCOPY);
 
@@ -332,7 +340,7 @@ BOOL CFavUrlMenuDlg::OnEraseBkgnd(CDC* pDC)
 	pDC->SelectObject(m_font);
 	pDC->SetTextColor(m_rgbText);
 	pDC->SetBkMode(TRANSPARENT);
-	CRect rctItem = m_rctFirsItem;
+	CRect rctItem( m_rctFirsItem);
 	rctItem.left += m_nSpacingHeigth;
 	for (INT_PTR i=0; i<m_arrItems.GetSize(); i++)
 	{
@@ -373,8 +381,10 @@ BOOL CFavUrlMenuDlg::OnEraseBkgnd(CDC* pDC)
 			pen.CreatePen(PS_SOLID, 1, m_rgbBorder);
 			CPen *pOld = pDC->SelectObject(&pen);
 
-			int y = rctItem.top + rctItem.Height()/2;
+			int y = rctItem.top + rctItem.Height()/5;
 			int x = rctItem.left;
+			rctItem.top += rctItem.Height()/5;
+			rctItem.top -= rctItem.Height();
 			LineAtoB(pDC, CPoint(x,y), CPoint(x+rctItem.Width()-m_nSpacingHeigth, y));
 
 			pDC->SelectObject(pOld);

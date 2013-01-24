@@ -19,7 +19,7 @@
 #include "../../PlayBoxDlg.h"
 #include "../AboutPanel/AboutDlg.h"
 #include "CheckNewVerDlg.h"
-#include "CheckUpdate.h"
+#include "src/module/CheckUpdate/CheckUpdate.h"
 
 static const char* s_STRBUTTONLAYER		= "Normal_Large";
 static const char* s_STRBUTTON_NORMAL	= "Normal";

@@ -198,6 +198,12 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
 END
 
+IDD_DIALOG_CHKUPDATE DIALOGEX 0, 0, 186, 93
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -249,8 +255,8 @@ BEGIN
         RIGHTMARGIN, 186
         BOTTOMMARGIN, 90
     END
-	
-	IDD_DLG_LOGIN, DIALOG
+
+    IDD_DLG_LOGIN, DIALOG
     BEGIN
         RIGHTMARGIN, 186
         BOTTOMMARGIN, 90
@@ -278,6 +284,14 @@ BEGIN
     END
 
     IDD_DLG_FAV_URL, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 86
+    END
+
+    IDD_DIALOG_CHKUPDATE, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 179
