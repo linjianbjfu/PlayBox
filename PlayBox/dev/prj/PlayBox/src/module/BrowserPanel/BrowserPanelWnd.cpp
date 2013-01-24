@@ -155,14 +155,17 @@ BOOL BrowserPanelWnd::PreTranslateMessage(MSG* pMsg)
 		}
 		break;
 	}
+
 	return CBasicWnd::PreTranslateMessage(pMsg);
 }
 
 LRESULT BrowserPanelWnd::OnPageChanging(WPARAM wParam, LPARAM lParam)
 {
+	// TRACE(TEXT("\r\n%s\r\n"), (LPCTSTR)wParam);
 	if (wParam != 0)
+	{
 		m_pEditAddress->SetWindowText((LPCTSTR)wParam);
-
+	}
 	if (lParam != 0)
 	{
 		TAB_ITEM iItem;
@@ -242,6 +245,7 @@ int BrowserPanelWnd::AddFavUrlToMenu( int &nStartItemID, int nStartPos, const ch
 				strFileName.ReleaseBuffer();
 				curCnt++;
 			}
+
 		} while (FindNextFile(hFile, &findData));
 	}
 	FindClose(hFile);
@@ -265,6 +269,7 @@ int BrowserPanelWnd::AddFavUrlToMenu( int &nStartItemID, int nStartPos, const ch
 		}
 		delete pSubMenu;
 	}
+
 	return curCnt;
 }
 
@@ -302,6 +307,7 @@ void BrowserPanelWnd::ShowFavUrlMenu()
 		DEFAULT_PITCH | FF_SWISS,  // nPitchAndFamily
 		"宋体");
 	font.GetLogFont(&logfont);
+
 	m_pFavUrlDlg->SetUIParam(logfont, BORDER_WIDTH_DEFAULT, SPACING_HEIGHT_DEFAULT, rgbText, rgbBackGnd, rgbCursel, rgbBorder);
 
 	CRect rctBtnFav;
@@ -322,10 +328,11 @@ LRESULT BrowserPanelWnd::OnClickeFavMenuItem(WPARAM wParam, LPARAM lParam)
 			GLOBAL_TABBARDATA->ITabBar_GetCurItem(item);	// 获取tab页标题
 
 			CString strFile = (char*)lParam;
-			if (strFile.Right(1) != "\\")
+			if (strFile.Right(1) != "\\") {
 				strFile += "\\";
-
+			}
 			strFile = strFile + item.strTitle.c_str() + ".url";
+
 			// 写入快捷方式到收藏夹
 			::WritePrivateProfileString("InternetShortcut", "URL",
 				strURL.GetBuffer(0),
@@ -346,7 +353,10 @@ LRESULT BrowserPanelWnd::OnClickeFavMenuItem(WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	case ITEM_TYPE_BTN_REMOE:
-		DeleteFile((char*)lParam);// 删除快捷方式
+		{
+			// 删除快捷方式
+			DeleteFile((char*)lParam);
+		}
 		break;
 	}
 	return 0;
