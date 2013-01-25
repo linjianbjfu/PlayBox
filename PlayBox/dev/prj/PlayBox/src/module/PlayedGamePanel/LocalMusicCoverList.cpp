@@ -450,7 +450,6 @@ void CLocalMusicCoverList::UpdateList()
  		//m_dcTracker.FillSolidRect(0,0,m_rcRealRect.Width(),m_rcRealRect.Height(),RGB(180,180,180));
 		m_dcTracker.FillSolidRect(0,0,m_rect.Width(),m_rect.Height(),RGB(180,180,180));
  	}
-
 	SCROLLINFO si;
 	si.cbSize	= sizeof(si);
 	si.fMask	= SIF_PAGE | SIF_POS | SIF_RANGE | SIF_DISABLENOSCROLL;

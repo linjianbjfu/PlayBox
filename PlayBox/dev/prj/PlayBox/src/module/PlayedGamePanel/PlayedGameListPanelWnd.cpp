@@ -75,12 +75,21 @@ BOOL PlayedGameListPanelWnd::OnCommand(WPARAM wParam, LPARAM lParam)
 					break;
 			}
 			std::vector<int> vAlbum;
+			int iRmLast = 0,iCount = 0;
 			vAlbum = GetSelectItem();
 			for (int i=0;i<vAlbum.size();i++)
 			{
 				string strGID = m_DataMgr.m_vItem[vAlbum[i]].strGID;
 				GLOBAL_GAME->IGameData_DelGame(strGID, m_DataMgr.m_vItem[vAlbum[i]].nGameType);
-			}
+			}	
+			for (int i=0;i<vAlbum.size();i++)
+			{
+				vector<LMC_ItemInfo>::iterator iterBegin = m_DataMgr.m_vItem.begin();
+				iRmLast < vAlbum[i] ? m_DataMgr.m_vItem.erase(iterBegin + vAlbum[i] -iCount) : \
+					m_DataMgr.m_vItem.erase(iterBegin + vAlbum[i] +iCount);
+				iCount++;
+				iRmLast = vAlbum[i];
+			}	
 			UpdateList();
 			OnMemoryDraw();
 		}

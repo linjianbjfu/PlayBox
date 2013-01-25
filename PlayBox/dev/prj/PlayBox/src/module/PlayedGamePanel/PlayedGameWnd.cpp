@@ -107,6 +107,7 @@ void PlayedGameWnd::OnDestroy()
 void PlayedGameWnd::OnClickedTimerOrder()
 {
 	GameList lgl;
+	RefreshData();
 	copy(m_gameList.begin(), m_gameList.end(), back_inserter(lgl));
 	m_gameList.clear();
 	GameList::iterator it = lgl.begin();
@@ -125,6 +126,7 @@ void PlayedGameWnd::OnClickedTimerOrder()
 	lgl.clear();
 	m_bSortTimeByAsc = !m_bSortTimeByAsc;  // 默认是升序排序 假如多次点击排序的时候需要反序 则取消注释
 	m_pWndGameListWnd->ReSetGameList(m_gameList);
+	
 }
 
 void PlayedGameWnd::RefreshData()
