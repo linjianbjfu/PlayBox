@@ -335,6 +335,12 @@ void CTabBarWnd::ITabBarOb_OpenTabError( int iErrorCode )
 		AfxGetMainWindow(),"",5000);
 }
 
+void CTabBarWnd::ITabBarOb_TabItemDataChanged(TAB_ITEM & item)
+{
+	CalcTabPosition();
+	Invalidate();
+}
+
 void CTabBarWnd::CalcTabPosition()
 {
 	m_iTabCur = GLOBAL_TABBARDATA->ITabBar_GetCurPos();
@@ -420,9 +426,8 @@ void CTabBarWnd::OnLButtonDown(UINT nFlags, CPoint point)
 	if ( m_bOverNewWindow )
 	{
 		TAB_ITEM tItem;
-		tItem.eumType = TAB_BROWSER;
-		tItem.strName = "ÐÂ¿ª´°¿Ú";
-		tItem.strParam = "";
+		tItem.enumType = TAB_BROWSER;
+		tItem.strTitle = TAB_BROWSER_DEFAULT_TITLE;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
 	}
 	__super::OnLButtonDown(nFlags, point);
@@ -454,7 +459,7 @@ void CTabBarWnd::OnMouseMove(UINT nFlags, CPoint point)
 		if( m_pToolTip->m_lastPoint != pt )
 			m_pToolTip->HideTooTips();
 
-		CString info = m_vecTi[m_iTabOver].strName.c_str();
+		CString info = m_vecTi[m_iTabOver].strTitle.c_str();
 		m_pToolTip->ShowToolTips( info,pt);
 	}
 	__super::OnMouseMove(nFlags, point);

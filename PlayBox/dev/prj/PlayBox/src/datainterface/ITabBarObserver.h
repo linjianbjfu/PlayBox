@@ -9,4 +9,5 @@ public:
 	virtual void ITabBarOb_OpenExistTab(TAB_ITEM & item)=0;
 	virtual void ITabBarOb_DelTab(TAB_ITEM & item)=0;
 	virtual void ITabBarOb_OpenTabError(int iErrorCode)=0;
+	virtual void ITabBarOb_TabItemDataChanged(TAB_ITEM & item)=0;
 };

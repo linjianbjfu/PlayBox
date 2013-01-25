@@ -60,7 +60,7 @@ void CTabPageControl::ITabBarOb_CreateNewTab(TAB_ITEM & item)
 	m_pWndParent->GetClientRect(&rc);
 
 	CWnd* pWndTmp = NULL;
-	if( item.eumType == TAB_HOME )
+	if( item.enumType == TAB_HOME )
 	{
 		MyWebBrowserWnd* pWnd = TabWndFactory::GetInstance()->CreateWndGameCenterPanel();
 		std::string strGameCenterMainPage;
@@ -69,19 +69,19 @@ void CTabPageControl::ITabBarOb_CreateNewTab(TAB_ITEM & item)
 		pWnd->Navigate(strGameCenterMainPage);
 		pWndTmp = pWnd;
 	}else
-	if( item.eumType == TAB_FLASHGAME )
+	if( item.enumType == TAB_FLASHGAME )
 	{
 		GamePanelWnd *pWnd = TabWndFactory::GetInstance()->CreateWndGamePanel();
 		pWnd->SetTabItem( item );
 		pWndTmp = pWnd;
 	}else
-	if( item.eumType == TAB_WEBGAME )
+	if( item.enumType == TAB_WEBGAME )
 	{
 		WebGamePanelWnd *pWnd = TabWndFactory::GetInstance()->CreateWndWebGamePanel();
 		pWnd->SetTabItem( item );
 		pWndTmp = pWnd;
 	}else
-	if( item.eumType == TAB_BROWSER )
+	if( item.enumType == TAB_BROWSER )
 	{
 		BrowserPanelWnd *pWnd = TabWndFactory::GetInstance()->CreateWndBrowserPanel();
 		string strUrl = CWebManager::GetInstance()->GetValue( item.strParam, "url" );
@@ -91,7 +91,7 @@ void CTabPageControl::ITabBarOb_CreateNewTab(TAB_ITEM & item)
 		}
 		pWnd->Navigate( strUrl );
 		pWndTmp = pWnd;
-	}else if( item.eumType == TAB_PLAYED_GAME )
+	}else if( item.enumType == TAB_PLAYED_GAME )
 	{
 		PlayedGameWnd* pWnd = TabWndFactory::GetInstance()->CreateWndPlayedGame();
 		pWndTmp = pWnd;
@@ -124,7 +124,7 @@ static string GetValue( string& strContent, string strKey )
 	CString str(strContent.c_str());
 	CString strOneItem;
 	int curPos = 0;
-	strOneItem= str.Tokenize("\n",curPos);
+	strOneItem= str.Tokenize(BOX_DELIMITERS,curPos);
 	while(strOneItem != "")
 	{		
 		CString strLeft,strRight;
@@ -134,7 +134,7 @@ static string GetValue( string& strContent, string strKey )
 			strRes = strRight;
 			break;
 		}
-		strOneItem = str.Tokenize("\n", curPos);
+		strOneItem = str.Tokenize(BOX_DELIMITERS, curPos);
 	};
 	return strRes;
 }
@@ -143,12 +143,7 @@ void CTabPageControl::ITabBarOb_OpenExistTab(TAB_ITEM & item)
 {
 	for( vector<ONE_TAB>::iterator it = m_mapTab.begin();
 		it != m_mapTab.end(); it++ )
-	{
-		bool bShow = (it->first.strName == item.strName && 
-			it->first.eumType == item.eumType && 
-			it->first.strParam == item.strParam);
-		it->second->ShowWindow( bShow ? SW_SHOW : SW_HIDE );
-	}
+		it->second->ShowWindow( it->first.id == item.id ? SW_SHOW : SW_HIDE );
 }
 
 void CTabPageControl::ITabBarOb_DelTab(TAB_ITEM & item)
@@ -156,12 +151,8 @@ void CTabPageControl::ITabBarOb_DelTab(TAB_ITEM & item)
 	vector<ONE_TAB>::iterator it = m_mapTab.begin();
 	for( ; it != m_mapTab.end(); it++ )
 	{
-		if( it->first.strName == item.strName
-			&& it->first.eumType == item.eumType
-			&& it->first.strParam == item.strParam)
-		{
+		if( it->first.id == item.id )
 			break;
-		}
 	}
 	if( it != m_mapTab.end() )
 	{
@@ -171,12 +162,14 @@ void CTabPageControl::ITabBarOb_DelTab(TAB_ITEM & item)
 	//显示上一个tab内容
 	TAB_ITEM ti;
 	GLOBAL_TABBARDATA->ITabBar_GetCurItem( ti );
-	{
 		ITabBarOb_OpenExistTab( ti );
-	}
 }
 
 void CTabPageControl::ITabBarOb_OpenTabError(int iErrorCode)
+{
+}
+
+void CTabPageControl::ITabBarOb_TabItemDataChanged(TAB_ITEM & item)
 {
 }
 
@@ -195,27 +188,21 @@ void CTabPageControl::ResizePage()
 		it != m_mapTab.end(); it++ )
 	{
 		it->second->MoveWindow (rc, FALSE);
-		bool bShow = (it->first.eumType == ti.eumType
-			&& it->first.strName == ti.strName
-			&& it->first.strParam == ti.strParam);
-		it->second->ShowWindow(bShow ? SW_SHOW : SW_HIDE);
+		it->second->ShowWindow(it->first.id == ti.id ? SW_SHOW : SW_HIDE);
 	}
 }
 
 void CTabPageControl::OpenHomePage()
 {
+	//open played_game and gamecenter
 	TAB_ITEM ti;
-	ti.strName = "我的游戏";
-	ti.strParam = "";
-	ti.eumType  = TAB_PLAYED_GAME;
+	ti.strTitle = TAB_PLAYED_GAME_TITLE;
+	ti.enumType  = TAB_PLAYED_GAME;
 	GLOBAL_TABBARDATA->ITabBar_ChangeTab( ti );
 
-	{
-		TAB_ITEM ti;
-		ti.strName = "游戏大厅";
-		ti.eumType  = TAB_HOME;
-		GLOBAL_TABBARDATA->ITabBar_ChangeTab( ti );
-	}
+	ti.strTitle = TAB_GAMECENTER_TITLE;
+	ti.enumType  = TAB_HOME;
+	GLOBAL_TABBARDATA->ITabBar_ChangeTab( ti );
 }
 
 void CTabPageControl::CallJS (LPVOID lpVoid)

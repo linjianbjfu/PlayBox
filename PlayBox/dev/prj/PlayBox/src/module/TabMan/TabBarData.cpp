@@ -5,6 +5,8 @@
 CTabBarData*	CTabBarData::m_pTabBarData = NULL;
 #define MAX_TAB_COUNT	10
 
+CTabBarData::CTabBarData() : m_idCounter(0) {}
+
 IData* CTabBarData::GetInstance()
 {
 	if(m_pTabBarData == NULL)
@@ -67,6 +69,13 @@ void CTabBarData::NotifyOpenTabError(int iErrorCode)
 	NOTIFY_TABBAR_OB_END()
 }
 
+void CTabBarData::NotifyTabItemDataChanged(TAB_ITEM &item)
+{
+	NOTIFY_TABBAR_OB_BEGIN()
+		pOb->ITabBarOb_TabItemDataChanged(item);
+	NOTIFY_TABBAR_OB_END()
+}
+
 //网页始终在第一个tab打开
 //当新建一个tab时，使用NotifyCreateTab，第一个tab打开一个新的网页，也属于新建
 //当切换一个tab时，使用NotifyOpenExistTab
@@ -75,16 +84,12 @@ void CTabBarData::ITabBar_ChangeTab(TAB_ITEM &item)
 	//如果当前是全屏模式，就退出全屏
 	if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
 		GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
-	// 如果没有指定title,让title等于name
-	if (item.strTitle.empty())
-		item.strTitle = item.strName;
-	
+
+	//item有id是打开已有tab，否则新建
 	vector<TAB_ITEM>::iterator it = m_vecItem.begin();
 	for( ; it != m_vecItem.end(); it++ )
 	{
-		if( it->eumType == item.eumType
-			&& it->strName == item.strName
-			&& it->strParam == item.strParam)
+		if(it->id == item.id)
 			break;
 	}
 	if( it != m_vecItem.end() )
@@ -99,6 +104,8 @@ void CTabBarData::ITabBar_ChangeTab(TAB_ITEM &item)
 			NotifyOpenTabError( 1 );
 		else
 		{
+			//新建id
+			item.id = m_idCounter++;
 			m_vecItem.push_back(item);
 			m_iPos = int(m_vecItem.size()-1);
 			NotifyCreateTab(item);
@@ -112,9 +119,7 @@ void CTabBarData::ITabBar_DeleteTab(TAB_ITEM &item)
 	vector<TAB_ITEM>::iterator it = m_vecItem.begin();
 	for( ; it != m_vecItem.end(); it++ )
 	{
-		if( it->eumType == item.eumType
-			&& it->strName == item.strName
-			&& it->strParam == item.strParam)
+		if(it->id == item.id)
 			break;
 	}
 	if( it != m_vecItem.end() )
@@ -146,4 +151,17 @@ void CTabBarData::ITabBar_GetTabBarData( vector<TAB_ITEM>& vec )
 {
 	vec.clear();
 	copy(m_vecItem.begin(), m_vecItem.end(), back_inserter(vec));
+}
+
+void CTabBarData::ITabBar_SetBarData(TAB_ITEM &tabItem)
+{
+	TAB_ITEM itemexisted;
+	vector<TAB_ITEM>::iterator it = m_vecItem.begin();
+	for( ; it != m_vecItem.end(); it++ )
+	{
+		if(it->id == tabItem.id)
+			break;
+	}
+	if( it != m_vecItem.end() )
+		it->strTitle = tabItem.strTitle;
 }
