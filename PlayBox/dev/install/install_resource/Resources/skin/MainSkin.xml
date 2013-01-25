@@ -110,7 +110,7 @@
 	<controlpanel name="normal" ori="NO_POS">
 		<paneitem name="GameRePlay" type="button" tooltip="重玩"     bmp="GameRePlay" start_x_left="20"   start_y_top="8" x_delta="70" y_delta="25" />
 		<paneitem name="ToFull"     type="button" tooltip="进入全屏" bmp="ToFull"     start_x_left="94"   start_y_top="8" x_delta="70" y_delta="25" />
-		<paneitem name="ExitFull"   type="button" tooltip="退出全屏" bmp="ExitFull"   start_x_left="94"   start_y_top="8" x_delta="70" y_delta="25" />
+		<paneitem name="ExitFull"   type="button" tooltip="退出全屏" bmp="ToSmall"   start_x_left="94"   start_y_top="8" x_delta="70" y_delta="25" />
 		<paneitem name="Mute"       type="button" tooltip="关闭声音" bmp="Mute"       start_x_left="168"  start_y_top="8" x_delta="70" y_delta="25" />
 		<paneitem name="UnMute"     type="button" tooltip="打开声音" bmp="UnMute"     start_x_left="168"  start_y_top="8" x_delta="70" y_delta="25" />
 		<paneitem name="Pause"      type="button" tooltip="暂停"     bmp="Pause"      start_x_left="242"  start_y_top="8" x_delta="70" y_delta="25" />
