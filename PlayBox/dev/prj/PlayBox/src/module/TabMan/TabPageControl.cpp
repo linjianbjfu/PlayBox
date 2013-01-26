@@ -200,9 +200,10 @@ void CTabPageControl::OpenHomePage()
 	ti.enumType  = TAB_PLAYED_GAME;
 	GLOBAL_TABBARDATA->ITabBar_ChangeTab( ti );
 
-	ti.strTitle = TAB_GAMECENTER_TITLE;
-	ti.enumType  = TAB_HOME;
-	GLOBAL_TABBARDATA->ITabBar_ChangeTab( ti );
+	TAB_ITEM tiGameCenter;
+	tiGameCenter.strTitle = TAB_GAMECENTER_TITLE;
+	tiGameCenter.enumType  = TAB_HOME;
+	GLOBAL_TABBARDATA->ITabBar_ChangeTab( tiGameCenter );
 }
 
 void CTabPageControl::CallJS (LPVOID lpVoid)
