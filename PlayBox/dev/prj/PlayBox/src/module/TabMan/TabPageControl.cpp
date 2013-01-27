@@ -84,12 +84,7 @@ void CTabPageControl::ITabBarOb_CreateNewTab(TAB_ITEM & item)
 	if( item.enumType == TAB_BROWSER )
 	{
 		BrowserPanelWnd *pWnd = TabWndFactory::GetInstance()->CreateWndBrowserPanel();
-		string strUrl = CWebManager::GetInstance()->GetValue( item.strParam, "url" );
-		if (strUrl.empty())
-		{
-			strUrl = "about:blank";
-		}
-		pWnd->Navigate( strUrl );
+		pWnd->SetTabItem(item);
 		pWndTmp = pWnd;
 	}else if( item.enumType == TAB_PLAYED_GAME )
 	{

@@ -21,7 +21,8 @@ struct TAB_ITEM
 	TAB_TYPE	enumType; 
 	string		strParam; 
 	string		strTitle; //tabbarœ‘ æµƒtitle
-	TAB_ITEM() : id(-1), enumType(TAB_UNKNOWN){}
+	int			iLPDISPATCHOnlyForBrowser;
+	TAB_ITEM() : id(-1), enumType(TAB_UNKNOWN), iLPDISPATCHOnlyForBrowser(0){}
 };
 
 struct WEB_GAME

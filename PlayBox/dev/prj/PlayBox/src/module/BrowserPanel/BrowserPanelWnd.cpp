@@ -7,7 +7,6 @@
 #include "../../gui/CommonControl/xSkinButton.h"
 #include "../../gui/CommonControl/xStaticText.h"
 #include "../../Gui/CommonControl/EditEx.h"
-#include ".\browserpanelwnd.h"
 #include "src/GUI/CommonControl/LocalSearchEdit.h"
 #include "src/GUI/util/ShowMenu.h"
 #include "src/module/BrowserPanel/FavUrlMenuDlg.h"
@@ -122,16 +121,22 @@ void BrowserPanelWnd::OnClickedFav()
 	ShowFavUrlMenu();
 }
 
-void BrowserPanelWnd::Navigate(string strUrl)
-{
-	if (strUrl.empty())
-		strUrl = "about:blank";
-	m_pWndBrowser->Navigate(strUrl);
-}
-
 void BrowserPanelWnd::SetTabItem(TAB_ITEM& ti)
 {
 	m_tabItem = ti;
+	if (m_tabItem.iLPDISPATCHOnlyForBrowser != 0)
+	{
+		m_pWndBrowser->SetRegisterAsBrowser(TRUE);
+		LPDISPATCH* ppDisp = reinterpret_cast<LPDISPATCH*>(m_tabItem.iLPDISPATCHOnlyForBrowser);
+		*ppDisp = m_pWndBrowser->GetApplication();
+	}
+	else
+	{
+		string strUrl = CWebManager::GetInstance()->GetValue( m_tabItem.strParam, "url" );
+		if (strUrl.empty())
+			strUrl = "about:blank";
+		m_pWndBrowser->Navigate(strUrl);
+	}
 }
 
 void BrowserPanelWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -153,7 +158,7 @@ BOOL BrowserPanelWnd::PreTranslateMessage(MSG* pMsg)
 			{
 				CString str;
 				m_pEditAddress->GetWindowText(str);
-				Navigate(str.GetBuffer(0));
+				m_pWndBrowser->Navigate(str.GetBuffer(0));
 				str.ReleaseBuffer();
 			}
 		}
@@ -343,7 +348,7 @@ LRESULT BrowserPanelWnd::OnClickeFavMenuItem(WPARAM wParam, LPARAM lParam)
 
 			// »ñÈ¡url
 			::GetPrivateProfileString("InternetShortcut", "URL", "about:blank", szUrl, MAX_PATH, urlFile.c_str());
-			Navigate(szUrl);
+			m_pWndBrowser->Navigate(szUrl);
 		}
 		break;
 	case ITEM_TYPE_BTN_REMOE:
