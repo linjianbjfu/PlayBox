@@ -457,7 +457,7 @@ void GamePanelWnd::SetGameEntry( SWF_GAME sg )
 
 		std::string strFlashGameBottomtUrl;
 		AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
-			CONF_SETTING_CONFIG_FLASH_GAME_RIGHT_URL,strFlashGameBottomtUrl);
+			CONF_SETTING_CONFIG_FLASH_GAME_BOTTOM_URL,strFlashGameBottomtUrl);
 		if (!strFlashGameBottomtUrl.empty())
 			m_pWndBottom->Navigate(strFlashGameBottomtUrl+m_swfGame.strID);
 		else
