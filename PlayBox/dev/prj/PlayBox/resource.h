@@ -114,6 +114,8 @@
 #define IDD_DIALOG4                     159
 #define IDD_DIALOG_CHKUPDATE            159
 #define IDD_DIALOG5                     160
+#define IDI_ICON1                       163
+#define IDI_BEAR                        163
 #define IDC_CONFIG_BTN_DEFAULT          190
 #define IDC_CONFIG_LIST                 191
 #define IDC_STATIC_PROBLEM              192
@@ -237,40 +239,30 @@
 #define ID_WND_USER_LOGED_OUT           317
 #define ID_BTN_USER_MAN_LOGIN           318
 #define ID_BTN_USER_MAN_REGISTER        319
-#define IDC_BTN_CHK_CANCEL				320
-#define IDC_BTN_CHK_INSTALL				321
-#define IDC_BTN_CHK_DONE				322
-#define IDC_BTN_CHK_ISDOWN				323
-#define IDC_BTN_CHK_CLOSE				324
-#define ID_BNT_WEB_WND_CLOSE			325
-#define IDD_DLG_LOGIN					326
-#define ID_BTN_LOGIN_CLOSE				327
-#define ID_BTN_LOGIN_REG				328
-#define ID_BTN_LOGIN_FORGET_PASS		329
-#define ID_BTN_REMEMBER_PASS_CHECK		330
-#define ID_BTN_REMEMBER_PASS_UNCHECK	331
-#define ID_BTN_AUTO_LOGIN_CHECK			332
-#define ID_BTN_AUTO_LOGIN_UNCHECK		333
-#define ID_BTN_LOGIN_LOGIN				334
-#define ID_BTN_LOGIN_CANCEL				335
-#define IDC_EDIT_LOGIN_USER_NAME		336
-#define IDC_EDIT_LOGIN_PASS_WORD		337
+#define IDC_BTN_CHK_CANCEL              320
+#define IDC_BTN_CHK_INSTALL             321
+#define IDC_BTN_CHK_DONE                322
+#define IDC_BTN_CHK_ISDOWN              323
+#define IDC_BTN_CHK_CLOSE               324
+#define ID_BNT_WEB_WND_CLOSE            325
+#define IDD_DLG_LOGIN                   326
+#define ID_BTN_LOGIN_CLOSE              327
+#define ID_BTN_LOGIN_REG                328
+#define ID_BTN_LOGIN_FORGET_PASS        329
+#define ID_BTN_REMEMBER_PASS_CHECK      330
+#define ID_BTN_REMEMBER_PASS_UNCHECK    331
+#define ID_BTN_AUTO_LOGIN_CHECK         332
+#define ID_BTN_AUTO_LOGIN_UNCHECK       333
+#define ID_BTN_LOGIN_LOGIN              334
+#define ID_BTN_LOGIN_CANCEL             335
+#define IDC_EDIT_LOGIN_USER_NAME        336
+#define IDC_EDIT_LOGIN_PASS_WORD        337
 
-//Message
-#define MSG_SHOW_TRAYICONBALLOON        WM_USER+1
-#define MSG_DELETE_TRAY                 WM_USER+2
-#define MSG_CHANGE_TEXT_DLG				WM_USER+3
-#define MSG_CONF_UPDATE					WM_USER+4
-#define MSG_HTTP_DOWNLOAD				WM_USER+5
-#define MSG_NEW_BROWSER_WND				WM_USER+6
-#define MSG_AFTER_UICREATE				WM_USER+7
-
-#define WM_MY_TRAY_NOTIFICATION WM_USER+1333
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        161
+#define _APS_NEXT_RESOURCE_VALUE        164
 #define _APS_NEXT_COMMAND_VALUE         32797
 #define _APS_NEXT_CONTROL_VALUE         1019
 #define _APS_NEXT_SYMED_VALUE           140

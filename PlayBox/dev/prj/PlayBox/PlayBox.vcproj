@@ -297,6 +297,9 @@
 				RelativePath=".\res\hand.cur">
 			</File>
 			<File
+				RelativePath=".\res\Little_bear.ico">
+			</File>
+			<File
 				RelativePath=".\res\PlayBox.ico">
 			</File>
 			<File

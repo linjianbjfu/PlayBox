@@ -256,6 +256,8 @@ void CFavUrlMenuDlg::OnPaint()
 		CRect rctPaint = m_rctFirsItem;
 		
 		rctPaint.top += m_rctFirsItem.Height()*m_nCurSel;
+		if(m_nCurSel == 0)
+			rctPaint.top += m_rctFirsItem.top;
 		rctPaint.bottom += m_rctFirsItem.Height()*m_nCurSel;
 		if(m_nCurSel != 1)
 		{

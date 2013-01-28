@@ -199,7 +199,7 @@ BOOL CPlayBoxDlg::OnInitDialog()
 	SetWindowText("小宝贝游戏盒");
 	_AdjustDlgSize();
 
-	m_ptrayIcon->SetIcon(theApp.LoadIcon(IDR_MAINFRAME),"小宝贝游戏盒");
+	m_ptrayIcon->SetIcon(theApp.LoadIcon(IDI_BEAR),"小宝贝游戏盒");
 
 	ReleaseMutex(curMutexHandle);
 
@@ -1005,9 +1005,9 @@ LRESULT CPlayBoxDlg::OnHotKey(WPARAM wParam, LPARAM lParam)
 			else
 			{
 				ShowWindow(SW_NORMAL);
-				m_ptrayIcon = new CTrayIcon(IDR_MAINFRAME);
+				m_ptrayIcon = new CTrayIcon(IDI_BEAR);
 				m_ptrayIcon->SetNotificationWnd(this, WM_MY_TRAY_NOTIFICATION);
-				m_ptrayIcon->SetIcon(theApp.LoadIcon(IDR_MAINFRAME),"小宝贝游戏盒");
+				m_ptrayIcon->SetIcon(theApp.LoadIcon(IDI_BEAR),"小宝贝游戏盒");
 			}
 			
 		}

@@ -712,9 +712,22 @@ void GamePanelWnd::OnTimer(UINT nIDEvent)
 void GamePanelWnd::OnClickedFullScreen()
 {
 	if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
+	{
 		GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
+		this->m_pWndBottom->ShowWindow(SW_SHOW);
+		this->m_pWndRight->ShowWindow(SW_SHOW);
+	}
 	else
+	{
 		GLOBAL_PANELCHANGEDATA->IPanelChange_ToFullScreen( this );
+		this->m_pWndBottom->ShowWindow(SW_HIDE);
+		this->m_pWndRight->ShowWindow(SW_HIDE);
+		CRect rect;
+		this->GetClientRect(&rect);
+		rect.top +=40;
+		this->m_pGameFlash->MoveWindow(rect,false);
+	}
+
 }
 
 void GamePanelWnd::OnClickedExitFullScreen()
@@ -722,7 +735,7 @@ void GamePanelWnd::OnClickedExitFullScreen()
 	if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
 		GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
 	else
-		GLOBAL_PANELCHANGEDATA->IPanelChange_ToFullScreen( this );
+		GLOBAL_PANELCHANGEDATA->IPanelChange_ToFullScreen( this);
 }
 
 void GamePanelWnd::ShowHideEseFull(bool isShow)
