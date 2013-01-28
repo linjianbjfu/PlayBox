@@ -65,7 +65,6 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\PlayBox.ico"
-IDI_BEAR                ICON                    "res\\Little_bear.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -346,7 +345,7 @@ IDR_MENU_COVERLIST MENU
 BEGIN
     POPUP ""
     BEGIN
-        MENUITEM "大图",                        32772
+        MENUITEM "大图",                        ID_CL_LARGEICON
         MENUITEM "中图",                        ID_CL_MIDICON
         MENUITEM "小图",                        ID_CL_SMALLICON
         MENUITEM "删除",                        ID_CL_DELFROMDISK
