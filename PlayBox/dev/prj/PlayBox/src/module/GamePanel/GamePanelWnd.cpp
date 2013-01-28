@@ -593,10 +593,28 @@ void GamePanelWnd::OnSize(UINT nType, int cx, int cy)
 void GamePanelWnd::OnClickedReplay()
 {
 	SetGameEntry( m_swfGame );
+	if(GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen())
+	{
+		this->m_pWndRight->ShowWindow(SW_HIDE);
+		this->m_pWndBottom->ShowWindow(SW_HIDE);
+		CRect rect;
+		this->GetClientRect(&rect);
+		rect.top +=40;
+		this->m_pGameFlash->MoveWindow(rect,false);
+	}
 }
 
 void GamePanelWnd::OnClickedPause()
 {
+	if(GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen())
+	{
+		this->m_pWndRight->ShowWindow(SW_HIDE);
+		this->m_pWndBottom->ShowWindow(SW_HIDE);
+		CRect rect;
+		this->GetClientRect(&rect);
+		rect.top +=40;
+		this->m_pGameFlash->MoveWindow(rect,false);
+	}
 }
 
 void GamePanelWnd::OnClickedCut()
@@ -665,6 +683,15 @@ void GamePanelWnd::OnClickedMute()
 	bool bIsMute = CSound::GetInstance()->GetMute( 1 );
 	CSound::GetInstance()->SetMute( 1, !bIsMute );
 	UpdateAllWnd();
+	if(GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen())
+	{
+		this->m_pWndRight->ShowWindow(SW_HIDE);
+		this->m_pWndBottom->ShowWindow(SW_HIDE);
+		CRect rect;
+		this->GetClientRect(&rect);
+		rect.top +=40;
+		this->m_pGameFlash->MoveWindow(rect,false);
+	}
 }
 
 void GamePanelWnd::OnClickedUnMute()
