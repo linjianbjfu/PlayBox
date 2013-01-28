@@ -5,13 +5,6 @@
 #include "./src/DataInterface/ILayoutChangeObserver.h"
 #include "./src/DataInterface/IPanelChangeObserver.h"
 
-#define MSG_CHANGE_TEXT_DLG		WM_USER + 12
-#define MSG_CONF_UPDATE			WM_USER + 13
-#define MSG_HTTP_DOWNLOAD		WM_USER + 14
-#define MSG_AFTER_UICREATE		WM_USER + 16
-
-#define WM_MY_TRAY_NOTIFICATION WM_USER+1333
-
 class CPlayBoxDlg : public CDialog, 
 					public AfxUserConfig_Observer,
 					public ILayoutChangeObserver,
@@ -63,6 +56,7 @@ protected:
 	afx_msg LRESULT OnAfterUiCreate(WPARAM,LPARAM);
 	afx_msg LRESULT OnChangeText(WPARAM wp, LPARAM lp);
 	afx_msg LRESULT OnHTTPDonwload(WPARAM,LPARAM);
+	afx_msg LRESULT OnNewBrowserWnd(WPARAM w,LPARAM l);
 	afx_msg LRESULT OnConfUpdate(WPARAM,LPARAM);
 	afx_msg LRESULT OnHotKey(WPARAM wParam, LPARAM lParam);
 	BOOL PreTranslateMessage(MSG* pMsg );

@@ -107,22 +107,23 @@ void PlayedGameListPanelWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 		if (ii.nGameType & OneGame::FLASH_GAME) // flash game
 		{
 			TAB_ITEM tItem;
-			tItem.eumType = TAB_FLASHGAME;
-			tItem.strName = string(ii.strItemName);
-			tItem.strParam = string("method=playswfgame\n\n") + "id=" + ii.strGID + "\n"
-				+ "name=" + tItem.strName + "\n";
+			tItem.enumType = TAB_FLASHGAME;
+			tItem.strTitle = string(ii.strItemName);
+			tItem.strParam = string("method=playswfgame") + BOX_DELIMITERS 
+				+ "id=" + ii.strGID + BOX_DELIMITERS
+				+ "name=" + tItem.strTitle + BOX_DELIMITERS;
 			GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
 		}
 		else if (ii.nGameType & OneGame::WEB_GAME) // web game
 		{
 			TAB_ITEM tItem;
-			tItem.eumType = TAB_WEBGAME;
-			tItem.strName = string(ii.strItemName);
-			tItem.strParam = string("method=webgame\n\n")
-				+ "id=" + ii.strGID + "\n"
-				+ "svrid=" + ii.strSvrID + "\n"
-				+ "name=" + tItem.strName + "\n"
-				+ "picurl=" + ii.strImgPath.GetBuffer(0) + "\n";
+			tItem.enumType = TAB_WEBGAME;
+			tItem.strTitle = string(ii.strItemName);
+			tItem.strParam = string("method=webgame") + BOX_DELIMITERS
+				+ "id=" + ii.strGID + BOX_DELIMITERS
+				+ "svrid=" + ii.strSvrID + BOX_DELIMITERS
+				+ "name=" + tItem.strTitle + BOX_DELIMITERS
+				+ "picurl=" + ii.strImgPath.GetBuffer(0) + BOX_DELIMITERS;
 			ii.strImgPath.ReleaseBuffer();
 			GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
 		}

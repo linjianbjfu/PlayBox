@@ -43,7 +43,7 @@ void CWebManager::CallGBoxFromWeb(const string& strCommand,string& strRes)
 	string strHeader;
 	string strContent;
 
-	size_t iHeader = strCommand.find("\n");
+	size_t iHeader = strCommand.find(BOX_DELIMITERS);
 	if( iHeader == string::npos)
 		return;
 	
@@ -123,8 +123,8 @@ string CWebManager::_command_playswfgame(string& strContent)
 	if( bIDOK && bNameOK && bUrlOK )
 	{
 		TAB_ITEM tItem;
-		tItem.eumType = TAB_FLASHGAME;
-		tItem.strName = strName;
+		tItem.enumType = TAB_FLASHGAME;
+		tItem.strTitle = strName;
 		tItem.strParam = strContent;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
 		return "res=ok";
@@ -140,8 +140,8 @@ string CWebManager::_command_playwebgame(string& strContent)
 	if( strID.length() > 0 && IsNumber( strID ) && !strName.empty() )	
 	{
 		TAB_ITEM tItem;
-		tItem.eumType = TAB_WEBGAME;
-		tItem.strName = strName;
+		tItem.enumType = TAB_WEBGAME;
+		tItem.strTitle = strName;
 		tItem.strParam = strContent;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
 		return "res=ok";
@@ -152,8 +152,8 @@ string CWebManager::_command_playwebgame(string& strContent)
 string CWebManager::_command_openBrowser (string & strContent)
 {
 	TAB_ITEM tItem;
-	tItem.eumType = TAB_BROWSER;
-	tItem.strName = "¿áÓÎä¯ÀÀÆ÷";
+	tItem.enumType = TAB_BROWSER;
+	tItem.strTitle = TAB_BROWSER_DEFAULT_TITLE;
 	tItem.strParam = strContent;
 	GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
 	return "";
@@ -200,7 +200,7 @@ string CWebManager::GetValue( string& strContent, string strKey )
 	CString str(strContent.c_str());
 	CString strOneItem;
 	int curPos = 0;
-	strOneItem= str.Tokenize("\n",curPos);
+	strOneItem= str.Tokenize(BOX_DELIMITERS,curPos);
 	while(strOneItem != "")
 	{		
 		CString strLeft,strRight;
@@ -210,7 +210,7 @@ string CWebManager::GetValue( string& strContent, string strKey )
 			strRes = strRight;
 			break;
 		}
-		strOneItem = str.Tokenize("\n", curPos);
+		strOneItem = str.Tokenize(BOX_DELIMITERS, curPos);
 	};
 	return strRes;
 }

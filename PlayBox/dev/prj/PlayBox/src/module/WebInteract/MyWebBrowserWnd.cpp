@@ -211,32 +211,37 @@ LRESULT MyWebBrowserWnd::OnCallJavaScript(WPARAM w,LPARAM l)
 	return 0;
 }
 
+//void MyWebBrowserWnd::OnNewWindow2(LPDISPATCH* ppDisp, BOOL* Cancel)
+//{	
+//	// 限制打开新窗口
+//	CComPtr<IHTMLDocument2> pHTMLDocument2;  
+//
+//	m_pBrowserApp->get_Document((IDispatch **)&pHTMLDocument2);  
+//	if (pHTMLDocument2!=NULL)  
+//	{  
+//		CComPtr<IHTMLElement> pIHTMLElement;  
+//		pHTMLDocument2->get_activeElement(&pIHTMLElement);  
+//
+//		if (pIHTMLElement != NULL)  
+//		{  
+//			VARIANT url;  
+//			HRESULT hr=pIHTMLElement->getAttribute(L"href", 2, &url);  
+//			if (hr == S_OK)
+//			{
+//				USES_CONVERSION;
+//				url.vt = VT_I2;
+//				GetParent()->SendMessage(WM_NEWPAGE, (WPARAM)W2T(url.bstrVal), 0);
+//				//Navigate(W2T(url.bstrVal));
+//				if (SUCCEEDED(hr)) 
+//					*Cancel=TRUE;
+//			}  
+//		} 
+//	}
+//}
+
 void MyWebBrowserWnd::OnNewWindow2(LPDISPATCH* ppDisp, BOOL* Cancel)
-{	// 限制打开新窗口
-	return;
-	CComPtr<IHTMLDocument2> pHTMLDocument2;  
-
-	m_pBrowserApp->get_Document((IDispatch **)&pHTMLDocument2);  
-	if (pHTMLDocument2!=NULL)  
-	{  
-		CComPtr<IHTMLElement> pIHTMLElement;  
-		pHTMLDocument2->get_activeElement(&pIHTMLElement);  
-
-		if (pIHTMLElement != NULL)  
-		{  
-			VARIANT url;  
-			HRESULT hr=pIHTMLElement->getAttribute(L"href", 2, &url);  
-			if (hr == S_OK)
-			{
-				USES_CONVERSION;
-				url.vt = VT_I2;
-				GetParent()->SendMessage(WM_NEWPAGE, (WPARAM)W2T(url.bstrVal), 0);
-				//Navigate(W2T(url.bstrVal));
-				if (SUCCEEDED(hr)) 
-					*Cancel=TRUE;
-			}  
-		} 
-	}
+{	
+	AfxGetMainWindow()->SendMessage(MSG_NEW_BROWSER_WND, (WPARAM)ppDisp, 0);
 }
 
 void MyWebBrowserWnd::OnTitleChange(LPCTSTR lpszText)

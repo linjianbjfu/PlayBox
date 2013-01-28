@@ -7,10 +7,10 @@
 #include "../../gui/CommonControl/xSkinButton.h"
 #include "../../gui/CommonControl/xStaticText.h"
 #include "../../Gui/CommonControl/EditEx.h"
-#include ".\browserpanelwnd.h"
 #include "src/GUI/CommonControl/LocalSearchEdit.h"
 #include "src/GUI/util/ShowMenu.h"
 #include "src/module/BrowserPanel/FavUrlMenuDlg.h"
+#include "YL_StringUtil.h"
 
 IMPLEMENT_DYNAMIC(BrowserPanelWnd, CBasicWnd)
 BrowserPanelWnd::BrowserPanelWnd()
@@ -121,13 +121,22 @@ void BrowserPanelWnd::OnClickedFav()
 	ShowFavUrlMenu();
 }
 
-void BrowserPanelWnd::Navigate(string strUrl)
+void BrowserPanelWnd::SetTabItem(TAB_ITEM& ti)
 {
-	if (strUrl.empty())
+	m_tabItem = ti;
+	if (m_tabItem.iLPDISPATCHOnlyForBrowser != 0)
 	{
-		strUrl = "about:blank";
+		m_pWndBrowser->SetRegisterAsBrowser(TRUE);
+		LPDISPATCH* ppDisp = reinterpret_cast<LPDISPATCH*>(m_tabItem.iLPDISPATCHOnlyForBrowser);
+		*ppDisp = m_pWndBrowser->GetApplication();
 	}
-	m_pWndBrowser->Navigate(strUrl);
+	else
+	{
+		string strUrl = CWebManager::GetInstance()->GetValue( m_tabItem.strParam, "url" );
+		if (strUrl.empty())
+			strUrl = "about:blank";
+		m_pWndBrowser->Navigate(strUrl);
+	}
 }
 
 void BrowserPanelWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -149,7 +158,7 @@ BOOL BrowserPanelWnd::PreTranslateMessage(MSG* pMsg)
 			{
 				CString str;
 				m_pEditAddress->GetWindowText(str);
-				Navigate(str.GetBuffer(0));
+				m_pWndBrowser->Navigate(str.GetBuffer(0));
 				str.ReleaseBuffer();
 			}
 		}
@@ -161,32 +170,22 @@ BOOL BrowserPanelWnd::PreTranslateMessage(MSG* pMsg)
 
 LRESULT BrowserPanelWnd::OnPageChanging(WPARAM wParam, LPARAM lParam)
 {
-	// TRACE(TEXT("\r\n%s\r\n"), (LPCTSTR)wParam);
 	if (wParam != 0)
-	{
 		m_pEditAddress->SetWindowText((LPCTSTR)wParam);
-	}
+
 	if (lParam != 0)
-	{
-		TAB_ITEM iItem;
-		GLOBAL_TABBARDATA->ITabBar_GetCurItem(iItem);
-		iItem.strTitle = (LPCTSTR)lParam;
-		GLOBAL_TABBARDATA->ITabBar_ChangeTab(iItem);
-	}
-	// GLOBAL_TABBARDATA->ITabBar_ChangeTab(iItem);
+		GLOBAL_TABBARDATA->ITabBar_SetBarData(m_tabItem);
 	return 0;
 }
 
 LRESULT BrowserPanelWnd::OnNewPageWindow(WPARAM wParam, LPARAM lParam)
 {
 	TAB_ITEM item;
-	item.eumType = TAB_BROWSER;
-	item.strName = _T("¿áÓÎä¯ÀÀÆ÷");
-	item.strParam = "url=";
-	item.strParam += (char*)wParam;
-
+	item.enumType = TAB_BROWSER;
+	item.strTitle = TAB_BROWSER_DEFAULT_TITLE;
+	YL_StringUtil::Format(item.strParam, "url=%s", (char*)wParam);
 	GLOBAL_TABBARDATA->ITabBar_ChangeTab(item);
-	return 0;
+	return 0L;
 }
 
 int BrowserPanelWnd::AddFavUrlToMenu( int &nStartItemID, int nStartPos, const char* szPath, CMenu* pMenu )
@@ -349,7 +348,7 @@ LRESULT BrowserPanelWnd::OnClickeFavMenuItem(WPARAM wParam, LPARAM lParam)
 
 			// »ñÈ¡url
 			::GetPrivateProfileString("InternetShortcut", "URL", "about:blank", szUrl, MAX_PATH, urlFile.c_str());
-			Navigate(szUrl);
+			m_pWndBrowser->Navigate(szUrl);
 		}
 		break;
 	case ITEM_TYPE_BTN_REMOE:

@@ -16,7 +16,8 @@ public:
 	BrowserPanelWnd();
 	virtual ~BrowserPanelWnd();
 
-	void Navigate(string strUrl);
+	void SetTabItem(TAB_ITEM& ti);
+	void SetLPDISPATCH(int iLPDISPATCH);
 
 protected:
 	DECLARE_MESSAGE_MAP()
@@ -54,9 +55,9 @@ private:
 	CFont				m_editFont;
 	MyWebBrowserWnd*	m_pWndBrowser;
 	CFavUrlMenuDlg*		m_pFavUrlDlg;
+	TAB_ITEM			m_tabItem;
 
 	vector<string>		m_arrFavMenuItemParam;
-
 public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

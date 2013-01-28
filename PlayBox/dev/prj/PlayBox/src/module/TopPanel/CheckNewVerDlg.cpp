@@ -147,7 +147,7 @@ void CheckThread(void *pparam)
 			string::size_type nIdx = strConf.find("url=");
 			if(nIdx != string::npos)
 			{
-				string::size_type nPost = strConf.find("\n", nIdx);
+				string::size_type nPost = strConf.find(BOX_DELIMITERS, nIdx);
 				if(nPost != string::npos)
 				{
 					string str = strConf.substr(nIdx+4, nPost-nIdx-4);

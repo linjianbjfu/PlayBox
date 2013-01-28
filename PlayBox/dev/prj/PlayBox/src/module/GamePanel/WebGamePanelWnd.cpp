@@ -382,8 +382,8 @@ void WebGamePanelWnd::OnClickedSite()
 	if (!strValue.empty())
 	{
 		TAB_ITEM tabItem;
-		tabItem.strName = "官方网站";
-		tabItem.eumType = TAB_BROWSER;
+		tabItem.strTitle = TAB_BROWSER_DEFAULT_TITLE;
+		tabItem.enumType = TAB_BROWSER;
 		tabItem.strParam = "url=" + strValue + m_webGame.strID;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
 	}
@@ -396,8 +396,8 @@ void WebGamePanelWnd::OnClickedCustomService()
 	if (!strValue.empty())
 	{
 		TAB_ITEM tabItem;
-		tabItem.strName = "页游客服";
-		tabItem.eumType = TAB_BROWSER;
+		tabItem.strTitle = TAB_WEB_GAME_CUSTOM_SERVICE_TITLE;
+		tabItem.enumType = TAB_BROWSER;
 		tabItem.strParam = "url=" + strValue;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
 	}
@@ -410,8 +410,8 @@ void WebGamePanelWnd::OnClickedPay()
 	if (!strValue.empty())
 	{
 		TAB_ITEM tabItem;
-		tabItem.strName = "充值";
-		tabItem.eumType = TAB_BROWSER;
+		tabItem.strTitle = TAB_PAY_TITLE;
+		tabItem.enumType = TAB_BROWSER;
 		tabItem.strParam = "url=" + strValue + m_webGame.strID;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
 	}

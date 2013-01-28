@@ -78,6 +78,7 @@ BEGIN_MESSAGE_MAP(CPlayBoxDlg, CDialog)
 	ON_MESSAGE(MSG_CONF_UPDATE,OnConfUpdate)
 	ON_MESSAGE(MSG_CHANGE_TEXT_DLG,OnChangeText)
 	ON_MESSAGE(MSG_HTTP_DOWNLOAD,OnHTTPDonwload)
+	ON_MESSAGE(MSG_NEW_BROWSER_WND, OnNewBrowserWnd)
 	ON_WM_TIMER()
 	ON_WM_SHOWWINDOW()
 	ON_WM_SYSCOMMAND()
@@ -961,6 +962,17 @@ LRESULT CPlayBoxDlg::OnHTTPDonwload(WPARAM w,LPARAM)
 	}
 	return 0;
 }
+
+LRESULT CPlayBoxDlg::OnNewBrowserWnd(WPARAM w,LPARAM l)
+{
+	TAB_ITEM tabItem;
+	tabItem.strTitle = TAB_BROWSER_DEFAULT_TITLE;
+	tabItem.enumType = TAB_BROWSER;
+	tabItem.iLPDISPATCHOnlyForBrowser = static_cast<int>(w);
+	GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
+	return 0L;
+}
+
 void CPlayBoxDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 {
 	// TODO: Add your message handler code here and/or call default

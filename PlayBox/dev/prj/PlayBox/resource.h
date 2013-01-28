@@ -259,6 +259,13 @@
 //Message
 #define MSG_SHOW_TRAYICONBALLOON        WM_USER+1
 #define MSG_DELETE_TRAY                 WM_USER+2
+#define MSG_CHANGE_TEXT_DLG				WM_USER+3
+#define MSG_CONF_UPDATE					WM_USER+4
+#define MSG_HTTP_DOWNLOAD				WM_USER+5
+#define MSG_NEW_BROWSER_WND				WM_USER+6
+#define MSG_AFTER_UICREATE				WM_USER+7
+
+#define WM_MY_TRAY_NOTIFICATION WM_USER+1333
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

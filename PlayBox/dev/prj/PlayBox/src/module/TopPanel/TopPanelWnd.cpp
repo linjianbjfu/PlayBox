@@ -341,8 +341,8 @@ void CTopPanelWnd::OnMenuMainPage()
 	if (!strValue.empty())
 	{
 		TAB_ITEM tabItem;
-		tabItem.strName = "官方网站";
-		tabItem.eumType = TAB_BROWSER;
+		tabItem.strTitle = TAB_OFFICE_SITE;
+		tabItem.enumType = TAB_BROWSER;
 		tabItem.strParam = "url=" + strValue;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
 	}
@@ -356,8 +356,8 @@ void CTopPanelWnd::OnMenuProblemReport()
 	if (!strValue.empty())
 	{
 		TAB_ITEM tabItem;
-		tabItem.strName = "问题反馈";
-		tabItem.eumType = TAB_BROWSER;
+		tabItem.strTitle = TAB_REPORT_PROBLEM;
+		tabItem.enumType = TAB_BROWSER;
 		tabItem.strParam = "url=" + strValue;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
 	}
@@ -370,8 +370,8 @@ void CTopPanelWnd::OnMenuWebGameCustomService()
 	if (!strValue.empty())
 	{
 		TAB_ITEM tabItem;
-		tabItem.strName = "页游客服";
-		tabItem.eumType = TAB_BROWSER;
+		tabItem.strTitle = TAB_WEB_GAME_CUSTOM_SERVICE_TITLE;
+		tabItem.enumType = TAB_BROWSER;
 		tabItem.strParam = "url=" + strValue;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
 	}

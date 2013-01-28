@@ -28,10 +28,11 @@ protected:
 	afx_msg void			OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void			OnDestroy();
 public:
-	virtual void			ITabBarOb_CreateNewTab(TAB_ITEM &item);
-	virtual void			ITabBarOb_OpenExistTab(TAB_ITEM& item);
-	virtual void			ITabBarOb_DelTab(TAB_ITEM& item);
-	virtual void			ITabBarOb_OpenTabError(int iErrorCode);
+	void ITabBarOb_CreateNewTab(TAB_ITEM &item);
+	void ITabBarOb_OpenExistTab(TAB_ITEM& item);
+	void ITabBarOb_DelTab(TAB_ITEM& item);
+	void ITabBarOb_OpenTabError(int iErrorCode);
+	void ITabBarOb_TabItemDataChanged(TAB_ITEM & item);
 private:
 	CCWToolTips*			m_pToolTip;
 	CFont					m_fontNormal;

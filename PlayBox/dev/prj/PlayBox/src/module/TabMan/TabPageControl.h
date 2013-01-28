@@ -28,6 +28,7 @@ public:
 	void ITabBarOb_OpenExistTab(TAB_ITEM & item);
 	void ITabBarOb_DelTab(TAB_ITEM & item);
 	void ITabBarOb_OpenTabError(int iErrorCode);
+	void ITabBarOb_TabItemDataChanged(TAB_ITEM & item);
 
 	void ResizePage();
 
