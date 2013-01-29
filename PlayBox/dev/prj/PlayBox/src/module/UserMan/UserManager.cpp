@@ -142,6 +142,8 @@ void CUserManager::User_AppExit()
 
 void CUserManager::User_Logout()
 {
+	delete m_pUserInfo;
+	m_pUserInfo = NULL;
 	GLOBAL_GAME->IGameData_ChangeLoginState(false);
 	BEGIN_SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, SUCCEEDED)
 		pOb->UserMsg_LogOut();

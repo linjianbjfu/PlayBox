@@ -85,7 +85,7 @@ int PlayedGameWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	AfxGetUIManager()->UIGetLayoutMgr()->ShowLayer(s_USER_MAN_LOGED_IN_OUT, s_USER_MAN_LOGED_OUT);
 
-	RefreshData();
+	SetOnlyOneBtnCheckedAndValidate(m_pBtnTimeOrder);
 	std::string strPlayedGameRightUrl;
 	AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
 		CONF_SETTING_CONFIG_PLAYED_GAME_RIGHT_URL,strPlayedGameRightUrl);
@@ -104,10 +104,11 @@ void PlayedGameWnd::OnDestroy()
 	__super::OnDestroy();
 }
 
+//这个函数的意义发生变化，不是按时间排序，而是现实所有的最近玩过的游戏
 void PlayedGameWnd::OnClickedTimerOrder()
 {
+	/*
 	GameList lgl;
-	RefreshData();
 	copy(m_gameList.begin(), m_gameList.end(), back_inserter(lgl));
 	m_gameList.clear();
 	GameList::iterator it = lgl.begin();
@@ -126,54 +127,34 @@ void PlayedGameWnd::OnClickedTimerOrder()
 	lgl.clear();
 	m_bSortTimeByAsc = !m_bSortTimeByAsc;  // 默认是升序排序 假如多次点击排序的时候需要反序 则取消注释
 	m_pWndGameListWnd->ReSetGameList(m_gameList);
-	
+	*/
 }
 
-void PlayedGameWnd::RefreshData()
+void PlayedGameWnd::SetOnlyOneBtnCheckedAndValidate(CxSkinButton* pBtn)
 {
-	//根据按钮状态，确定用户想看的game的类型
-	int iGameType = 0;
-	if (m_pBtnToFlashGame->GetCheck())
-		iGameType |= OneGame::FLASH_GAME;
-	else
-		iGameType &= ~OneGame::FLASH_GAME;
+	if (pBtn->GetCheck() == BST_CHECKED)
+		return;
 
-	if (m_pBtnToWebGame->GetCheck())
-		iGameType |= OneGame::WEB_GAME;
-	else
-		iGameType &= ~OneGame::WEB_GAME;
-
-	if (m_pBtnToFlashGame->GetCheck() && m_pBtnToWebGame->GetCheck())
-	{
-		iGameType &= ~OneGame::FLASH_GAME;
-		iGameType &= ~OneGame::WEB_GAME;
-	}
-
-	if (m_pBtnToCollectedGame->GetCheck())
-		iGameType |= OneGame::COLLECTED;
-	else
-		iGameType &= ~OneGame::COLLECTED;
-	
-	GLOBAL_GAME->IGameData_GetGame(m_gameList, iGameType);
-	m_pWndGameListWnd->ReSetGameList(m_gameList);
+	m_pBtnTimeOrder->SetCheck(m_pBtnTimeOrder == pBtn ? BST_CHECKED : BST_UNCHECKED);
+	m_pBtnToWebGame->SetCheck(m_pBtnToWebGame == pBtn ? BST_CHECKED : BST_UNCHECKED);
+	m_pBtnToFlashGame->SetCheck(m_pBtnToFlashGame == pBtn ? BST_CHECKED : BST_UNCHECKED);
+	m_pBtnToCollectedGame->SetCheck(m_pBtnToCollectedGame == pBtn ? BST_CHECKED : BST_UNCHECKED);
+	ValidateInterface();
 }
 
 void PlayedGameWnd::OnClickedToWebGame()
 {
-	m_pBtnToWebGame->SetCheck(!m_pBtnToWebGame->GetCheck());
-	RefreshData();
+	SetOnlyOneBtnCheckedAndValidate(m_pBtnToWebGame);
 }
 
 void PlayedGameWnd::OnClickedToFlashGame()
 {
-	m_pBtnToFlashGame->SetCheck(!m_pBtnToFlashGame->GetCheck());
-	RefreshData();
+	SetOnlyOneBtnCheckedAndValidate(m_pBtnToFlashGame);
 }
 
 void PlayedGameWnd::OnClickedToCollectedGame()
 {
-	m_pBtnToCollectedGame->SetCheck(!m_pBtnToCollectedGame->GetCheck());
-	RefreshData();
+	SetOnlyOneBtnCheckedAndValidate(m_pBtnToCollectedGame);
 }
 
 time_t PlayedGameWnd::str2time(const string & strTime)
@@ -206,15 +187,30 @@ time_t PlayedGameWnd::str2time(const string & strTime)
 	return mktime(&tmLocal);
 }
 
+void PlayedGameWnd::ValidateInterface()
+{
+	m_iGameType = 0;
+	if (m_pBtnTimeOrder->GetCheck())
+		m_iGameType |= OneGame::FLASH_GAME | OneGame::WEB_GAME;
+	if (m_pBtnToWebGame->GetCheck())
+		m_iGameType |= OneGame::WEB_GAME;
+	if (m_pBtnToFlashGame->GetCheck())
+		m_iGameType |= OneGame::FLASH_GAME;
+	if (m_pBtnToCollectedGame->GetCheck())
+		m_iGameType |= OneGame::COLLECTED;
+	GLOBAL_GAME->IGameData_GetGame(m_gameList, m_iGameType);
+	m_pWndGameListWnd->ReSetGameList(m_gameList);
+}
+
 void PlayedGameWnd::UserMsg_Login()
 {
 	m_pWndLogedIn->SetUserInfo(CUserManager::GetInstance()->User_GetUserInfo());
 	AfxGetUIManager()->UIGetLayoutMgr()->ShowLayer(s_USER_MAN_LOGED_IN_OUT, s_USER_MAN_LOGED_IN);
-	RefreshData();
+	ValidateInterface();
 }
 
 void PlayedGameWnd::UserMsg_LogOut()
 {
 	AfxGetUIManager()->UIGetLayoutMgr()->ShowLayer(s_USER_MAN_LOGED_IN_OUT, s_USER_MAN_LOGED_OUT);
-	RefreshData();
+	ValidateInterface();
 }

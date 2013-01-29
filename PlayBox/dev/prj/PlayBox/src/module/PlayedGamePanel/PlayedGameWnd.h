@@ -22,6 +22,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void	OnDestroy();
+	//这个函数的意义发生变化，不是按时间排序，而是现实所有的最近玩过的游戏
 	afx_msg void	OnClickedTimerOrder();
 	afx_msg void	OnClickedToWebGame();
 	afx_msg void	OnClickedToFlashGame();
@@ -39,7 +40,8 @@ private:
 	GameList	m_gameList;
 	int m_iGameType;
 
-	void RefreshData();
 	void UserMsg_Login();
 	void UserMsg_LogOut();
+	void SetOnlyOneBtnCheckedAndValidate(CxSkinButton* pBtn);
+	void ValidateInterface();
 };
