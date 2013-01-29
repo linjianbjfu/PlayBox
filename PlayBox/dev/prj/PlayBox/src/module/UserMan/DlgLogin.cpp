@@ -78,8 +78,8 @@ BOOL CDlgLogin::OnInitDialog()
 	AfxGetUserConfig()->GetConfigBoolValue(CONF_SETTING_MODULE_NAME,CONF_SETTING_REMEMBER_PASSWORD,m_bRememberPassChecked);
 	AfxGetUserConfig()->GetConfigBoolValue(CONF_SETTING_MODULE_NAME,CONF_SETTING_AUTO_LOGIN,m_bAutoLoginChecked);
 	
-	m_editUserName.Create(WS_CHILD|WS_VISIBLE|WS_TABSTOP|ES_PASSWORD,rectNULL,this,IDC_EDIT_LOGIN_USER_NAME);
-	m_editPassWord.Create(WS_CHILD|WS_VISIBLE|WS_TABSTOP,rectNULL,this,IDC_EDIT_LOGIN_PASS_WORD);
+	m_editUserName.Create(WS_CHILD|WS_VISIBLE|WS_TABSTOP,rectNULL,this,IDC_EDIT_LOGIN_USER_NAME);
+	m_editPassWord.Create(WS_CHILD|WS_VISIBLE|WS_TABSTOP|ES_PASSWORD,rectNULL,this,IDC_EDIT_LOGIN_PASS_WORD);
 	InitEditControl(&m_editUserName, "LoginEditBorderNormal", "LoginEditBorderGlow");
 	InitEditControl(&m_editPassWord, "LoginEditBorderNormal", "LoginEditBorderGlow");
 
