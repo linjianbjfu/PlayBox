@@ -98,13 +98,16 @@ void CUserManager::User_AppStartUp()
 	g_pUserMgr->UserLoginInternal(strUserName.c_str(), szMD5Pass);
 }
 
-void CUserManager::User_Login(LPCSTR pszName, LPCSTR pszPwd)
+void CUserManager::User_Login(LPCSTR pszName, LPCSTR pszPwd, bool bPassIsMD5)
 {
-	char szPwdMD5[33];
-	ZeroMemory(szPwdMD5, 33);
-
-	MD5String(const_cast<char*>(pszPwd), szPwdMD5);
-	UserLoginInternal(pszName, szPwdMD5);
+	if (bPassIsMD5)
+		UserLoginInternal(pszName, pszPwd);
+	else
+	{
+		char szPwdMD5[33] = {0};
+		MD5String(const_cast<char*>(pszPwd), szPwdMD5);
+		UserLoginInternal(pszName, szPwdMD5);
+	}
 }
 
 void CUserManager::UserLoginInternal(LPCSTR pszName, LPCSTR pszPwdMD5)

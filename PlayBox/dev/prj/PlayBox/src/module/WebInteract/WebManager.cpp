@@ -48,7 +48,7 @@ void CWebManager::CallGBoxFromWeb(const string& strCommand,string& strRes)
 		return;
 	
 	strHeader	= strCommand.substr(0,iHeader);
-	strContent	= strCommand.substr(iHeader+1);
+	strContent	= strCommand.substr(iHeader+strlen(BOX_DELIMITERS));
 	//header
 	CString str(strHeader.c_str());
 	CString strLeft,strRight;
@@ -159,13 +159,13 @@ string CWebManager::_command_openBrowser (string & strContent)
 	return "";
 }
 
-string CWebManager::_command_login (string & strContent)
+string CWebManager::_command_login(string & strContent)
 {
-	string strName = GetValue (strContent, "name");
+	string strName = GetValue (strContent, "username");
 	string strMD5Pass = GetValue (strContent, "pass");
 	if (!strName.empty() && !strMD5Pass.empty())
 	{
-		CUserManager::GetInstance()->User_Login(strName.c_str(), strMD5Pass.c_str());
+		CUserManager::GetInstance()->User_Login(strName.c_str(), strMD5Pass.c_str(), true);
 		return "res=ok";
 	}else
 		return "res=err";

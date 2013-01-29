@@ -30,7 +30,7 @@ public:
 	};
 public:
 	void User_AppStartUp();//if config is auto login, then login
-	void User_Login(LPCSTR pszName,LPCSTR pszPwd);
+	void User_Login(LPCSTR pszName,LPCSTR pszPwd, bool bPassIsMD5);
 	void User_CancelLog();
 	void User_Logout();
 	void User_AppExit();

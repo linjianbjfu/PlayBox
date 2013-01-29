@@ -107,8 +107,8 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::GetHostInfo( DOCHOSTU
 
 	METHOD_PROLOGUE(CCustomControlSite, DocHostUIHandler)
 	//È¥µô¹ö¶¯Ìõ
-	pInfo->dwFlags = DOCHOSTUIFLAG_SCROLL_NO | DOCHOSTUIFLAG_NO3DBORDER;
-    pInfo->dwDoubleClick = DOCHOSTUIDBLCLK_DEFAULT;
+	//pInfo->dwFlags = DOCHOSTUIFLAG_SCROLL_NO | DOCHOSTUIFLAG_NO3DBORDER;
+    //pInfo->dwDoubleClick = DOCHOSTUIDBLCLK_DEFAULT;
     return S_OK;
 }
 
