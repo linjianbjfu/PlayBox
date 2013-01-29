@@ -3,7 +3,7 @@
 #pragma once
 #include "windows.h"
 
-class UserInfo;
+struct UserInfo;
 
 class CUserManager
 {

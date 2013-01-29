@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "TabBarData.h"
 #include "../../core/CDataManager.h"
+#include "../UserMan/UserManager.h"
+#include "../UserMan/DlgLogin.h"
 
 CTabBarData*	CTabBarData::m_pTabBarData = NULL;
 #define MAX_TAB_COUNT	10
@@ -94,9 +96,21 @@ void CTabBarData::ITabBar_ChangeTab(TAB_ITEM &item)
 	}
 	if( it != m_vecItem.end() )
 	{
-		m_iPos = int(it - m_vecItem.begin());
-		m_vecItem[m_iPos] = item;
-		NotifyOpenExistTab(item);
+		//if open new webgamepanel, should check whether login
+		if (item.enumType == TAB_WEBGAME &&
+			item.id == 0 &&
+			CUserManager::GetInstance()->User_GetUserInfo() == NULL)
+		{
+			CDlgLogin dlgLogin;
+			dlgLogin.DoModal();
+			return;
+		}
+		else
+		{
+			m_iPos = int(it - m_vecItem.begin());
+			m_vecItem[m_iPos] = item;
+			NotifyOpenExistTab(item);
+		}
 	}else
 	{
 		if( m_vecItem.size() >= MAX_TAB_COUNT )

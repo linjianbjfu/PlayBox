@@ -28,6 +28,8 @@ public:
 	void	LoadSkin();
 	void	SetTabItem( TAB_ITEM ti );
 	void	Init();
+	void	SetMainWindow(bool isTopMost);
+	void	Recycle();
 protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void	OnClickedRefresh();
@@ -45,13 +47,11 @@ protected:
 	afx_msg void	OnDestroy();
 	afx_msg BOOL	OnEraseBkgnd(CDC* pDC);
 	afx_msg void	OnTimer(UINT_PTR nIDEvent);
+	BOOL	PreTranslateMessage(MSG* pMsg);
+	void	IPanelChangeOb_ToFullScreen( CWnd* pWnd );
+	void	IPanelChangeOb_ExitFullScreen( CWnd* pWnd );
 
 	void	ShowHideEseFull(bool isShow);
-public:
-	virtual void	IPanelChangeOb_ToFullScreen( CWnd* pWnd );
-	virtual void	IPanelChangeOb_ExitFullScreen( CWnd* pWnd );
-	virtual BOOL	PreTranslateMessage(MSG* pMsg);
-	void	SetMainWindow(bool isTopMost);
 private:
 	MyWebBrowserWnd*	m_pWndWebGame;
 	CxSkinButton*		m_pBtnRefresh;
@@ -72,6 +72,9 @@ private:
 	CRect				m_rectBeforeFull;
 	CRect				m_rectFullScreen;
 	CWnd*				m_pWndParent;
-public:
-	void	Recycle();
+
+	bool GenerateFlag(OUT std::string& strFlag,
+		IN const std::string& id,
+		IN const std::string& svrid,
+		IN const std::string& userName);
 };

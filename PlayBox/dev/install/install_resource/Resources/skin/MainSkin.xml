@@ -74,7 +74,7 @@
 		<paneitem name="PlayedGameSeperatorBk" type="bmp" start_x_right="259" start_y_top="109" end_x_right="0" y_delta="1" />
 	</background>
 	<controlpanel name="normal" ori="NO_POS">
-		<paneitem name="PlayedGameTimeOrder" type="button" tooltip="按时间排序" bmp="PlayedGameTimeOrder" start_x_right="502"  start_y_top="36" x_delta="30" y_delta="24" />
+		<paneitem name="PlayedGameTimeOrder" type="button" tooltip="显示最近玩过的游戏" bmp="PlayedGameTimeOrder" start_x_right="502"  start_y_top="36" x_delta="30" y_delta="24" />
 		<paneitem name="PlayedGameToWebGame" type="button" tooltip="显示网页游戏" bmp="PlayedGameToWebGame" start_x_right="472"  start_y_top="36" x_delta="30" y_delta="24" />
 		<paneitem name="PlayedGameToFlashGame" type="button" tooltip="显示小游戏" bmp="PlayedGameToFlashGame" start_x_right="442"  start_y_top="36" x_delta="30" y_delta="24" />
 		<paneitem name="PlayedGameToCollectedGame" type="button" tooltip="显示收藏" bmp="PlayedGameToCollectedGame" start_x_right="412"  start_y_top="36" x_delta="30" y_delta="24" />

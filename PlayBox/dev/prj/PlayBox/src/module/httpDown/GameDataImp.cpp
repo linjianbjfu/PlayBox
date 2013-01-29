@@ -267,34 +267,34 @@ bool CGameDataImp::IGameData_DelGame(const string& strID, int nGameType)
 bool CGameDataImp::IGameData_GetGame(GameList& lgl, int iGameType)
 {
 	lgl.clear();
-	assert(!((iGameType & OneGame::FLASH_GAME) && (iGameType & OneGame::WEB_GAME)));
 	assert(!((iGameType & OneGame::COLLECTED) && (iGameType & OneGame::RECENT_PLAY)));
-	int iFlashOrWeb = 0;
-	if (iGameType & OneGame::FLASH_GAME)
-		iFlashOrWeb = OneGame::FLASH_GAME;
-	else if(iGameType & OneGame::WEB_GAME)
-		iFlashOrWeb = OneGame::WEB_GAME;
 
-	int iCollectedOrRecentPlay = 0;
-	if (iGameType & OneGame::COLLECTED)
-		iCollectedOrRecentPlay = OneGame::COLLECTED;
-	else if(iGameType & OneGame::RECENT_PLAY)
-		iCollectedOrRecentPlay = OneGame::RECENT_PLAY;
-
-	if (iFlashOrWeb == 0 && iCollectedOrRecentPlay == 0)
+	GameList::iterator it = m_vecGame.begin();
+	for (; it != m_vecGame.end(); it++)
 	{
-		copy( m_vecGame.begin(), m_vecGame.end(), back_inserter(lgl) );
-	}else
-	{
-		GameList::iterator it = m_vecGame.begin();
-		for (; it != m_vecGame.end(); it++)
+		if (iGameType & OneGame::FLASH_GAME && 
+			it->nGameType & OneGame::FLASH_GAME)
 		{
-			if (iFlashOrWeb != 0)
-			{
-				//if (it->)
-				{
-				}
-			}
+			lgl.push_back(*it);
+			continue;
+		}
+		if (iGameType & OneGame::WEB_GAME && 
+			it->nGameType & OneGame::WEB_GAME)
+		{
+			lgl.push_back(*it);
+			continue;
+		}
+		if (iGameType & OneGame::COLLECTED && 
+			it->nGameType & OneGame::COLLECTED)
+		{
+			lgl.push_back(*it);
+			continue;
+		}
+		if (iGameType & OneGame::RECENT_PLAY && 
+			it->nGameType & OneGame::RECENT_PLAY)
+		{
+			lgl.push_back(*it);
+			continue;
 		}
 	}
 	return true;

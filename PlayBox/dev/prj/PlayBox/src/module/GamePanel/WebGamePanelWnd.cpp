@@ -17,6 +17,9 @@
 #include "src/module/Esc2ExitFullScrPanel/ESCFullDlg.h"
 #include "src/AppConfig/config/ConfigLayoutDef.h"
 #include ".\webgamepanelwnd.h"
+#include "util\md5.h"
+#include "..\UserMan\UserInfo.h"
+#include "..\UserMan\UserManager.h"
 
 
 IMPLEMENT_DYNAMIC(WebGamePanelWnd, CBasicWnd)
@@ -145,6 +148,31 @@ void WebGamePanelWnd::LoadSkin()
 {
 }
 
+/*
+$flag=MD5($id.$svrid.$username.$type.MD5($key));
+$type="najiuwanbox";$key="69456fh45m9d1e77li
+*/
+bool WebGamePanelWnd::GenerateFlag(OUT std::string& strFlag,
+								   IN const std::string& id,
+								   IN const std::string& svrid,
+								   IN const std::string& userName)
+{
+	strFlag.clear();
+	static std::string strType = "najiuwanbox";
+	static std::string strKey = "69456fh45m9d1e77li";
+	static std::string strKeyMD5;
+	if (strKeyMD5.empty())
+	{
+		char szKey[128] = {0};
+		strcpy(szKey, strKey.c_str());
+		char szKeyMD5[32] = {0};
+		MD5String(szKey, szKeyMD5);
+		strKeyMD5 = std::string(szKeyMD5);
+	}
+	strFlag = id + svrid + userName + strType + strKeyMD5;
+	return true;
+}
+
 void WebGamePanelWnd::SetTabItem( TAB_ITEM ti )
 {
 	m_webGame.strID = CWebManager::GetInstance()->GetValue( ti.strParam, "id" );
@@ -152,13 +180,26 @@ void WebGamePanelWnd::SetTabItem( TAB_ITEM ti )
 	m_webGame.strName = CWebManager::GetInstance()->GetValue( ti.strParam, "name" );
 	m_webGame.strPicUrl = CWebManager::GetInstance()->GetValue( ti.strParam, "picurl" );
 	string strValue;
-	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_CONFIG_WEB_GAME_URL, strValue );
+	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME, 
+		CONF_SETTING_CONFIG_WEB_GAME_URL, strValue );
 	if (!strValue.empty())
 	{
-		string strUrl = strValue + "id/" + m_webGame.strID + 
+		/*
+		http://box.najiuwan.com/index.php?s=/game/login_game_box/
+		username/yinshaohua/pass/1111/flag/asdasd23432fdsfdsf/id/107/svrid/2
+		*/
+		UserInfo* pUserInfo = CUserManager::GetInstance()->User_GetUserInfo();
+		if (pUserInfo == NULL)
+			return;
+		
+		std::string strFlag;
+		GenerateFlag(strFlag, m_webGame.strID, m_webGame.strSvrID, pUserInfo->strName);
+		string strUrl = strValue + "username/" + pUserInfo->strName +
+			"/pass/" + pUserInfo->strPassMD5 +
+			"/flag/" + strFlag +
+			"/id/" + m_webGame.strID + 
 			"/svrid/" + m_webGame.strSvrID;
 		m_pWndWebGame->Navigate(strUrl);
-		//再加上username pass 
 
 		if ( YL_FileInfo::IsValid(m_webGame.strPicUrl) )
 		{ // picurl假如指向了本地文件,则是从本地游戏列表进入的游戏

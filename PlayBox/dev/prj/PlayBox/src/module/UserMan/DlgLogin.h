@@ -4,6 +4,7 @@
 #include "../../gui/CommonControl/xSkinButton.h"
 #include "EditGlow.h"
 #include "IUserMsgObserver.h"
+#include "xStaticText.h"
 
 class CDibBitmap;
 
@@ -36,6 +37,7 @@ private:
 	bool m_bRememberPassChecked;
 	bool m_bAutoLoginChecked;
 	CDibBitmap*  m_bkg;
+	CxStaticText m_staticError;
 	
 	afx_msg void OnCloseClicked();
 	afx_msg void OnRegClicked();
