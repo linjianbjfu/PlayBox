@@ -699,6 +699,15 @@ void GamePanelWnd::OnClickedUnMute()
 	bool bIsMute = CSound::GetInstance()->GetMute( 1 );
 	CSound::GetInstance()->SetMute( 1, !bIsMute );
 	UpdateAllWnd();
+	if(GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen())
+	{
+		this->m_pWndRight->ShowWindow(SW_HIDE);
+		this->m_pWndBottom->ShowWindow(SW_HIDE);
+		CRect rect;
+		this->GetClientRect(&rect);
+		rect.top +=40;
+		this->m_pGameFlash->MoveWindow(rect,false);
+	}
 }
 
 void GamePanelWnd::OnTimer(UINT nIDEvent)
