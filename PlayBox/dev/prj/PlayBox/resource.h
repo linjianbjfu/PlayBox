@@ -116,6 +116,8 @@
 #define IDD_DIALOG5                     160
 #define IDI_ICON1                       163
 #define IDI_BEAR                        163
+#define IDI_ICON2                       164
+#define IDI_ICON_BEAR                   164
 #define IDC_CONFIG_BTN_DEFAULT          190
 #define IDC_CONFIG_LIST                 191
 #define IDC_STATIC_PROBLEM              192
@@ -257,12 +259,13 @@
 #define ID_BTN_LOGIN_CANCEL             335
 #define IDC_EDIT_LOGIN_USER_NAME        336
 #define IDC_EDIT_LOGIN_PASS_WORD        337
+#define ID_BTN_ABOUT_CLOSE				338
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        164
+#define _APS_NEXT_RESOURCE_VALUE        165
 #define _APS_NEXT_COMMAND_VALUE         32797
 #define _APS_NEXT_CONTROL_VALUE         1019
 #define _APS_NEXT_SYMED_VALUE           140

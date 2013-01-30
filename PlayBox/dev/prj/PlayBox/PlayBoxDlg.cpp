@@ -36,8 +36,8 @@ extern CPlayBoxApp theApp;
 CPlayBoxDlg::CPlayBoxDlg(bool bStartupRun, CWnd* pParent /*=NULL*/)
 	: CDialog(CPlayBoxDlg::IDD, pParent)
 {
-	m_ptrayIcon = new CTrayIcon(IDR_MAINFRAME);
-	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	m_ptrayIcon = new CTrayIcon(IDI_ICON_BEAR);
+	m_hIcon = AfxGetApp()->LoadIcon(IDI_ICON_BEAR);
 	
 	m_bIsResizing = FALSE;
 	m_ptStartResizing.x = 0;

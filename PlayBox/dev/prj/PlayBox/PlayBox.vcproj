@@ -311,6 +311,9 @@
 			<File
 				RelativePath=".\res\rt_manif.bin">
 			</File>
+			<File
+				RelativePath=".\res\xiong.ico">
+			</File>
 		</Filter>
 		<Filter
 			Name="core"
