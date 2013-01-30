@@ -6,6 +6,7 @@
 #include "WebWnd.h"
 #include "../../AppConfig/config/ConfigAppDef.h"
 #include "DlgLogin.h"
+#include "UserManager.h"
 
 IMPLEMENT_DYNAMIC(CUserLogedOutWnd, CBasicWnd)
 CUserLogedOutWnd::CUserLogedOutWnd()
@@ -58,9 +59,9 @@ void CUserLogedOutWnd::OnClickedRegister()
 
 	// 获取注册页面大小
 	CRect rctPageSize(0, 0, 518, 298);
-
 	CWebDlg dlg(this);
 	AfxGetUIManager()->UIAddDialog(&dlg);
+	CUserManager::GetInstance()->SetRegisterWnd(&dlg);
 	dlg.DoModal(_T("注册"), strUrl.c_str(), rctPageSize.Width(), rctPageSize.Height());
 	AfxGetUIManager()->UIRemoveDialog(&dlg);
 }

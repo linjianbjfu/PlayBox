@@ -174,7 +174,10 @@ LRESULT BrowserPanelWnd::OnPageChanging(WPARAM wParam, LPARAM lParam)
 		m_pEditAddress->SetWindowText((LPCTSTR)wParam);
 
 	if (lParam != 0)
+	{
+		m_tabItem.strTitle = (LPCTSTR)lParam;
 		GLOBAL_TABBARDATA->ITabBar_SetBarData(m_tabItem);
+	}
 	return 0;
 }
 

@@ -165,7 +165,7 @@ string CWebManager::_command_login(string & strContent)
 	string strMD5Pass = GetValue (strContent, "pass");
 	if (!strName.empty() && !strMD5Pass.empty())
 	{
-		CUserManager::GetInstance()->User_Login(strName.c_str(), strMD5Pass.c_str(), true);
+		CUserManager::GetInstance()->User_Login_After_Reg_Suc(strName.c_str(), strMD5Pass.c_str());
 		return "res=ok";
 	}else
 		return "res=err";

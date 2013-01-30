@@ -20,6 +20,7 @@
 #include "../AboutPanel/AboutDlg.h"
 #include "CheckNewVerDlg.h"
 #include "src/module/CheckUpdate/CheckUpdate.h"
+#include "../UserMan/UserManager.h"
 
 static const char* s_STRBUTTONLAYER		= "Normal_Large";
 static const char* s_STRBUTTON_NORMAL	= "Normal";
@@ -388,7 +389,7 @@ void CTopPanelWnd::OnHelpAbout()
 
 void CTopPanelWnd::OnLogonOut()
 {
-//	IUserMan::User_Logout();
+	CUserManager::GetInstance()->User_Logout();
 }
 
 void CTopPanelWnd::OnCheckNewVersion()
@@ -399,9 +400,7 @@ void CTopPanelWnd::OnCheckNewVersion()
 	dlg.DoModal();
 	AfxGetUIManager()->UIRemoveDialog( (DWORD)&dlg);*/
 	if( m_pDLGCheckUpdate != NULL)
-	{
 		m_pDLGCheckUpdate->ShowWindow(SW_SHOW);
-	}
 	else
 	{
 		m_pDLGCheckUpdate = new CCheckUpdate;
