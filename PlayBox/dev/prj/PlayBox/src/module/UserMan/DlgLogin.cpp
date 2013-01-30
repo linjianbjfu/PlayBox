@@ -187,7 +187,7 @@ void CDlgLogin::OnLoginClicked()
 		//tooltip 
 		return;
 	}
-	CUserManager::GetInstance()->User_Login(cstrUserName, cstrPassWord, false);
+	CUserManager::GetInstance()->User_Login(cstrUserName, cstrPassWord);
 }
 
 void CDlgLogin::OnCancelClicked()

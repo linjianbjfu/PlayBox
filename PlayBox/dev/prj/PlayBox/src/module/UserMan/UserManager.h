@@ -30,18 +30,22 @@ public:
 	};
 public:
 	void User_AppStartUp();//if config is auto login, then login
-	void User_Login(LPCSTR pszName,LPCSTR pszPwd, bool bPassIsMD5);
+	void User_Login(LPCSTR pszName,LPCSTR pszPwd);
 	void User_CancelLog();
 	void User_Logout();
 	void User_AppExit();
 	bool User_IsLogin();
 	UserInfo* User_GetUserInfo() const;
 
+	void User_Login_After_Reg_Suc(LPCSTR pszName,LPCSTR pszPwdMD5);
+	void SetRegisterWnd(CDialog* pDlg);//register suc, post message to hWnd to EndDialog
+
 private:	
 	HANDLE	m_hThreadLogIn;
 	UserInfo* m_pUserInfo;
 	State m_state;
 	ErrDetail m_errDetail;
+	CDialog* m_pRegDlg;
 	void UserLoginInternal(LPCSTR pszName,LPCSTR pszPwdMD5);
 	static DWORD WINAPI ThreadLogin(void* pPara);
 	static void ParseJson(const std::string strJson, bool& bLoginSuc);

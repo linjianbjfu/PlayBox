@@ -49,7 +49,8 @@ CUserManager::CUserManager()
 	: m_hThreadLogIn(NULL),
 	  m_pUserInfo(NULL),
 	  m_state(NOT_LOGGED_IN),
-	  m_errDetail(SUCCEEDED) {}
+	  m_errDetail(SUCCEEDED),
+	  m_pRegDlg(NULL) {}
 
 CUserManager* CUserManager::GetInstance()
 {
@@ -98,16 +99,31 @@ void CUserManager::User_AppStartUp()
 	g_pUserMgr->UserLoginInternal(strUserName.c_str(), szMD5Pass);
 }
 
-void CUserManager::User_Login(LPCSTR pszName, LPCSTR pszPwd, bool bPassIsMD5)
+void CUserManager::User_Login(LPCSTR pszName, LPCSTR pszPwd)
 {
-	if (bPassIsMD5)
-		UserLoginInternal(pszName, pszPwd);
-	else
+	char szPwdMD5[33] = {0};
+	MD5String(const_cast<char*>(pszPwd), szPwdMD5);
+	UserLoginInternal(pszName, szPwdMD5);
+}
+
+void CUserManager::User_Login_After_Reg_Suc(LPCSTR pszName,LPCSTR pszPwdMD5)
+{
+	BEGIN_SET_STATE_AND_NOTIFY(LOGIN_ON_THE_WAY, SUCCEEDED)
+		pOb->UserMsg_BeginLogin();
+	END_SET_STATE_AND_NOTIFY()
+
+	SetUserInfo(pszName, pszPwdMD5);
+
+	//tell reg dialog to leave
+	if (m_pRegDlg)
 	{
-		char szPwdMD5[33] = {0};
-		MD5String(const_cast<char*>(pszPwd), szPwdMD5);
-		UserLoginInternal(pszName, szPwdMD5);
+		m_pRegDlg->PostMessage(WM_CLOSE, 0, 0);
+		m_pRegDlg = NULL;
 	}
+	BEGIN_SET_STATE_AND_NOTIFY(HAVE_LANDED, SUCCEEDED)
+		pOb->UserMsg_Login();
+	END_SET_STATE_AND_NOTIFY()
+
 }
 
 void CUserManager::UserLoginInternal(LPCSTR pszName, LPCSTR pszPwdMD5)
@@ -180,6 +196,7 @@ DWORD CUserManager::ThreadLogin(void* pPara)
 		BEGIN_SET_STATE_AND_NOTIFY(LOGIN_ON_THE_WAY, NET_ERROR)
 			pOb->UserMsg_LogFaild();
 		END_SET_STATE_AND_NOTIFY()
+		return 0;
 	}
 	//µÇÂ½³É¹¦
 	BYTE *pbyIndex = NULL;
@@ -221,6 +238,7 @@ DWORD CUserManager::ThreadLogin(void* pPara)
 			pOb->UserMsg_LogFaild();
 		END_SET_STATE_AND_NOTIFY()
 	}
+	delete threadPara;
 	return 0;
 }
 
@@ -283,4 +301,9 @@ void CUserManager::ParseJson(const std::string strJson, bool& bLoginSuc)
 UserInfo* CUserManager::User_GetUserInfo() const
 {
 	return m_pUserInfo;
+}
+
+void CUserManager::SetRegisterWnd(CDialog* pDlg)
+{
+	m_pRegDlg = pDlg;
 }

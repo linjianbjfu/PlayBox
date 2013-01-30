@@ -19,8 +19,11 @@ static const char* s_USER_MAN_LOGED_OUT	= "UserMan_LogedOut";
 IMPLEMENT_DYNAMIC(PlayedGameWnd, CBasicWnd)
 
 #define NEW_SKIN_BTN(pBtn) pBtn = new CxSkinButton();
+
 PlayedGameWnd::PlayedGameWnd()
-: m_bSortTimeByAsc(true), m_iGameType(0)
+: m_bSortTimeByAsc(true), 
+  m_iGameType(0),
+  m_textType(RECENT_PLAY)
 {
 	NEW_SKIN_BTN(m_pBtnTimeOrder);
 	NEW_SKIN_BTN(m_pBtnToWebGame);
@@ -30,6 +33,13 @@ PlayedGameWnd::PlayedGameWnd()
 	m_pWndRecommand = new MyWebBrowserWnd();
 	m_pWndLogedIn	= new CUserLogedInWnd();
 	m_pWndLogedOut	= new CUserLogedOutWnd();
+	//init g_textBmp
+	ISkinMgr* pMgr = AfxGetUIManager()->UIGetSkinMgr();
+	m_pTextBmp[RECENT_PLAY] = pMgr->GetDibBmp("PlayedGameCtrlPanelTextRecentPlay");
+	m_pTextBmp[FLASH_GAME]      = pMgr->GetDibBmp("PlayedGameCtrlPanelTextFlash");
+	m_pTextBmp[WEB_GAME]        = pMgr->GetDibBmp("PlayedGameCtrlPanelTextWeb");
+	m_pTextBmp[COLLECT_GAME]    = pMgr->GetDibBmp("PlayedGameCtrlPanelTextCollect");
+
 	AfxGetMessageManager()->AttachMessage(ID_MESSAGE_USER, (IUserMsgObserver*)this);
 }
 
@@ -43,11 +53,18 @@ PlayedGameWnd::~PlayedGameWnd()
 	delete m_pWndLogedIn;
 	delete m_pWndLogedOut;
 	//do not delete m_pWndRecommand
+	for (int i=0; i<TT_END; i++)
+	{
+		delete m_pTextBmp[i];
+		m_pTextBmp[i] = NULL;
+	}
+	
 	AfxGetMessageManager()->DetachMessage(ID_MESSAGE_USER, (IUserMsgObserver*)this);
 }
 
 BEGIN_MESSAGE_MAP(PlayedGameWnd, CBasicWnd)
 	ON_WM_CREATE()
+	ON_WM_PAINT()
 	ON_BN_CLICKED(ID_BTN_PLAYED_GAME_TIME_ORDER,OnClickedTimerOrder)
 	ON_BN_CLICKED(ID_BTN_PLAYED_GAME_TO_WEB_GAME,OnClickedToWebGame)
 	ON_BN_CLICKED(ID_BTN_PLAYED_GAME_TO_FLASH_GAME,OnClickedToFlashGame)
@@ -107,6 +124,8 @@ void PlayedGameWnd::OnDestroy()
 //这个函数的意义发生变化，不是按时间排序，而是现实所有的最近玩过的游戏
 void PlayedGameWnd::OnClickedTimerOrder()
 {
+	SetOnlyOneBtnCheckedAndValidate(m_pBtnTimeOrder);
+	//下面是按时间排序的实现方法
 	/*
 	GameList lgl;
 	copy(m_gameList.begin(), m_gameList.end(), back_inserter(lgl));
@@ -139,6 +158,16 @@ void PlayedGameWnd::SetOnlyOneBtnCheckedAndValidate(CxSkinButton* pBtn)
 	m_pBtnToWebGame->SetCheck(m_pBtnToWebGame == pBtn ? BST_CHECKED : BST_UNCHECKED);
 	m_pBtnToFlashGame->SetCheck(m_pBtnToFlashGame == pBtn ? BST_CHECKED : BST_UNCHECKED);
 	m_pBtnToCollectedGame->SetCheck(m_pBtnToCollectedGame == pBtn ? BST_CHECKED : BST_UNCHECKED);
+
+	if(m_pBtnTimeOrder == pBtn)
+		m_textType = RECENT_PLAY;
+	else if(m_pBtnToWebGame == pBtn)
+		m_textType = WEB_GAME;
+	else if(m_pBtnToFlashGame == pBtn)
+		m_textType = FLASH_GAME;
+	else if(m_pBtnToCollectedGame == pBtn)
+		m_textType = COLLECT_GAME;
+
 	ValidateInterface();
 }
 
@@ -213,4 +242,17 @@ void PlayedGameWnd::UserMsg_LogOut()
 {
 	AfxGetUIManager()->UIGetLayoutMgr()->ShowLayer(s_USER_MAN_LOGED_IN_OUT, s_USER_MAN_LOGED_OUT);
 	ValidateInterface();
+}
+
+void PlayedGameWnd::OnPaint()
+{
+	CPaintDC dc(this);
+	AfxGetUIManager()->UIGetLayoutMgr()->PaintBkGround( m_hWnd ,&dc,false );
+	
+	if (m_pTextBmp[m_textType] != NULL)
+	{
+		CRect rc(34, 43, 108, 61);
+		m_pTextBmp[m_textType]->SetCDibRect(rc);
+		m_pTextBmp[m_textType]->Draw(&dc, FALSE);
+	}
 }

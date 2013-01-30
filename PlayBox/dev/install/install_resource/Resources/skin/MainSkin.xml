@@ -69,7 +69,6 @@
 
 <wndpanel name="playedgamepanel" mode="normal">
 	<background name="normal" ori="NO_POS" background_color="ffffff">
-		<paneitem name="PlayedGameCtrlPanelTextBk" type="bmp" start_x_left="34" start_y_top="43" x_delta="74" y_delta="18" />
 		<paneitem name="PlayedGameSeperatorBk" type="bmp" start_x_right="259" start_y_top="0" x_delta="1" end_y_bottom="0" />
 		<paneitem name="PlayedGameSeperatorBk" type="bmp" start_x_right="259" start_y_top="109" end_x_right="0" y_delta="1" />
 	</background>
@@ -89,7 +88,7 @@
 
 <wndpanel name="usermanlogedinpanel" mode="normal">
 	<background name="normal" ori="NO_POS" background_color="ffffff">
-		<paneitem name="UserManLogoutBk" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_bottom="0" />
+		<paneitem name="UserManLoginBk" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_bottom="0" />
 	</background>
 </wndpanel>
 
