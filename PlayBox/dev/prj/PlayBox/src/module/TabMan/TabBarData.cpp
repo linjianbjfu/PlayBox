@@ -177,5 +177,8 @@ void CTabBarData::ITabBar_SetBarData(TAB_ITEM &tabItem)
 			break;
 	}
 	if( it != m_vecItem.end() )
+	{
 		it->strTitle = tabItem.strTitle;
+		NotifyTabItemDataChanged(tabItem);
+	}
 }
