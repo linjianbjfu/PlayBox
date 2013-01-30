@@ -202,10 +202,11 @@
 
 <wndpanel name="AboutDlg" >
 	<background name="normal" ori="NO_POS" background_color="FFFFFF">
-		<paneitem name="AboutDlgBkg" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_bottom="0" dont_change_color="1" />
+		<paneitem name="bkAboutUs" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_bottom="0" dont_change_color="1" />
 	</background>
 	<controlpanel name="normal" ori="NO_POS">
-		<paneitem name="AboutDlg_OK" type="button" bmp="AboutDlgOK" start_x_left="120" start_y_top="78"  x_delta="80" y_delta="24" dont_change_color="1"/> 
+		<paneitem name="AboutDlg_OK" type="button" bmp="AboutDlgOK" start_x_left="120" start_y_top="130"  x_delta="80" y_delta="24" dont_change_color="1"/> 
+		<paneitem name="AboutDlg_Close" type="button" bmp="minorexitclose" start_x_left="290" start_y_top="8"  x_delta="80" y_delta="24" dont_change_color="1"/> 
 	</controlpanel>
 </wndpanel>
 
@@ -297,4 +298,3 @@
 </colors>
 </root>
 
-<!--trick-->
