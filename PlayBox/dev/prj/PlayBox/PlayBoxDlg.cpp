@@ -202,7 +202,7 @@ BOOL CPlayBoxDlg::OnInitDialog()
 	SetWindowText("小宝贝游戏盒");
 	_AdjustDlgSize();
 
-	m_ptrayIcon->SetIcon(theApp.LoadIcon(IDI_BEAR),"小宝贝游戏盒");
+	m_ptrayIcon->SetIcon(theApp.LoadIcon(IDI_ICON_BEAR),"小宝贝游戏盒");
 
 	ReleaseMutex(curMutexHandle);
 
@@ -932,7 +932,7 @@ LRESULT CPlayBoxDlg::OnChangeText(WPARAM wp, LPARAM lp)
 		if(str != "" && str[0] == '-')
 			str = str.Mid(1);
 		SetWindowText(str);
-		m_ptrayIcon->SetIcon(theApp.LoadIcon(IDR_MAINFRAME),(LPCSTR)wp);
+		m_ptrayIcon->SetIcon(theApp.LoadIcon(IDI_ICON_BEAR),(LPCSTR)wp);
 	}catch(...){}
 	return 0;
 }
@@ -983,7 +983,7 @@ LRESULT CPlayBoxDlg::OnOpenRegDialog(WPARAM w,LPARAM l)
 	AfxGetUserConfig()->GetConfigStringValue(CONF_APP_MODULE_NAME, 
 		CONF_APP_REGIST_URL, strUrl);
 	// 获取注册页面大小
-	CRect rctPageSize(0, 0, 518, 298);
+	CRect rctPageSize(0, 0, 520, 420);
 	CWebDlg dlg(AfxGetMainWindow());
 	AfxGetUIManager()->UIAddDialog(&dlg);
 	CUserManager::GetInstance()->SetRegisterWnd(&dlg);
@@ -1024,9 +1024,9 @@ LRESULT CPlayBoxDlg::OnHotKey(WPARAM wParam, LPARAM lParam)
 			else
 			{
 				ShowWindow(SW_NORMAL);
-				m_ptrayIcon = new CTrayIcon(IDI_BEAR);
+				m_ptrayIcon = new CTrayIcon(IDI_ICON_BEAR);
 				m_ptrayIcon->SetNotificationWnd(this, WM_MY_TRAY_NOTIFICATION);
-				m_ptrayIcon->SetIcon(theApp.LoadIcon(IDI_BEAR),"小宝贝游戏盒");
+				m_ptrayIcon->SetIcon(theApp.LoadIcon(IDI_ICON_BEAR),"小宝贝游戏盒");
 			}
 			
 		}

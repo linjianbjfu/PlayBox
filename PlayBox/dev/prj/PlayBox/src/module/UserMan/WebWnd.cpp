@@ -41,7 +41,7 @@ BOOL CWebDlg::OnInitDialog()
 	SetWindowPos(NULL, 0, 0, m_sizeWnd.cx, m_sizeWnd.cy, SWP_NOMOVE);
 
 	pLayoutMgr->CreateControlPane( this,"WebWnd","normal");
-	pLayoutMgr->CreateBmpPane( this,"WebWnd","bk" );
+	pLayoutMgr->CreateBmpPane( this,"WebWnd","normal" );
 
 	m_pWebBrowser->Navigate(m_strUrl.GetBuffer(0));
 	m_strUrl.ReleaseBuffer();

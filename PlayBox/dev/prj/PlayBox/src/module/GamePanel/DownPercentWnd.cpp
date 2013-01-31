@@ -3,10 +3,12 @@
 #include "YL_StringUtil.h"
 #include "../../Global/GlobalSwfPath.h"
 #include "../../Core/CDataManager.h"
+#include "src/GUI/CommonControl/xSkinButton.h"
 
 IMPLEMENT_DYNAMIC(DownPercentWnd, CWnd)
 DownPercentWnd::DownPercentWnd()
 {
+	m_pBtnClose = new CxSkinButton;
 	m_isFailed		 = false;
 	m_dDownPercent	 = 0;
  	m_colBk			 = RGB(218,232,244);
@@ -59,6 +61,7 @@ BEGIN_MESSAGE_MAP(DownPercentWnd, CWnd)
 	ON_WM_DESTROY()
 	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONDOWN()
+	ON_BN_CLICKED(IDC_BTN_CLOSETAB,	OnBnCloseTab)
 END_MESSAGE_MAP()
 
 int DownPercentWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -66,7 +69,10 @@ int DownPercentWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
 	AfxGetUIManager()->UIGetSkinMgr()->AddSkinWnd( this );
+	CRect rectNULL(0,0,0,0);
+	m_pBtnClose->Create(NULL,WS_VISIBLE,rectNULL,this,IDC_BTN_CLOSETAB);
 	LoadSkin();
+	
 
 	if( GLOBAL_ADDATA->GetLoadingPicAd( m_ad ) )
 	{
@@ -109,12 +115,22 @@ void DownPercentWnd::OnPaint()
 	MemDC2.RestoreDC(iSaveDc);
 	MemDC2.DeleteDC();	
 	MemBitmap2.DeleteObject();
+	//CRect rect;
+	GetClientRect(&rect);
+	rect.top += 14;
+	rect.bottom -=90;
+	rect.right -=15;
+	rect.left +=15;
+	m_pWnd->MoveWindow(rect);
+	rect.bottom += 17;
+	rect.right -=40;
+	m_pBtnClose->MoveWindow(rect.right,rect.bottom,20,20,true);
 }
 
 void DownPercentWnd::DrawProgress( CDC* pDc, CRect rc )
 {
-	if( m_pBmpBgL == NULL || m_pBmpBgM == NULL 
-		|| m_pBmpBgR == NULL || m_pBmpM == NULL )
+	if( m_pBmpBg_Full == NULL || m_pBmpBgM == NULL 
+		|| m_pBmpBgR == NULL )
 	{
 		return;
 	}
@@ -122,34 +138,25 @@ void DownPercentWnd::DrawProgress( CDC* pDc, CRect rc )
 	CPoint ptCenter = rc.CenterPoint();
 	CRect rcProgressBarBg( rc );
 	rcProgressBarBg.left += 30;
-	rcProgressBarBg.right -= 30;
+	rcProgressBarBg.right -= 70;
 	rcProgressBarBg.top = /*ptCenter.y + 30*/rc.bottom-90 +15;
-	rcProgressBarBg.bottom = rcProgressBarBg.top + m_pBmpBgL->GetHeight();
+	rcProgressBarBg.bottom = rcProgressBarBg.top + m_pBmpBg_Full->GetHeight();
 	//画进度条背景
-	//左背景
+	//Paint the full progress.
 	CRect rcBgL( rcProgressBarBg );
-	rcBgL.right = rcBgL.left + m_pBmpBgL->GetWidth();
-	m_pBmpBgL->SetCDibRect( rcBgL );
-	m_pBmpBgL->Draw( pDc, TRUE, RGB(255,0,0) );
-	//右背景
+	m_pBmpBg_Full->SetCDibRect( rcBgL );
+	m_pBmpBg_Full->Draw( pDc, TRUE, RGB(255,0,0) );
+	//Paint the right background.
 	CRect rcBgR( rcProgressBarBg );
 	rcBgR.left = rcBgR.right - m_pBmpBgR->GetWidth();
 	m_pBmpBgR->SetCDibRect( rcBgR );
 	m_pBmpBgR->Draw( pDc, TRUE, RGB(255,0,0) );
-	//中背景
+	//Paint the middle parts.
 	CRect rcBgM( rcProgressBarBg );
-	rcBgM.left  = rcBgL.right;
+	rcBgM.left  = rcProgressBarBg.left +m_dDownPercent*rcProgressBarBg.Width() ;
 	rcBgM.right = rcBgR.left;
 	m_pBmpBgM->SetCDibRect( rcBgM );
 	m_pBmpBgM->Draw( pDc, TRUE, RGB(255,0,0) );
-	//画进度条-进度条比背景四周都少1像素
-	CRect rcProgressBar( rcProgressBarBg );
-	rcProgressBar.DeflateRect( 1,1,1,1 );
-	rcProgressBar.right = m_dDownPercent * rcProgressBar.Width() + rcProgressBar.left;
-	//只画中间，不画左右
-	CRect rcM( rcProgressBar );
-	m_pBmpM->SetCDibRect( rcM );
-	m_pBmpM->Draw( pDc, TRUE, RGB(255,0,0) );
 }
 
 void DownPercentWnd::DrawInfoText( CDC* pDc, CRect rc )
@@ -279,10 +286,20 @@ void DownPercentWnd::LoadSkin()
 {
 	ISkinMgr* pSkinMgr = AfxGetUIManager()->UIGetSkinMgr();
 	m_colText  = pSkinMgr->GetColor( "DownProgressWndTextColor" );
-	m_pBmpBgL  = pSkinMgr->GetDibBmp( "Lo_Bg_L" );
-	m_pBmpBgM  = pSkinMgr->GetDibBmp( "Lo_Bg_M" );
-	m_pBmpBgR  = pSkinMgr->GetDibBmp( "Lo_Bg_R" );
-	m_pBmpM    = pSkinMgr->GetDibBmp( "Lo_M" );
+	//m_pBmpBgL  = pSkinMgr->GetDibBmp( "Lo_Bg_L" );
+	//m_pBmpBgM  = pSkinMgr->GetDibBmp( "Lo_Bg_M" );
+	//m_pBmpBgR  = pSkinMgr->GetDibBmp( "Lo_Bg_R" );
+	//m_pBmpM    = pSkinMgr->GetDibBmp( "Lo_M" );
+
+	m_pBmpBg_Full  = pSkinMgr->GetDibBmp( "Progress_Bg_Full" );
+	m_pBmpBgM  = pSkinMgr->GetDibBmp( "Progress_Bg_M" );
+	m_pBmpBgR  = pSkinMgr->GetDibBmp( "Progress_Bg_R" );
+
+	ILayoutMgr* pLayoutMgr =  AfxGetUIManager()->UIGetLayoutMgr();
+
+	pLayoutMgr->RegisterCtrl( this, "DownPercentDlg_btnClose", m_pBtnClose);
+	pLayoutMgr->CreateControlPane( this,"DownPercentDlg","normal");	
+	pLayoutMgr->CreateBmpPane( this,"DownPercentDlg","normal" );
 }
 void DownPercentWnd::OnDestroy()
 {
@@ -314,4 +331,11 @@ void DownPercentWnd::OnLButtonDown(UINT nFlags, CPoint point)
 		}		
 	}
 	__super::OnLButtonDown(nFlags, point);
+}
+void DownPercentWnd::OnBnCloseTab()
+{
+	//MessageBox("CLOSETAB","Info",MB_OK);
+	TAB_ITEM tabItem;
+	GLOBAL_TABBARDATA->ITabBar_GetCurItem(tabItem);
+	GLOBAL_TABBARDATA->ITabBar_DeleteTab(tabItem);
 }

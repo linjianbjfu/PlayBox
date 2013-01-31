@@ -36,6 +36,7 @@ m_pBmpBkChkNewer(NULL),
 m_pBmpBkChkNoUp(NULL),
 m_hMutexhandle(NULL),
 m_hDownMutexhandle(NULL),
+m_pBmpBg_Full(NULL),
 m_bDown(false)
 {
 	m_pBtnChkCancel = new CxSkinButton;

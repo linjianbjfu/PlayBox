@@ -260,6 +260,7 @@
 #define IDC_EDIT_LOGIN_USER_NAME        336
 #define IDC_EDIT_LOGIN_PASS_WORD        337
 #define ID_BTN_ABOUT_CLOSE				338
+#define IDC_BTN_CLOSETAB						339
 
 // Next default values for new objects
 // 

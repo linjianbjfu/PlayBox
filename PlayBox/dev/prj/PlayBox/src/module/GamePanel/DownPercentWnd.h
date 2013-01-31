@@ -12,6 +12,7 @@ using std::string;
 
 class CMyHtmlView;
 class CDibBitmap;
+class CxSkinButton;
 
 class DownPercentWnd : public CWnd,
 					   public CBasicSkinWnd
@@ -32,6 +33,7 @@ private:
 	CDibBitmap*		m_pBmpBgM;
 	CDibBitmap*		m_pBmpBgR;
 	CDibBitmap*		m_pBmpM;
+	CDibBitmap*		m_pBmpBg_Full;
 	//¹ã¸æ
 	Image*   		m_pImgAd;
 	CRect		    m_rcFlash;
@@ -40,6 +42,7 @@ private:
 	void	DrawProgress( CDC* pDc, CRect rc );
 	void	DrawInfoText( CDC* pDc, CRect rc );
 	void	DrawAd( CDC* pDc, CRect rc );
+	CxSkinButton*	m_pBtnClose;
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -47,6 +50,7 @@ public:
 	afx_msg void OnPaint();
 	afx_msg void OnDestroy();
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnBnCloseTab();
 
 	void	SetDownPercent( double dPercent );
 	void	SetText( vector<string>& vecText );
