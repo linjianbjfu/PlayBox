@@ -3,6 +3,7 @@
 #include "./src/Core/AfxGlobals.h"
 #include "../../AppConfig/config/ConfigSettingDef.h"
 #include "UserManager.h"
+#include "WebWnd.h"
 
 static CRect rectNULL(0,0,0,0);
 
@@ -134,7 +135,8 @@ void CDlgLogin::OnCloseClicked()
 
 void CDlgLogin::OnRegClicked()
 {
-	//´ò¿ª×¢²áµÄcommondlg
+	PostMessage(WM_CLOSE, 0, 0);
+	AfxGetMainWindow()->PostMessage(MSG_OPEN_REG_DIALOG, 0, 0);
 }
 
 void CDlgLogin::OnForgetPassClicked()

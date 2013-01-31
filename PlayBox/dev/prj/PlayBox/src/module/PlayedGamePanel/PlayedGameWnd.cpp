@@ -229,6 +229,7 @@ void PlayedGameWnd::ValidateInterface()
 		m_iGameType |= OneGame::COLLECTED;
 	GLOBAL_GAME->IGameData_GetGame(m_gameList, m_iGameType);
 	m_pWndGameListWnd->ReSetGameList(m_gameList);
+	Invalidate(FALSE);
 }
 
 void PlayedGameWnd::UserMsg_Login()

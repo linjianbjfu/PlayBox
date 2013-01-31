@@ -96,21 +96,9 @@ void CTabBarData::ITabBar_ChangeTab(TAB_ITEM &item)
 	}
 	if( it != m_vecItem.end() )
 	{
-		//if open new webgamepanel, should check whether login
-		if (item.enumType == TAB_WEBGAME &&
-			item.id == 0 &&
-			CUserManager::GetInstance()->User_GetUserInfo() == NULL)
-		{
-			CDlgLogin dlgLogin;
-			dlgLogin.DoModal();
-			return;
-		}
-		else
-		{
-			m_iPos = int(it - m_vecItem.begin());
-			m_vecItem[m_iPos] = item;
-			NotifyOpenExistTab(item);
-		}
+		m_iPos = int(it - m_vecItem.begin());
+		m_vecItem[m_iPos] = item;
+		NotifyOpenExistTab(item);
 	}else
 	{
 		if( m_vecItem.size() >= MAX_TAB_COUNT )
@@ -118,11 +106,22 @@ void CTabBarData::ITabBar_ChangeTab(TAB_ITEM &item)
 			NotifyOpenTabError( 1 );
 		else
 		{
-			//新建id
-			item.id = m_idCounter++;
-			m_vecItem.push_back(item);
-			m_iPos = int(m_vecItem.size()-1);
-			NotifyCreateTab(item);
+			//if open new webgamepanel, should check whether login
+			if (item.enumType == TAB_WEBGAME &&
+				item.id == -1 &&
+				CUserManager::GetInstance()->User_GetUserInfo() == NULL)
+			{
+				CDlgLogin dlgLogin;
+				dlgLogin.DoModal();
+			}
+			else
+			{
+				//新建id
+				item.id = m_idCounter++;
+				m_vecItem.push_back(item);
+				m_iPos = int(m_vecItem.size()-1);
+				NotifyCreateTab(item);
+			}
 		}
 	}
 }

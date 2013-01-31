@@ -21,6 +21,8 @@
 #include "./src/datainterface/IAdData.h"
 //#include "ExceptionHandler.h"
 #include "../module/TopPanel/TopPanel_Control.h"
+#include "module/UserMan/WebWnd.h"
+#include "module/UserMan/UserManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -79,6 +81,7 @@ BEGIN_MESSAGE_MAP(CPlayBoxDlg, CDialog)
 	ON_MESSAGE(MSG_CHANGE_TEXT_DLG,OnChangeText)
 	ON_MESSAGE(MSG_HTTP_DOWNLOAD,OnHTTPDonwload)
 	ON_MESSAGE(MSG_NEW_BROWSER_WND, OnNewBrowserWnd)
+	ON_MESSAGE(MSG_OPEN_REG_DIALOG, OnOpenRegDialog)
 	ON_WM_TIMER()
 	ON_WM_SHOWWINDOW()
 	ON_WM_SYSCOMMAND()
@@ -970,6 +973,22 @@ LRESULT CPlayBoxDlg::OnNewBrowserWnd(WPARAM w,LPARAM l)
 	tabItem.enumType = TAB_BROWSER;
 	tabItem.iLPDISPATCHOnlyForBrowser = static_cast<int>(w);
 	GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
+	return 0L;
+}
+
+LRESULT CPlayBoxDlg::OnOpenRegDialog(WPARAM w,LPARAM l)
+{
+	// 获取注册地址
+	string strUrl;
+	AfxGetUserConfig()->GetConfigStringValue(CONF_APP_MODULE_NAME, 
+		CONF_APP_REGIST_URL, strUrl);
+	// 获取注册页面大小
+	CRect rctPageSize(0, 0, 518, 298);
+	CWebDlg dlg(AfxGetMainWindow());
+	AfxGetUIManager()->UIAddDialog(&dlg);
+	CUserManager::GetInstance()->SetRegisterWnd(&dlg);
+	dlg.DoModal(_T("注册"), strUrl.c_str(), rctPageSize.Width(), rctPageSize.Height());
+	AfxGetUIManager()->UIRemoveDialog(&dlg);
 	return 0L;
 }
 

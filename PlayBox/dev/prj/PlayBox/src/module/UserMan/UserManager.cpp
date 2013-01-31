@@ -307,3 +307,9 @@ void CUserManager::SetRegisterWnd(CDialog* pDlg)
 {
 	m_pRegDlg = pDlg;
 }
+
+CDialog* CUserManager::GetRegisterWnd()
+{
+	return m_pRegDlg;
+}
+

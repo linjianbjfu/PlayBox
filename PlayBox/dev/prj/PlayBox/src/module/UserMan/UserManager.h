@@ -39,6 +39,7 @@ public:
 
 	void User_Login_After_Reg_Suc(LPCSTR pszName,LPCSTR pszPwdMD5);
 	void SetRegisterWnd(CDialog* pDlg);//register suc, post message to hWnd to EndDialog
+	CDialog* GetRegisterWnd();
 
 private:	
 	HANDLE	m_hThreadLogIn;

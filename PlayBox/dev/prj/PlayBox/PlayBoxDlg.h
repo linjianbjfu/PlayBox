@@ -57,6 +57,7 @@ protected:
 	afx_msg LRESULT OnChangeText(WPARAM wp, LPARAM lp);
 	afx_msg LRESULT OnHTTPDonwload(WPARAM,LPARAM);
 	afx_msg LRESULT OnNewBrowserWnd(WPARAM w,LPARAM l);
+	afx_msg LRESULT OnOpenRegDialog(WPARAM w,LPARAM l);
 	afx_msg LRESULT OnConfUpdate(WPARAM,LPARAM);
 	afx_msg LRESULT OnHotKey(WPARAM wParam, LPARAM lParam);
 	BOOL PreTranslateMessage(MSG* pMsg );

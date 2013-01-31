@@ -53,15 +53,5 @@ void CUserLogedOutWnd::OnClickedLogin()
 
 void CUserLogedOutWnd::OnClickedRegister()
 {
-	// 获取注册地址
-	string strUrl;
-	AfxGetUserConfig()->GetConfigStringValue(CONF_APP_MODULE_NAME, CONF_APP_REGIST_URL, strUrl);
-
-	// 获取注册页面大小
-	CRect rctPageSize(0, 0, 518, 298);
-	CWebDlg dlg(this);
-	AfxGetUIManager()->UIAddDialog(&dlg);
-	CUserManager::GetInstance()->SetRegisterWnd(&dlg);
-	dlg.DoModal(_T("注册"), strUrl.c_str(), rctPageSize.Width(), rctPageSize.Height());
-	AfxGetUIManager()->UIRemoveDialog(&dlg);
+	AfxGetMainWindow()->PostMessage(MSG_OPEN_REG_DIALOG, 0, 0);
 }

@@ -1,9 +1,7 @@
 #include "stdafx.h"
-#include "resource.h"
 #include "WebWnd.h"
 #include "../../Gui/CommonControl/xSkinButton.h"
 #include "../WebInteract/MyWebBrowserWnd.h"
-#include ".\webwnd.h"
 
 IMPLEMENT_DYNAMIC(CWebDlg, CDialog)
 CWebDlg::CWebDlg(CWnd* pParent /*=NULL*/)
@@ -83,6 +81,7 @@ LRESULT CWebDlg::DoModal(CString strTitle, CString strUrl, int nPageWidth, int n
 
 	return __super::DoModal();
 }
+
 UINT CWebDlg::OnNcHitTest(CPoint point)
 {
 	CRect rc;

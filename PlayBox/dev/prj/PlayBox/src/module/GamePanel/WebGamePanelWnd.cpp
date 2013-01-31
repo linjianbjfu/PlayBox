@@ -158,18 +158,20 @@ bool WebGamePanelWnd::GenerateFlag(OUT std::string& strFlag,
 								   IN const std::string& userName)
 {
 	strFlag.clear();
-	static std::string strType = "najiuwanbox";
-	static std::string strKey = "69456fh45m9d1e77li";
 	static std::string strKeyMD5;
 	if (strKeyMD5.empty())
 	{
-		char szKey[128] = {0};
-		strcpy(szKey, strKey.c_str());
-		char szKeyMD5[32] = {0};
+		char szKey[] = {"69456fh45m9d1e77li02d9sheb64"};
+		char szKeyMD5[33] = {0};
 		MD5String(szKey, szKeyMD5);
 		strKeyMD5 = std::string(szKeyMD5);
 	}
-	strFlag = id + svrid + userName + strType + strKeyMD5;
+	strFlag = id + svrid + userName + "najiuwanbox" + strKeyMD5;
+	char szFlagNoMD5[256] = {0};
+	_snprintf(szFlagNoMD5, 255, "%s", strFlag.c_str());
+	char szFlagMD5[33] = {0};
+	MD5String(szFlagNoMD5, szFlagMD5);
+	strFlag = std::string(szFlagMD5);
 	return true;
 }
 
@@ -182,57 +184,55 @@ void WebGamePanelWnd::SetTabItem( TAB_ITEM ti )
 	string strValue;
 	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME, 
 		CONF_SETTING_CONFIG_WEB_GAME_URL, strValue );
-	if (!strValue.empty())
-	{
-		/*
-		http://box.najiuwan.com/index.php?s=/game/login_game_box/
-		username/yinshaohua/pass/1111/flag/asdasd23432fdsfdsf/id/107/svrid/2
-		*/
-		UserInfo* pUserInfo = CUserManager::GetInstance()->User_GetUserInfo();
-		if (pUserInfo == NULL)
-			return;
-		
-		std::string strFlag;
-		GenerateFlag(strFlag, m_webGame.strID, m_webGame.strSvrID, pUserInfo->strName);
-		string strUrl = strValue + "username/" + pUserInfo->strName +
-			"/pass/" + pUserInfo->strPassMD5 +
-			"/flag/" + strFlag +
-			"/id/" + m_webGame.strID + 
-			"/svrid/" + m_webGame.strSvrID;
-		m_pWndWebGame->Navigate(strUrl);
+	if (strValue.empty())
+		return;
+	/*
+	http://box.najiuwan.com/index.php?s=/game/login_game_box/
+	username/yinshaohua/pass/1111/flag/asdasd23432fdsfdsf/id/107/svrid/2
+	*/
+	UserInfo* pUserInfo = CUserManager::GetInstance()->User_GetUserInfo();
+	if (!pUserInfo)
+		return;
+	
+	std::string strFlag;
+	GenerateFlag(strFlag, m_webGame.strID, m_webGame.strSvrID, pUserInfo->strName);
+	string strUrl = strValue + "username/" + pUserInfo->strName +
+		"/pass/" + pUserInfo->strPassMD5 +
+		"/flag/" + strFlag +
+		"/id/" + m_webGame.strID + 
+		"/svrid/" + m_webGame.strSvrID;
+	m_pWndWebGame->Navigate(strUrl);
 
-		if ( YL_FileInfo::IsValid(m_webGame.strPicUrl) )
-		{ // picurl假如指向了本地文件,则是从本地游戏列表进入的游戏
-			return;
-		}
+	if ( YL_FileInfo::IsValid(m_webGame.strPicUrl) )
+	// picurl假如指向了本地文件,则是从本地游戏列表进入的游戏
+		return;
 
-		OneGame og;
-		og.strName	= m_webGame.strName;
-		og.strID	= m_webGame.strID;
-		og.strSrvID	= m_webGame.strSvrID;
-		og.strGamePath=strUrl;
+	OneGame og;
+	og.strName	= m_webGame.strName;
+	og.strID	= m_webGame.strID;
+	og.strSrvID	= m_webGame.strSvrID;
+	og.strGamePath=strUrl;
 
-		string strSavePath;
-		AfxGetUserConfig()->GetConfigStringValue(CONF_APP_MODULE_NAME, CONF_APP_SWF_PATH, strSavePath);
-		if (strSavePath[strSavePath.length()-1] != '\\')
-		strSavePath += '\\';
+	string strSavePath;
+	AfxGetUserConfig()->GetConfigStringValue(CONF_APP_MODULE_NAME, CONF_APP_SWF_PATH, strSavePath);
+	if (strSavePath[strSavePath.length()-1] != '\\')
+	strSavePath += '\\';
 
-		YL_StringUtil::ReplaceAll( m_webGame.strPicUrl, " ", "%20" );
-		string strPicFormat;
-		YL_FileInfo::GetFileNameSuffix( m_webGame.strPicUrl, strPicFormat );
+	YL_StringUtil::ReplaceAll( m_webGame.strPicUrl, " ", "%20" );
+	string strPicFormat;
+	YL_FileInfo::GetFileNameSuffix( m_webGame.strPicUrl, strPicFormat );
 
 
-		string strPicLocalDesPath;
-		YL_StringUtil::Format( strPicLocalDesPath, "%s%s_2.%s", 
-		strSavePath.c_str(), og.strID.c_str(), strPicFormat.c_str() );
+	string strPicLocalDesPath;
+	YL_StringUtil::Format( strPicLocalDesPath, "%s%s_2.%s", 
+	strSavePath.c_str(), og.strID.c_str(), strPicFormat.c_str() );
 
-		og.strPicPath = strPicLocalDesPath;
-		YL_CHTTPDownFile httpDownFile;
-		httpDownFile.DownloadFile( m_webGame.strPicUrl,  strPicLocalDesPath);
+	og.strPicPath = strPicLocalDesPath;
+	YL_CHTTPDownFile httpDownFile;
+	httpDownFile.DownloadFile( m_webGame.strPicUrl,  strPicLocalDesPath);
 
-		og.nGameType= OneGame::WEB_GAME | OneGame::RECENT_PLAY;
-		GLOBAL_GAME->IGameData_AddGame(og);
-	}
+	og.nGameType= OneGame::WEB_GAME | OneGame::RECENT_PLAY;
+	GLOBAL_GAME->IGameData_AddGame(og);
 }
 
 void WebGamePanelWnd::Init()
