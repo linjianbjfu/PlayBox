@@ -235,11 +235,6 @@ void WebGamePanelWnd::SetTabItem( TAB_ITEM ti )
 	GLOBAL_GAME->IGameData_AddGame(og);
 }
 
-void WebGamePanelWnd::Init()
-{
-	m_pWndWebGame->Init();
-}
-
 void WebGamePanelWnd::OnDestroy()
 {
 	m_pWndWebGame->DestroyWindow();
@@ -349,11 +344,6 @@ void WebGamePanelWnd::IPanelChangeOb_ExitFullScreen( CWnd* pWnd )
 BOOL WebGamePanelWnd::OnEraseBkgnd(CDC* pDC)
 {
 	return TRUE;
-}
-
-void WebGamePanelWnd::Recycle()
-{
-	Init();
 }
 
 void WebGamePanelWnd::OnClickedRefresh()

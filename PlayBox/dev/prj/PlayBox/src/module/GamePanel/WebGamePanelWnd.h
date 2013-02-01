@@ -27,9 +27,7 @@ public:
 	virtual ~WebGamePanelWnd();
 	void	LoadSkin();
 	void	SetTabItem( TAB_ITEM ti );
-	void	Init();
 	void	SetMainWindow(bool isTopMost);
-	void	Recycle();
 protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void	OnClickedRefresh();

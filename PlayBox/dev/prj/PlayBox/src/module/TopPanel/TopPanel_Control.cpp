@@ -22,19 +22,14 @@ CTopPanelControl::~CTopPanelControl()
 
 CTopPanelControl* CTopPanelControl::GetInstance()
 {
-	if( m_pTopPanelControl == NULL )
-	{
+	if(!m_pTopPanelControl)
 		m_pTopPanelControl = new CTopPanelControl();
-	}
 	return m_pTopPanelControl;
 }
 
 void CTopPanelControl::DeleteInstance()
 {
-	if( m_pTopPanelControl != NULL )
-	{
-		delete m_pTopPanelControl;
-	}
+	delete m_pTopPanelControl;
 }
 
 void CTopPanelControl::DoMin()
@@ -70,10 +65,8 @@ BOOL CTopPanelControl::IsHold()
 
 void CTopPanelControl::ShowMenu(CPoint p)
 {
-	if(m_pWndTopPanel != NULL)
-	{				
+	if(m_pWndTopPanel)
 		ShowMenu(&m_pWndTopPanel->m_pShowMenu, p);
-	}
 }
 
 void CTopPanelControl::ShowMenu(CShowMenu **ppShowMenu, CPoint p)
@@ -132,28 +125,11 @@ void CTopPanelControl::GetAllSkinName( vector<string>& vSkinName )
 	for( unsigned int n=0; n<vecSkins.size(); n++ )
 	{
 		if( YL_FileInfo::IsValid( sHomePath + vecSkins[n] + "\\skin.jpg" ) ) 
-		{
 			vSkinName.push_back( vecSkins[n] );
-		}
 	}
 }
 
 void CTopPanelControl::ClickButton(int pos)
 {
-	if(pos == TOPPANEL_NOWPLAYING)
-	{
-		::SendMessage(m_pWndTopPanel->m_hWnd,WM_COMMAND,10100,0);
-	}
-	else if(pos == TOPPANEL_NETLIB)
-	{
-		::SendMessage(m_pWndTopPanel->m_hWnd,WM_COMMAND,10102,0);
-	}
-	else if(pos == TOPPANEL_DOWNLOAD)
-	{
-		::SendMessage(m_pWndTopPanel->m_hWnd,WM_COMMAND,10103,0);
-	}
-	else if(pos == TOPPANEL_COMMEND)
-	{
-		::SendMessage(m_pWndTopPanel->m_hWnd,WM_COMMAND,10101,0);
-	}
+	//::SendMessage(m_pWndTopPanel->m_hWnd,WM_COMMAND,10100,0);
 }
