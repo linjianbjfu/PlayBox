@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "EditGlow.h"
 
-#define BORDER 3  //cedit»­±ßÐèÒª3¸öÏñËØ
+#define BORDER 6
 
 IMPLEMENT_DYNAMIC(CEditGlow, CEdit)
 CEditGlow::CEditGlow():

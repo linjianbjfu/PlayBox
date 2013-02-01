@@ -288,8 +288,8 @@
 	<color name="TooltipTextColor" value="000000"/>
 	<color name="TooltipBorderColor" value="000000"/>
 	<color name="TooltipBKColor" value="ffffff"/>
-	<color name="TabBarNormalTextColor" value="000000"/>
-	<color name="TabBarDownTextColor" value="0460a3"/>
+	<color name="TabBarNormalTextColor" value="ffffff"/>
+	<color name="TabBarDownTextColor" value="000000"/>
 	<color name="DownProgressWndBk" value="dae8f4"/>
 	<color name="DownProgressWndTextColor" value="000000"/>
 	<color name="PlayedGameDetailTextColor" value="333333"/>

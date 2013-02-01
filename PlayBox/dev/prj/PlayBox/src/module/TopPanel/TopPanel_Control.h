@@ -1,13 +1,6 @@
 #ifndef _TOP_PANEL_CONTROL_H
 #define _TOP_PANEL_CONTROL_H
 
-enum{
-	TOPPANEL_NOWPLAYING,
-	TOPPANEL_COMMEND,
-	TOPPANEL_NETLIB,
-	TOPPANEL_DOWNLOAD
-};
-
 class CTopPanelWnd;
 class CTopPanelControl	
 {
