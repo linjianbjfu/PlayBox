@@ -115,6 +115,7 @@
 		<paneitem name="Pause"      type="button" tooltip="ÔÝÍ£"     bmp="Pause"      start_x_left="242"  start_y_top="8" x_delta="70" y_delta="25" />
 		
 		<paneitem name="GameFlash"    type="wnd"  start_x_left="0" end_x_right="260" start_y_top="40" end_y_bottom="103"  />
+		<paneitem name="DownPercent"    type="wnd"  start_x_left="0" end_x_right="260" start_y_top="40" end_y_bottom="103"  />
 		<paneitem name="FlashGameBottom"   type="wnd"  start_x_left="0" end_x_right="260" start_y_bottom="103" end_y_bottom="0" /> 
 		<paneitem name="FlashGameRight"    type="wnd"  start_x_right="260" end_x_right="0" start_y_top="40" end_y_bottom="0"/>
 	</controlpanel>
@@ -288,8 +289,8 @@
 	<color name="TooltipTextColor" value="000000"/>
 	<color name="TooltipBorderColor" value="000000"/>
 	<color name="TooltipBKColor" value="ffffff"/>
-	<color name="TabBarNormalTextColor" value="ffffff"/>
-	<color name="TabBarDownTextColor" value="000000"/>
+	<color name="TabBarNormalTextColor" value="000000"/>
+	<color name="TabBarDownTextColor" value="0460a3"/>
 	<color name="DownProgressWndBk" value="dae8f4"/>
 	<color name="DownProgressWndTextColor" value="000000"/>
 	<color name="PlayedGameDetailTextColor" value="333333"/>

@@ -120,6 +120,7 @@ int GamePanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_pWndDownPercent->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN,rectNull,this,ID_WND_GAME_DOWN_PERCENT );
 
 	ILayoutMgr* pLayoutMgr =  AfxGetUIManager()->UIGetLayoutMgr();	
+	pLayoutMgr->RegisterCtrl( this, "DownPercent", m_pWndDownPercent );
 	pLayoutMgr->RegisterCtrl( this, "GameFlash", m_pGameFlash );
 	pLayoutMgr->RegisterCtrl( this, "GameRePlay", m_pBtnRePlay );
 	pLayoutMgr->RegisterCtrl( this, "ToFull", m_pBtnToFullScreen );
@@ -289,7 +290,7 @@ void GamePanelWnd::HttpDownOb_DownStart( string& strID )
 	vector<string> vecText;
 	vecText.push_back( "开始下载" );
 
-	m_pWndDownPercent->SetText( vecText );
+	//m_pWndDownPercent->SetText( vecText );
 	m_pWndDownPercent->SetDownPercent( 0 );
 }
 
@@ -413,20 +414,23 @@ void GamePanelWnd::HttpDownOb_DownProgress( string& strID, double dPercent,
 	vector<string> vecText;
 	string strText;
 	//文件大小\t下载百分比
-	YL_StringUtil::Format( strText, "%s   ", UINT2CString( unFileSize ).GetString() );
+	//YL_StringUtil::Format( strText, "%s   ", UINT2CString( unFileSize ).GetString() );
 	
 	string strTmp;
 	if( unFileSize == 0 )
 		YL_StringUtil::Format( strTmp, "连接中..." );
 	else
-		YL_StringUtil::Format( strTmp, "%d%%", (int)(dPercent*100) );
+	{
+		//YL_StringUtil::Format( strTmp, "%d%%", (int)(dPercent*100) );
+		YL_StringUtil::Format(strTmp,"游戏缓冲中... ");
+	}
 
-	strText += strTmp;
-	vecText.push_back( strText );
+	strText = strTmp;
+	//vecText.push_back( strText );
 	//下载速度
-	YL_StringUtil::Format( strText, "下载速度:%s/s   再等待:%s", 
-		UINT2CString( unSpeed ).GetString(),
-		GetLeftTime( unFileSize, unSpeed, (unsigned int)(dPercent*100) ).GetString() );
+	YL_StringUtil::Format( strTmp, "下载速度:%s/s ", 
+		UINT2CString( unSpeed ).GetString() );
+	strText +=strTmp;
 	vecText.push_back( strText );	
 	
 	//Show the percentage of download-process.
@@ -439,6 +443,23 @@ void GamePanelWnd::SetGameEntry( SWF_GAME sg )
 {
 	m_swfGame = sg;
 	OneGame olg;
+
+	std::string strFlashGameRightUrl;
+	AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
+		CONF_SETTING_CONFIG_FLASH_GAME_RIGHT_URL,strFlashGameRightUrl);
+	if (!strFlashGameRightUrl.empty())
+		m_pWndRight->Navigate(strFlashGameRightUrl+m_swfGame.strID);
+	else
+		m_pWndRight->Navigate("about:blank");
+
+	std::string strFlashGameBottomtUrl;
+	AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
+		CONF_SETTING_CONFIG_FLASH_GAME_BOTTOM_URL,strFlashGameBottomtUrl);
+	if (!strFlashGameBottomtUrl.empty())
+		m_pWndBottom->Navigate(strFlashGameBottomtUrl+m_swfGame.strID);
+	else
+		m_pWndBottom->Navigate("about:blank");
+
 	if( GLOBAL_GAME->IGameData_GetGameByID( m_swfGame.strID, OneGame::FLASH_GAME, olg ) )
 	{
 		m_bDown = false;
@@ -447,7 +468,7 @@ void GamePanelWnd::SetGameEntry( SWF_GAME sg )
 		//this->SetTimer(ADS_TIMER_ID,ADS_TIME,NULL);
 		PlayMovie( olg.strID, olg.strGamePath );
 		UpdateAllWnd();
-		std::string strFlashGameRightUrl;
+		/*std::string strFlashGameRightUrl;
 		AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
 			CONF_SETTING_CONFIG_FLASH_GAME_RIGHT_URL,strFlashGameRightUrl);
 		if (!strFlashGameRightUrl.empty())
@@ -461,7 +482,7 @@ void GamePanelWnd::SetGameEntry( SWF_GAME sg )
 		if (!strFlashGameBottomtUrl.empty())
 			m_pWndBottom->Navigate(strFlashGameBottomtUrl+m_swfGame.strID);
 		else
-			m_pWndBottom->Navigate("about:blank");
+			m_pWndBottom->Navigate("about:blank");*/
 	}else
 	{
 		m_bDown = true;
@@ -543,14 +564,31 @@ void GamePanelWnd::UpdateAllWnd()
 		//显示下载wnd
 		m_pWndDownPercent->ShowWindow( SW_SHOW );
 		m_pGameFlash->ShowWindow( SW_HIDE );
-		m_pBtnRePlay->ShowWindow( SW_HIDE );
-		m_pBtnMute->ShowWindow( SW_HIDE );
-		m_pBtnUnMute->ShowWindow( SW_HIDE );
-		m_pBtnToFullScreen->ShowWindow( SW_HIDE );
-		m_pBtnExitFullScreen->ShowWindow( SW_HIDE );
-		m_pBtnPause->ShowWindow(SW_HIDE);
-		m_pWndRight->ShowWindow(SW_HIDE);
-		m_pWndBottom->ShowWindow(SW_HIDE);
+		m_pBtnRePlay->ShowWindow( SW_SHOW );
+		//声音
+		if( CSound::GetInstance()->GetMute( 1 ) )
+		{
+			m_pBtnMute->ShowWindow( SW_HIDE );
+			m_pBtnUnMute->ShowWindow( SW_SHOW );
+		}else
+		{
+			m_pBtnMute->ShowWindow( SW_SHOW );
+			m_pBtnUnMute->ShowWindow( SW_HIDE );
+		}
+		//全屏
+		if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
+		{
+			m_pBtnToFullScreen->ShowWindow( SW_HIDE );
+			m_pBtnExitFullScreen->ShowWindow( SW_SHOW );
+		}else
+		{
+			m_pBtnToFullScreen->ShowWindow( SW_SHOW );
+			m_pBtnExitFullScreen->ShowWindow( SW_HIDE );
+		}
+		m_pBtnPause->ShowWindow(SW_SHOW);
+		m_pWndRight->ShowWindow(SW_SHOW);
+		m_pWndBottom->ShowWindow(SW_SHOW);
+		m_pGameFlash->ShowWindow( SW_SHOW );
 	}else
 	{
 		m_pWndDownPercent->ShowWindow( SW_HIDE );
@@ -586,7 +624,7 @@ void GamePanelWnd::UpdateAllWnd()
 void GamePanelWnd::OnSize(UINT nType, int cx, int cy)
 {
 	__super::OnSize(nType, cx, cy);	
-	m_pWndDownPercent->MoveWindow( 0, 0, cx, cy );
+	//m_pWndDownPercent->MoveWindow( 0, 0, cx, cy );
 	UpdateAllWnd();	
 }
 

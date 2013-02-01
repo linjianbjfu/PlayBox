@@ -11,7 +11,7 @@ DownPercentWnd::DownPercentWnd()
 	m_pBtnClose = new CxSkinButton;
 	m_isFailed		 = false;
 	m_dDownPercent	 = 0;
- 	m_colBk			 = RGB(218,232,244);
+ 	m_colBk			 = RGB(255,255,255);
 	m_colText		 = RGB(103,103,103);
 	m_rcFlash		 = CRect(0, 0, 0, 0);
 	m_ad.strLinkUrl.clear();
@@ -104,6 +104,7 @@ void DownPercentWnd::OnPaint()
 	//1画背景色
 	MemDC2.FillSolidRect( &rect, m_colBk );
 	//2画进度条
+	
 	//rect.top = rect.bottom - 90 -14;
 	DrawProgress( &MemDC2, rect );
 	//3写信息文字
@@ -115,16 +116,7 @@ void DownPercentWnd::OnPaint()
 	MemDC2.RestoreDC(iSaveDc);
 	MemDC2.DeleteDC();	
 	MemBitmap2.DeleteObject();
-	//CRect rect;
-	GetClientRect(&rect);
-	rect.top += 14;
-	rect.bottom -=90;
-	rect.right -=15;
-	rect.left +=15;
-	m_pWnd->MoveWindow(rect);
-	rect.bottom += 17;
-	rect.right -=40;
-	m_pBtnClose->MoveWindow(rect.right,rect.bottom,20,20,true);
+	
 }
 
 void DownPercentWnd::DrawProgress( CDC* pDc, CRect rc )
@@ -135,12 +127,23 @@ void DownPercentWnd::DrawProgress( CDC* pDc, CRect rc )
 		return;
 	}
 	//确定进度条范围：中心点向下30像素
-	CPoint ptCenter = rc.CenterPoint();
-	CRect rcProgressBarBg( rc );
-	rcProgressBarBg.left += 30;
-	rcProgressBarBg.right -= 70;
-	rcProgressBarBg.top = /*ptCenter.y + 30*/rc.bottom-90 +15;
+	//CPoint ptCenter = rc.CenterPoint();
+	//CRect rcProgressBarBg( rc );
+	//rcProgressBarBg.left += 30;
+	//rcProgressBarBg.right -= 70;
+	//rcProgressBarBg.top = /*ptCenter.y + 30*/rc.top+40+320 +15; 
+	
+	if(m_pWnd == NULL)
+	{
+		DrawAd(pDc,rc);
+	}
+	CRect rect;
+	m_pWnd->GetWindowRect(&rect);
+	ScreenToClient(&rect);
+	CRect rcProgressBarBg( rect );
+	rcProgressBarBg.top =rcProgressBarBg.bottom +40;
 	rcProgressBarBg.bottom = rcProgressBarBg.top + m_pBmpBg_Full->GetHeight();
+	rcProgressBarBg.right -=30;
 	//画进度条背景
 	//Paint the full progress.
 	CRect rcBgL( rcProgressBarBg );
@@ -153,25 +156,37 @@ void DownPercentWnd::DrawProgress( CDC* pDc, CRect rc )
 	m_pBmpBgR->Draw( pDc, TRUE, RGB(255,0,0) );
 	//Paint the middle parts.
 	CRect rcBgM( rcProgressBarBg );
+	m_dDownPercent <0 ? 0: m_dDownPercent;
 	rcBgM.left  = rcProgressBarBg.left +m_dDownPercent*rcProgressBarBg.Width() ;
 	rcBgM.right = rcBgR.left;
 	m_pBmpBgM->SetCDibRect( rcBgM );
 	m_pBmpBgM->Draw( pDc, TRUE, RGB(255,0,0) );
+
+	//Draw close button.
+	CRect rcBtn(rcProgressBarBg);
+	rcBtn.right +=10;
+	m_pBtnClose->MoveWindow(rcBtn.right,rcBtn.top,20,20,true);
 }
 
 void DownPercentWnd::DrawInfoText( CDC* pDc, CRect rc )
 {
 	//确定进度条范围:中心点向下50像素
-	CPoint ptCenter = rc.CenterPoint();
+	/*CPoint ptCenter = rc.CenterPoint();
 	CRect rcInfo( rc );
 	rcInfo.top = rc.bottom-90 +15+ 35;
-	rcInfo.bottom = rcInfo.top + 15;
+	rcInfo.bottom = rcInfo.top + 15;*/
+	CRect rect;
+	m_pWnd->GetWindowRect(&rect);
+	ScreenToClient(&rect);
+	rect.top = rect.bottom +10;
+	rect.bottom =rect.top +25;
+	CRect rcInfo(rect);
 	//写字
 	pDc->SelectObject( &m_font );
 	pDc->SetTextColor( m_colText );
 	for( int i=0; i<m_vecText.size(); i++ )
 	{
-		pDc->DrawText( m_vecText[i].c_str(), -1, &rcInfo, DT_NOPREFIX|DT_CENTER|DT_VCENTER|DT_SINGLELINE);
+		pDc->DrawText( m_vecText[i].c_str(), -1, &rcInfo, DT_NOPREFIX|DT_VCENTER|DT_SINGLELINE);
 		rcInfo.OffsetRect( 0, 20 ); //下移20像素
 	}	
 }
@@ -197,10 +212,11 @@ BOOL DownPercentWnd::AddDynamicView(LPCTSTR  lpszLabel, CRuntimeClass * pViewCla
 	//Set the rect of dynamic created view.
 	CRect rect;
 	GetClientRect(&rect);
-	rect.top += 14;
-	rect.bottom -=90;
-	rect.right -=15;
-	rect.left +=15;
+	rect.top += 40;
+	rect.bottom =rect.top + 320;
+	rect.right -=90;
+	rect.left =rect.right - 460;
+	rect.left > 0? rect.left:0;
 
 	if(!m_pWnd->Create (NULL,NULL,dwStyle,rect,this,CMyHtmlView::IDD ))
 	{
@@ -265,8 +281,9 @@ void DownPercentWnd::SetDownPercent( double dPercent )
 	m_dDownPercent = dPercent;
 	CRect rect;
 	GetClientRect(&rect);
-	rect.top += (rect.bottom -90 - 14);
+	//rect.top += (rect.bottom -90 - 14);
 	//rect.bottom -=90;
+	rect.top +=(360);
 	this->InvalidateRect (rect);
 	//Invalidate();
 }
