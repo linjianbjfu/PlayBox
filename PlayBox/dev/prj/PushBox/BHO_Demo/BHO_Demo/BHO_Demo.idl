@@ -1,0 +1,36 @@
+// BHO_Demo.idl : BHO_Demo 的 IDL 源
+//
+
+// 此文件将由 MIDL 工具处理以
+// 产生类型库(BHO_Demo.tlb)和封送处理代码。
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(D6E394D6-1014-485E-AB3C-B45E72D7BE37),
+	dual,
+	nonextensible,
+	helpstring("IMyBHO 接口"),
+	pointer_default(unique)
+]
+interface IMyBHO : IDispatch{
+};
+[
+	uuid(079D689E-985A-4904-B39F-5826BFA7D9E0),
+	version(1.0),
+	helpstring("BHO_Demo 1.0 类型库")
+]
+library BHO_DemoLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(4A194146-1E93-4F29-B8CB-E3E46DC0CB67),
+		helpstring("MyBHO Class")
+	]
+	coclass MyBHO
+	{
+		[default] interface IMyBHO;
+	};
+};
