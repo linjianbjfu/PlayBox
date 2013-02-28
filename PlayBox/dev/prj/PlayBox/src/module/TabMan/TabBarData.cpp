@@ -87,41 +87,57 @@ void CTabBarData::ITabBar_ChangeTab(TAB_ITEM &item)
 	if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
 		GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
 
-	//item有id是打开已有tab，否则新建
-	vector<TAB_ITEM>::iterator it = m_vecItem.begin();
-	for( ; it != m_vecItem.end(); it++ )
+	//1 item有id是打开已有tab
+	bool bFound = false;
+	for(vector<TAB_ITEM>::iterator it = m_vecItem.begin();
+		it != m_vecItem.end(); it++ )
 	{
-		if(it->id == item.id)
-			break;
+		if (!bFound && 
+			item.id != -1 && 
+			it->id == item.id)
+			 bFound = true;
+
+		if (!bFound &&
+			(item.enumType == TAB_HOME || 
+			item.enumType == TAB_PLAYED_GAME || 
+			item.enumType == TAB_GAME_INFO_HOME) &&
+			it->enumType == item.enumType)
+			bFound = true;
+
+		if (!bFound &&
+			(item.enumType == TAB_WEBGAME || item.enumType == TAB_FLASHGAME) &&
+			it->strParam == item.strParam)
+			bFound = true;
+
+		if (bFound)
+		{
+			m_iPos = int(it - m_vecItem.begin());
+			NotifyOpenExistTab(m_vecItem[m_iPos]);
+			return;
+		}
 	}
-	if( it != m_vecItem.end() )
+
+	if( m_vecItem.size() >= MAX_TAB_COUNT )
+		//超过上限，在当前tab的close按钮处出现tooltips提示关闭几个
+		NotifyOpenTabError( 1 );
+	else
 	{
-		m_iPos = int(it - m_vecItem.begin());
-		m_vecItem[m_iPos] = item;
-		NotifyOpenExistTab(item);
-	}else
-	{
-		if( m_vecItem.size() >= MAX_TAB_COUNT )
-			//超过上限，在当前tab的close按钮处出现tooltips提示关闭几个
-			NotifyOpenTabError( 1 );
+		//if open new webgamepanel, should check whether login
+		if (item.enumType == TAB_WEBGAME &&
+			item.id == -1 &&
+			CUserManager::GetInstance()->User_GetUserInfo() == NULL)
+		{
+			CDlgLogin dlgLogin;
+			dlgLogin.AddTask(item);
+			dlgLogin.DoModal();
+		}
 		else
 		{
-			//if open new webgamepanel, should check whether login
-			if (item.enumType == TAB_WEBGAME &&
-				item.id == -1 &&
-				CUserManager::GetInstance()->User_GetUserInfo() == NULL)
-			{
-				CDlgLogin dlgLogin;
-				dlgLogin.DoModal();
-			}
-			else
-			{
-				//新建id
-				item.id = m_idCounter++;
-				m_vecItem.push_back(item);
-				m_iPos = int(m_vecItem.size()-1);
-				NotifyCreateTab(item);
-			}
+			//新建id
+			item.id = m_idCounter++;
+			m_vecItem.push_back(item);
+			m_iPos = int(m_vecItem.size()-1);
+			NotifyCreateTab(item);
 		}
 	}
 }

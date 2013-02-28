@@ -36,6 +36,7 @@ private:
 	CxSkinButton m_btnCancel;
 	bool m_bRememberPassChecked;
 	bool m_bAutoLoginChecked;
+	bool m_bShowErrStatic;
 	CDibBitmap*  m_bkg;
 	CxStaticText m_staticError;
 	
@@ -48,11 +49,21 @@ private:
 	afx_msg void OnAutoLoginUnCheckClicked();
 	afx_msg void OnLoginClicked();
 	afx_msg void OnCancelClicked();
-	void ValidateCheckBox();
+	afx_msg void OnUserNameEditSetFocus();
+	afx_msg void OnPasswordEditSetFocus();
+	void ValidateCheckBoxOrShowFailText();
+	void ShowErrStaticAndLaterDisappear(LPCTSTR lpszText);
+	void HideErrStatic();
 	void InitEditControl(CEditGlow* pEdit, 
 		LPCSTR lpszPicPath, LPCSTR lpszGlowPicPath);
 	void UserMsg_Login();
 	void UserMsg_LogOut();
 	void UserMsg_LogFaild();
 	void UserMsg_BeginLogin();
+	void WriteConf();
+public:
+	void AddTask(const TAB_ITEM& ti);
+private:
+	TAB_ITEM m_task;
+	LPCSTR m_lpszPassPlaceHolder;
 };

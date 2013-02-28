@@ -260,7 +260,10 @@
 #define IDC_EDIT_LOGIN_USER_NAME        336
 #define IDC_EDIT_LOGIN_PASS_WORD        337
 #define ID_BTN_ABOUT_CLOSE				338
-#define IDC_BTN_CLOSETAB						339
+#define IDC_BTN_CLOSETAB				339
+#define ID_STATIC_LOGIN_ERR				340
+#define ID_STATIC_LOGEDOUT_LOGIN_ERR	341
+#define ID_BTN_USER_MAN_LOGOUT			342
 
 // Next default values for new objects
 // 

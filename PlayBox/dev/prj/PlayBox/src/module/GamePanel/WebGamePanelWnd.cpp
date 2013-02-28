@@ -20,6 +20,7 @@
 #include "util\md5.h"
 #include "..\UserMan\UserInfo.h"
 #include "..\UserMan\UserManager.h"
+#include "Global\GlobalSwfPath.h"
 
 
 IMPLEMENT_DYNAMIC(WebGamePanelWnd, CBasicWnd)
@@ -214,7 +215,7 @@ void WebGamePanelWnd::SetTabItem( TAB_ITEM ti )
 	og.strGamePath=strUrl;
 
 	string strSavePath;
-	AfxGetUserConfig()->GetConfigStringValue(CONF_APP_MODULE_NAME, CONF_APP_SWF_PATH, strSavePath);
+	GlobalSwfPath::GetConfigSwfPath(strSavePath);
 	if (strSavePath[strSavePath.length()-1] != '\\')
 	strSavePath += '\\';
 

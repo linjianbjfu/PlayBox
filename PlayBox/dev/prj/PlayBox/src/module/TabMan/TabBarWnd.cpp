@@ -4,6 +4,7 @@
 #include "TabPageControl.h"
 #include "../../gui/util/BalloonHelp.h"
 #include "../../gui/util/WToolTips.h"
+#include "../TopPanel/TopPanel_Control.h"
 
 #define ONE_TAB_MAX_WIDTH	100
 #define WIDTH_TEXT_LEFT_MARGIN 5 //tab上文字距离左边的间距
@@ -96,6 +97,7 @@ BEGIN_MESSAGE_MAP(CTabBarWnd, CBasicWnd)
 	ON_WM_CREATE()
 	ON_WM_PAINT()
 	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONDBLCLK()
 	ON_WM_MOUSEMOVE()
 	ON_WM_DESTROY()
 END_MESSAGE_MAP()
@@ -378,7 +380,7 @@ void CTabBarWnd::CalcTabPosition()
 		
 		m_vecTab.push_back( rcBtn );
 	
-		if( i == 0 || i == 1 ) //头2个不能关闭
+		if(i == 0 || i == 1 || i == 2) //头3个不能关闭
 		{
 			rcClose.right = rcBtn.right - WIDTH_CLOSE_TO_RIGHT;
 			rcClose.left  = rcClose.right;	
@@ -490,4 +492,9 @@ void CTabBarWnd::OnDestroy()
 	AfxGetUIManager()->UIGetSkinMgr()->RemoveSkinWnd( this );
 	m_pToolTip->DestroyWindow();
 	__super::OnDestroy();
+}
+
+void CTabBarWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
+{
+	CTopPanelControl::GetInstance()->DbclickTabBar();
 }

@@ -20,7 +20,6 @@ struct OneGame
 	std::string	strIntro;
 	std::string strSrvID; // srvid (webgame only)
 	std::string strAddTime; // ÃÌº” ±º‰ eg:2013-1-13 12:50
-	unsigned int uiFileSize;
 	int nGameType; //Type
 
 	OneGame()	{ clear();}
@@ -31,7 +30,6 @@ struct OneGame
 		strGamePath.clear();
 		strPicPath.clear();
 		strIntro.clear();
-		uiFileSize  = 0;
 		nGameType = 0;
 	}
 };

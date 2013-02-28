@@ -11,6 +11,7 @@
 #include "YL_FileInfo.h"
 #include "../json/json.h"
 #include "CDataManager.h"
+#include "tools.h"
 
 static CUserManager* g_pUserMgr = NULL;
 struct gameType2StringEnumPair
@@ -73,23 +74,13 @@ void CUserManager::User_AppStartUp()
 		CONF_SETTING_LOGIN_USER_NAME, strUserName);
 
 	if (strUserName.empty())
-	{
-		BEGIN_SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, USER_NAME_EMPTY)
-			pOb->UserMsg_LogFaild();
-		END_SET_STATE_AND_NOTIFY()
 		return;
-	}
 
 	std::string strBase64MD5Pass;
 	AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
 		CONF_SETTING_LOGIN_PASSWORD, strBase64MD5Pass);
 	if (strBase64MD5Pass.empty())
-	{
-		BEGIN_SET_STATE_AND_NOTIFY(NOT_LOGGED_IN, PASS_WORD_EMPTY)
-			pOb->UserMsg_LogFaild();
-		END_SET_STATE_AND_NOTIFY()
 		return;
-	}
 
 	//配置里读出的pass是base64过的
 	//将密码decode
@@ -99,11 +90,16 @@ void CUserManager::User_AppStartUp()
 	g_pUserMgr->UserLoginInternal(strUserName.c_str(), szMD5Pass);
 }
 
-void CUserManager::User_Login(LPCSTR pszName, LPCSTR pszPwd)
+void CUserManager::User_Login(LPCSTR pszName, LPCSTR pszPwd, bool bMD5)
 {
-	char szPwdMD5[33] = {0};
-	MD5String(const_cast<char*>(pszPwd), szPwdMD5);
-	UserLoginInternal(pszName, szPwdMD5);
+	if (bMD5)
+		UserLoginInternal(pszName, pszPwd);
+	else
+	{
+		char szPwdMD5[33] = {0};
+		MD5String(const_cast<char*>(pszPwd), szPwdMD5);
+		UserLoginInternal(pszName, szPwdMD5);
+	}
 }
 
 void CUserManager::User_Login_After_Reg_Suc(LPCSTR pszName,LPCSTR pszPwdMD5)
@@ -113,7 +109,6 @@ void CUserManager::User_Login_After_Reg_Suc(LPCSTR pszName,LPCSTR pszPwdMD5)
 	END_SET_STATE_AND_NOTIFY()
 
 	SetUserInfo(pszName, pszPwdMD5);
-
 	//tell reg dialog to leave
 	if (m_pRegDlg)
 	{
@@ -123,7 +118,6 @@ void CUserManager::User_Login_After_Reg_Suc(LPCSTR pszName,LPCSTR pszPwdMD5)
 	BEGIN_SET_STATE_AND_NOTIFY(HAVE_LANDED, SUCCEEDED)
 		pOb->UserMsg_Login();
 	END_SET_STATE_AND_NOTIFY()
-
 }
 
 void CUserManager::UserLoginInternal(LPCSTR pszName, LPCSTR pszPwdMD5)
@@ -206,7 +200,7 @@ DWORD CUserManager::ThreadLogin(void* pPara)
 	if(pbyIndex && size != 0)
 	{
 		std::string strContent = std::string((char*)pbyIndex, size);
-		//解析json
+		//test case
 		//strContent = YL_FileInfo::GetFileContent("D:\\temp.json");
 		bool bLoginSuc = false;
 		ParseJson(strContent, bLoginSuc);
@@ -285,7 +279,7 @@ void CUserManager::ParseJson(const std::string strJson, bool& bLoginSuc)
 					} else 
 						continue;
 
-					olg.strName = jsonGame[i]["name"].asString();
+					olg.strName = UTF8ToGB(jsonGame[i]["name"].asString().c_str());
 					olg.strPicPath = jsonGame[i]["thumbnail_url"].asString();					
 					olg.strID = jsonGame[i]["id"].asString();
 					lgl.push_back(olg);
@@ -313,3 +307,19 @@ CDialog* CUserManager::GetRegisterWnd()
 	return m_pRegDlg;
 }
 
+void CUserManager::AddTask(const TAB_ITEM& ti)
+{
+	if (ti.enumType != TAB_UNKNOWN)
+		m_task = ti;
+}
+void CUserManager::DelTask()
+{
+	m_task.enumType = TAB_UNKNOWN;
+}
+
+void CUserManager::DoTask()
+{
+	if (m_task.enumType != TAB_UNKNOWN)
+		GLOBAL_TABBARDATA->ITabBar_ChangeTab(m_task);
+	m_task.enumType = TAB_UNKNOWN;
+}

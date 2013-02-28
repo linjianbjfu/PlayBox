@@ -4,6 +4,9 @@
 class CGameDataImp : public IGameData
 {
 public:
+	enum GameType {	FLASH, WEB };
+	enum Action { ADD, DEL };
+	enum Status { PLAYED, COLLECT };
 	static		CGameDataImp*	m_pData;
 	static		IData*			GetInstance();
 	static		void			DelInstance();
@@ -19,12 +22,14 @@ public:
 	unsigned int IGameData_GetGameCount();
 	void IGameData_SetLoginGameList(GameList& lgl);
 	void IGameData_ChangeLoginState(bool bLogin);
+	void IGameData_UserGameChangeInfoToSvr(GameType gt, Action action,
+		Status s, const std::string& strGameID, const std::string& strSvrID); //用户收藏，玩过的游戏信息发给server
 private:
 	bool m_bLogin;
-	GameList&	m_vecGame;
+	GameList*	m_pVecGame;
 	GameList	m_vecLocalGame;
 	GameList	m_vecLoginGame;
-	string			m_strDataFilePath;	//本地游戏数据data文件路径
+	string		m_strDataFilePath;	//本地游戏数据data文件路径
 	void		LoadGameData();
 	void		UnLoadGameData();
 	CGameDataImp();

@@ -133,3 +133,8 @@ void CTopPanelControl::ClickButton(int pos)
 {
 	//::SendMessage(m_pWndTopPanel->m_hWnd,WM_COMMAND,10100,0);
 }
+
+void CTopPanelControl::DbclickTabBar()
+{
+	::PostMessage(m_pWndTopPanel->m_hWnd,WM_LBUTTONDBLCLK,0,0);
+}

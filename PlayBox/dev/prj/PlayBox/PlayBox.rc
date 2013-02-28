@@ -64,7 +64,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\PlayBox.ico"
+IDR_MAINFRAME           ICON                    "res\\xiong.ico"
 IDI_ICON_BEAR           ICON                    "res\\xiong.ico"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -228,11 +228,11 @@ BEGIN
     BEGIN
         BLOCK "080403a8"
         BEGIN
-            VALUE "FileDescription", "小宝贝游戏盒"
+            VALUE "FileDescription", "酷游盒子"
             VALUE "FileVersion", "1.0.4.0"
             VALUE "InternalName", "PlayBox.exe"
             VALUE "OriginalFilename", "PlayBox.exe"
-            VALUE "ProductName", "小宝贝游戏盒"
+            VALUE "ProductName", "酷游盒子"
             VALUE "ProductVersion", "1.0.4.0"
         END
     END
@@ -346,9 +346,6 @@ IDR_MENU_COVERLIST MENU
 BEGIN
     POPUP ""
     BEGIN
-        MENUITEM "大图",                        ID_CL_LARGEICON
-        MENUITEM "中图",                        ID_CL_MIDICON
-        MENUITEM "小图",                        ID_CL_SMALLICON
         MENUITEM "删除",                        ID_CL_DELFROMDISK
     END
 END

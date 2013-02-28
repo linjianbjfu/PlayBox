@@ -6,6 +6,7 @@
 #include "../ConfigAppDef.h"
 #include "../ConfigParaDefault.h"
 #include "PlayBoxDlg.h"
+#include "Global/GlobalSwfPath.h"
 
 IMPLEMENT_DYNAMIC(CDownDialog, BaseDialog)
 CDownDialog::CDownDialog(CWnd* pParent /*=NULL*/)
@@ -60,17 +61,8 @@ void CDownDialog::LoadConf()
 {
 	AfxUserConfig*	pUserConfig = AfxGetUserConfig();
 	string strValue;
-	pUserConfig->GetConfigStringValue( CONF_APP_MODULE_NAME, CONF_APP_SWF_PATH, strValue );
+	GlobalSwfPath::GetConfigSwfPath(strValue);
 	m_strSwfPath = CString( strValue.c_str() );
-	YL_DirInfo::MakeDir( strValue );
-
-	//如果配置中的目录不可访问，就是用默认目录
-	if( !YL_FileInfo::IsDirectory( strValue.c_str() ) ) 
-	{
-		string strDefaultPath = ConfigParaDefault::GetDefaultAPP_SWF_PATH();
-		YL_DirInfo::MakeDir( strDefaultPath );
-		m_strSwfPath = CString( strDefaultPath.c_str() );
-	}
 	//
 	// added by wang
 	//

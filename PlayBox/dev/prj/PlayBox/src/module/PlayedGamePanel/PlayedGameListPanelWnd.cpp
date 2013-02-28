@@ -70,7 +70,7 @@ BOOL PlayedGameListPanelWnd::OnCommand(WPARAM wParam, LPARAM lParam)
 			{
 				bPrompted = TRUE;
 				int nRet = ::MessageBox (AfxGetMainWindow ()->m_hWnd, "您确定要删除所选游戏吗？",
-					"小宝贝游戏盒", MB_OKCANCEL);
+					DESCRIP_MAINEXE, MB_OKCANCEL);
 				if (nRet == IDCANCEL)
 					break;
 			}

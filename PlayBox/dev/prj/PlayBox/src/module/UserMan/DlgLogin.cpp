@@ -4,6 +4,9 @@
 #include "../../AppConfig/config/ConfigSettingDef.h"
 #include "UserManager.h"
 #include "WebWnd.h"
+#include "CDataManager.h"
+#include "YL_Base64.h"
+#include "util/md5.h"
 
 static CRect rectNULL(0,0,0,0);
 
@@ -12,6 +15,8 @@ CDlgLogin::CDlgLogin(CWnd* pParent /*=NULL*/)
 	: CDialog(CDlgLogin::IDD, pParent)
 	,m_bRememberPassChecked(false)
 	,m_bAutoLoginChecked(false)
+	,m_bShowErrStatic(false)
+	,m_lpszPassPlaceHolder("passw0rd")
 {
 	m_editFont.CreateFont(14,      // nHeight
 		0,                         // nWidth
@@ -38,6 +43,8 @@ CDlgLogin::~CDlgLogin()
 
 BEGIN_MESSAGE_MAP(CDlgLogin, CDialog)
 	ON_WM_PAINT()
+	ON_EN_SETFOCUS(IDC_EDIT_LOGIN_USER_NAME, OnUserNameEditSetFocus)
+	ON_EN_SETFOCUS(IDC_EDIT_LOGIN_USER_NAME, OnPasswordEditSetFocus)
 	ON_BN_CLICKED(ID_BTN_LOGIN_CLOSE,OnCloseClicked)
 	ON_BN_CLICKED(ID_BTN_LOGIN_REG, OnRegClicked)
 	ON_BN_CLICKED(ID_BTN_LOGIN_FORGET_PASS, OnForgetPassClicked)
@@ -72,7 +79,6 @@ void CDlgLogin::InitEditControl(CEditGlow* pEdit,
 BOOL CDlgLogin::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-
 	COLORREF color(RGB(255,0,255));
 	SetWindowRgn(m_bkg->CreateRgnFromBitmap(color,this), TRUE);
 
@@ -93,6 +99,7 @@ BOOL CDlgLogin::OnInitDialog()
 	CREATE_BTN(m_btnAutoLoginUnCheck, ID_BTN_AUTO_LOGIN_UNCHECK);
 	CREATE_BTN(m_btnLogin, ID_BTN_LOGIN_LOGIN);
 	CREATE_BTN(m_btnCancel, ID_BTN_LOGIN_CANCEL);
+	m_staticError.Create(NULL,WS_VISIBLE, CRect(0,0,0,0),this,ID_STATIC_LOGIN_ERR);
 	
 	ILayoutMgr* pLayoutMgr =  AfxGetUIManager()->UIGetLayoutMgr();
 	
@@ -105,13 +112,29 @@ BOOL CDlgLogin::OnInitDialog()
 	pLayoutMgr->RegisterCtrl( this,"LoginRememberPassUnCheck",&m_btnRememberPassUnCheck);
 	pLayoutMgr->RegisterCtrl( this,"LoginAutoLoginCheck",&m_btnAutoLoginCheck);
 	pLayoutMgr->RegisterCtrl( this,"LoginAutoLoginUnCheck",&m_btnAutoLoginUnCheck);
+	pLayoutMgr->RegisterCtrl( this,"LoginFailStatic", &m_staticError);
 	pLayoutMgr->RegisterCtrl( this,"LoginLogin",&m_btnLogin);
 	pLayoutMgr->RegisterCtrl( this,"LoginCancel",&m_btnCancel);
 
 	pLayoutMgr->CreateControlPane( this,"LoginDlg","normal" );
 	pLayoutMgr->CreateBmpPane( this,"LoginDlg","normal" );
 
-	ValidateCheckBox();
+	ValidateCheckBoxOrShowFailText();
+	//用户名和密码填入CEdit
+
+	std::string strUserName;
+	AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
+		CONF_SETTING_LOGIN_USER_NAME, strUserName);
+	m_editUserName.SetWindowText(strUserName.c_str());
+
+	std::string strBase64MD5Pass;
+	AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
+		CONF_SETTING_LOGIN_PASSWORD, strBase64MD5Pass);
+	if (m_bRememberPassChecked && !strBase64MD5Pass.empty())
+		m_editPassWord.SetWindowText(m_lpszPassPlaceHolder);
+
+	//焦点放在登陆对话框上
+	m_btnLogin.SetFocus();
 
 	int l = (GetSystemMetrics(SM_CXSCREEN) - m_bkg->GetWidth())/2;
 	int t = (GetSystemMetrics(SM_CYSCREEN) - m_bkg->GetHeight())/2;
@@ -135,7 +158,7 @@ void CDlgLogin::OnCloseClicked()
 
 void CDlgLogin::OnRegClicked()
 {
-	PostMessage(WM_CLOSE, 0, 0);
+	EndDialog(0);
 	AfxGetMainWindow()->PostMessage(MSG_OPEN_REG_DIALOG, 0, 0);
 }
 
@@ -147,34 +170,47 @@ void CDlgLogin::OnForgetPassClicked()
 void CDlgLogin::OnRememberPassCheckClicked()
 {
 	m_bRememberPassChecked = false;
-	ValidateCheckBox();
+	m_bAutoLoginChecked = false;
+	ValidateCheckBoxOrShowFailText();
 }
 
 void CDlgLogin::OnRememberPassUnCheckClicked()
 {
 	m_bRememberPassChecked = true;
-	ValidateCheckBox();
+	ValidateCheckBoxOrShowFailText();
 }
 
-void CDlgLogin::ValidateCheckBox()
+void CDlgLogin::ValidateCheckBoxOrShowFailText()
 {
-	m_btnRememberPassCheck.ShowWindow(m_bRememberPassChecked ? SW_SHOW : SW_HIDE);
-	m_btnRememberPassUnCheck.ShowWindow(!m_bRememberPassChecked ? SW_SHOW : SW_HIDE);
+	if (m_bShowErrStatic)
+	{
+		m_staticError.ShowWindow(SW_SHOW);
+		m_btnRememberPassCheck.ShowWindow(SW_HIDE);
+		m_btnRememberPassUnCheck.ShowWindow(SW_HIDE);
+		m_btnAutoLoginCheck.ShowWindow(SW_HIDE);
+		m_btnAutoLoginUnCheck.ShowWindow(SW_HIDE);
+	}else
+	{
+		m_staticError.ShowWindow(SW_HIDE);
+		m_btnRememberPassCheck.ShowWindow(m_bRememberPassChecked ? SW_SHOW : SW_HIDE);
+		m_btnRememberPassUnCheck.ShowWindow(!m_bRememberPassChecked ? SW_SHOW : SW_HIDE);
 
-	m_btnAutoLoginCheck.ShowWindow(m_bAutoLoginChecked ? SW_SHOW : SW_HIDE);
-	m_btnAutoLoginUnCheck.ShowWindow(!m_bAutoLoginChecked ? SW_SHOW : SW_HIDE);
+		m_btnAutoLoginCheck.ShowWindow(m_bAutoLoginChecked ? SW_SHOW : SW_HIDE);
+		m_btnAutoLoginUnCheck.ShowWindow(!m_bAutoLoginChecked ? SW_SHOW : SW_HIDE);
+	}
 }
 
 void CDlgLogin::OnAutoLoginCheckClicked()
 {
 	m_bAutoLoginChecked = false;
-	ValidateCheckBox();
+	ValidateCheckBoxOrShowFailText();
 }
 
 void CDlgLogin::OnAutoLoginUnCheckClicked()
 {
 	m_bAutoLoginChecked = true;
-	ValidateCheckBox();
+	m_bRememberPassChecked = true;
+	ValidateCheckBoxOrShowFailText();
 }
 
 void CDlgLogin::OnLoginClicked()
@@ -183,13 +219,32 @@ void CDlgLogin::OnLoginClicked()
 	CString cstrPassWord;
 	m_editUserName.GetWindowText(cstrUserName);
 	m_editPassWord.GetWindowText(cstrPassWord);
-	if (cstrUserName.GetLength() == 0
-		|| cstrPassWord.GetLength() == 0) 
+	if (cstrUserName.GetLength() == 0)
 	{
-		//tooltip 
+		ShowErrStaticAndLaterDisappear("请输入用户名");
 		return;
 	}
-	CUserManager::GetInstance()->User_Login(cstrUserName, cstrPassWord);
+	if (cstrPassWord.GetLength() == 0) 
+	{
+		ShowErrStaticAndLaterDisappear("请输入密码");
+		return;
+	}
+	WriteConf();
+	CUserManager::GetInstance()->AddTask(m_task);
+
+	if (cstrPassWord.Compare(m_lpszPassPlaceHolder) == 0)
+	{
+		std::string strBase64MD5Pass;
+		AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
+			CONF_SETTING_LOGIN_PASSWORD, strBase64MD5Pass);
+		char szMD5[256];
+		ZeroMemory(szMD5, 256);
+		YL_Base64Decode(szMD5, strBase64MD5Pass.c_str());
+		CUserManager::GetInstance()->User_Login(cstrUserName, szMD5, true);
+	}else
+	{
+		CUserManager::GetInstance()->User_Login(cstrUserName, cstrPassWord);
+	}	
 }
 
 void CDlgLogin::OnCancelClicked()
@@ -200,20 +255,89 @@ void CDlgLogin::OnCancelClicked()
 
 void CDlgLogin::UserMsg_Login()
 {
-	PostMessage(WM_CLOSE, 0, 0);
+	EndDialog(0);
 }
 
 void CDlgLogin::UserMsg_LogOut()
 {
-	PostMessage(WM_CLOSE, 0, 0);
+	EndDialog(0);
 }
 
 void CDlgLogin::UserMsg_LogFaild()
 {
-	//show error reason
+	ShowErrStaticAndLaterDisappear(_T("登陆失败"));
 }
 
 void CDlgLogin::UserMsg_BeginLogin()
 {
-	//clear error reason text
+	ShowErrStaticAndLaterDisappear(_T("登陆中..."));
+}
+
+void CDlgLogin::AddTask(const TAB_ITEM& ti)
+{
+	if (ti.enumType != TAB_UNKNOWN)
+		m_task = ti;
+}
+
+void CDlgLogin::ShowErrStaticAndLaterDisappear(LPCTSTR lpszText)
+{
+	m_bShowErrStatic = true;
+	m_staticError.SetWindowText(lpszText);
+	ValidateCheckBoxOrShowFailText();
+}
+
+void CDlgLogin::HideErrStatic()
+{
+	if (!m_bShowErrStatic)
+		return;
+
+	m_bShowErrStatic = false;
+	m_staticError.SetWindowText(_T(""));
+	ValidateCheckBoxOrShowFailText();	
+}
+
+void CDlgLogin::OnUserNameEditSetFocus()
+{
+	HideErrStatic();
+}
+
+void CDlgLogin::OnPasswordEditSetFocus()
+{
+	HideErrStatic();
+}
+
+void CDlgLogin::WriteConf()
+{
+	AfxGetUserConfig()->SetConfigBoolValue(CONF_SETTING_MODULE_NAME,CONF_SETTING_REMEMBER_PASSWORD,m_bRememberPassChecked);
+	AfxGetUserConfig()->SetConfigBoolValue(CONF_SETTING_MODULE_NAME,CONF_SETTING_AUTO_LOGIN,m_bAutoLoginChecked);
+	CString cstrUserName;
+	m_editUserName.GetWindowText(cstrUserName);
+	AfxGetUserConfig()->SetConfigStringValue(CONF_SETTING_MODULE_NAME, 
+		CONF_SETTING_LOGIN_USER_NAME, std::string(cstrUserName), true);
+
+	char szBase64MD5[256];
+	ZeroMemory(szBase64MD5, 256);
+	if (m_bRememberPassChecked)
+	{
+		CString cstrPassWord;
+		m_editPassWord.GetWindowText(cstrPassWord);
+		if (cstrPassWord.Compare(m_lpszPassPlaceHolder) == 0)//用户没有修改密码
+		{
+			std::string strConf;
+			AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
+				CONF_SETTING_LOGIN_PASSWORD, strConf);
+			strcpy(szBase64MD5, strConf.c_str());
+		}else//用户重新输入了密码
+		{
+			char lpszPass[256];
+			ZeroMemory(lpszPass, 256);
+			strcpy(lpszPass, cstrPassWord.GetBuffer());
+
+			char szPwdMD5[33] = {0};
+			MD5String(lpszPass, szPwdMD5);
+			YL_Base64Encode(szBase64MD5, szPwdMD5, strlen(szPwdMD5));
+		}
+	}
+	AfxGetUserConfig()->SetConfigStringValue(CONF_SETTING_MODULE_NAME, 
+		CONF_SETTING_LOGIN_PASSWORD, std::string(szBase64MD5), true);
 }

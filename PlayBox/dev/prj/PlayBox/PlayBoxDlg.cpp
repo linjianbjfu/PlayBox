@@ -82,6 +82,7 @@ BEGIN_MESSAGE_MAP(CPlayBoxDlg, CDialog)
 	ON_MESSAGE(MSG_HTTP_DOWNLOAD,OnHTTPDonwload)
 	ON_MESSAGE(MSG_NEW_BROWSER_WND, OnNewBrowserWnd)
 	ON_MESSAGE(MSG_OPEN_REG_DIALOG, OnOpenRegDialog)
+	ON_MESSAGE(MSG_DO_TASK, OnDoTask)
 	ON_WM_TIMER()
 	ON_WM_SHOWWINDOW()
 	ON_WM_SYSCOMMAND()
@@ -199,10 +200,10 @@ BOOL CPlayBoxDlg::OnInitDialog()
 
 	g_hSharedWnd = m_hWnd;
 	m_ptrayIcon->SetNotificationWnd(this, WM_MY_TRAY_NOTIFICATION);
-	SetWindowText("小宝贝游戏盒");
+	SetWindowText(DESCRIP_MAINEXE);
 	_AdjustDlgSize();
 
-	m_ptrayIcon->SetIcon(theApp.LoadIcon(IDI_ICON_BEAR),"小宝贝游戏盒");
+	m_ptrayIcon->SetIcon(theApp.LoadIcon(IDI_ICON_BEAR),DESCRIP_MAINEXE);
 
 	ReleaseMutex(curMutexHandle);
 
@@ -216,12 +217,11 @@ BOOL CPlayBoxDlg::OnInitDialog()
 	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_LAYOUTMGR,(ILayoutChangeObserver*) this);
 	AfxGetMessageManager()->AttachMessage( ID_MESSAGE_PANEL_CHANGE,(IPanelChangeObserver*) this);
 	AfxGetUserConfig()->AttachConfigMessage( CONF_LAYOUT_MODULE_NAME,this );
-	YL_Log( STR_LOG_FILE ,LOG_NOTICE,"OnInitDialog","before post MSG_AFTER_UICREATE" );
 	SetEvent(g_hStartEvent);
 
 	PostMessage(MSG_AFTER_UICREATE);
-	YL_Log( STR_LOG_FILE ,LOG_NOTICE,"OnInitDialog","after post MSG_AFTER_UICREATE" );
 
+	AfxGetMessageManager()->AttachMessage(ID_MESSAGE_USER, (IUserMsgObserver*)this);
 	return TRUE;  // 除非设置了控件的焦点，否则返回 TRUE
 }
 
@@ -253,6 +253,7 @@ void CPlayBoxDlg::OnPaint()
 
 void CPlayBoxDlg::OnDestroy()
 {
+	AfxGetMessageManager()->DetachMessage(ID_MESSAGE_USER, (IUserMsgObserver*)this);
 	AfxGetUserConfig()->DetachConfigMessage( CONF_LAYOUT_MODULE_NAME,this );
 	__super::OnDestroy();
 	EndDialog(IDOK);
@@ -1026,11 +1027,36 @@ LRESULT CPlayBoxDlg::OnHotKey(WPARAM wParam, LPARAM lParam)
 				ShowWindow(SW_NORMAL);
 				m_ptrayIcon = new CTrayIcon(IDI_ICON_BEAR);
 				m_ptrayIcon->SetNotificationWnd(this, WM_MY_TRAY_NOTIFICATION);
-				m_ptrayIcon->SetIcon(theApp.LoadIcon(IDI_ICON_BEAR),"小宝贝游戏盒");
+				m_ptrayIcon->SetIcon(theApp.LoadIcon(IDI_ICON_BEAR), DESCRIP_MAINEXE);
 			}
 			
 		}
 		break;
 	}
 	return 0;
+}
+
+void CPlayBoxDlg::UserMsg_Login()
+{
+	PostMessage(MSG_DO_TASK, 0, 0);
+}
+
+LRESULT CPlayBoxDlg::OnDoTask(WPARAM w, LPARAM l)
+{
+	CUserManager::GetInstance()->DoTask();
+	return 0L;
+}
+
+void CPlayBoxDlg::UserMsg_LogOut()
+{
+	CUserManager::GetInstance()->DelTask();
+}
+
+void CPlayBoxDlg::UserMsg_LogFaild()
+{
+	CUserManager::GetInstance()->DelTask();
+}
+
+void CPlayBoxDlg::UserMsg_BeginLogin()
+{
 }

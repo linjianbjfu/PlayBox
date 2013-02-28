@@ -30,7 +30,7 @@ public:
 	};
 public:
 	void User_AppStartUp();//if config is auto login, then login
-	void User_Login(LPCSTR pszName,LPCSTR pszPwd);
+	void User_Login(LPCSTR pszName,LPCSTR pszPwd, bool bMD5=false);
 	void User_CancelLog();
 	void User_Logout();
 	void User_AppExit();
@@ -51,6 +51,12 @@ private:
 	static DWORD WINAPI ThreadLogin(void* pPara);
 	static void ParseJson(const std::string strJson, bool& bLoginSuc);
 	static void SetUserInfo(LPCSTR lpszUserName, LPCSTR lpszPass);
+public:
+	void AddTask(const TAB_ITEM& ti);
+	void DelTask();
+	void DoTask();
+private:
+	TAB_ITEM m_task;
  };
 
 #endif // USERMANAGER_H

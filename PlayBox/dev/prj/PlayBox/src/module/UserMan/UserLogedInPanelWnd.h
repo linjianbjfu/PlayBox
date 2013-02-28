@@ -2,6 +2,7 @@
 #include "../../gui/CommonControl/BasicWnd.h"
 
 struct UserInfo;
+class CxSkinButton;
 
 class CUserLogedInWnd : public CBasicWnd
 {
@@ -13,9 +14,11 @@ public:
 
 protected:
 	DECLARE_MESSAGE_MAP()
-	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg int	 OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnPaint();
+	afx_msg void OnClickedLogout();
 private:
+	CxSkinButton*	m_pBtnLogout;
 	UserInfo* m_pUserInfo;
 	CFont	m_font;
 };

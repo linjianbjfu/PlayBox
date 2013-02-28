@@ -364,14 +364,14 @@ void GamePanelWnd::HttpDownOb_DownFailed( string& strID, HTTP_DOWN_FAILED_REASON
 	case HTTP_FAILED_CANT_CREATE_LOCAL_FILE:
 		{
 			string strValue;
-			AfxGetUserConfig()->GetConfigStringValue( CONF_APP_MODULE_NAME, CONF_APP_SWF_PATH, strValue );
+			GlobalSwfPath::GetConfigSwfPath(strValue);
 			YL_StringUtil::Format( strFailedReason, "无法创建文件，请查看下载目录%s是否只读", strValue.c_str() );
 		}
 		break;
 	case HTTP_FAILED_CANT_WRITE_LOCAL_FILE:
 		{
 			string strValue;
-			AfxGetUserConfig()->GetConfigStringValue( CONF_APP_MODULE_NAME, CONF_APP_SWF_PATH, strValue );
+			GlobalSwfPath::GetConfigSwfPath(strValue);
 			YL_StringUtil::Format( strFailedReason, "无法写入文件，请查看下载目录%s是否只读", strValue.c_str() );
 		}
 		break;

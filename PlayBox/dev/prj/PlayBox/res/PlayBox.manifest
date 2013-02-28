@@ -6,7 +6,7 @@
     name="Microsoft.Windows.PlayBox"
     type="win32" 
 /> 
-<description>小宝贝游戏盒</description> 
+<description>酷游盒子</description> 
 <dependency> 
     <dependentAssembly> 
         <assemblyIdentity 

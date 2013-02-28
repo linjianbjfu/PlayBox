@@ -71,8 +71,7 @@ int DownPercentWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	AfxGetUIManager()->UIGetSkinMgr()->AddSkinWnd( this );
 	CRect rectNULL(0,0,0,0);
 	m_pBtnClose->Create(NULL,WS_VISIBLE,rectNULL,this,IDC_BTN_CLOSETAB);
-	LoadSkin();
-	
+	LoadSkin();	
 
 	if( GLOBAL_ADDATA->GetLoadingPicAd( m_ad ) )
 	{
@@ -115,8 +114,7 @@ void DownPercentWnd::OnPaint()
 	dc.BitBlt( 0, 0, rect.Width(), rect.Height(), &MemDC2, 0, 0, SRCCOPY );
 	MemDC2.RestoreDC(iSaveDc);
 	MemDC2.DeleteDC();	
-	MemBitmap2.DeleteObject();
-	
+	MemBitmap2.DeleteObject();	
 }
 
 void DownPercentWnd::DrawProgress( CDC* pDc, CRect rc )
@@ -198,9 +196,7 @@ BOOL DownPercentWnd::AddDynamicView(LPCTSTR  lpszLabel, CRuntimeClass * pViewCla
 			return FALSE;
 		m_pWnd = (CMyHtmlView *)pViewClass->CreateObject ();
 		if (m_pWnd == NULL)
-		{
 			::AfxThrowMemoryException ();
-		}
 	}
 	CATCH_ALL(e)
 	{
@@ -219,9 +215,8 @@ BOOL DownPercentWnd::AddDynamicView(LPCTSTR  lpszLabel, CRuntimeClass * pViewCla
 	rect.left > 0? rect.left:0;
 
 	if(!m_pWnd->Create (NULL,NULL,dwStyle,rect,this,CMyHtmlView::IDD ))
-	{
 		return FALSE;
-	}
+
 	m_pWnd->OnInitialUpdate ();
 	m_pWnd->EnableWindow (TRUE);
 	m_pWnd->ShowWindow (SW_SHOW);
@@ -313,7 +308,6 @@ void DownPercentWnd::LoadSkin()
 	m_pBmpBgR  = pSkinMgr->GetDibBmp( "Progress_Bg_R" );
 
 	ILayoutMgr* pLayoutMgr =  AfxGetUIManager()->UIGetLayoutMgr();
-
 	pLayoutMgr->RegisterCtrl( this, "DownPercentDlg_btnClose", m_pBtnClose);
 	pLayoutMgr->CreateControlPane( this,"DownPercentDlg","normal");	
 	pLayoutMgr->CreateBmpPane( this,"DownPercentDlg","normal" );
@@ -326,32 +320,19 @@ void DownPercentWnd::OnDestroy()
 
 void DownPercentWnd::OnMouseMove(UINT nFlags, CPoint point)
 {
-	if( m_rcFlash.PtInRect( point ) )
-	{
-		HCURSOR  m_hCursor = ::LoadCursor(NULL, IDC_HAND);
-		::SetCursor(m_hCursor);
-	}else
-	{
-		HCURSOR  m_hCursor = ::LoadCursor(NULL, IDC_ARROW);
-		::SetCursor(m_hCursor);
-	}
+	::SetCursor(::LoadCursor(NULL, m_rcFlash.PtInRect(point) ? IDC_HAND : IDC_ARROW));
 	__super::OnMouseMove(nFlags, point);
 }
 
 void DownPercentWnd::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	if( m_rcFlash.PtInRect( point ) )
-	{
-		if( m_ad.strLinkUrl.length() > 0 )
-		{
-			ShellExecute(NULL, "open", "iexplore.exe", m_ad.strLinkUrl.c_str(),"", SW_SHOWNORMAL);	
-		}		
-	}
+	if (m_rcFlash.PtInRect( point ) && 
+		m_ad.strLinkUrl.length() > 0)
+		ShellExecute(NULL, "open", "iexplore.exe", m_ad.strLinkUrl.c_str(),"", SW_SHOWNORMAL);	
 	__super::OnLButtonDown(nFlags, point);
 }
 void DownPercentWnd::OnBnCloseTab()
 {
-	//MessageBox("CLOSETAB","Info",MB_OK);
 	TAB_ITEM tabItem;
 	GLOBAL_TABBARDATA->ITabBar_GetCurItem(tabItem);
 	GLOBAL_TABBARDATA->ITabBar_DeleteTab(tabItem);

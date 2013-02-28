@@ -4,11 +4,13 @@
 #include "./src/GUI/tray/TrayIcon.h"
 #include "./src/DataInterface/ILayoutChangeObserver.h"
 #include "./src/DataInterface/IPanelChangeObserver.h"
+#include "IUserMsgObserver.h"
 
 class CPlayBoxDlg : public CDialog, 
 					public AfxUserConfig_Observer,
 					public ILayoutChangeObserver,
-					public IPanelChangeObserver
+					public IPanelChangeObserver,
+					public IUserMsgObserver
 {
 // ππ‘Ï
 public:
@@ -58,6 +60,7 @@ protected:
 	afx_msg LRESULT OnHTTPDonwload(WPARAM,LPARAM);
 	afx_msg LRESULT OnNewBrowserWnd(WPARAM w,LPARAM l);
 	afx_msg LRESULT OnOpenRegDialog(WPARAM w,LPARAM l);
+	afx_msg LRESULT OnDoTask(WPARAM w, LPARAM l);
 	afx_msg LRESULT OnConfUpdate(WPARAM,LPARAM);
 	afx_msg LRESULT OnHotKey(WPARAM wParam, LPARAM lParam);
 	BOOL PreTranslateMessage(MSG* pMsg );
@@ -97,7 +100,6 @@ private:
 	string		m_strLastP2PMsgTitle;
 	string		m_strLastP2PMsgLink;
 
-
 public:
 	afx_msg void OnSetFocus(CWnd* pOldWnd);
 	afx_msg LRESULT OnDeleteTray(WPARAM wParam, LPARAM lParam);
@@ -106,6 +108,11 @@ public:
 	virtual void	IPanelChangeOb_WindowMax();
 	virtual void	IPanelChangeOb_WindowMin();
 	virtual void	IPanelChangeOb_WindowRestore();
+
+	void UserMsg_Login();
+	void UserMsg_LogOut();
+	void UserMsg_LogFaild();
+	void UserMsg_BeginLogin();
 	
 	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);

@@ -42,6 +42,7 @@ BOOL MyWebBrowserWnd::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName,DWORD
 		DestroyWindow();
 		return FALSE;
 	}
+	m_pBrowserApp->put_Silent(VARIANT_TRUE);
 	return TRUE;
 }
 

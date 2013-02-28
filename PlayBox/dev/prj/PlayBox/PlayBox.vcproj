@@ -97,7 +97,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="Wininet.lib winmm.lib dbghelp.lib NetOp.lib zlib.lib DocOp.lib Log.lib "
 				OutputFile="../../bin_r/PlayBox.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\CommonLib\lib_r;../../lib_r"
 				GenerateDebugInformation="TRUE"
 				GenerateMapFile="TRUE"
@@ -1845,9 +1845,6 @@
 			</File>
 			<File
 				RelativePath=".\src\datainterface\ITabBarObserver.h">
-			</File>
-			<File
-				RelativePath=".\src\datainterface\IUserDataDef.h">
 			</File>
 			<File
 				RelativePath=".\src\datainterface\IWebRefreshObserver.h">

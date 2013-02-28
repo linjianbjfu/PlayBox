@@ -104,12 +104,18 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::QueryInterface(REFIID
 // *
 HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::GetHostInfo( DOCHOSTUIINFO* pInfo )
 {
-
 	METHOD_PROLOGUE(CCustomControlSite, DocHostUIHandler)
-	//去掉滚动条
-	//pInfo->dwFlags = DOCHOSTUIFLAG_SCROLL_NO | DOCHOSTUIFLAG_NO3DBORDER;
-    //pInfo->dwDoubleClick = DOCHOSTUIDBLCLK_DEFAULT;
-    return S_OK;
+	if(pInfo)
+	{
+		pInfo->cbSize = sizeof(DOCHOSTUIINFO);
+		//去掉滚动条
+		//pInfo->dwFlags = DOCHOSTUIFLAG_SCROLL_NO | DOCHOSTUIFLAG_NO3DBORDER;
+
+		pInfo->dwFlags = DOCHOSTUIFLAG_NO3DBORDER |
+			DOCHOSTUIFLAG_DIALOG | DOCHOSTUIFLAG_THEME ;
+		pInfo->dwDoubleClick = DOCHOSTUIDBLCLK_DEFAULT;
+	}
+	return S_OK;
 }
 
 // * CImpIDocHostUIHandler::ShowUI
