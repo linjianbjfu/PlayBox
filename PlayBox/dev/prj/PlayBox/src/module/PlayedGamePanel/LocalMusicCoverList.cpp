@@ -206,32 +206,24 @@ int CLocalMusicCoverList::InsertItem(CDibBitmap* pImg,
 									 CString strItemName,
 									 CString strdetail,
 									 string strGID,
-									 string strSrvID,
 									 string strAddTime,
 									 int nGameType,
 									 BOOL blSel/* =FALSE */)
 {
 	int iHeightSpaceS = m_iItemHeight+SPACEH + ITEMTXTH + SPACEH;
 	int iHeightSpaceMB = m_iItemHeight+SPACEH + ITEMTXTH + SPACEH + ITEMTXTH + SPACEH  ;	
-	//if (m_ImgState==LMCI_Small)
-	//{
-	//}
-	//else if (m_ImgState==LMCI_Middle||m_ImgState==LMCI_Big)
-	//{
-	//}
-	return m_DataMgr.InsertItem(pImg,strItemName,strdetail, strGID, strSrvID, strAddTime, nGameType, blSel);
+	return m_DataMgr.InsertItem(pImg,strItemName,strdetail, strGID, strAddTime, nGameType, blSel);
 }
 
 int CLocalMusicCoverList::InsertItem(LPCTSTR szImgPath, 
 									 CString strItemName, 
 									 CString strdetail,
 									 string strGID,
-									 string strSrvID, 
 									 string strAddTime,
 									 int nGameType,
 									 BOOL blSel/* =FALSE */)
 {
-	return m_DataMgr.InsertItem(szImgPath,strItemName,strdetail,strGID,strSrvID,strAddTime,nGameType,blSel);
+	return m_DataMgr.InsertItem(szImgPath,strItemName,strdetail,strGID,strAddTime,nGameType,blSel);
 }
 
 vector<int> CLocalMusicCoverList::GetSelectItem()

@@ -82,16 +82,17 @@ BOOL PlayedGameListPanelWnd::OnCommand(WPARAM wParam, LPARAM lParam)
 				string strGID = m_DataMgr.m_vItem[vAlbum[i]].strGID;
 				GLOBAL_GAME->IGameData_DelGame(strGID, m_DataMgr.m_vItem[vAlbum[i]].nGameType);
 			}	
-			for (int i=0;i<vAlbum.size();i++)
-			{
-				vector<LMC_ItemInfo>::iterator iterBegin = m_DataMgr.m_vItem.begin();
-				iRmLast < vAlbum[i] ? m_DataMgr.m_vItem.erase(iterBegin + vAlbum[i] -iCount) : \
-					m_DataMgr.m_vItem.erase(iterBegin + vAlbum[i] +iCount);
-				iCount++;
-				iRmLast = vAlbum[i];
-			}	
-			UpdateList();
-			OnMemoryDraw();
+			//通过gamedata_observer回调来刷新界面，而不是用下面的代码
+			//for (int i=0;i<vAlbum.size();i++)
+			//{
+			//	vector<LMC_ItemInfo>::iterator iterBegin = m_DataMgr.m_vItem.begin();
+			//	iRmLast < vAlbum[i] ? m_DataMgr.m_vItem.erase(iterBegin + vAlbum[i] -iCount) : \
+			//		m_DataMgr.m_vItem.erase(iterBegin + vAlbum[i] +iCount);
+			//	iCount++;
+			//	iRmLast = vAlbum[i];
+			//}	
+			//UpdateList();
+			//OnMemoryDraw();
 		}
 		break;
 	}
@@ -100,35 +101,40 @@ BOOL PlayedGameListPanelWnd::OnCommand(WPARAM wParam, LPARAM lParam)
 
 void PlayedGameListPanelWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
+	__super::OnLButtonDblClk(nFlags, point);
 	std::vector<int> vSel = GetSelectItem();
 	if ( vSel.size() > 0 )
 	{
 		LMC_ItemInfo ii = m_DataMgr.m_vItem[vSel[0]];
-		if (ii.nGameType & OneGame::FLASH_GAME) // flash game
+		OneGame og;
+		if (GLOBAL_GAME->IGameData_GetGameByID(ii.strGID, ii.nGameType, og))
 		{
 			TAB_ITEM tItem;
-			tItem.enumType = TAB_FLASHGAME;
+			if (ii.nGameType & OneGame::FLASH_GAME)
+			{
+				tItem.enumType = TAB_FLASHGAME;
+				tItem.strParam = string("method=flashgame") + BOX_DELIMITERS
+					+ "id=" + og.strID +BOX_DELIMITERS 
+					+ "name=" + og.strName + BOX_DELIMITERS
+					+ "picurl=" + og.strPicSvrPath + BOX_DELIMITERS
+					+ "swfurl=" + og.strGameSvrPath + BOX_DELIMITERS;
+			}
+			else if (ii.nGameType & OneGame::WEB_GAME)
+			{
+				tItem.enumType = TAB_WEBGAME;
+				tItem.strParam = string("method=webgame") + BOX_DELIMITERS
+					+ "id=" + og.strID + BOX_DELIMITERS
+					+ "svrid=" + og.strSrvID + BOX_DELIMITERS
+					+ "name=" + og.strName + BOX_DELIMITERS
+					+ "picurl=" + og.strPicSvrPath + BOX_DELIMITERS;
+			}
+			else
+				return;
+
 			tItem.strTitle = string(ii.strItemName);
-			tItem.strParam = string("method=playswfgame") + BOX_DELIMITERS 
-				+ "id=" + ii.strGID + BOX_DELIMITERS
-				+ "name=" + tItem.strTitle + BOX_DELIMITERS;
 			GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
 		}
-		else if (ii.nGameType & OneGame::WEB_GAME) // web game
-		{
-			TAB_ITEM tItem;
-			tItem.enumType = TAB_WEBGAME;
-			tItem.strTitle = string(ii.strItemName);
-			tItem.strParam = string("method=webgame") + BOX_DELIMITERS
-				+ "id=" + ii.strGID + BOX_DELIMITERS
-				+ "svrid=" + ii.strSvrID + BOX_DELIMITERS
-				+ "name=" + tItem.strTitle + BOX_DELIMITERS
-				+ "picurl=" + ii.strImgPath.GetBuffer(0) + BOX_DELIMITERS;
-			ii.strImgPath.ReleaseBuffer();
-			GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
-		}
-	}
-	__super::OnLButtonDblClk(nFlags, point);
+	}	
 }
 
 int PlayedGameListPanelWnd::ReGetData()
@@ -139,11 +145,14 @@ int PlayedGameListPanelWnd::ReGetData()
 	GLOBAL_GAME->IGameData_GetGame(lgl, 0);
 	for( GameList::iterator it1 = lgl.begin(); it1 != lgl.end(); it1++ )
 	{
-		CString strDetail;
-		InsertItem( it1->strPicPath.c_str(), 
-			it1->strName.c_str(), strDetail, 
-			it1->strID, it1->strSrvID, 
-			it1->strAddTime,it1->nGameType, 
+		std::string strLocalPicPath;
+		it1->GetLocalPicPath(strLocalPicPath);
+		InsertItem( strLocalPicPath.c_str(), 
+			it1->strName.c_str(), 
+			"", 
+			it1->strID, 
+			"",
+			it1->nGameType, 
 			FALSE );
 	}
 	UpdateList();
@@ -331,15 +340,15 @@ void PlayedGameListPanelWnd::ReSetGameList(GameList arrGames)
 	GameList::iterator it = arrGames.begin();
 	for (; it != arrGames.end(); it++)
 	{
-		CString strDetail;
-		InsertItem(it->strPicPath.c_str(),
+		std::string strLocalPicPath;
+		it->GetLocalPicPath(strLocalPicPath);
+		InsertItem(strLocalPicPath.c_str(),
 				   it->strName.c_str(),
-				   strDetail,
+				   "",
 				   it->strID,
-				   it->strSrvID,
-				   it->strAddTime,
+				   "",
 				   it->nGameType,
-				   FALSE );
+				   FALSE);
 	}
 	UpdateList();
 	OnMemoryDraw();

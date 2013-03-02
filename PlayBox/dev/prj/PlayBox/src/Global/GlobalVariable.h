@@ -26,23 +26,6 @@ struct TAB_ITEM
 	TAB_ITEM() : id(-1), enumType(TAB_UNKNOWN), iLPDISPATCHOnlyForBrowser(0){}
 };
 
-struct WEB_GAME
-{
-	string		strID;
-	string		strSvrID;
-	string		strName;
-	string		strPicUrl;
-};
-
-struct SWF_GAME
-{
-	string		strID;
-	string		strName;
-	string		strPicUrl;
-	string		strSwfUrl;
-	string		strIntro;
-};
-
 #define RUN_MAINEXE		"酷游盒子.exe"
 #define DESCRIP_MAINEXE	"酷游盒子"
 #define SWF_SAVE_PATH   "PlayBoxGame"

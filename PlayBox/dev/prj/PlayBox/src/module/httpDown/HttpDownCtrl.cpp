@@ -62,7 +62,6 @@ void HttpDownCtrl::StartDown( string strID, string strSwfUrl )
 	NotifyDownStart( strID );
 	YL_CHTTPDownFile* pHttpDownFile = new YL_CHTTPDownFile();
 
-
 	//将swf文件放入存放目录
 	string strSwfSavePath;
 	GlobalSwfPath::GetConfigSwfPath(strSwfSavePath);

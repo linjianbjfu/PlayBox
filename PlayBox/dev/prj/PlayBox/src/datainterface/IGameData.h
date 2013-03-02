@@ -3,6 +3,9 @@
 #include <vector>
 #include <time.h>
 #include "IData.h"
+#include "YL_FileInfo.h"
+#include "Global\GlobalSwfPath.h"
+#include "YL_StringUtil.h"
 
 struct OneGame
 {
@@ -15,26 +18,80 @@ struct OneGame
 	};
 	std::string	strID;	
 	std::string	strName;
-	std::string	strGamePath;
-	std::string	strPicPath;
-	std::string	strIntro;
+	std::string	strGameSvrPath;
+	std::string	strPicSvrPath;
 	std::string strSrvID; // srvid (webgame only)
-	std::string strAddTime; // ÃÌº” ±º‰ eg:2013-1-13 12:50
+	std::string strIntro;
+	std::string strAddTime;
 	int nGameType; //Type
 
-	OneGame()	{ clear();}
-	void clear()
+	OneGame() : nGameType(0) { }
+	void Clear()
 	{
-		strID.clear();
+		strID.clear();	
 		strName.clear();
-		strGamePath.clear();
-		strPicPath.clear();
+		strGameSvrPath.clear();
+		strPicSvrPath.clear();
+		strSrvID.clear();
 		strIntro.clear();
+		strAddTime.clear();
 		nGameType = 0;
+	}
+	bool GetLocalPicPath(std::string& strPath)
+	{
+		strPath.clear();
+		if (!strID.empty() && !strPicSvrPath.empty())
+		{
+			std::string strPicFormat;
+			YL_FileInfo::GetFileNameSuffix(strPicSvrPath, strPicFormat);
+
+			string strSwfSavePath;
+			GlobalSwfPath::GetConfigSwfPath(strSwfSavePath);
+			if (strSwfSavePath.empty())
+				return false;
+			if (strSwfSavePath.at(strSwfSavePath.length()-1) != '\\')
+				strSwfSavePath += "\\";
+
+			if (nGameType & FLASH_GAME)
+			{
+				YL_StringUtil::Format( strPath, "%s%s.%s", 
+					strSwfSavePath.c_str(), 
+					strID.c_str(), 
+					strPicFormat.c_str() );
+			}else if (nGameType & WEB_GAME)
+			{
+				YL_StringUtil::Format( strPath, "%s%s_%s.%s", 
+					strSwfSavePath.c_str(), 
+					strID.c_str(),
+					strSrvID.c_str(),
+					strPicFormat.c_str() );
+			}
+		}
+		return !strPath.empty();
+	}
+
+	bool GetLocalSwfPath(std::string& strPath)
+	{
+		strPath.clear();
+		if (!strID.empty() && (nGameType & FLASH_GAME))
+		{
+			string strSwfSavePath;
+			GlobalSwfPath::GetConfigSwfPath(strSwfSavePath);
+			if (strSwfSavePath.empty())
+				return false;
+			if (strSwfSavePath.at(strSwfSavePath.length()-1) != '\\')
+				strSwfSavePath += "\\";
+
+			YL_StringUtil::Format( strPath, "%s%s.swf", 
+				strSwfSavePath.c_str(), 
+				strID.c_str());
+		}
+		return !strPath.empty();
 	}
 };
 
 typedef std::vector<OneGame> GameList;
+
 class IGameData : public IData
 {
 public:

@@ -2,6 +2,7 @@
 #include "../../gui/CommonControl/BasicWnd.h"
 #include "../../datainterface/IGameData.h"
 #include "../../datainterface/IUserMsgObserver.h"
+#include "../../datainterface/IGameDataObserver.h"
 
 class CxSkinButton;
 class PlayedGameListPanelWnd;
@@ -9,7 +10,9 @@ class MyWebBrowserWnd;
 class CUserLogedInWnd;
 class CUserLogedOutWnd;
 
-class PlayedGameWnd : public CBasicWnd, public IUserMsgObserver
+class PlayedGameWnd : public CBasicWnd, 
+					  public IUserMsgObserver,
+					  public IGameDataObserver
 {
 	DECLARE_DYNAMIC(PlayedGameWnd)
 public:
@@ -57,4 +60,5 @@ private:
 	void UserMsg_LogOut();
 	void SetOnlyOneBtnCheckedAndValidate(CxSkinButton* pBtn);
 	void ValidateInterface();
+	void IGameData_Changed();
 };

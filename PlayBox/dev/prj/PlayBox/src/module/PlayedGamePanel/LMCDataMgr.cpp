@@ -16,7 +16,6 @@ int CLMCDataMgr::InsertItem(CDibBitmap* pImg,
 							CString strItemName,
 							CString strdetail, 
 							string strGID, 
-							string strSvrID,
 							string strAddTime,
 							int nGameType,
 							BOOL blSel)
@@ -29,7 +28,6 @@ int CLMCDataMgr::InsertItem(CDibBitmap* pImg,
 	lmci.strItemName = strItemName;
 	lmci.strItemdDetailinfo = strdetail;
 	lmci.nGameType = nGameType;
-	lmci.strSvrID = strSvrID;
 	lmci.strAddTime = strAddTime;
 	m_vItem.push_back(lmci);
 	return lmci.iIndex;
@@ -39,7 +37,6 @@ int CLMCDataMgr::InsertItem(CString strImgPath,
 							CString strItemName,
 							CString strdetail,
 							string strGID,
-							string strSvrID,
 							string strAddTime,
 							int nGameType,
 							BOOL blSel/* =FALSE */)
@@ -52,7 +49,6 @@ int CLMCDataMgr::InsertItem(CString strImgPath,
 	lmci.strItemdDetailinfo = strdetail;
 	lmci.blSel = blSel;
 	lmci.nGameType = nGameType;
-	lmci.strSvrID = strSvrID;
 	lmci.strAddTime = strAddTime;
 	m_vItem.push_back(lmci);
 	return lmci.iIndex;

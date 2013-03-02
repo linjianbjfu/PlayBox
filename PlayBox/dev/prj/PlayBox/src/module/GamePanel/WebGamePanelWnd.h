@@ -5,6 +5,7 @@
 #include "../../LayoutMgr/ISkinMgr.h"
 #include "Global/GlobalVariable.h"
 #include "src/module/Esc2ExitFullScrPanel/ESCFullDlg.h"
+#include "IGameData.h"
 
 class MyWebBrowserWnd;
 class CxSkinButton;
@@ -63,8 +64,7 @@ private:
 	CxSkinButton*		m_pBtnPay;
 
 	ESCFullDlg*			m_pEscFullTipDlg;
-
-	WEB_GAME			m_webGame;
+	OneGame				m_olg;
 	bool				m_isMainWindowTopMost;
 	bool				m_bFullScreen;	//ÊÇ·ñÈ«ÆÁ
 	CRect				m_rectBeforeFull;

@@ -74,10 +74,10 @@
 		<paneitem name="PlayedGameSeperatorBk" type="bmp" start_x_right="259" start_y_top="109" end_x_right="0" y_delta="1" />
 	</background>
 	<controlpanel name="normal" ori="NO_POS">
-		<paneitem name="PlayedGameTimeOrder" type="button" tooltip="显示最近玩过的游戏" bmp="PlayedGameTimeOrder" start_x_right="502"  start_y_top="36" x_delta="30" y_delta="24" />
-		<paneitem name="PlayedGameToWebGame" type="button" tooltip="显示网页游戏" bmp="PlayedGameToWebGame" start_x_right="472"  start_y_top="36" x_delta="30" y_delta="24" />
-		<paneitem name="PlayedGameToFlashGame" type="button" tooltip="显示小游戏" bmp="PlayedGameToFlashGame" start_x_right="442"  start_y_top="36" x_delta="30" y_delta="24" />
-		<paneitem name="PlayedGameToCollectedGame" type="button" tooltip="显示收藏" bmp="PlayedGameToCollectedGame" start_x_right="412"  start_y_top="36" x_delta="30" y_delta="24" />
+		<paneitem name="PlayedGameTimeOrder" type="button" tooltip="显示最近玩过的游戏" bmp="PlayedGameTimeOrder" start_x_right="430"  start_y_top="36" x_delta="30" y_delta="24" />
+		<paneitem name="PlayedGameToWebGame" type="button" tooltip="显示网页游戏" bmp="PlayedGameToWebGame" start_x_right="400"  start_y_top="36" x_delta="30" y_delta="24" />
+		<paneitem name="PlayedGameToFlashGame" type="button" tooltip="显示小游戏" bmp="PlayedGameToFlashGame" start_x_right="370"  start_y_top="36" x_delta="30" y_delta="24" />
+		<paneitem name="PlayedGameToCollectedGame" type="button" tooltip="显示收藏" bmp="PlayedGameToCollectedGame" start_x_right="340"  start_y_top="36" x_delta="30" y_delta="24" />
 		<paneitem name="PlayedGameGameListPanel" type = "wnd" start_x_left="0"  start_y_top="94" end_x_right="259" end_y_bottom="0" />
 		<panemulti name="UserMan_LogedIn_LogedOut" ori="VERT" current="UserMan_LogedOut" start_x_right="258" start_y_top="0" x_delta="258" y_delta="109">
 			<paneitem name="UserMan_LogedIn" type="wnd" greedy="1"/>	
@@ -92,7 +92,7 @@
 		<paneitem name="UserManLoginBk" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_bottom="0" />
 	</background>
 		<controlpanel name="normal" ori="NO_POS">
-		<paneitem name="UserManLogout" type="button" tooltip="退出登录"  bmp="UserManLogout" start_x_left="185" start_y_top="24" x_delta="51" y_delta="25" />
+		<paneitem name="UserManLogout" type="button" tooltip="退出登录"  bmp="UserManLogout" start_x_left="79" start_y_top="45" x_delta="50" y_delta="25" />
 	</controlpanel>
 </wndpanel>
 
@@ -201,7 +201,7 @@
 		<paneitem name="LoginRememberPassUnCheck" type="button" bmp="minorexitboxuchk" start_x_left="30" start_y_top="167"  x_delta="16" y_delta="16" dont_change_color="1"/> 
 		<paneitem name="LoginAutoLoginCheck" type="button" bmp="minorexitboxchk" start_x_left="103" start_y_top="167"  x_delta="16" y_delta="16" dont_change_color="1"/> 
 		<paneitem name="LoginAutoLoginUnCheck" type="button" bmp="minorexitboxuchk" start_x_left="103" start_y_top="167"  x_delta="16" y_delta="16" dont_change_color="1"/> 
-		<paneitem name="LoginFailStatic" type="static" background_color="ffffff" text_color="ff0000" single_line="1" under_line="0" font_face="宋体" font_size="13" start_x_left="20" start_y_top="167" x_delta="194" y_delta="16"/>
+		<paneitem name="LoginFailStatic" type="static" background_color="f5cbcc" text_color="cd0001" single_line="1" under_line="0" font_face="宋体" font_size="13" start_x_left="0" start_y_top="167" x_delta="320" y_delta="22"/>
 		<paneitem name="LoginLogin" type="button" bmp="LoginLogin" start_x_left="20" start_y_top="197"  x_delta="80" y_delta="24" dont_change_color="1"/> 
 		<paneitem name="LoginCancel" type="button" bmp="LoginCancel" start_x_left="110" start_y_top="197"  x_delta="80" y_delta="24" dont_change_color="1"/> 
 	</controlpanel>

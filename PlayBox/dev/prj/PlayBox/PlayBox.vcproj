@@ -1829,6 +1829,9 @@
 				RelativePath=".\src\datainterface\IGameData.h">
 			</File>
 			<File
+				RelativePath=".\src\datainterface\IGameDataObserver.h">
+			</File>
+			<File
 				RelativePath=".\src\datainterface\IHttpDownObserver.h">
 			</File>
 			<File

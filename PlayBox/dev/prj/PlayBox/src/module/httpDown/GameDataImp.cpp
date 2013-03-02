@@ -12,6 +12,7 @@
 #include "AppConfig/config/ConfigSettingDef.h"
 #include "YL_HTTPRequest.h"
 #include "Global/GlobalSwfPath.h"
+#include "IGameDataObserver.h"
 
 CGameDataImp*	CGameDataImp::m_pData = NULL;
 #define MAX_TAB_COUNT	3
@@ -121,20 +122,15 @@ void CGameDataImp::LoadGameData()
 		olg.strID    = xml.GetAttrib( "Id" );
 		olg.strName  = xml.GetAttrib( "Name" );
 		olg.strIntro  = xml.GetAttrib( "Intro" );
-		//YL_Log( "CGameDataImp.txt", LOG_DEBUG, "LoadGameData","id:%s|name:%s|intro:%s",
-		//	olg.strID.c_str(), olg.strName.c_str(), olg.strIntro.c_str() );
-		olg.strPicPath = xml.GetAttrib( "Img" );
-		olg.strGamePath = xml.GetAttrib( "AppPath" );
+		olg.strPicSvrPath = xml.GetAttrib( "Img" );
+		olg.strGameSvrPath = xml.GetAttrib( "AppPath" );
 		olg.strSrvID = xml.GetAttrib("srvid");
 		olg.strAddTime = xml.GetAttrib("add_time");
 		CString strGameType = xml.GetAttrib( _T("GameType") );
 		olg.nGameType = atoi(strGameType.GetBuffer(0) );
 		strGameType.ReleaseBuffer();
 
-		if( YL_FileInfo::IsValid( olg.strGamePath ) )
-			m_pVecGame->push_back( olg );
-		else if ( 0 == strnicmp(olg.strGamePath.c_str(), "http://", strlen("http://")) )
-			m_pVecGame->push_back( olg );
+		m_pVecGame->push_back( olg );
 	}
 	xml.Close();
 }
@@ -164,8 +160,8 @@ void CGameDataImp::UnLoadGameData()
 		xml.SetAttrib( "Id", it1->strID.c_str() );
 		xml.SetAttrib( "Name", it1->strName.c_str() );
 		xml.SetAttrib( "Intro", it1->strIntro.c_str() );
-		xml.SetAttrib( "Img", it1->strPicPath.c_str() );
-		xml.SetAttrib( "AppPath", it1->strGamePath.c_str() );
+		xml.SetAttrib( "Img", it1->strPicSvrPath.c_str() );
+		xml.SetAttrib( "AppPath", it1->strGameSvrPath.c_str() );
 		xml.SetAttrib( "srvid", it1->strSrvID.c_str());
 		xml.SetAttrib( "add_time", it1->strAddTime.c_str());
 
@@ -186,35 +182,15 @@ bool CGameDataImp::IGameData_GetGameByID(const std::string& strID, int nGameType
 	assert(!((nGameType & OneGame::WEB_GAME) && (nGameType & OneGame::FLASH_GAME)));
 	GameList::iterator it1 = m_pVecGame->begin();
 	for( ; it1 != m_pVecGame->end(); it1 ++ )
-	{
 		if((nGameType & it1->nGameType) && strID == it1->strID)
 			break;
-	}
+	
 	if( it1 != m_pVecGame->end() )
 	{
-		if (it1->nGameType & OneGame::WEB_GAME)
-		{
-			og = *it1;
-			return true;
-		}
-		else if (it1->nGameType & OneGame::FLASH_GAME)
-		{
-			if( YL_FileInfo::IsValid( it1->strGamePath ) )
-			{
-				og = *it1;
-				return true;
-			}else
-			{			
-				m_pVecGame->erase( it1 );
-				og.clear();
-				return false;
-			}
-		}
-	}else
-	{
-		og.clear();
-		return false;
+		og = *it1;
+		return true;
 	}
+	return false;
 }
 
 bool CGameDataImp::IGameData_AddGame(const OneGame& og)
@@ -255,39 +231,56 @@ bool CGameDataImp::IGameData_AddGame(const OneGame& og)
 			gt = WEB;
 		IGameData_UserGameChangeInfoToSvr(gt, ADD, PLAYED, olg.strID, olg.strSrvID);
 	}
+	NotifyGameDataChanged();
 	return true;
 }
 
 bool CGameDataImp::IGameData_DelGame(const string& strID, int nGameType)
 {
 	assert((nGameType & OneGame::FLASH_GAME) || (nGameType & OneGame::WEB_GAME));
-	int iFlashOrWeb = (nGameType & OneGame::FLASH_GAME) ? OneGame::FLASH_GAME : OneGame::WEB_GAME;
+	int iFlashOrWeb = (nGameType & OneGame::FLASH_GAME) ? 
+		OneGame::FLASH_GAME : OneGame::WEB_GAME;
 
 	GameList::iterator it1 = m_pVecGame->begin();
 	for( ; it1 != m_pVecGame->end(); it1 ++ )
-		if((iFlashOrWeb & it1->nGameType) && strID == it1->strID)
+		if((iFlashOrWeb & it1->nGameType) && 
+			strID == it1->strID)
 			break;
 
 	if( it1 != m_pVecGame->end() )
 	{
 		//É¾³ýÍ¼Æ¬
-		::DeleteFile( it1->strPicPath.c_str() );
+		std::string strLocalPicPath;
+		if (it1->GetLocalPicPath(strLocalPicPath))
+			::DeleteFile(strLocalPicPath.c_str());		
 		//É¾³ýswfÎÄ¼þ
-		::DeleteFile( it1->strGamePath.c_str() );
-
+		if (it1->nGameType & OneGame::FLASH_GAME)
+		{
+			std::string strLocalSwfPath;
+			if (it1->GetLocalSwfPath(strLocalSwfPath))
+				::DeleteFile(strLocalSwfPath.c_str());
+		}
 		m_pVecGame->erase( it1 );
 
 		//É¾³ýÓÎÏ·¸æÖªserver
-		if ((it1->nGameType | OneGame::FLASH_GAME) ||
-			(it1->nGameType | OneGame::WEB_GAME))
+		if ((it1->nGameType & OneGame::FLASH_GAME) ||
+			(it1->nGameType & OneGame::WEB_GAME))
 		{
 			GameType gt = FLASH;
-			if (it1->nGameType | OneGame::FLASH_GAME)
+			if (it1->nGameType & OneGame::FLASH_GAME)
 				gt = FLASH;
-			else if (it1->nGameType | OneGame::WEB_GAME)
+			else if (it1->nGameType & OneGame::WEB_GAME)
 				gt = WEB;
-			IGameData_UserGameChangeInfoToSvr(gt, ADD, PLAYED, it1->strID, it1->strSrvID);
+
+			Status s = PLAYED;
+			if (it1->nGameType & OneGame::RECENT_PLAY)
+				s = PLAYED;
+			else if (it1->nGameType & OneGame::COLLECTED)
+				s = COLLECT;
+
+			IGameData_UserGameChangeInfoToSvr(gt, DEL, s, it1->strID, it1->strSrvID);
 		}		
+		NotifyGameDataChanged();
 		return true;
 	}
 	return false;
@@ -401,17 +394,20 @@ void CGameDataImp::IGameData_UserGameChangeInfoToSvr(GameType gt,
 		strStatus = "collect";
 		break;
 	}
-	
+	std::string strSvrIdFull;
+	if (!strSvrID.empty())
+		strSvrIdFull = "/svrid/" + strSvrID;
+
 	std::string strUrl;
 	YL_StringUtil::Format(strUrl, 
-		"%ss=/Gamelist/user_game/username/%s/pass/%s/type/%s/action/%s/gameid/%s/svrid/%s/status/%s",
+		"%ss=/Gamelist/user_game/username/%s/pass/%s/type/%s/action/%s/gameid/%s%s/status/%s",
 		strSvr.c_str(),
 		CUserManager::GetInstance()->User_GetUserInfo()->strName.c_str(),
 		CUserManager::GetInstance()->User_GetUserInfo()->strPassMD5.c_str(),
 		strType.c_str(),
 		strAction.c_str(),
 		strGameID.c_str(),
-		strSvrID.c_str(),
+		strSvrIdFull.c_str(),
 		strStatus.c_str()
 		);
 	YL_CHTTPRequest http;
@@ -426,5 +422,16 @@ void CGameDataImp::IGameData_UserGameChangeInfoToSvr(GameType gt,
 		long size = 0;
 		pbyIndex = http.GetContent(size);
 		TRACE("OK");
+	}
+}
+
+void CGameDataImp::NotifyGameDataChanged()
+{
+	list<IMessageObserver*> listOb;
+	AfxGetMessageManager()->QueryObservers(ID_MESSAGE_GAMEDATA,listOb);
+	for( list<IMessageObserver*>::iterator itOb = listOb.begin();itOb != listOb.end();itOb++ )
+	{
+		IGameDataObserver * pOb = dynamic_cast<IGameDataObserver*>(*itOb);
+		pOb->IGameData_Changed();
 	}
 }

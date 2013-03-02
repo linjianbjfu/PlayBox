@@ -41,6 +41,7 @@ PlayedGameWnd::PlayedGameWnd()
 	m_pTextBmp[COLLECT_GAME]    = pMgr->GetDibBmp("PlayedGameCtrlPanelTextCollect");
 
 	AfxGetMessageManager()->AttachMessage(ID_MESSAGE_USER, (IUserMsgObserver*)this);
+	AfxGetMessageManager()->AttachMessage(ID_MESSAGE_GAMEDATA,(ITabBarObserver*) this);
 }
 
 PlayedGameWnd::~PlayedGameWnd()
@@ -60,6 +61,7 @@ PlayedGameWnd::~PlayedGameWnd()
 	}
 	
 	AfxGetMessageManager()->DetachMessage(ID_MESSAGE_USER, (IUserMsgObserver*)this);
+	AfxGetMessageManager()->DetachMessage(ID_MESSAGE_GAMEDATA, (IUserMsgObserver*)this);
 }
 
 BEGIN_MESSAGE_MAP(PlayedGameWnd, CBasicWnd)
@@ -256,4 +258,9 @@ void PlayedGameWnd::OnPaint()
 		m_pTextBmp[m_textType]->SetCDibRect(rc);
 		m_pTextBmp[m_textType]->Draw(&dc, FALSE);
 	}
+}
+
+void PlayedGameWnd::IGameData_Changed()
+{
+	ValidateInterface();
 }

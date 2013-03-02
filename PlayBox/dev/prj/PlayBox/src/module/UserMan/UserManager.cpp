@@ -270,7 +270,7 @@ void CUserManager::ParseJson(const std::string strJson, bool& bLoginSuc)
 					if (strGameType == "flashgame")
 					{
 						olg.nGameType |= OneGame::FLASH_GAME;
-						olg.strGamePath = jsonGame[i]["swf_url"].asString();
+						olg.strGameSvrPath = jsonGame[i]["swf_url"].asString();
 					} else 
 					if (strGameType == "webgame")
 					{
@@ -280,8 +280,11 @@ void CUserManager::ParseJson(const std::string strJson, bool& bLoginSuc)
 						continue;
 
 					olg.strName = UTF8ToGB(jsonGame[i]["name"].asString().c_str());
-					olg.strPicPath = jsonGame[i]["thumbnail_url"].asString();					
+					olg.strPicSvrPath = jsonGame[i]["thumbnail_url"].asString();					
 					olg.strID = jsonGame[i]["id"].asString();
+					if (olg.strName.empty() || olg.strID.empty())
+						continue;
+					
 					lgl.push_back(olg);
 				}
 			}		

@@ -32,5 +32,6 @@ private:
 	string		m_strDataFilePath;	//本地游戏数据data文件路径
 	void		LoadGameData();
 	void		UnLoadGameData();
+	void NotifyGameDataChanged();
 	CGameDataImp();
 };

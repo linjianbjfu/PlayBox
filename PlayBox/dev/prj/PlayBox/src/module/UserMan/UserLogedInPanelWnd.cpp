@@ -62,7 +62,7 @@ void CUserLogedInWnd::OnPaint()
 	AfxGetUIManager()->UIGetLayoutMgr()->PaintBkGround(m_hWnd, &dc);
 	if (m_pUserInfo->strName.empty())
 		return;
-	CRect rcInfo(80, 24, 260, 44);
+	CRect rcInfo(80, 20, 260, 40);
 	dc.DrawText( m_pUserInfo->strName.c_str(), 
 		-1, &rcInfo, DT_NOPREFIX|DT_LEFT|DT_VCENTER|DT_SINGLELINE);
 }

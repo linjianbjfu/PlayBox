@@ -257,8 +257,8 @@
 #define ID_BTN_AUTO_LOGIN_UNCHECK       333
 #define ID_BTN_LOGIN_LOGIN              334
 #define ID_BTN_LOGIN_CANCEL             335
-#define IDC_EDIT_LOGIN_USER_NAME        336
-#define IDC_EDIT_LOGIN_PASS_WORD        337
+#define IDC_EDIT_LOGIN_PASS_WORD        336
+#define IDC_EDIT_LOGIN_USER_NAME        337
 #define ID_BTN_ABOUT_CLOSE				338
 #define IDC_BTN_CLOSETAB				339
 #define ID_STATIC_LOGIN_ERR				340

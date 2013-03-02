@@ -178,10 +178,10 @@ bool WebGamePanelWnd::GenerateFlag(OUT std::string& strFlag,
 
 void WebGamePanelWnd::SetTabItem( TAB_ITEM ti )
 {
-	m_webGame.strID = CWebManager::GetInstance()->GetValue( ti.strParam, "id" );
-	m_webGame.strSvrID = CWebManager::GetInstance()->GetValue( ti.strParam, "svrid" );
-	m_webGame.strName = CWebManager::GetInstance()->GetValue( ti.strParam, "name" );
-	m_webGame.strPicUrl = CWebManager::GetInstance()->GetValue( ti.strParam, "picurl" );
+	std::string strID = CWebManager::GetInstance()->GetValue( ti.strParam, "id" );
+	std::string strSvrID = CWebManager::GetInstance()->GetValue( ti.strParam, "svrid" );
+	std::string strName = CWebManager::GetInstance()->GetValue( ti.strParam, "name" );
+	std::string strPicSvrUrl = CWebManager::GetInstance()->GetValue( ti.strParam, "picurl" );
 	string strValue;
 	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME, 
 		CONF_SETTING_CONFIG_WEB_GAME_URL, strValue );
@@ -196,44 +196,32 @@ void WebGamePanelWnd::SetTabItem( TAB_ITEM ti )
 		return;
 	
 	std::string strFlag;
-	GenerateFlag(strFlag, m_webGame.strID, m_webGame.strSvrID, pUserInfo->strName);
+	GenerateFlag(strFlag, m_olg.strID, m_olg.strSrvID, pUserInfo->strName);
 	string strUrl = strValue + "username/" + pUserInfo->strName +
 		"/pass/" + pUserInfo->strPassMD5 +
 		"/flag/" + strFlag +
-		"/id/" + m_webGame.strID + 
-		"/svrid/" + m_webGame.strSvrID;
+		"/id/" + m_olg.strID + 
+		"/svrid/" + m_olg.strSrvID;
 	m_pWndWebGame->Navigate(strUrl);
 
-	if ( YL_FileInfo::IsValid(m_webGame.strPicUrl) )
-	// picurl假如指向了本地文件,则是从本地游戏列表进入的游戏
-		return;
-
-	OneGame og;
-	og.strName	= m_webGame.strName;
-	og.strID	= m_webGame.strID;
-	og.strSrvID	= m_webGame.strSvrID;
-	og.strGamePath=strUrl;
-
-	string strSavePath;
-	GlobalSwfPath::GetConfigSwfPath(strSavePath);
-	if (strSavePath[strSavePath.length()-1] != '\\')
-	strSavePath += '\\';
-
-	YL_StringUtil::ReplaceAll( m_webGame.strPicUrl, " ", "%20" );
-	string strPicFormat;
-	YL_FileInfo::GetFileNameSuffix( m_webGame.strPicUrl, strPicFormat );
-
-
-	string strPicLocalDesPath;
-	YL_StringUtil::Format( strPicLocalDesPath, "%s%s_2.%s", 
-	strSavePath.c_str(), og.strID.c_str(), strPicFormat.c_str() );
-
-	og.strPicPath = strPicLocalDesPath;
-	YL_CHTTPDownFile httpDownFile;
-	httpDownFile.DownloadFile( m_webGame.strPicUrl,  strPicLocalDesPath);
-
-	og.nGameType= OneGame::WEB_GAME | OneGame::RECENT_PLAY;
-	GLOBAL_GAME->IGameData_AddGame(og);
+	m_olg.Clear();
+	if (!GLOBAL_GAME->IGameData_GetGameByID(strID, OneGame::WEB_GAME, m_olg))
+	{
+		m_olg.strID = strID;
+		m_olg.strName = strName;
+		m_olg.strPicSvrPath = strPicSvrUrl;
+		m_olg.strSrvID = strSvrID;
+		m_olg.nGameType = OneGame::WEB_GAME | OneGame::RECENT_PLAY;
+		GLOBAL_GAME->IGameData_AddGame(m_olg);
+	}
+	
+	std::string strLocalPicPath;
+	if (m_olg.GetLocalPicPath(strLocalPicPath) && 
+		!YL_FileInfo::IsValid(strLocalPicPath) )
+	{
+		YL_CHTTPDownFile httpDownFile;
+		httpDownFile.DownloadFile( m_olg.strPicSvrPath, strLocalPicPath );
+	}
 }
 
 void WebGamePanelWnd::OnDestroy()
@@ -416,7 +404,7 @@ void WebGamePanelWnd::OnClickedSite()
 		TAB_ITEM tabItem;
 		tabItem.strTitle = TAB_BROWSER_DEFAULT_TITLE;
 		tabItem.enumType = TAB_BROWSER;
-		tabItem.strParam = "url=" + strValue + m_webGame.strID;
+		tabItem.strParam = "url=" + strValue + m_olg.strID;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
 	}
 }
@@ -444,7 +432,7 @@ void WebGamePanelWnd::OnClickedPay()
 		TAB_ITEM tabItem;
 		tabItem.strTitle = TAB_PAY_TITLE;
 		tabItem.enumType = TAB_BROWSER;
-		tabItem.strParam = "url=" + strValue + m_webGame.strID;
+		tabItem.strParam = "url=" + strValue + m_olg.strID;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
 	}
 }

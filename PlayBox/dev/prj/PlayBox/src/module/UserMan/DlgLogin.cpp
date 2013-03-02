@@ -43,8 +43,9 @@ CDlgLogin::~CDlgLogin()
 
 BEGIN_MESSAGE_MAP(CDlgLogin, CDialog)
 	ON_WM_PAINT()
+	ON_WM_NCHITTEST()
 	ON_EN_SETFOCUS(IDC_EDIT_LOGIN_USER_NAME, OnUserNameEditSetFocus)
-	ON_EN_SETFOCUS(IDC_EDIT_LOGIN_USER_NAME, OnPasswordEditSetFocus)
+	ON_EN_SETFOCUS(IDC_EDIT_LOGIN_PASS_WORD, OnPasswordEditSetFocus)
 	ON_BN_CLICKED(ID_BTN_LOGIN_CLOSE,OnCloseClicked)
 	ON_BN_CLICKED(ID_BTN_LOGIN_REG, OnRegClicked)
 	ON_BN_CLICKED(ID_BTN_LOGIN_FORGET_PASS, OnForgetPassClicked)
@@ -120,27 +121,28 @@ BOOL CDlgLogin::OnInitDialog()
 	pLayoutMgr->CreateBmpPane( this,"LoginDlg","normal" );
 
 	ValidateCheckBoxOrShowFailText();
-	//用户名和密码填入CEdit
 
+	//用户名和密码填入CEdit
 	std::string strUserName;
 	AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
 		CONF_SETTING_LOGIN_USER_NAME, strUserName);
-	m_editUserName.SetWindowText(strUserName.c_str());
 
 	std::string strBase64MD5Pass;
 	AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
 		CONF_SETTING_LOGIN_PASSWORD, strBase64MD5Pass);
-	if (m_bRememberPassChecked && !strBase64MD5Pass.empty())
+	if (!strUserName.empty() && 
+		m_bRememberPassChecked && 
+		!strBase64MD5Pass.empty())
 		m_editPassWord.SetWindowText(m_lpszPassPlaceHolder);
 
-	//焦点放在登陆对话框上
-	m_btnLogin.SetFocus();
+	m_editUserName.SetWindowText(strUserName.c_str());
+	m_editUserName.SetFocus();
 
 	int l = (GetSystemMetrics(SM_CXSCREEN) - m_bkg->GetWidth())/2;
 	int t = (GetSystemMetrics(SM_CYSCREEN) - m_bkg->GetHeight())/2;
 	CRect wndRect(l, t, l+m_bkg->GetWidth(), t+m_bkg->GetHeight());
 	MoveWindow(wndRect);
-	return TRUE;
+	return FALSE; //must return FALSE, so cedit can setfocus
 }
 
 void CDlgLogin::OnPaint()
@@ -255,12 +257,12 @@ void CDlgLogin::OnCancelClicked()
 
 void CDlgLogin::UserMsg_Login()
 {
-	EndDialog(0);
+	PostMessage(WM_CLOSE, 0, 0);
 }
 
 void CDlgLogin::UserMsg_LogOut()
 {
-	EndDialog(0);
+	PostMessage(WM_CLOSE, 0, 0);
 }
 
 void CDlgLogin::UserMsg_LogFaild()
@@ -340,4 +342,18 @@ void CDlgLogin::WriteConf()
 	}
 	AfxGetUserConfig()->SetConfigStringValue(CONF_SETTING_MODULE_NAME, 
 		CONF_SETTING_LOGIN_PASSWORD, std::string(szBase64MD5), true);
+}
+
+void CDlgLogin::OnOK()
+{
+	OnLoginClicked();
+}
+
+UINT CDlgLogin::OnNcHitTest(CPoint point)
+{
+	CRect rc;
+	GetClientRect(&rc);
+	ClientToScreen(&rc);
+	rc.bottom = rc.top + 80;
+	return rc.PtInRect(point) ? HTCAPTION : CDialog::OnNcHitTest(point);
 }

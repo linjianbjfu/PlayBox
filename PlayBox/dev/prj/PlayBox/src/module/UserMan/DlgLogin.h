@@ -51,6 +51,8 @@ private:
 	afx_msg void OnCancelClicked();
 	afx_msg void OnUserNameEditSetFocus();
 	afx_msg void OnPasswordEditSetFocus();
+	afx_msg UINT OnNcHitTest(CPoint point);
+	void OnOK();
 	void ValidateCheckBoxOrShowFailText();
 	void ShowErrStaticAndLaterDisappear(LPCTSTR lpszText);
 	void HideErrStatic();

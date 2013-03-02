@@ -5,6 +5,7 @@
 #include "../../DataInterface/IPanelChangeObserver.h"
 #include "../../DataInterface/IHttpDownObserver.h"
 #include "../../LayoutMgr/ISkinMgr.h"
+#include "IGameData.h"
 
 class CShockwaveFlash;
 class DownPercentWnd;
@@ -73,8 +74,7 @@ public:
 	virtual BOOL	PreTranslateMessage(MSG* pMsg);
 	void	SetMainWindow(bool isTopMost);
 	void	UpdateAllWnd();
-	void	SetGameEntry( SWF_GAME sg );
-	void	PlayMovie( string strID, string strPath );
+	void	PlayMovie(string strPath);
 private:
 	CShockwaveFlash*	m_pGameFlash;
 	DownPercentWnd*		m_pWndDownPercent;	
@@ -90,7 +90,8 @@ private:
 	ESCFullDlg*			m_pEscFullTipDlg;
 
 	bool				m_bDown;	//是否显示下载页面
-	SWF_GAME			m_swfGame;
+	TAB_ITEM			m_tabItem;
+	OneGame				m_olg;
 
 	bool				m_isMainWindowTopMost;
 	bool				m_bFullScreen;	//是否全屏
