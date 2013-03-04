@@ -110,9 +110,7 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::GetHostInfo( DOCHOSTU
 		pInfo->cbSize = sizeof(DOCHOSTUIINFO);
 		//È¥µô¹ö¶¯Ìõ
 		//pInfo->dwFlags = DOCHOSTUIFLAG_SCROLL_NO | DOCHOSTUIFLAG_NO3DBORDER;
-
-		pInfo->dwFlags = DOCHOSTUIFLAG_NO3DBORDER |
-			DOCHOSTUIFLAG_DIALOG | DOCHOSTUIFLAG_THEME ;
+		pInfo->dwFlags = DOCHOSTUIFLAG_NO3DBORDER;
 		pInfo->dwDoubleClick = DOCHOSTUIDBLCLK_DEFAULT;
 	}
 	return S_OK;

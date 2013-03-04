@@ -1583,12 +1583,6 @@
 					RelativePath=".\src\module\GamePanel\GamePanelWnd.h">
 				</File>
 				<File
-					RelativePath=".\src\module\GamePanel\MyHtmlView.cpp">
-				</File>
-				<File
-					RelativePath=".\src\module\GamePanel\MyHtmlView.h">
-				</File>
-				<File
 					RelativePath=".\src\module\GamePanel\WebGamePanelWnd.cpp">
 				</File>
 				<File
@@ -1798,6 +1792,16 @@
 				</File>
 				<File
 					RelativePath=".\src\module\CheckUpdate\CheckUpdate.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="GameCenterPanel"
+				Filter="">
+				<File
+					RelativePath=".\src\module\GameCenterPanel\GameCenterPanelWnd.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\GameCenterPanel\GameCenterPanelWnd.h">
 				</File>
 			</Filter>
 		</Filter>

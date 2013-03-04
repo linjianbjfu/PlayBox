@@ -10,11 +10,6 @@
 class GlobalSwfPath
 {
 public:
-	
-	static CString Nothing()
-	{
-		return GetSwfPath() + "stop.swf";
-	}
 	static CString Net_Loading()
 	{
 		return GetSwfPath() + "loading.swf";
@@ -24,12 +19,9 @@ public:
 	{
 		char szBuffer[512];
 		if( CLhcImg::GetHomePath( szBuffer,512) )
-		{
 			return CString( szBuffer ) + "\\Resources\\StandardUI\\";
-		}else
-		{
+		else
 			return "";
-		}
 	}
 
 	static bool GetConfigSwfPath(std::string& strSwfSavePath)

@@ -5,7 +5,7 @@
 #include "../WebInteract/MyWebBrowserWnd.h"
 #include "../PlayedGamePanel/PlayedGameWnd.h"
 #include "../BrowserPanel/BrowserPanelWnd.h"
-//#include "../GameCenterPanel/GameCenterPanelWnd.h"
+#include "../GameCenterPanel/GameCenterPanelWnd.h"
 
 TabWndFactory * TabWndFactory::m_pSelf = NULL;
 
@@ -30,6 +30,11 @@ void TabWndFactory::DelInstance()
 TabWndFactory::TabWndFactory()
 {
 	m_idWnd = 1000;
+}
+
+int TabWndFactory::GenerateID()
+{
+	return m_idWnd++;
 }
 
 TabWndFactory::~TabWndFactory()
@@ -70,8 +75,13 @@ WebGamePanelWnd* TabWndFactory::CreateWndWebGamePanel( )
 	CREATE_SPECIAL_PANEL(WebGamePanelWnd);
 }
 
-MyWebBrowserWnd* TabWndFactory::CreateWndGameCenterPanel()
-{              
+GameCenterPanelWnd* TabWndFactory::CreateWndGameCenterPanel( )
+{
+	CREATE_SPECIAL_PANEL(GameCenterPanelWnd);
+}
+
+MyWebBrowserWnd* TabWndFactory::CreateWndGameInfoPanel( )
+{
 	CREATE_SPECIAL_PANEL(MyWebBrowserWnd);
 }
 
@@ -113,5 +123,10 @@ void TabWndFactory::Recycle( CWnd* pWnd )
 	{
 		BrowserPanelWnd* pWnd1 = (BrowserPanelWnd*)pWnd;
 		delete pWnd1;
-	}
+	}else
+	if( dynamic_cast<GameCenterPanelWnd*>(pWnd) )
+	{
+		GameCenterPanelWnd* pWnd1 = (GameCenterPanelWnd*)pWnd;
+		delete pWnd1;
+	}	
 }

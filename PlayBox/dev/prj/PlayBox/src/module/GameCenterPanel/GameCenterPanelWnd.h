@@ -24,6 +24,8 @@ protected:
 	afx_msg void	OnClickedFlashGame();
 	afx_msg void	OnClickedWebGame();
 	afx_msg void	OnClickedSearchBtn();	
+	afx_msg void	OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	virtual BOOL	PreTranslateMessage(MSG* pMsg);
 private:
 	CxSkinButton*		m_pBtnMainPage;
 	CxSkinButton*		m_pBtnFlashGame;

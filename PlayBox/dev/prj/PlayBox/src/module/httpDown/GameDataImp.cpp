@@ -97,17 +97,12 @@ static void MergeXml (CString strMaster, CString strUpdate)
 	xmlUpdate.Close ();
 }
 
-
 void CGameDataImp::LoadGameData()
 {
 	m_pVecGame->clear();
-	YL_Log( "CGameDataImp.txt", LOG_DEBUG, "LoadGameData","m_strDataFilePath:%s", m_strDataFilePath.c_str() );
-
 	CMarkupArchive xml;
 	if( !xml.Open(m_strDataFilePath.c_str()) )
 		return;
-
-	YL_Log( "CGameDataImp.txt", LOG_DEBUG, "LoadGameData","CMarkupArchive::Open success" );
 
 	char szHomePath[MAX_PATH];
 	CLhcImg::GetHomePath( szHomePath, MAX_PATH );
@@ -237,6 +232,23 @@ bool CGameDataImp::IGameData_AddGame(const OneGame& og)
 
 bool CGameDataImp::IGameData_DelGame(const string& strID, int nGameType)
 {
+	DelGameInternal(strID, nGameType);
+	NotifyGameDataChanged();
+	return true;
+}
+
+bool CGameDataImp::IGameData_DelGame(const std::vector<std::string>& vecID, 
+									 std::vector<int> vecGameType)
+{
+	for (int i=0; i<vecID.size(); i++)
+		DelGameInternal(vecID[i], vecGameType[i]);
+
+	NotifyGameDataChanged();
+	return true;
+}
+
+bool CGameDataImp::DelGameInternal(const string& strID, int nGameType)
+{
 	assert((nGameType & OneGame::FLASH_GAME) || (nGameType & OneGame::WEB_GAME));
 	int iFlashOrWeb = (nGameType & OneGame::FLASH_GAME) ? 
 		OneGame::FLASH_GAME : OneGame::WEB_GAME;
@@ -280,7 +292,6 @@ bool CGameDataImp::IGameData_DelGame(const string& strID, int nGameType)
 
 			IGameData_UserGameChangeInfoToSvr(gt, DEL, s, it1->strID, it1->strSrvID);
 		}		
-		NotifyGameDataChanged();
 		return true;
 	}
 	return false;
@@ -331,6 +342,57 @@ void CGameDataImp::IGameData_SetLoginGameList(GameList& lgl)
 {
 	m_vecLoginGame.clear();
 	std::copy(lgl.begin(), lgl.end(), back_inserter(m_vecLoginGame));
+	//download pics
+	DownloadPics();
+}
+
+void CGameDataImp::DownloadPics()
+{
+	//cancel thread
+	DWORD dwThreadExitCode = 0;
+	if( m_hThread != NULL && 
+		GetExitCodeThread(m_hThread,&dwThreadExitCode) && 
+		dwThreadExitCode == STILL_ACTIVE )
+	{
+		TerminateThread(m_hThread, 1);
+		WaitForSingleObject(m_hThread,1000);
+		CloseHandle(m_hThread);
+		m_hThread = NULL;
+	}
+	//start a new thread
+	std::vector<DownloadPicPara> * para = new std::vector<DownloadPicPara>;
+	AddDownloadPicPara(para, m_vecLocalGame);
+	AddDownloadPicPara(para, m_vecLoginGame);
+	m_hThread = CreateThread(0,0,ThreadDownloadPic, para, 0, 0);
+	NotifyGameDataChanged();
+}
+
+void CGameDataImp::AddDownloadPicPara(std::vector<DownloadPicPara>* para, GameList& gl)
+{
+	for (GameList::iterator i1 = gl.begin(); i1 != gl.end(); i1++)
+	{
+		std::string strLocalPicPath;
+		if (i1->GetLocalPicPath(strLocalPicPath) && 
+			!YL_FileInfo::IsValid(strLocalPicPath))
+		{
+			DownloadPicPara p;
+			p.strPicSvrUrl = i1->strPicSvrPath;
+			p.strPicLocalPath = strLocalPicPath;
+			para->push_back(p);
+		}
+	}
+}
+
+DWORD CGameDataImp::ThreadDownloadPic(void* pPara)
+{
+	std::vector<DownloadPicPara> *p = (std::vector<DownloadPicPara> *)pPara;
+	for (std::vector<DownloadPicPara>::iterator i = p->begin(); i != p->end(); i++)
+	{
+		i->strPicSvrUrl;
+		i->strPicLocalPath;
+	}
+	delete p;
+	return 0;
 }
 
 void CGameDataImp::IGameData_ChangeLoginState(bool bLogin)
@@ -411,7 +473,7 @@ void CGameDataImp::IGameData_UserGameChangeInfoToSvr(GameType gt,
 		strStatus.c_str()
 		);
 	YL_CHTTPRequest http;
-	bool bAsync = false;
+	bool bAsync = true;
 	if (bAsync)
 	{
 		http.SendRequest(strUrl, YL_CHTTPRequest::REQUEST_GET);

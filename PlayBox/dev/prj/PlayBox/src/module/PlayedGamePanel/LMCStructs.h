@@ -3,7 +3,7 @@
 #define ITEMTXTH		15			// 名称区域
 #define ITEMDETAILTXTH	13			// 详细信息区域
 #define	SPACEH			4			// 间距高度
-#define SPACEW			16			// 水平间距
+#define SPACEW			30			// 水平间距
 #define SPACEWS			10
 #define	VSCROLLMIN		40			// 向下滚动幅度
 #define VSCROLLMAX		100			// 向下滚动幅度

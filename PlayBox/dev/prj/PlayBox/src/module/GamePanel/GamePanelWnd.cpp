@@ -23,16 +23,15 @@
 #include "AppConfig/config/ConfigSettingDef.h"
 
 IMPLEMENT_DYNAMIC(GamePanelWnd, CBasicWnd)
+
 GamePanelWnd::GamePanelWnd()
 {
 	m_isMainWindowTopMost = false;
-	m_bFullScreen           = false;
-	m_bDown		            = false;
-	m_isMainWindowTopMost	= false;
-	m_bFullScreen			= false;
-
-	this->m_iStep = 0;
-
+	m_bFullScreen         = false;
+	m_bDown		          = false;
+	m_isMainWindowTopMost = false;
+	m_bFullScreen		  = false;
+	m_iStep = 0;
 	//2012-12-13
 	m_pGameFlash      = new CShockwaveFlash();
 	m_pWndDownPercent = new DownPercentWnd();
@@ -42,7 +41,6 @@ GamePanelWnd::GamePanelWnd()
 	m_pBtnToFullScreen      = new CxSkinButton();
 	m_pBtnExitFullScreen      = new CxSkinButton();
 	m_pBtnPause      = new CxSkinButton();
-
 	m_pWndRight = new MyWebBrowserWnd();
 	m_pWndBottom = new MyWebBrowserWnd();
 	m_pEscFullTipDlg = new ESCFullDlg;
@@ -63,14 +61,10 @@ GamePanelWnd::~GamePanelWnd()
 	delete m_pBtnExitFullScreen;
 	delete m_pBtnPause;
 	//do not delete MyWebBrowserWnd ptr, you can see now it's hwnd is feeefeee
-	//delete m_pWndRight;
-	//delete m_pWndBottom;
-
 	if( IsWindow( m_pEscFullTipDlg->m_hWnd) )
 		m_pEscFullTipDlg->DestroyWindow();
 
 	delete m_pEscFullTipDlg;
-
 	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_LAYOUTMGR,(ILayoutChangeObserver*) this);
 	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_PANEL_CHANGE,(IPanelChangeObserver*) this);
 	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_HTTP_DOWN,(IHttpDownObserver*) this);
@@ -79,8 +73,6 @@ GamePanelWnd::~GamePanelWnd()
 BEGIN_MESSAGE_MAP(GamePanelWnd, CBasicWnd)
 	ON_WM_CREATE()
 	ON_WM_DESTROY()
-	ON_WM_SIZE()
-	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_BTN_REPLAY,OnClickedReplay)
 	ON_BN_CLICKED(IDC_BTN_FULL_SCREEN,OnClickedFullScreen)
 	ON_BN_CLICKED(IDC_BTN_EXIT_FULL_SCREEN,OnClickedExitFullScreen)
@@ -116,7 +108,6 @@ int GamePanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_pBtnPause->Create (NULL, WS_VISIBLE, rectNull, this, IDC_BTN_PAUSE);
 	m_pWndRight->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN,rectNull,this,ID_WND_FLASHGAME_RIGHT );
 	m_pWndBottom->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN,rectNull,this,ID_WND_FLASHGAME_BOTTOM );
-
 	m_pWndDownPercent->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN,rectNull,this,ID_WND_GAME_DOWN_PERCENT );
 
 	ILayoutMgr* pLayoutMgr =  AfxGetUIManager()->UIGetLayoutMgr();	
@@ -134,13 +125,8 @@ int GamePanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	pLayoutMgr->CreateBmpPane( this,"gamepanel","normal" );
 
 	m_pEscFullTipDlg->Create(IDD_DIALOG_ESCFULLSCR, this);
-
 	UpdateAllWnd();
 	return 0;
-}
-
-void GamePanelWnd::LoadSkin()
-{
 }
 
 void GamePanelWnd::SetTabItem( TAB_ITEM ti )
@@ -188,14 +174,10 @@ void GamePanelWnd::SetTabItem( TAB_ITEM ti )
 		if (YL_FileInfo::IsValid(strLocalSwfPath))
 		{
 			m_bDown = false;
-			//If the Movie has been downloaded then play it.
-			//m_bDown = true;
-			//this->SetTimer(ADS_TIMER_ID,ADS_TIME,NULL);
 			PlayMovie(strLocalSwfPath);
 		}else
 		{
 			m_bDown = true;
-			//下载swf文件
 			HttpDownCtrl::GetInstance()->StartDown( m_olg.strID, m_olg.strGameSvrPath );
 		}
 		UpdateAllWnd();
@@ -291,7 +273,6 @@ void GamePanelWnd::IPanelChangeOb_ExitFullScreen( CWnd* pWnd )
 		return;
 
 	m_bFullScreen = false;
-
 	//加上子窗口风格
 	long style = ::GetWindowLong(m_hWnd,GWL_STYLE);
 	style |= WS_CHILD;
@@ -315,13 +296,10 @@ void GamePanelWnd::IPanelChangeOb_ExitFullScreen( CWnd* pWnd )
 	bool bHold = false;
 	AfxGetUserConfig()->GetConfigBoolValue( CONF_APP_MODULE_NAME,CONF_APP_MAINWND_HOLD,bHold);
 	if( bHold )
-	{
 		AfxGetMainWindow()->SetWindowPos(&wndTopMost,-1,-1,-1,-1, SWP_NOSIZE|SWP_NOMOVE);
-	}
 	UpdateAllWnd();
 	//游戏界面获取焦点
 	// m_pGameFlash->SetFocus();
-
 	KillTimer(ID_TIMER_ESCFULL_TIP);
 	ShowHideEseFull(false);
 }
@@ -337,7 +315,6 @@ void GamePanelWnd::HttpDownOb_DownStart( string& strID )
 	m_pWndDownPercent->SetFailed( false );
 	vector<string> vecText;
 	vecText.push_back( "开始下载" );
-
 	//m_pWndDownPercent->SetText( vecText );
 	m_pWndDownPercent->SetDownPercent( 0 );
 }
@@ -364,7 +341,6 @@ void GamePanelWnd::HttpDownOb_DownFinish( string& strID, string& strSwfPath )
 		YL_CHTTPDownFile httpDownFile;
 		httpDownFile.DownloadFile( olg.strPicSvrPath, strLocalPicPath );
 	}
-
 	PlayMovie(strSwfPath);
 	m_bDown = false;
 	UpdateAllWnd();
@@ -377,10 +353,8 @@ void GamePanelWnd::HttpDownOb_DownFailed( string& strID, HTTP_DOWN_FAILED_REASON
 
 	m_bDown = true;
 	UpdateAllWnd();
-
 	m_pWndDownPercent->SetFailed( true );
 	vector<string> vecText;
-
 	string strFailedReason = "不明原因";
 	switch( r )
 	{
@@ -433,7 +407,6 @@ void GamePanelWnd::HttpDownOb_DownProgress( string& strID, double dPercent,
 
 	m_bDown = true;
 	UpdateAllWnd();
-
 	vector<string> vecText;
 	string strText;
 	//文件大小\t下载百分比
@@ -454,7 +427,6 @@ void GamePanelWnd::HttpDownOb_DownProgress( string& strID, double dPercent,
 		UINT2CString( unSpeed ).GetString() );
 	strText +=strTmp;
 	vecText.push_back( strText );	
-	
 	//Show the percentage of download-process.
 	m_pWndDownPercent->SetFailed( false );
 	m_pWndDownPercent->SetText( vecText );
@@ -463,9 +435,6 @@ void GamePanelWnd::HttpDownOb_DownProgress( string& strID, double dPercent,
 
 void GamePanelWnd::PlayMovie(string strPath )
 {
-	//播放swf	
-	if( m_pGameFlash->GetMovie().Compare( strPath.c_str() ) == 0  )
-		m_pGameFlash->SetMovie( GlobalSwfPath::Nothing() );
 	m_pGameFlash->SetMovie(strPath.c_str());
 	m_pGameFlash->Play();
 	m_pGameFlash->SetFocus();
@@ -586,12 +555,6 @@ void GamePanelWnd::UpdateAllWnd()
 		m_pWndBottom->ShowWindow(SW_SHOW);
 		m_pGameFlash->ShowWindow( SW_SHOW );
 	}
-}
-void GamePanelWnd::OnSize(UINT nType, int cx, int cy)
-{
-	__super::OnSize(nType, cx, cy);	
-	//m_pWndDownPercent->MoveWindow( 0, 0, cx, cy );
-	UpdateAllWnd();	
 }
 
 void GamePanelWnd::OnClickedReplay()
@@ -716,41 +679,6 @@ void GamePanelWnd::OnClickedUnMute()
 	}
 }
 
-void GamePanelWnd::OnTimer(UINT nIDEvent)
-{
-	// TODO: Add your message handler code here and/or call default
-	if(nIDEvent == ADS_TIMER_ID )
-	{
-		++this->m_iStep ;
-		this->m_pWndDownPercent ->SetDownPercent  (m_iStep/(double)60);
-		vector<string> vecText;
-		switch(this->m_iStep %3)
-		{
-		case 0:
-			vecText.push_back ("正在缓冲...");
-			break;
-		case 1:
-			vecText.push_back ("正在缓冲.  ");
-			break;
-		case 2:
-			vecText.push_back ("正在缓冲.. ");
-			break;
-		default:
-			vecText.push_back ("正在缓冲...");
-			break;
-		}
-		this->m_pWndDownPercent ->SetText (vecText);
-		if(this->m_iStep == 60)
-		{
-			KillTimer (ADS_TIMER_ID );
-			m_bDown = false;
-			UpdateAllWnd();
-		}
-	}
-
-	__super::OnTimer(nIDEvent);
-}
-
 void GamePanelWnd::OnClickedFullScreen()
 {
 	if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
@@ -807,13 +735,10 @@ void GamePanelWnd::ShowHideEseFull(bool isShow)
 
 BOOL GamePanelWnd::PreTranslateMessage(MSG* pMsg)
 {
-	if (pMsg->message == WM_KEYDOWN)
+	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_ESCAPE)
 	{
-		if (pMsg->wParam == VK_ESCAPE)
-		{
-			OnClickedExitFullScreen();
-			return TRUE;
-		}
+		OnClickedExitFullScreen();
+		return TRUE;
 	}
 	return __super::PreTranslateMessage(pMsg);
 }

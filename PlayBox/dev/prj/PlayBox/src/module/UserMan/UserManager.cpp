@@ -126,7 +126,7 @@ void CUserManager::UserLoginInternal(LPCSTR pszName, LPCSTR pszPwdMD5)
 	LoginThreadPara* pPara = new LoginThreadPara;
 	pPara->strUserName = pszName;
 	pPara->strPassWord = pszPwdMD5;
-	g_pUserMgr->m_hThreadLogIn = CreateThread(0,0,ThreadLogin,pPara,0,0);	
+	g_pUserMgr->m_hThreadLogIn = CreateThread(0,0,ThreadLogin,pPara,0,0);
 }
 
 void CUserManager::User_CancelLog()
@@ -270,7 +270,7 @@ void CUserManager::ParseJson(const std::string strJson, bool& bLoginSuc)
 					if (strGameType == "flashgame")
 					{
 						olg.nGameType |= OneGame::FLASH_GAME;
-						olg.strGameSvrPath = jsonGame[i]["swf_url"].asString();
+						olg.strGameSvrPath = jsonGame[i]["flash_url"].asString();
 					} else 
 					if (strGameType == "webgame")
 					{

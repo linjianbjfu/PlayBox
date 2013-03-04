@@ -147,6 +147,7 @@ void BrowserPanelWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		return;
 	}
 }
+
 BOOL BrowserPanelWnd::PreTranslateMessage(MSG* pMsg)
 {
 	switch (pMsg->message)

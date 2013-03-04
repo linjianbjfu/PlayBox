@@ -25,9 +25,8 @@ END_MESSAGE_MAP()
 int CFlashWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if( __super::OnCreate( lpCreateStruct) == -1 )
-	{
 		return -1;
-	}
+
 	m_flash.Create("WebInfo", WS_CHILD, CRect(0,0,0,0), this, 12456);
 	m_flash.ShowWindow(SW_SHOW);
 	m_flash.SetBGColor( 0 );

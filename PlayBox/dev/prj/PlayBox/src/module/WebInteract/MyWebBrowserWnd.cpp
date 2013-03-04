@@ -51,9 +51,17 @@ BOOL MyWebBrowserWnd::CreateControlSite(COleControlContainer* pContainer,COleCon
 	return TRUE;
 }
 
-void MyWebBrowserWnd::Navigate( string strUrl )
+void MyWebBrowserWnd::Navigate(const string& strUrl)
 {
 	Navigate2( strUrl.c_str() );
+}
+
+void MyWebBrowserWnd::NavigetePost(const string& strUrl, 
+								   const string& strHeader, 
+								   const string& strPostData)
+{
+	Navigate2(strUrl.c_str(), 0, NULL, strHeader.c_str(), 
+		(LPVOID)(strPostData.c_str()), strPostData.length());
 }
 
 void MyWebBrowserWnd::OnDownloadBegin()

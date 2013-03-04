@@ -5,6 +5,7 @@
 #include "../../gui/util/BalloonHelp.h"
 #include "../../gui/util/WToolTips.h"
 #include "../TopPanel/TopPanel_Control.h"
+#include "AppConfig/config/ConfigLayoutDef.h"
 
 #define ONE_TAB_MAX_WIDTH	100
 #define WIDTH_TEXT_LEFT_MARGIN 5 //tab上文字距离左边的间距
@@ -423,6 +424,20 @@ void CTabBarWnd::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		TAB_ITEM tmpTI = m_vecTi[m_iTabOver];
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tmpTI );
+		if (tmpTI.enumType == TAB_GAME_INFO_HOME)
+		{
+			//第一次点击游戏资讯，最大化
+			bool bHasClickGameInfo = false;
+			AfxGetUserConfig()->GetConfigBoolValue(CONF_LAYOUT_MODULE_NAME, 
+				CONF_LAYOUT_HAS_CLICK_GAME_INFO, bHasClickGameInfo);
+			if (!bHasClickGameInfo)
+			{
+				AfxGetUserConfig()->SetConfigBoolValue(CONF_LAYOUT_MODULE_NAME, 
+					CONF_LAYOUT_HAS_CLICK_GAME_INFO, true);
+				GLOBAL_PANELCHANGEDATA->IPanelChange_Max();
+			}
+			
+		}
 	}
 	//是否落在了newwindow按钮上
 	if ( m_bOverNewWindow )

@@ -77,11 +77,17 @@ BOOL PlayedGameListPanelWnd::OnCommand(WPARAM wParam, LPARAM lParam)
 			std::vector<int> vAlbum;
 			int iRmLast = 0,iCount = 0;
 			vAlbum = GetSelectItem();
+			std::vector<std::string> vecID;
+			std::vector<int> vecGameType;
+
 			for (int i=0;i<vAlbum.size();i++)
 			{
 				string strGID = m_DataMgr.m_vItem[vAlbum[i]].strGID;
-				GLOBAL_GAME->IGameData_DelGame(strGID, m_DataMgr.m_vItem[vAlbum[i]].nGameType);
+				vecID.push_back(strGID);
+				int nGameType = m_DataMgr.m_vItem[vAlbum[i]].nGameType;
+				vecGameType.push_back(nGameType);
 			}	
+			GLOBAL_GAME->IGameData_DelGame(vecID, vecGameType);
 			//通过gamedata_observer回调来刷新界面，而不是用下面的代码
 			//for (int i=0;i<vAlbum.size();i++)
 			//{

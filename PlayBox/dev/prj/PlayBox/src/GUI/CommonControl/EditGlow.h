@@ -14,7 +14,6 @@
 #endif 
 
 #define MAXLENGHT_SEARCH_TEXT 128
-//#define SEARCH_HELP  "ËÑË÷¸èÊÖ..."
 class CEditGlow : public CEdit
 {
 	DECLARE_DYNAMIC(CEditGlow)

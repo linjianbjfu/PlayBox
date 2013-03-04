@@ -98,6 +98,8 @@ public:
 	virtual bool IGameData_GetGameByID(const std::string& strID, int nGameType, OneGame& og) = 0;
 	virtual bool IGameData_AddGame(const OneGame& og) = 0;
 	virtual bool IGameData_DelGame(const string& strID , int nGameType) = 0;
+	virtual bool IGameData_DelGame(const std::vector<std::string>& vecID, 
+		std::vector<int> vecGameType) = 0;
 	virtual bool IGameData_GetGame(GameList& lgl, int iGameType) = 0;
 	virtual unsigned int IGameData_GetGameCount() = 0;
 	virtual void IGameData_SetLoginGameList(GameList& lgl) = 0;

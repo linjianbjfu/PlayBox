@@ -17,6 +17,7 @@
 #include "YL_HTTPDownFile.h"
 #include <algorithm>
 #include "../BrowserPanel/BrowserPanelWnd.h"
+#include "../GameCenterPanel/GameCenterPanelWnd.h"
 
 CTabPageControl * CTabPageControl::m_pTabPageControl = NULL;
 
@@ -62,16 +63,13 @@ void CTabPageControl::ITabBarOb_CreateNewTab(TAB_ITEM & item)
 	CWnd* pWndTmp = NULL;
 	if( item.enumType == TAB_HOME )
 	{
-		MyWebBrowserWnd* pWnd = TabWndFactory::GetInstance()->CreateWndGameCenterPanel();
-		std::string strGameCenterMainPage;
-		AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME,
-			CONF_SETTING_CONFIG_GAME_CENTER_MAIN_PAGE_URL,strGameCenterMainPage);
-		pWnd->Navigate(strGameCenterMainPage);
+		GameCenterPanelWnd* pWnd = TabWndFactory::GetInstance()->CreateWndGameCenterPanel();
+		pWnd->Navigate();
 		pWndTmp = pWnd;
 	}else
 	if( item.enumType == TAB_GAME_INFO_HOME )
 	{
-		MyWebBrowserWnd* pWnd = TabWndFactory::GetInstance()->CreateWndGameCenterPanel();
+		MyWebBrowserWnd* pWnd = TabWndFactory::GetInstance()->CreateWndGameInfoPanel();
 		std::string strGameInfoMainPage;
 		AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME,
 			CONF_SETTING_CONFIG_GAME_INFO_HOME_URL,strGameInfoMainPage);

@@ -28,7 +28,9 @@ public:
 	virtual void OnTitleChange(LPCTSTR lpszText);
 	virtual void OnNewWindow2(LPDISPATCH* ppDisp, BOOL* Cancel);
 	virtual void OnDownloadBegin();
-	void	Navigate( string strUrl );
+	void	Navigate(const string& strUrl );
+	void	NavigetePost(const string& strUrl, const string& strHeader,
+		const string& strPostData);
 protected:
 	DECLARE_MESSAGE_MAP()
 public:

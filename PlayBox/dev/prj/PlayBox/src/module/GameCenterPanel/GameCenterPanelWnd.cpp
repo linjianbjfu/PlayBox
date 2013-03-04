@@ -8,6 +8,8 @@
 #include "../../gui/CommonControl/xStaticText.h"
 #include "../../Gui/CommonControl/EditEx.h"
 #include "../../AppConfig/config/ConfigSettingDef.h"
+#include "../../../../../../../CommonLib/common/YL_URLEncoder.h"
+#include "../../../../../../../CommonLib/common/tools.h"
 
 IMPLEMENT_DYNAMIC(GameCenterPanelWnd, CBasicWnd)
 GameCenterPanelWnd::GameCenterPanelWnd() : m_curPageType(PT_MAIN_PAGE)
@@ -35,6 +37,7 @@ BEGIN_MESSAGE_MAP(GameCenterPanelWnd, CBasicWnd)
 	ON_WM_CREATE()
 	ON_WM_DESTROY()
 	ON_WM_SIZE()
+	ON_WM_KEYDOWN()
 	ON_BN_CLICKED(IDC_BTN_GAMECENTER_MAIN_PAGE,OnClickedMainPage)
 	ON_BN_CLICKED(IDC_BTN_GAMECENTER_FLASHGAME,OnClickedFlashGame)
 	ON_BN_CLICKED(IDC_BTN_GAMECENTER_WEBGAME,OnClickedWebGame)
@@ -74,6 +77,24 @@ void GameCenterPanelWnd::OnDestroy()
 	__super::OnDestroy();
 }
 
+void GameCenterPanelWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	if((GetKeyState(VK_CONTROL) & 0xF0000000) &&
+		nChar==VK_RETURN)
+		return;
+	__super::OnKeyDown(nChar, nRepCnt, nFlags);
+}
+
+BOOL GameCenterPanelWnd::PreTranslateMessage(MSG* pMsg)
+{
+	if(pMsg->message==WM_KEYDOWN
+		&& pMsg->wParam==VK_RETURN)
+	{
+		GoToURL(PT_SEARCH);
+	}
+	return __super::PreTranslateMessage(pMsg);
+}
+
 void GameCenterPanelWnd::OnClickedMainPage()
 {
 	GoToURL(PT_MAIN_PAGE);
@@ -100,14 +121,6 @@ void GameCenterPanelWnd::Navigate()
 	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME,CONF_SETTING_CONFIG_GAME_CENTER_FLASH_GAME_URL,m_strUrlFlashGame);
 	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME,CONF_SETTING_CONFIG_GAME_CENTER_WEB_GAME_URL,m_strUrlWebGame);
 	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME,CONF_SETTING_CONFIG_GAME_CENTER_SEARCH_URL,m_strUrlSearch);
-
-	char szBuffer[MAX_PATH];
-	CLhcImg::GetHomePath(szBuffer, MAX_PATH-1);
-	m_strUrlMainPage = string(szBuffer)+"\\Resources\\StandardUI\\testGame.html";
-	m_strUrlFlashGame = "http://www.baidu.com/s?wd=flashgame";
-	m_strUrlWebGame = "http://www.baidu.com/s?wd=flashgame";
-	m_strUrlSearch = "http://www.baidu.com/s?wd=search";
-
 	GoToURL(PT_MAIN_PAGE);
 }
 
@@ -115,6 +128,8 @@ void GameCenterPanelWnd::GoToURL(PageType pt)
 {
 	m_curPageType = pt;
 	string strUrl;
+	string strPostData;
+	string strHeader;
 	switch (m_curPageType)
 	{
 	case PT_MAIN_PAGE:
@@ -127,11 +142,28 @@ void GameCenterPanelWnd::GoToURL(PageType pt)
 		strUrl = m_strUrlWebGame;
 		break;
 	case PT_SEARCH:
-		strUrl = m_strUrlSearch+"?keyword=ËÑË÷¹Ø¼ü´Ê";
+		strUrl = m_strUrlSearch;
+		string strEncode;
+		CString cstrKeyword;
+		m_pEditSearch->GetWindowText(cstrKeyword);
+		if (cstrKeyword.IsEmpty())
+			return;
+		
+		string strUTFKeywork = GBToUTF8((LPCSTR)cstrKeyword);
+		string strEncodeKw = YL_URLEncoder::encodeQuery(strUTFKeywork);
+		strPostData = "keyboard="+strEncodeKw+"&show=title&classid=0&tempid=3&box=box";
+		strHeader = "Content-Type: application/x-www-form-urlencoded";
+		
+		int a = 0;
 		break;
 	}
 	m_pBtnMainPage->SetCheck(m_curPageType == PT_MAIN_PAGE);
 	m_pBtnFlashGame->SetCheck(m_curPageType == PT_FLASH_GAME);
 	m_pBtnWebGame->SetCheck(m_curPageType == PT_WEB_GAME);
-	m_pWndBrowser->Navigate(strUrl);
+
+	if (m_curPageType == PT_SEARCH)
+		m_pWndBrowser->NavigetePost(strUrl, strHeader, strPostData);
+	else
+		m_pWndBrowser->Navigate(strUrl);
+	
 }

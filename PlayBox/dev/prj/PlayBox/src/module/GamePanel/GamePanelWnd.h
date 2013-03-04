@@ -40,7 +40,6 @@ class GamePanelWnd : public CBasicWnd,
 public:
 	GamePanelWnd();
 	virtual ~GamePanelWnd();
-	void	LoadSkin();
 	void	SetTabItem( TAB_ITEM ti );
 	void	Init();
 	void	Recycle();
@@ -50,7 +49,6 @@ protected:
 	afx_msg void	OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
 	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void	OnDestroy();
-	afx_msg void	OnSize(UINT nType, int cx, int cy);
 	afx_msg void	OnClickedReplay();
 	afx_msg void	OnClickedPause();
 	afx_msg void	OnClickedFullScreen();
@@ -58,7 +56,6 @@ protected:
 	afx_msg void	OnClickedMute();
 	afx_msg void	OnClickedUnMute();	
 	afx_msg void	OnClickedCut();
-	afx_msg void	OnTimer(UINT nIDEvent);
 	
 public:
 	virtual void	ILayoutChangeOb_InitFinished();

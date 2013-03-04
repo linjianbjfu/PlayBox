@@ -18,6 +18,8 @@ public:
 	/*游戏信息和图片在该函数中获取*/
 	bool IGameData_AddGame(const OneGame& og);
 	bool IGameData_DelGame(const string& strID, int nGameType );
+	bool IGameData_DelGame(const std::vector<std::string>& vecID, 
+		std::vector<int> vecGameType);
 	bool IGameData_GetGame(GameList& lgl, int iGameType);
 	unsigned int IGameData_GetGameCount();
 	void IGameData_SetLoginGameList(GameList& lgl);
@@ -25,6 +27,12 @@ public:
 	void IGameData_UserGameChangeInfoToSvr(GameType gt, Action action,
 		Status s, const std::string& strGameID, const std::string& strSvrID); //用户收藏，玩过的游戏信息发给server
 private:
+	struct DownloadPicPara
+	{
+		std::string strPicSvrUrl;
+		std::string strPicLocalPath;
+	};
+
 	bool m_bLogin;
 	GameList*	m_pVecGame;
 	GameList	m_vecLocalGame;
@@ -32,6 +40,12 @@ private:
 	string		m_strDataFilePath;	//本地游戏数据data文件路径
 	void		LoadGameData();
 	void		UnLoadGameData();
-	void NotifyGameDataChanged();
+	static void NotifyGameDataChanged();
+	bool DelGameInternal(const string& strID, int nGameType);
+	static DWORD WINAPI ThreadDownloadPic(void* pPara);
+	void AddDownloadPicPara(std::vector<DownloadPicPara>* para, GameList& gl);
+	void DownloadPics();
+	HANDLE	m_hThread;
+
 	CGameDataImp();
 };
