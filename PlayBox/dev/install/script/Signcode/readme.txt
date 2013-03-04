@@ -5,3 +5,5 @@
 证书导出时密码：xiaoyao1987
 时间戳服务  http://timestamp.wosign.com/timestamp
 
+
+https://www.wosign.com/support/signcode_guide_new.htm
