@@ -5,7 +5,7 @@
 #include "../WebInteract/MyWebBrowserWnd.h"
 #include "../PlayedGamePanel/PlayedGameWnd.h"
 #include "../BrowserPanel/BrowserPanelWnd.h"
-#include "../GameCenterPanel/GameCenterPanelWnd.h"
+//#include "../GameCenterPanel/GameCenterPanelWnd.h"
 
 TabWndFactory * TabWndFactory::m_pSelf = NULL;
 
@@ -70,9 +70,9 @@ WebGamePanelWnd* TabWndFactory::CreateWndWebGamePanel( )
 	CREATE_SPECIAL_PANEL(WebGamePanelWnd);
 }
 
-GameCenterPanelWnd* TabWndFactory::CreateWndGameCenterPanel( )
-{
-	CREATE_SPECIAL_PANEL(GameCenterPanelWnd);
+MyWebBrowserWnd* TabWndFactory::CreateWndGameCenterPanel()
+{              
+	CREATE_SPECIAL_PANEL(MyWebBrowserWnd);
 }
 
 BrowserPanelWnd* TabWndFactory::CreateWndBrowserPanel( )

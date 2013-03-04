@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BHO_Demo", "BHO_Demo\BHO_Demo.vcproj", "{C580AA10-AC8C-4D66-82DE-685EAFEDE0C6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BHO_DemoPS", "BHO_Demo\BHO_DemoPS.vcproj", "{17083BD6-7EE2-4129-A850-15E77A5CD91D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C580AA10-AC8C-4D66-82DE-685EAFEDE0C6} = {C580AA10-AC8C-4D66-82DE-685EAFEDE0C6}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C580AA10-AC8C-4D66-82DE-685EAFEDE0C6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C580AA10-AC8C-4D66-82DE-685EAFEDE0C6}.Debug|Win32.Build.0 = Debug|Win32
+		{C580AA10-AC8C-4D66-82DE-685EAFEDE0C6}.Release|Win32.ActiveCfg = Release|Win32
+		{C580AA10-AC8C-4D66-82DE-685EAFEDE0C6}.Release|Win32.Build.0 = Release|Win32
+		{17083BD6-7EE2-4129-A850-15E77A5CD91D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{17083BD6-7EE2-4129-A850-15E77A5CD91D}.Release|Win32.ActiveCfg = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

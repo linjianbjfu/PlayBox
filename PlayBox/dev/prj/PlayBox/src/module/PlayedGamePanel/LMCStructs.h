@@ -42,4 +42,6 @@ typedef struct _tagLMCItemInfo
 	CString		strItemdDetailinfo;	// 项的详细信息
 	CString		strImgPath;			// 图片路径
 	CRect		rc;					// 项图片的坐标，传出值
+	int			nGameType;			// 游戏类型
+	string		strAddTime;			// 添加时间 eg: "2013-1-13 12:50"
 }LMC_ItemInfo;

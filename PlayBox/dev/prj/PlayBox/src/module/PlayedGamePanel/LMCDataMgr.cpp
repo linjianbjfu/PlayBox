@@ -12,7 +12,13 @@ CLMCDataMgr::~CLMCDataMgr()
 
 }
 
-int CLMCDataMgr::InsertItem(CDibBitmap* pImg, CString strItemName, CString strdetail, string strGID, BOOL blSel)
+int CLMCDataMgr::InsertItem(CDibBitmap* pImg,
+							CString strItemName,
+							CString strdetail, 
+							string strGID, 
+							string strAddTime,
+							int nGameType,
+							BOOL blSel)
 {
 	LMC_ItemInfo lmci;
 	lmci.strGID = strGID;
@@ -21,11 +27,19 @@ int CLMCDataMgr::InsertItem(CDibBitmap* pImg, CString strItemName, CString strde
 	lmci.pImg = pImg;
 	lmci.strItemName = strItemName;
 	lmci.strItemdDetailinfo = strdetail;
+	lmci.nGameType = nGameType;
+	lmci.strAddTime = strAddTime;
 	m_vItem.push_back(lmci);
 	return lmci.iIndex;
 }
 
-int CLMCDataMgr::InsertItem(CString strImgPath,CString strItemName, CString strdetail, string strGID, BOOL blSel/* =FALSE */)
+int CLMCDataMgr::InsertItem(CString strImgPath,
+							CString strItemName,
+							CString strdetail,
+							string strGID,
+							string strAddTime,
+							int nGameType,
+							BOOL blSel/* =FALSE */)
 {
 	LMC_ItemInfo lmci;
 	lmci.strGID = strGID;
@@ -34,6 +48,8 @@ int CLMCDataMgr::InsertItem(CString strImgPath,CString strItemName, CString strd
 	lmci.strItemName = strItemName;
 	lmci.strItemdDetailinfo = strdetail;
 	lmci.blSel = blSel;
+	lmci.nGameType = nGameType;
+	lmci.strAddTime = strAddTime;
 	m_vItem.push_back(lmci);
 	return lmci.iIndex;
 }

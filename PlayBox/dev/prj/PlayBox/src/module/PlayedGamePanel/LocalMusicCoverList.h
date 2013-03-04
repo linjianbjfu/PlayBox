@@ -34,9 +34,10 @@ public:
 	// 参数：pImg	显示图片
 	// 参数：strItemName 项的名称
 	// 参数：blSel	是否选中
+	// 参数：nGameType	游戏类型
 	// 返回值：int 每一项的标识
-	int InsertItem(CDibBitmap* pImg, CString strItemName, CString strdetail, string strGID, BOOL blSel=FALSE);
-	int InsertItem(LPCTSTR szImgPath, CString strItemName, CString strdetail, string strGID, BOOL blSel=FALSE);
+	int InsertItem(CDibBitmap* pImg, CString strItemName, CString strdetail, string strGID, string strAddTime, int nGameType, BOOL blSel=FALSE);
+	int InsertItem(LPCTSTR szImgPath, CString strItemName, CString strdetail, string strGID, string strAddTime, int nGameType, BOOL blSel=FALSE);
 	// 功能：获取选中Item的Index
 	// 返回值：vector<int> 一组Index 
 	vector<int> GetSelectItem();

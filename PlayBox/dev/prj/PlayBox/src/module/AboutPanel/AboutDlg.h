@@ -17,7 +17,13 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	BOOL OnInitDialog();
 	afx_msg void OnClickedOK();
+	afx_msg void OnClickedClose();
 	DECLARE_MESSAGE_MAP()
 private:
 	CxSkinButton m_btnOK;
+	CxSkinButton m_btnClose;
+	//CDibBitmap * m_pBmpBkAbout;
+public:
+	afx_msg void OnPaint();
+	afx_msg UINT OnNcHitTest(CPoint point);
 };

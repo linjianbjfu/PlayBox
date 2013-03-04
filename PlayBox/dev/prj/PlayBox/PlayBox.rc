@@ -64,7 +64,8 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\PlayBox.ico"
+IDR_MAINFRAME           ICON                    "res\\xiong.ico"
+IDI_ICON_BEAR           ICON                    "res\\xiong.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -86,6 +87,12 @@ BEGIN
 END
 
 IDD_DLG_MINOREXIT DIALOGEX 0, 0, 320, 180
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_DLG_LOGIN DIALOGEX 0, 0, 320, 180
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
@@ -174,6 +181,30 @@ BEGIN
     CONTROL         "",IDC_STATIC_BMP_LOADING,"Static",SS_BITMAP,63,32,20,20
 END
 
+IDD_DIALOG_ESCTEXT DIALOGEX 0, 0, 209, 32
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_DIALOG_ESCFULLSCR DIALOGEX 0, 0, 266, 37
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_DLG_FAV_URL DIALOGEX 0, 0, 186, 93
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_DIALOG_CHKUPDATE DIALOGEX 0, 0, 186, 93
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -197,11 +228,11 @@ BEGIN
     BEGIN
         BLOCK "080403a8"
         BEGIN
-            VALUE "FileDescription", "小宝贝游戏盒"
+            VALUE "FileDescription", "酷游盒子"
             VALUE "FileVersion", "1.0.4.0"
             VALUE "InternalName", "PlayBox.exe"
             VALUE "OriginalFilename", "PlayBox.exe"
-            VALUE "ProductName", "小宝贝游戏盒"
+            VALUE "ProductName", "酷游盒子"
             VALUE "ProductVersion", "1.0.4.0"
         END
     END
@@ -226,6 +257,12 @@ BEGIN
         BOTTOMMARGIN, 90
     END
 
+    IDD_DLG_LOGIN, DIALOG
+    BEGIN
+        RIGHTMARGIN, 186
+        BOTTOMMARGIN, 90
+    END
+
     IDD_DLG_ABOUT, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -245,6 +282,22 @@ BEGIN
     IDD_CONFIG, DIALOG
     BEGIN
         BOTTOMMARGIN, 232
+    END
+
+    IDD_DLG_FAV_URL, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 86
+    END
+
+    IDD_DIALOG_CHKUPDATE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 86
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -293,9 +346,6 @@ IDR_MENU_COVERLIST MENU
 BEGIN
     POPUP ""
     BEGIN
-        MENUITEM "大图",                        32772
-        MENUITEM "中图",                        ID_CL_MIDICON
-        MENUITEM "小图",                        ID_CL_SMALLICON
         MENUITEM "删除",                        ID_CL_DELFROMDISK
     END
 END

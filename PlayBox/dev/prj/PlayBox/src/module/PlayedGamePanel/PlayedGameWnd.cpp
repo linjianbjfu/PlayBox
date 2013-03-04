@@ -1,392 +1,266 @@
 #include "stdafx.h"
+#include "resource.h"
 #include "PlayedGameWnd.h"
-#include <algorithm>
-#include <set>
-#include <vector>
-#include "../../Core/CDataManager.h"
-#include "../../../../CommonLib/prj/Log/KwLogSvr.h"
+#include "..\UserMan\UserLogedInPanelWnd.h"
+#include "..\UserMan\UserLogedOutPanelWnd.h"
+#include "xSkinButton.h"
+#include "PlayedGameListPanelWnd.h"
+#include "..\WebInteract\MyWebBrowserWnd.h"
 #include "YL_StringUtil.h"
-#include "../AppConfig/config/ConfigSettingDef.h"
-#include "../../AppConfig/config/ConfigAppDef.h"
+#include "tools.h"
+#include "AfxGlobals.h"
+#include "AppConfig\config\ConfigSettingDef.h"
+#include "..\UserMan\UserManager.h"
 
-using std::set;
-using std::vector;
+static const char* s_USER_MAN_LOGED_IN_OUT	= "UserMan_LogedIn_LogedOut";
+static const char* s_USER_MAN_LOGED_IN	= "UserMan_LogedIn";
+static const char* s_USER_MAN_LOGED_OUT	= "UserMan_LogedOut";
 
-IMPLEMENT_DYNAMIC(PlayedGameWnd, CLocalMusicCoverList)
+IMPLEMENT_DYNAMIC(PlayedGameWnd, CBasicWnd)
+
+#define NEW_SKIN_BTN(pBtn) pBtn = new CxSkinButton();
 
 PlayedGameWnd::PlayedGameWnd()
-: m_iMouseDownItem(-1)
-, m_szKey("-1")
-, m_szKeyWord("")
-, m_iMovePreItem(-1),
-m_bTrackMouse(false)
-{	
+: m_bSortTimeByAsc(true), 
+  m_iGameType(0),
+  m_textType(RECENT_PLAY)
+{
+	NEW_SKIN_BTN(m_pBtnTimeOrder);
+	NEW_SKIN_BTN(m_pBtnToWebGame);
+	NEW_SKIN_BTN(m_pBtnToFlashGame);
+	NEW_SKIN_BTN(m_pBtnToCollectedGame);
+	m_pWndGameListWnd = new PlayedGameListPanelWnd();
+	m_pWndRecommand = new MyWebBrowserWnd();
+	m_pWndLogedIn	= new CUserLogedInWnd();
+	m_pWndLogedOut	= new CUserLogedOutWnd();
+	//init g_textBmp
+	ISkinMgr* pMgr = AfxGetUIManager()->UIGetSkinMgr();
+	m_pTextBmp[RECENT_PLAY] = pMgr->GetDibBmp("PlayedGameCtrlPanelTextRecentPlay");
+	m_pTextBmp[FLASH_GAME]      = pMgr->GetDibBmp("PlayedGameCtrlPanelTextFlash");
+	m_pTextBmp[WEB_GAME]        = pMgr->GetDibBmp("PlayedGameCtrlPanelTextWeb");
+	m_pTextBmp[COLLECT_GAME]    = pMgr->GetDibBmp("PlayedGameCtrlPanelTextCollect");
+
+	AfxGetMessageManager()->AttachMessage(ID_MESSAGE_USER, (IUserMsgObserver*)this);
+	AfxGetMessageManager()->AttachMessage(ID_MESSAGE_GAMEDATA,(ITabBarObserver*) this);
 }
 
 PlayedGameWnd::~PlayedGameWnd()
 {
+	delete m_pBtnTimeOrder;
+	delete m_pBtnToWebGame;
+	delete m_pBtnToFlashGame;
+	delete m_pBtnToCollectedGame;
+	delete m_pWndGameListWnd;
+	delete m_pWndLogedIn;
+	delete m_pWndLogedOut;
+	//do not delete m_pWndRecommand
+	for (int i=0; i<TT_END; i++)
+	{
+		delete m_pTextBmp[i];
+		m_pTextBmp[i] = NULL;
+	}
+	
+	AfxGetMessageManager()->DetachMessage(ID_MESSAGE_USER, (IUserMsgObserver*)this);
+	AfxGetMessageManager()->DetachMessage(ID_MESSAGE_GAMEDATA, (IUserMsgObserver*)this);
 }
 
-BEGIN_MESSAGE_MAP(PlayedGameWnd, CLocalMusicCoverList)
-	ON_WM_SHOWWINDOW()
-	ON_WM_RBUTTONUP()
-	ON_WM_LBUTTONDBLCLK()
+BEGIN_MESSAGE_MAP(PlayedGameWnd, CBasicWnd)
 	ON_WM_CREATE()
-	ON_WM_KEYDOWN()
-	ON_WM_MOUSEMOVE()
-	ON_MESSAGE(WM_MOUSELEAVE,OnMouseLeave)
-	ON_WM_LBUTTONDOWN()
-	ON_WM_LBUTTONUP()
-	ON_WM_DESTROY()
-	ON_WM_MOUSEWHEEL()
+	ON_WM_PAINT()
+	ON_BN_CLICKED(ID_BTN_PLAYED_GAME_TIME_ORDER,OnClickedTimerOrder)
+	ON_BN_CLICKED(ID_BTN_PLAYED_GAME_TO_WEB_GAME,OnClickedToWebGame)
+	ON_BN_CLICKED(ID_BTN_PLAYED_GAME_TO_FLASH_GAME,OnClickedToFlashGame)
+	ON_BN_CLICKED(ID_BTN_PLAYED_GAME_TO_COLLECTED_GAME,OnClickedToCollectedGame)
+	ON_WM_SHOWWINDOW()
 END_MESSAGE_MAP()
-
-void PlayedGameWnd::OnShowWindow(BOOL bShow, UINT nStatus)
-{
-	if (bShow)
-	{
-		ReGetData();
-	}
-	__super::OnShowWindow(bShow, nStatus);
-}
-
-void PlayedGameWnd::OnRButtonUp(UINT nFlags, CPoint point)
-{
-	__super::OnRButtonUp(nFlags, point);
-
-	m_pMenu = new CShowMenu(this,IDR_MENU_COVERLIST);
-	if( !HitTest(m_iMouseDownItem,point) )
-	{
-        //禁用删除
-		m_pMenu->DisableItem( ID_CL_DELFROMDISK );		
-	}
-	ClientToScreen(&point);
-	m_pMenu->ShowMenu(point);
-	delete m_pMenu;
-	m_pMenu = NULL;
-}
-
-BOOL PlayedGameWnd::OnCommand(WPARAM wParam, LPARAM lParam)
-{
-	static BOOL bPrompted = FALSE;
-
-	WORD lowWord	= LOWORD( wParam );
-	WORD hiWord		= HIWORD( wParam );
-	switch( lowWord )
-	{
-	case ID_CL_LARGEICON: // 大图标
-		SetImgState(LMCI_Big);
-		break;
-	case ID_CL_MIDICON: // 中等图标
-		SetImgState(LMCI_Middle);
-		break;
-	case ID_CL_SMALLICON: // 小图标
-		SetImgState(LMCI_Small);
-		break;
-	case ID_CL_DELFROMDISK: // 从磁盘删除
-		{
-			if (!bPrompted)
-			{
-				bPrompted = TRUE;
-// 				int nRet = AfxMessageBox ("您确定要删除所选游戏吗？", MB_OKCANCEL);
-				int nRet = ::MessageBox (AfxGetMainWindow ()->m_hWnd, "您确定要删除所选游戏吗？",
-					"小宝贝游戏盒", MB_OKCANCEL);
-				if (nRet == IDCANCEL)
-					break;
-			}
-			vector<int> vAlbum;
-			vAlbum = GetSelectItem();
-			RidVector rv;
-			for (int i=0;i<vAlbum.size();i++)
-			{
-				string strGID = m_DataMgr.m_vItem[vAlbum[i]].strGID;
-				rv.push_back (strGID);
-			}
-
-			for (RidVector::iterator it = rv.begin (); it != rv.end (); it++)
-			{
-				GLOBAL_LOCALGAME->ILocalGameData_DelGame(*it);
-			}
-
-			rv.clear ();
-
-			UpdateList();
-			OnMemoryDraw();
-		}
-		break;
-	default:
-		break;
-	}
-	return __super::OnCommand(wParam, lParam);
-}
-
-void PlayedGameWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
-{
-	vector<int> vSel = GetSelectItem();
-	if ( vSel.size() > 0 )
-	{
-		LMC_ItemInfo ii = m_DataMgr.m_vItem[vSel[0]];
-
-		TAB_ITEM tItem;
-		tItem.eumType = TAB_FLASHGAME;
-		tItem.strName = string(ii.strItemName);
-		tItem.strParam = string("method=playswfgame\n\n") + "id=" + ii.strGID + "\n"
-			+ "name=" + tItem.strName + "\n";
-
-		GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
-
-		//OnMemoryDraw ();
-	}
-
-	__super::OnLButtonDblClk(nFlags, point);
-}
-
-int PlayedGameWnd::ReGetData()
-{
-	m_DataMgr.ClearData();
-
-	LocalGameList lgl;
-	GLOBAL_LOCALGAME->ILocalGameData_GetAllGame( lgl );
-	for( LocalGameList::iterator it1 = lgl.begin(); it1 != lgl.end(); it1++ )
-	{
-		CString strDetail;
-		InsertItem( it1->strPicPath.c_str(), 
-			it1->strName.c_str(), strDetail, it1->strID, FALSE );
-	}
-	UpdateList();
-	OnMemoryDraw();
-	return 10;
-}
 
 int PlayedGameWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-	if (__super::OnCreate(lpCreateStruct) == -1)
+	if(__super::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	m_tootip.m_pClientWnd = this;
-	m_tootip.CreateEx(WS_EX_TOOLWINDOW|WS_EX_TOPMOST,TOOLTIPS_CLASS,"",0,CRect(0,0,0,0),NULL,0);
-	m_tootip.m_hParent = GetSafeHwnd();
-	m_tootip.m_clrBK = RGB(255, 255, 225);	
+	CRect rectNULL(0,0,0,0);
+	m_pBtnTimeOrder->Create(NULL,NULL,rectNULL,this,ID_BTN_PLAYED_GAME_TIME_ORDER);
+	m_pBtnToWebGame->Create(NULL,NULL,rectNULL,this,ID_BTN_PLAYED_GAME_TO_WEB_GAME);
+	m_pBtnToFlashGame->Create(NULL,NULL,rectNULL,this,ID_BTN_PLAYED_GAME_TO_FLASH_GAME);
+	m_pBtnToCollectedGame->Create(NULL,NULL,rectNULL,this,ID_BTN_PLAYED_GAME_TO_COLLECTED_GAME);
+	m_pWndGameListWnd->Create(NULL,NULL,WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS,rectNULL,this,ID_WND_PLAYED_GAME_LIST);
+	m_pWndRecommand->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN,rectNULL,this,ID_WND_PLAYED_GAME_RECOMMAND);
+	m_pWndLogedIn->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN,rectNULL,this,ID_WND_USER_LOGED_IN);
+	m_pWndLogedOut->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN,rectNULL,this,ID_WND_USER_LOGED_OUT);
 
+	ILayoutMgr* pLayoutMgr =  AfxGetUIManager()->UIGetLayoutMgr();
+	pLayoutMgr->RegisterCtrl(this,"PlayedGameTimeOrder",m_pBtnTimeOrder);
+	pLayoutMgr->RegisterCtrl(this,"PlayedGameToWebGame",m_pBtnToWebGame);
+	pLayoutMgr->RegisterCtrl(this,"PlayedGameToFlashGame",m_pBtnToFlashGame);
+	pLayoutMgr->RegisterCtrl(this,"PlayedGameToCollectedGame",m_pBtnToCollectedGame);
+	pLayoutMgr->RegisterCtrl(this,"PlayedGameGameListPanel",m_pWndGameListWnd);
+	pLayoutMgr->RegisterCtrl(this,"PlayedGameRecommandWebPanel",m_pWndRecommand);
+	pLayoutMgr->RegisterCtrl(this,"UserMan_LogedIn",m_pWndLogedIn);
+	pLayoutMgr->RegisterCtrl(this,"UserMan_LogedOut",m_pWndLogedOut);
+
+	pLayoutMgr->CreateControlPane( this,"playedgamepanel","normal");
+	pLayoutMgr->CreateBmpPane( this,"playedgamepanel","normal" );
+
+	AfxGetUIManager()->UIGetLayoutMgr()->ShowLayer(s_USER_MAN_LOGED_IN_OUT, s_USER_MAN_LOGED_OUT);
+
+	SetOnlyOneBtnCheckedAndValidate(m_pBtnTimeOrder);
+	std::string strPlayedGameRightUrl;
+	AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
+		CONF_SETTING_CONFIG_PLAYED_GAME_RIGHT_URL,strPlayedGameRightUrl);
+
+	m_pWndRecommand->Navigate(strPlayedGameRightUrl.empty() ? 
+		"about:blank" : strPlayedGameRightUrl);
 	return 0;
-}
-
-void PlayedGameWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
-{
-	if (nChar==VK_DELETE)
-	{
-		vector<int> vItem = GetSelectItem();
-		int i = 0;
-		RidVector rv;
-
-		for( ; i<vItem.size(); i++  )
-		{
-			LMC_ItemInfo ii = GetItemInfoByIndex( vItem[i] );
-			rv.push_back (ii.strGID);
-// 			GLOBAL_LOCALGAME->ILocalGameData_DelGame( ii.strGID );
-		}
-
-		for (RidVector::iterator it = rv.begin (); it != rv.end (); it++)
-		{
-			GLOBAL_LOCALGAME->ILocalGameData_DelGame(*it);
-		}
-
-		rv.clear ();
-
-		UpdateList();
-		OnMemoryDraw();
-
-// 		if( i > 0 ) //如果有删除东西，就刷新
-// 		{
-// 			ReGetData();
-// 		}		
-	}
-	__super::OnKeyDown(nChar, nRepCnt, nFlags);
-}
-
-void PlayedGameWnd::DrawPlayBtn(CRect rc,BOOL blNormal/* =TRUE */)
-{
-	Rect rcImg(rc.left, rc.top,rc.Width(),rc.Height());
-	static BOOL blInit=TRUE;
-	static Image* pImageNormal = NULL;
-	static Image* pImageOver = NULL;
-	if (blInit)
-	{
-		blInit=FALSE;
-		TCHAR path_tmp[MAX_PATH]={0};
-		::GetModuleFileName(NULL,path_tmp,MAX_PATH);
-		CString szPlaybtnNormal(path_tmp);
-		szPlaybtnNormal=szPlaybtnNormal.Mid(0,szPlaybtnNormal.ReverseFind('\\'));
-		CString szPlaybtnOver = szPlaybtnNormal;
-		szPlaybtnNormal+="\\CoverPlayNormal.png";
-		szPlaybtnOver += "\\CoverPlayOver.png";
-		USES_CONVERSION;
-		Image img(A2W(szPlaybtnNormal.GetBuffer()),FALSE );
-		pImageNormal=img.Clone();
-		Image imgOver(A2W(szPlaybtnOver.GetBuffer()));
-		pImageOver = imgOver.Clone();
-	}
-	Graphics gc(GetDC()->m_hDC);
-	if (blNormal)
-		gc.DrawImage(pImageNormal,rcImg);
-	else
-		gc.DrawImage(pImageOver,rcImg);
-}
-
-void PlayedGameWnd::OnMouseMove(UINT nFlags, CPoint point)
-{
-	if (!m_bTrackMouse)
-	{
-		TRACKMOUSEEVENT tme;
-		tme.cbSize = sizeof(tme);
-		tme.hwndTrack = m_hWnd;
-		tme.dwFlags = TME_LEAVE;
-		_TrackMouseEvent(&tme);
-		m_bTrackMouse = TRUE;
-	}
-
-	if (m_blDrag||m_blTracker)
-	{
-		return __super::OnMouseMove(nFlags,point);
-	}
-
-	static CRect rcPre(0,0,0,0);	
-	int iItem;	
-	BOOL blHitTest=HitTest(iItem,point);
-	static int ipreITem = -1;
-	static int ipreon = -1;
-	if (blHitTest)
-	{
- 		if (!rcPre.IsRectNull()&&ipreITem!=iItem)
- 			RedrawWindow(&rcPre);
-
-		Graphics gc(GetDC()->m_hDC);
-		Rect rc(m_DataMgr.m_vItem[iItem].rc.right-32,m_DataMgr.m_vItem[iItem].rc.bottom-32,26,26);
-		CRect rcImg(rc.X,rc.Y,rc.Width+rc.X,rc.Height+rc.Y);
-		int ihitarea=-1;
-		if (rcImg.PtInRect(point))
-		{
-			ihitarea = 1;
-		}
-		else
-		{
-			ihitarea = 2;
-		}
-
-		if (iItem!=ipreITem ||ihitarea!=ipreon)
-		{
-			if (rcImg.PtInRect(point) )
-			{
-				RedrawWindow(&rcPre);
-				ipreon = 1;
-				DrawPlayBtn(rcImg,FALSE);
-			}
-			else 
-			{
-				RedrawWindow(&rcPre);
-				ipreon = 2; 
-				DrawPlayBtn(rcImg,TRUE);
-			}
-		}
-
-		rcPre.SetRect(rc.X,rc.Y,rc.X+rc.Width,rc.Y+rc.Height);
-		m_iMovePreItem=iItem;
-		ipreITem = iItem;
-		//显示tooltips
-		CString info;
-		LMC_ItemInfo ii = m_DataMgr.m_vItem[iItem];
-
-		OneLocalGame og;
-		memset (&og, 0, sizeof (OneLocalGame));
-		og.strName = ii.strItemName;
-
-		if( GLOBAL_LOCALGAME->ILocalGameData_GetGameByID( ii.strGID, og ) )
-		{
-			info.Format("名称: %s$#游戏简介:%s", og.strName.c_str(), og.strIntro.c_str() );
-		}else
-		{
-			info.Format("名称: %s", ii.strItemName );
-		}
-		//ii.strGID
-		CPoint pt(0,0);
-		GetCursorPos(&pt);
-		if( m_tootip.m_lastPoint != pt )
-		{
-			m_tootip.HideTooTips();
-		}
-		m_tootip.ShowToolTips( info,pt);
-	}
-	if (!blHitTest)
-	{
-		if (!rcPre.IsRectNull())
-			RedrawWindow(&rcPre);
-		m_iMovePreItem=-1;
-		ipreITem = -1;
-	}
-	__super::OnMouseMove(nFlags, point);
-}
-
-
-void PlayedGameWnd::OnLButtonDown(UINT nFlags, CPoint point)
-{
-	__super::OnLButtonDown(nFlags, point);
-	
-	int iItem;
-	BOOL blHittest = HitTest(iItem,point);
-	if (blHittest)
-	{
-		CRect rc=m_DataMgr.m_vItem[iItem].rc;
-		rc.SetRect(rc.right-32,rc.bottom-32,rc.right-7,rc.bottom-7);
-		if (rc.PtInRect(point))
-		{
-			DrawPlayBtn(rc,FALSE);
-			return ;
-		}
-	}
-}
-
-void PlayedGameWnd::OnLButtonUp(UINT nFlags, CPoint point)
-{
-	int iItem;
-	BOOL blHittest = HitTest(iItem,point);
-	if (blHittest)
-	{
-		CRect rc=m_DataMgr.m_vItem[iItem].rc;
-		rc.SetRect(rc.right-32,rc.bottom-32,rc.right-7,rc.bottom-7);
-		if (rc.PtInRect(point))
-		{
-			//CString szArtist = m_DataMgr.m_vItem[iItem].strItemName;
-			//vector<Song> vSong;
-			//CPData::GetInstance()->GetSongByArtist(szArtist.GetBuffer(),vSong);
-			//for (int i=0;i<vSong.size();i++)
-			//	CLMCommon::PlayMusicUseMbox(vSong[i].strPath.c_str());
-			DrawPlayBtn(rc,FALSE);
-			return ;
-		}
-	}
-	__super::OnLButtonUp(nFlags, point);
 }
 
 void PlayedGameWnd::OnDestroy()
 {
-	m_tootip.DestroyWindow();
-	CLocalMusicCoverList::OnDestroy();
+	m_pWndGameListWnd->DestroyWindow();
+	m_pWndLogedIn->DestroyWindow();
+	m_pWndLogedOut->DestroyWindow();
+	m_pWndRecommand->DestroyWindow();
+	__super::OnDestroy();
 }
 
-LPARAM PlayedGameWnd::OnMouseLeave(WPARAM wp, LPARAM lp)
+//这个函数的意义发生变化，不是按时间排序，而是现实所有的最近玩过的游戏
+void PlayedGameWnd::OnClickedTimerOrder()
 {
-	m_bTrackMouse = FALSE;
-	m_tootip.HideTooTips();
-	return 0;
+	SetOnlyOneBtnCheckedAndValidate(m_pBtnTimeOrder);
+	//下面是按时间排序的实现方法
+	/*
+	GameList lgl;
+	copy(m_gameList.begin(), m_gameList.end(), back_inserter(lgl));
+	m_gameList.clear();
+	GameList::iterator it = lgl.begin();
+	for (; it!=lgl.end(); it++)
+	{
+		time_t timeAdd = str2time(it->strAddTime);
+		GameList::iterator beginPos = m_gameList.begin();
+		for (int i=0; i<m_gameList.size(); i++)
+		{
+			time_t t = str2time(m_gameList[i].strAddTime);
+			if ((timeAdd<t) == m_bSortTimeByAsc)
+				break;
+		}
+		m_gameList.insert(beginPos+i, *it);
+	}
+	lgl.clear();
+	m_bSortTimeByAsc = !m_bSortTimeByAsc;  // 默认是升序排序 假如多次点击排序的时候需要反序 则取消注释
+	m_pWndGameListWnd->ReSetGameList(m_gameList);
+	*/
 }
 
-void PlayedGameWnd::Recycle()
+void PlayedGameWnd::SetOnlyOneBtnCheckedAndValidate(CxSkinButton* pBtn)
 {
-	ShowWindow( SW_HIDE ); //这样才能让PlayedGameWnd中的OnShowWindow时获取数据
+	if (pBtn->GetCheck() == BST_CHECKED)
+		return;
+
+	m_pBtnTimeOrder->SetCheck(m_pBtnTimeOrder == pBtn ? BST_CHECKED : BST_UNCHECKED);
+	m_pBtnToWebGame->SetCheck(m_pBtnToWebGame == pBtn ? BST_CHECKED : BST_UNCHECKED);
+	m_pBtnToFlashGame->SetCheck(m_pBtnToFlashGame == pBtn ? BST_CHECKED : BST_UNCHECKED);
+	m_pBtnToCollectedGame->SetCheck(m_pBtnToCollectedGame == pBtn ? BST_CHECKED : BST_UNCHECKED);
+
+	if(m_pBtnTimeOrder == pBtn)
+		m_textType = RECENT_PLAY;
+	else if(m_pBtnToWebGame == pBtn)
+		m_textType = WEB_GAME;
+	else if(m_pBtnToFlashGame == pBtn)
+		m_textType = FLASH_GAME;
+	else if(m_pBtnToCollectedGame == pBtn)
+		m_textType = COLLECT_GAME;
+
+	ValidateInterface();
 }
 
-BOOL PlayedGameWnd::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+void PlayedGameWnd::OnClickedToWebGame()
 {
-	m_tootip.HideTooTips();
-	return __super::OnMouseWheel(nFlags, zDelta, pt);
+	SetOnlyOneBtnCheckedAndValidate(m_pBtnToWebGame);
+}
+
+void PlayedGameWnd::OnClickedToFlashGame()
+{
+	SetOnlyOneBtnCheckedAndValidate(m_pBtnToFlashGame);
+}
+
+void PlayedGameWnd::OnClickedToCollectedGame()
+{
+	SetOnlyOneBtnCheckedAndValidate(m_pBtnToCollectedGame);
+}
+
+time_t PlayedGameWnd::str2time(const string & strTime)
+{
+	struct tm tmLocal;
+	vector<string> date;
+	vector<string> time;
+	YL_StringUtil::Tokenize(strTime, date, " ");
+	if (date.size() != 2) // get 2 strings like "2013-1-13" & "12:50"
+		return 0;
+
+	YL_StringUtil::Tokenize(date[1], time, ":");
+	if (time.size() != 2)
+		return 0;
+
+	// set time "12:50"
+	tmLocal.tm_hour = str2int(time[0]);
+	tmLocal.tm_min = str2int(time[1]);
+
+	time[0] = date[0];
+	date.clear();
+	YL_StringUtil::Tokenize(time[0], date, "-");
+	if (date.size() != 3)
+		return 0;
+
+	// set date "2013-1-13"
+	tmLocal.tm_year = str2int(date[0])-1900;
+	tmLocal.tm_mon = str2int(date[1]) - 1;
+	tmLocal.tm_mday = str2int(date[2]);
+	return mktime(&tmLocal);
+}
+
+void PlayedGameWnd::ValidateInterface()
+{
+	m_iGameType = 0;
+	if (m_pBtnTimeOrder->GetCheck())
+		m_iGameType |= OneGame::FLASH_GAME | OneGame::WEB_GAME;
+	if (m_pBtnToWebGame->GetCheck())
+		m_iGameType |= OneGame::WEB_GAME;
+	if (m_pBtnToFlashGame->GetCheck())
+		m_iGameType |= OneGame::FLASH_GAME;
+	if (m_pBtnToCollectedGame->GetCheck())
+		m_iGameType |= OneGame::COLLECTED;
+	GLOBAL_GAME->IGameData_GetGame(m_gameList, m_iGameType);
+	m_pWndGameListWnd->ReSetGameList(m_gameList);
+	Invalidate(FALSE);
+}
+
+void PlayedGameWnd::UserMsg_Login()
+{
+	m_pWndLogedIn->SetUserInfo(CUserManager::GetInstance()->User_GetUserInfo());
+	AfxGetUIManager()->UIGetLayoutMgr()->ShowLayer(s_USER_MAN_LOGED_IN_OUT, s_USER_MAN_LOGED_IN);
+	ValidateInterface();
+}
+
+void PlayedGameWnd::UserMsg_LogOut()
+{
+	AfxGetUIManager()->UIGetLayoutMgr()->ShowLayer(s_USER_MAN_LOGED_IN_OUT, s_USER_MAN_LOGED_OUT);
+	ValidateInterface();
+}
+
+void PlayedGameWnd::OnPaint()
+{
+	CPaintDC dc(this);
+	AfxGetUIManager()->UIGetLayoutMgr()->PaintBkGround( m_hWnd ,&dc,false );
+	
+	if (m_pTextBmp[m_textType] != NULL)
+	{
+		CRect rc(34, 43, 108, 61);
+		m_pTextBmp[m_textType]->SetCDibRect(rc);
+		m_pTextBmp[m_textType]->Draw(&dc, FALSE);
+	}
+}
+
+void PlayedGameWnd::IGameData_Changed()
+{
+	ValidateInterface();
 }

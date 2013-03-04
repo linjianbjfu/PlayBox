@@ -1,0 +1,27 @@
+HKCR
+{
+	BHO_Demo.MyBHO.1 = s 'MyBHO Class'
+	{
+		CLSID = s '{4A194146-1E93-4F29-B8CB-E3E46DC0CB67}'
+	}
+	BHO_Demo.MyBHO = s 'MyBHO Class'
+	{
+		CLSID = s '{4A194146-1E93-4F29-B8CB-E3E46DC0CB67}'
+		CurVer = s 'BHO_Demo.MyBHO.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {4A194146-1E93-4F29-B8CB-E3E46DC0CB67} = s 'MyBHO Class'
+		{
+			ProgID = s 'BHO_Demo.MyBHO.1'
+			VersionIndependentProgID = s 'BHO_Demo.MyBHO'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{079D689E-985A-4904-B39F-5826BFA7D9E0}'
+			var NoExplorer = d '1'
+		}
+	}
+}

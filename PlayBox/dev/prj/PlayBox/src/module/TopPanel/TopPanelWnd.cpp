@@ -19,13 +19,16 @@
 #include "../../PlayBoxDlg.h"
 #include "../AboutPanel/AboutDlg.h"
 #include "CheckNewVerDlg.h"
+#include "src/module/CheckUpdate/CheckUpdate.h"
+#include "../UserMan/UserManager.h"
 
 static const char* s_STRBUTTONLAYER		= "Normal_Large";
 static const char* s_STRBUTTON_NORMAL	= "Normal";
 static const char* s_STRBUTTON_LARGE	= "Large";
 
 IMPLEMENT_DYNAMIC(CTopPanelWnd, CBasicWnd)
-CTopPanelWnd::CTopPanelWnd():m_bHideMainWindow(FALSE)
+CTopPanelWnd::CTopPanelWnd():m_bHideMainWindow(FALSE),
+m_pDLGCheckUpdate(NULL)
 {
 	m_pShowMenu = NULL;
 	AfxGetUserConfig()->GetConfigBoolValue( CONF_APP_MODULE_NAME,CONF_APP_MAINWND_HOLD,m_bMainWndHold);
@@ -239,8 +242,8 @@ void CTopPanelWnd::OnBnClickedClose()
 	}
 	else
 	{
-		//AfxGetMainWindow()->ShowWindow( SW_HIDE );	//任务栏没图标
-		AfxGetMainWindow()->ShowWindow( SW_MINIMIZE );	//任务栏有图标
+		AfxGetMainWindow()->ShowWindow( SW_HIDE );	//任务栏没图标
+		//AfxGetMainWindow()->ShowWindow( SW_MINIMIZE );	//任务栏有图标
 	}
 }
 void CTopPanelWnd::OnBnClickedLarge()
@@ -339,8 +342,8 @@ void CTopPanelWnd::OnMenuMainPage()
 	if (!strValue.empty())
 	{
 		TAB_ITEM tabItem;
-		tabItem.strName = "官方网站";
-		tabItem.eumType = TAB_BROWSER;
+		tabItem.strTitle = TAB_OFFICE_SITE;
+		tabItem.enumType = TAB_BROWSER;
 		tabItem.strParam = "url=" + strValue;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
 	}
@@ -349,12 +352,13 @@ void CTopPanelWnd::OnMenuMainPage()
 void CTopPanelWnd::OnMenuProblemReport()
 {
 	string strValue;
-	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME, CONF_SETTING_CONFIG_PROBLEM_REPORT, strValue );
+	AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME, 
+		CONF_SETTING_CONFIG_WEB_GAME_CUSTOM_SERVICE, strValue );
 	if (!strValue.empty())
 	{
 		TAB_ITEM tabItem;
-		tabItem.strName = "问题反馈";
-		tabItem.eumType = TAB_BROWSER;
+		tabItem.strTitle = TAB_REPORT_PROBLEM;
+		tabItem.enumType = TAB_BROWSER;
 		tabItem.strParam = "url=" + strValue;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
 	}
@@ -367,8 +371,8 @@ void CTopPanelWnd::OnMenuWebGameCustomService()
 	if (!strValue.empty())
 	{
 		TAB_ITEM tabItem;
-		tabItem.strName = "页游客服";
-		tabItem.eumType = TAB_BROWSER;
+		tabItem.strTitle = TAB_WEB_GAME_CUSTOM_SERVICE_TITLE;
+		tabItem.enumType = TAB_BROWSER;
 		tabItem.strParam = "url=" + strValue;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
 	}
@@ -385,15 +389,25 @@ void CTopPanelWnd::OnHelpAbout()
 
 void CTopPanelWnd::OnLogonOut()
 {
-//	IUserMan::User_Logout();
+	CUserManager::GetInstance()->User_Logout();
 }
 
 void CTopPanelWnd::OnCheckNewVersion()
 {
-	CCheckNewVerDlg dlg;
+	//CCheckNewVerDlg dlg;
+	/*CCheckUpdate dlg;
 	AfxGetUIManager()->UIAddDialog( (DWORD)&dlg);
 	dlg.DoModal();
-	AfxGetUIManager()->UIRemoveDialog( (DWORD)&dlg);
+	AfxGetUIManager()->UIRemoveDialog( (DWORD)&dlg);*/
+	if( m_pDLGCheckUpdate != NULL)
+		m_pDLGCheckUpdate->ShowWindow(SW_SHOW);
+	else
+	{
+		m_pDLGCheckUpdate = new CCheckUpdate;
+		m_pDLGCheckUpdate->Create(IDD_DIALOG_CHKUPDATE,this);
+		SetChildCHKUpdate(m_pDLGCheckUpdate);
+		m_pDLGCheckUpdate->ShowWindow(SW_SHOW);
+	}
 }
 
 void CTopPanelWnd::OnBnClickedHold()
@@ -496,4 +510,36 @@ void CTopPanelWnd::RegisterBossKey(int iKeyValue)
 void CTopPanelWnd::UnRegisterBossKey()
 {
 	RegisterHotKey(ID_HOTKEY_BOSSKEY);
+}
+
+void CTopPanelWnd::SetChildCHKUpdate(CCheckUpdate *pCHKUpdate)
+{
+	if ((pCHKUpdate != NULL) &&(m_pDLGCheckUpdate != NULL))
+	{
+		if(pCHKUpdate == m_pDLGCheckUpdate)
+		{
+			AfxGetUIManager()->UIAddDialog(m_pDLGCheckUpdate);
+			return ;
+		}
+		else
+		{
+			AfxGetUIManager()->UIRemoveDialog(m_pDLGCheckUpdate);
+			m_pDLGCheckUpdate = pCHKUpdate;
+			AfxGetUIManager()->UIAddDialog(m_pDLGCheckUpdate);
+			return ;
+		}
+	}
+	else if((pCHKUpdate == NULL )&&(m_pDLGCheckUpdate != NULL))
+	{
+		AfxGetUIManager()->UIRemoveDialog( (DWORD)m_pDLGCheckUpdate);
+		m_pDLGCheckUpdate = pCHKUpdate;
+		return ;
+	}
+	else if((pCHKUpdate != NULL)&& (m_pDLGCheckUpdate == NULL))
+	{
+		m_pDLGCheckUpdate = pCHKUpdate;
+		AfxGetUIManager()->UIAddDialog(m_pDLGCheckUpdate);
+		return ;
+	}
+	
 }

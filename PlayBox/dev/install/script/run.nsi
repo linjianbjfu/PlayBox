@@ -3,7 +3,7 @@ OutFile "..\install_resource\run.exe"
 
 SetCompressor /SOLID /FINAL lzma
 Caption "–°±¶±¥”Œœ∑∫–"
-Icon ..\..\prj\PlayBox\res\PlayBox.ico
+Icon ..\..\prj\PlayBox\res\xiong.ico
 AutoCloseWindow true
 
 Function .onInit

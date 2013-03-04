@@ -5,6 +5,7 @@
 #include "../../DataInterface/IPanelChangeObserver.h"
 #include "../../DataInterface/IHttpDownObserver.h"
 #include "../../LayoutMgr/ISkinMgr.h"
+#include "IGameData.h"
 
 class CShockwaveFlash;
 class DownPercentWnd;
@@ -13,10 +14,22 @@ class CxSkinButton;
 class CShowMenu;
 class CxStaticText;
 class IPanelChange;
+class ESCFullDlg;
 
 #define ADS_TIMER_ID 1001
+
 //Time to play the ads( by million seconds)*60
 #define ADS_TIME			400
+
+
+#if! defined(__ESC_FULL_SCR_TIP_TIMER_DEF__)
+#define __ESC_FULL_SCR_TIP_TIMER_DEF__
+
+#define ID_TIMER_ESCFULL_TIP	10086
+#define TIME_TIMER_ESCFULL_TIP	3000
+
+#endif // __ESC_FULL_SCR_TIP_TIMER_DEF__
+
 
 class GamePanelWnd : public CBasicWnd,
 					 public ILayoutChangeObserver,
@@ -45,6 +58,7 @@ protected:
 	afx_msg void	OnClickedMute();
 	afx_msg void	OnClickedUnMute();	
 	afx_msg void	OnClickedCut();
+	afx_msg void	OnTimer(UINT nIDEvent);
 	
 public:
 	virtual void	ILayoutChangeOb_InitFinished();
@@ -57,10 +71,10 @@ public:
 	virtual void	HttpDownOb_DownFailed( string& strID, HTTP_DOWN_FAILED_REASON r );
 	virtual void	HttpDownOb_DownProgress( string& strID, double dPercent, unsigned int unFileSize, unsigned int unSpeed);
 
+	virtual BOOL	PreTranslateMessage(MSG* pMsg);
 	void	SetMainWindow(bool isTopMost);
 	void	UpdateAllWnd();
-	void	SetGameEntry( SWF_GAME sg );
-	void	PlayMovie( string strID, string strPath );
+	void	PlayMovie(string strPath);
 private:
 	CShockwaveFlash*	m_pGameFlash;
 	DownPercentWnd*		m_pWndDownPercent;	
@@ -73,8 +87,11 @@ private:
 	MyWebBrowserWnd*	m_pWndRight;
 	MyWebBrowserWnd*	m_pWndBottom;
 
+	ESCFullDlg*			m_pEscFullTipDlg;
+
 	bool				m_bDown;	//是否显示下载页面
-	SWF_GAME			m_swfGame;
+	TAB_ITEM			m_tabItem;
+	OneGame				m_olg;
 
 	bool				m_isMainWindowTopMost;
 	bool				m_bFullScreen;	//是否全屏
@@ -91,6 +108,5 @@ private:
 	CString UINT2CString(UINT ui);
 	CString GetLeftTime( unsigned int uiSize, unsigned int uiSpeed, unsigned int uiFinished );
 	void	InitFlashParams(CShockwaveFlash*	pGameFlash);
-public:
-	afx_msg void OnTimer(UINT nIDEvent);
+	void	ShowHideEseFull(bool isShow);
 };

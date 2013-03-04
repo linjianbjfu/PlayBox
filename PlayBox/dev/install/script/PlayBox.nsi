@@ -14,7 +14,7 @@ SetCompressor /SOLID /FINAL lzma
 	!include LogicLib.nsh
 	!define VERSION_NUM  "0.0.3"
 ;--------------------------------
-  	Name  "词霸游戏"
+  	Name  "酷游盒子"
   	OutFile "PlayBox${VERSION_NUM}SetUp.exe"
   	InstallDir "$PROGRAMFILES\YoungPlayBox"
 ;--------------------------------
@@ -45,7 +45,7 @@ SetCompressor /SOLID /FINAL lzma
   	!define SOFR_HOME_KEY "path"
   	!define SOFR_VER_KEY  "ver"
   	!define MAIN_EXE_NAME "PlayBox.exe"
-	!define PRODUCT_NAME  "词霸游戏"
+	!define PRODUCT_NAME  "酷游盒子"
   	!define CUR_VERSION   "YPLAYBOX_${VERSION_NUM}"
   	!define NSIS_MUTEX    "YPLAYBOX_INSTALL_MUTEX"
   	!define YPLAYBOX_MUTEX "YPLAYBOX_2011_3_3" ;与程序中创建的锁同名
@@ -215,8 +215,8 @@ Section "-YPLAYBOX" realSection
 	File  ..\install_resource\Tool.exe
 	File  /r /x .svn /x *.db ..\install_resource\Resources
 	
-	File  ..\install_resource\instpage.gif
-	AnimGif::play /NOUNLOAD "$INSTDIR\instpage.gif"
+	;File  ..\install_resource\instpage.gif
+	;AnimGif::play /NOUNLOAD "$INSTDIR\instpage.gif"
 	IntOp $R1 0 + 0
 	IntCmp $R1 0 +2
 		System::Call 'kernel32::CloseHandle(i $R1) i .r2'
@@ -297,19 +297,19 @@ Check_KwMusic_End:
 		SetShellVarContext all
 	${Else}
 		#创建开始菜单快捷方式
-		#CreateShortCut "$STARTMENU\${PRODUCT_NAME}.lnk" "$INSTDIR\${MAIN_EXE_NAME}"
+ 		CreateShortCut "$STARTMENU\${PRODUCT_NAME}.lnk" "$INSTDIR\${MAIN_EXE_NAME}"
 	${EndIf}
-	#CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}.lnk" "$INSTDIR\${MAIN_EXE_NAME}"
-	#CreateDirectory "$SMPROGRAMS\${PRODUCT_NAME}"
-	#CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\${MAIN_EXE_NAME}"
+	CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}.lnk" "$INSTDIR\${MAIN_EXE_NAME}"
+	CreateDirectory "$SMPROGRAMS\${PRODUCT_NAME}"
+	CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\${MAIN_EXE_NAME}"
 	call GetWindowsVersion
 	Pop $R0
 	${If} $R0 == "VISTA"
 	${OrIf} $R0 == "7"
 		SetShellVarContext current
 	${EndIf}
-	#CreateShortCut "$DESKTOP\${PRODUCT_NAME}.lnk" "$INSTDIR\${MAIN_EXE_NAME}"
-	#CreateShortCut "$QUICKLAUNCH\${PRODUCT_NAME}.lnk" "$INSTDIR\${MAIN_EXE_NAME}"
+	CreateShortCut "$DESKTOP\${PRODUCT_NAME}.lnk" "$INSTDIR\${MAIN_EXE_NAME}"
+	CreateShortCut "$QUICKLAUNCH\${PRODUCT_NAME}.lnk" "$INSTDIR\${MAIN_EXE_NAME}"
 
 	strCpy $UninstPath "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\YPLAYBOX"
 	WriteRegStr HKLM $UninstPath "UninstallString" "$INSTDIR\uninstall.exe"

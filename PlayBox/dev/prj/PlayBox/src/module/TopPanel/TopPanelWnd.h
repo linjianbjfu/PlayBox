@@ -7,6 +7,7 @@
 #include "../../LayoutMgr/ISkinMgr.h"
 
 class CShowMenu;
+class CCheckUpdate;
 
 class CTopPanelWnd : public CBasicWnd,
 					 public ILayoutChangeObserver,
@@ -85,4 +86,10 @@ public:
 	void	IPanelChangeOb_WindowMin();
 	void	IPanelChangeOb_WindowRestore();
 	void	IPanelChangeOb_WindowClose();
+
+private:
+	CCheckUpdate * m_pDLGCheckUpdate;
+
+public:
+	void SetChildCHKUpdate(CCheckUpdate *);
 };

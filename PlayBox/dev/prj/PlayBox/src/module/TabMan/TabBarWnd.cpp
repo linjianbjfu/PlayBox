@@ -4,6 +4,7 @@
 #include "TabPageControl.h"
 #include "../../gui/util/BalloonHelp.h"
 #include "../../gui/util/WToolTips.h"
+#include "../TopPanel/TopPanel_Control.h"
 
 #define ONE_TAB_MAX_WIDTH	100
 #define WIDTH_TEXT_LEFT_MARGIN 5 //tab上文字距离左边的间距
@@ -96,6 +97,7 @@ BEGIN_MESSAGE_MAP(CTabBarWnd, CBasicWnd)
 	ON_WM_CREATE()
 	ON_WM_PAINT()
 	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONDBLCLK()
 	ON_WM_MOUSEMOVE()
 	ON_WM_DESTROY()
 END_MESSAGE_MAP()
@@ -191,17 +193,16 @@ void CTabBarWnd::DrawBar( CDC* pDc )
 		pBmp->SetCDibRect( rc );
 		pBmp->Draw( pDc, FALSE );
 	}
-	if( m_vecTab.size() == 0 )
-	{
+	if(m_vecTab.empty())
 		return;
-	}
+
 	//2画正常rect和close
 	for( int i = 0; i < m_vecTab.size(); i++ )
 	{
 		DrawTabItemRect( pDc, m_vecTab[i], m_pBmpRectNormalLeft,
 			m_pBmpRectNormalMiddle, m_pBmpRectNormalRight, 
 			m_vecClose[i], m_pBmpCloseNormal,
-			m_vecTi[i].strName, false );
+			m_vecTi[i].strTitle, false );
 	}
 	//2画当前rect和close
 	if( m_iTabCur != -1 )
@@ -209,7 +210,7 @@ void CTabBarWnd::DrawBar( CDC* pDc )
 		DrawTabItemRect( pDc, m_vecTab[m_iTabCur], m_pBmpRectDownLeft,
 			m_pBmpRectDownMiddle, m_pBmpRectDownRight, 
 			m_vecClose[m_iTabCur], m_pBmpSelCloseNormal, 
-			m_vecTi[m_iTabCur].strName, true );
+			m_vecTi[m_iTabCur].strTitle, true );
 	}
 	//3画鼠标over的rect
 	if( m_iTabOver != -1 && m_iTabOver != m_iTabCur )
@@ -217,7 +218,7 @@ void CTabBarWnd::DrawBar( CDC* pDc )
 		DrawTabItemRect( pDc, m_vecTab[m_iTabOver], m_pBmpRectOverLeft,
 			m_pBmpRectOverMiddle, m_pBmpRectOverRight, 
 			m_vecClose[m_iTabOver], m_pBmpCloseNormal, 
-			m_vecTi[m_iTabOver].strName, false );
+			m_vecTi[m_iTabOver].strTitle, false );
 	}
 	//4画鼠标over的close
 	if( m_iCloseOver != -1 && m_iCloseOver != 0 )
@@ -289,9 +290,7 @@ void CTabBarWnd::DrawTabItemRect( CDC* pDc, CRect& rcRect,
 
 		pDc->SetTextColor( colOld );
 		if( fontOld != NULL )
-		{
 			pDc->SelectObject( fontOld );
-		}
 	}
 	//画关闭按钮
 	pClose->SetCDibRect( rcClose );
@@ -325,9 +324,8 @@ void CTabBarWnd::ITabBarOb_OpenTabError( int iErrorCode )
 	//冒泡提示
 	int iCur = GLOBAL_TABBARDATA->ITabBar_GetCurPos();
 	if( iCur == 0 )
-	{
 		iCur = 1;
-	}
+
 	CRect rcClose = m_vecClose[iCur];
 	CPoint point;
 	point.x = rcClose.right - (rcClose.Width()/2);
@@ -337,6 +335,12 @@ void CTabBarWnd::ITabBarOb_OpenTabError( int iErrorCode )
 	CBalloonHelp::LaunchBalloon( "提示","打开窗口过多，请关闭无用窗口",
 		point,IDI_INFORMATION,CBalloonHelp::unSHOW_CLOSE_BUTTON|CBalloonHelp::unDISABLE_XP_SHADOW,
 		AfxGetMainWindow(),"",5000);
+}
+
+void CTabBarWnd::ITabBarOb_TabItemDataChanged(TAB_ITEM & item)
+{
+	CalcTabPosition();
+	Invalidate();
 }
 
 void CTabBarWnd::CalcTabPosition()
@@ -357,13 +361,11 @@ void CTabBarWnd::CalcTabPosition()
 	//iWidth	每个btn的宽度
 	int iWidth = (int)(rc.Width() / m_vecTi.size());
 	if( iWidth > ONE_TAB_MAX_WIDTH )
-	{
 		iWidth = ONE_TAB_MAX_WIDTH;
-	}
 
 	CRect rcBtn( rc );
 	CRect rcClose;
-	int iStartPos = 9; //最左边空出9个像素
+	int iStartPos = 0; //最左边空出iStartPos个像素
 	int iNewWindowStartPos = iStartPos;
 	//所有btn，包括btn上的关闭按钮
 	for( int i = 0; i < m_vecTi.size(); i++ )
@@ -372,17 +374,13 @@ void CTabBarWnd::CalcTabPosition()
 		rcBtn.right = rcBtn.left + iWidth;
 		iNewWindowStartPos = rcBtn.right;
 		if( i == m_iTabCur )
-		{
 			rcBtn.top = rcBtn.bottom - m_pBmpRectDownMiddle->GetHeight();
-		}else
-		{
+		else
 			rcBtn.top = rcBtn.bottom - m_pBmpRectNormalMiddle->GetHeight();
-		}
 		
 		m_vecTab.push_back( rcBtn );
 	
-		//if( i == 0 || i == 1 || i == 2 ) //头3个不能关闭
-		if( i == 0 )
+		if(i == 0 || i == 1 || i == 2) //头3个不能关闭
 		{
 			rcClose.right = rcBtn.right - WIDTH_CLOSE_TO_RIGHT;
 			rcClose.left  = rcClose.right;	
@@ -406,7 +404,6 @@ void CTabBarWnd::CalcTabPosition()
 void CTabBarWnd::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	AfxGetMainWindow()->Invalidate();
-
 	//是否落在了close上
 	if( m_iCloseOver != -1 
 		&& m_iCloseOver != 0 )
@@ -431,9 +428,8 @@ void CTabBarWnd::OnLButtonDown(UINT nFlags, CPoint point)
 	if ( m_bOverNewWindow )
 	{
 		TAB_ITEM tItem;
-		tItem.eumType = TAB_BROWSER;
-		tItem.strName = "新开窗口";
-		tItem.strParam = "";
+		tItem.enumType = TAB_BROWSER;
+		tItem.strTitle = TAB_BROWSER_DEFAULT_TITLE;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
 	}
 	__super::OnLButtonDown(nFlags, point);
@@ -463,10 +459,9 @@ void CTabBarWnd::OnMouseMove(UINT nFlags, CPoint point)
 		CPoint pt(0,0);
 		GetCursorPos(&pt);
 		if( m_pToolTip->m_lastPoint != pt )
-		{
 			m_pToolTip->HideTooTips();
-		}
-		CString info = m_vecTi[m_iTabOver].strName.c_str();
+
+		CString info = m_vecTi[m_iTabOver].strTitle.c_str();
 		m_pToolTip->ShowToolTips( info,pt);
 	}
 	__super::OnMouseMove(nFlags, point);
@@ -499,3 +494,7 @@ void CTabBarWnd::OnDestroy()
 	__super::OnDestroy();
 }
 
+void CTabBarWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
+{
+	CTopPanelControl::GetInstance()->DbclickTabBar();
+}

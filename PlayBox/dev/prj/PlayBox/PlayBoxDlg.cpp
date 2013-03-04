@@ -21,6 +21,8 @@
 #include "./src/datainterface/IAdData.h"
 //#include "ExceptionHandler.h"
 #include "../module/TopPanel/TopPanel_Control.h"
+#include "module/UserMan/WebWnd.h"
+#include "module/UserMan/UserManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -36,8 +38,8 @@ extern CPlayBoxApp theApp;
 CPlayBoxDlg::CPlayBoxDlg(bool bStartupRun, CWnd* pParent /*=NULL*/)
 	: CDialog(CPlayBoxDlg::IDD, pParent)
 {
-	m_ptrayIcon = new CTrayIcon(IDR_MAINFRAME);
-	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	m_ptrayIcon = new CTrayIcon(IDI_ICON_BEAR);
+	m_hIcon = AfxGetApp()->LoadIcon(IDI_ICON_BEAR);
 	
 	m_bIsResizing = FALSE;
 	m_ptStartResizing.x = 0;
@@ -78,6 +80,9 @@ BEGIN_MESSAGE_MAP(CPlayBoxDlg, CDialog)
 	ON_MESSAGE(MSG_CONF_UPDATE,OnConfUpdate)
 	ON_MESSAGE(MSG_CHANGE_TEXT_DLG,OnChangeText)
 	ON_MESSAGE(MSG_HTTP_DOWNLOAD,OnHTTPDonwload)
+	ON_MESSAGE(MSG_NEW_BROWSER_WND, OnNewBrowserWnd)
+	ON_MESSAGE(MSG_OPEN_REG_DIALOG, OnOpenRegDialog)
+	ON_MESSAGE(MSG_DO_TASK, OnDoTask)
 	ON_WM_TIMER()
 	ON_WM_SHOWWINDOW()
 	ON_WM_SYSCOMMAND()
@@ -195,10 +200,10 @@ BOOL CPlayBoxDlg::OnInitDialog()
 
 	g_hSharedWnd = m_hWnd;
 	m_ptrayIcon->SetNotificationWnd(this, WM_MY_TRAY_NOTIFICATION);
-	SetWindowText("小宝贝游戏盒");
+	SetWindowText(DESCRIP_MAINEXE);
 	_AdjustDlgSize();
 
-	m_ptrayIcon->SetIcon(theApp.LoadIcon(IDR_MAINFRAME),"小宝贝游戏盒");
+	m_ptrayIcon->SetIcon(theApp.LoadIcon(IDI_ICON_BEAR),DESCRIP_MAINEXE);
 
 	ReleaseMutex(curMutexHandle);
 
@@ -212,12 +217,11 @@ BOOL CPlayBoxDlg::OnInitDialog()
 	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_LAYOUTMGR,(ILayoutChangeObserver*) this);
 	AfxGetMessageManager()->AttachMessage( ID_MESSAGE_PANEL_CHANGE,(IPanelChangeObserver*) this);
 	AfxGetUserConfig()->AttachConfigMessage( CONF_LAYOUT_MODULE_NAME,this );
-	YL_Log( STR_LOG_FILE ,LOG_NOTICE,"OnInitDialog","before post MSG_AFTER_UICREATE" );
 	SetEvent(g_hStartEvent);
 
 	PostMessage(MSG_AFTER_UICREATE);
-	YL_Log( STR_LOG_FILE ,LOG_NOTICE,"OnInitDialog","after post MSG_AFTER_UICREATE" );
 
+	AfxGetMessageManager()->AttachMessage(ID_MESSAGE_USER, (IUserMsgObserver*)this);
 	return TRUE;  // 除非设置了控件的焦点，否则返回 TRUE
 }
 
@@ -249,6 +253,7 @@ void CPlayBoxDlg::OnPaint()
 
 void CPlayBoxDlg::OnDestroy()
 {
+	AfxGetMessageManager()->DetachMessage(ID_MESSAGE_USER, (IUserMsgObserver*)this);
 	AfxGetUserConfig()->DetachConfigMessage( CONF_LAYOUT_MODULE_NAME,this );
 	__super::OnDestroy();
 	EndDialog(IDOK);
@@ -569,35 +574,15 @@ BOOL CPlayBoxDlg::PreTranslateMessage(MSG* pMsg )
 	WPARAM wParam = pMsg->wParam;
 	LPARAM lParam = pMsg->lParam;
 
-	if( pMsg->message == WM_KEYDOWN )
-	{
-		YL_Log("gameplay.txt", LOG_DEBUG, "CPlayBoxDlg::PreTranslateMessage", "message:%s-hwnd:%d", "WM_KEYDOWN", pMsg->hwnd);
-		if( pMsg->wParam == VK_ESCAPE )
-		{
-			if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
-			{
-				GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
-			}
-		}
-	}
-
-	if( pMsg->message == WM_RBUTTONDOWN )
-	{
-		YL_Log("gameplay.txt", LOG_DEBUG, "CPlayBoxDlg::PreTranslateMessage", "message:%s-hwnd:%d", "右键", pMsg->hwnd);
-	}else
-	if( pMsg->message == WM_SETFOCUS )
-	{
-		YL_Log("gameplay.txt", LOG_DEBUG, "CPlayBoxDlg::PreTranslateMessage", "message:%s-hwnd:%d", "WM_SETFOCUS", pMsg->hwnd);
-	}
-
+	if( pMsg->message == WM_KEYDOWN
+		&& pMsg->wParam == VK_ESCAPE
+		&& GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen())
+		GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
 
 	if(pMsg->message == WM_SYSCOMMAND 
 		&& pMsg->wParam == SC_CLOSE 
 		&& AfxGetUIManager()->UICanExit())
-	{
 		pMsg->hwnd = m_hWnd;
-	}
-
 	return __super::PreTranslateMessage( pMsg );
 }
 
@@ -608,13 +593,11 @@ LRESULT CPlayBoxDlg::OnTrayNotification(WPARAM uID, LPARAM lEvent)
 
 void CPlayBoxDlg::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct)
 {
-	if(lpMeasureItemStruct->CtlType==ODT_MENU && IsMenu((HMENU)lpMeasureItemStruct->itemID))
-	{
-		if( m_ptrayIcon )
-		{
-			m_ptrayIcon->MeasureItem( lpMeasureItemStruct);
-		}			
-	}
+	if(lpMeasureItemStruct->CtlType==ODT_MENU 
+		&& IsMenu((HMENU)lpMeasureItemStruct->itemID)
+		&& m_ptrayIcon)
+		m_ptrayIcon->MeasureItem( lpMeasureItemStruct);
+
 	__super::OnMeasureItem( nIDCtl,lpMeasureItemStruct);
 }
 
@@ -623,19 +606,14 @@ void CPlayBoxDlg::OnTimer(UINT nIDEvent)
 	if(nIDEvent == TIMER_FOR_TRAY)
 	{
 		if(m_ptrayIcon->m_bRClick)
-		{
 			m_ptrayIcon->CreatePopup(m_hWnd);
-		}else
-		{
+		else
 			::SendMessage(m_hWnd, WM_COMMAND, ID_OPEN, 0);
-			TRACE("::SendMessage(m_hWnd, WM_COMMAND, ID_OPEN, 0);\n");
-		}
 		KillTimer(nIDEvent);
 	}
 	if( nIDEvent == TIMER_TRIM_MEM )
-	{
 		::SetProcessWorkingSetSize(::GetCurrentProcess(), -1, -1);
-	}
+
 	if( nIDEvent == TIMER_APP_QUIT )
 	{
 		KillTimer(m_uCloseTimer);
@@ -649,11 +627,9 @@ void CPlayBoxDlg::DrawMoveFrame(CRect rc)
 {
 	CWnd* pParentWnd = GetParent();
 	CWindowDC dc(pParentWnd);
-
 	CBitmap bmp;
 
 	bmp.LoadBitmap(IDB_FRAME_LINE);
-
 	CBrush brush(&bmp);
 	CBrush* pOldBrush = dc.SelectObject(&brush);
 
@@ -687,7 +663,6 @@ void CPlayBoxDlg::DrawMoveFrame(CRect rc)
 
 	dc.SelectObject(pOldBrush);
 }
-
 
 LRESULT CPlayBoxDlg::OnShowTrayIconBalloon(WPARAM wp, LPARAM lp)
 {
@@ -724,30 +699,21 @@ void CPlayBoxDlg::_AdjustDlgSize()
 	iWndNormalWidth		= iWndNormalWidth  < m_nMinCx ? m_nMinCx : iWndNormalWidth;
 
 	if( iXPos < 0 || iXPos > iDesktopWidth )
-	{
 		iXPos = 100;
-	}
 
 	if( iYPos < 0 || iYPos > iDesktopHeight )
-	{
 		iYPos = 100;
-	}
 
 	AfxGetUserConfig()->GetConfigBoolValue( CONF_LAYOUT_MODULE_NAME,CONF_LAYOUT_NORMAL,m_bNormal );	
 	if( m_bNormal)
-	{
 		::MoveWindow( AfxGetMainWindow()->m_hWnd,iXPos,iYPos,iWndNormalWidth,iWndNormalHeight,TRUE);
-	}else
-	{
+	else
 		::MoveWindow( AfxGetMainWindow()->m_hWnd,0,0,iDesktopWidth,iDesktopHeight,TRUE);
-	}
 
 	bool bHold;
 	AfxGetUserConfig()->GetConfigBoolValue( CONF_APP_MODULE_NAME,CONF_APP_MAINWND_HOLD,bHold );
 	if( bHold )
-	{
 		SetWindowPos(&wndTopMost,-1,-1,-1,-1, SWP_NOSIZE|SWP_NOMOVE);
-	}		
 }
 
 
@@ -815,7 +781,6 @@ void CPlayBoxDlg::OnTrayMenuSetting()
 void CPlayBoxDlg::OnTrayMenuOpen()
 {
 	HWND hMainWnd = m_hWnd;
-
 	if(!m_ptrayIcon->m_bDbClicked)//单击
 	{
 		//if( !IsWindowVisible() )//任务栏没图标时使用
@@ -830,8 +795,8 @@ void CPlayBoxDlg::OnTrayMenuOpen()
 			GLOBAL_PANELCHANGEDATA->IPanelChange_Min();
 		}
 		//只要点击右下角托盘，就调出主界面
-		//GLOBAL_PANELCHANGEDATA->IPanelChange_Restore();
-		//::SetForegroundWindow( GetSafeHwnd() );
+		GLOBAL_PANELCHANGEDATA->IPanelChange_Restore();
+		::SetForegroundWindow( GetSafeHwnd() );
 
 		m_bStartupRun = false;
 	}
@@ -968,7 +933,7 @@ LRESULT CPlayBoxDlg::OnChangeText(WPARAM wp, LPARAM lp)
 		if(str != "" && str[0] == '-')
 			str = str.Mid(1);
 		SetWindowText(str);
-		m_ptrayIcon->SetIcon(theApp.LoadIcon(IDR_MAINFRAME),(LPCSTR)wp);
+		m_ptrayIcon->SetIcon(theApp.LoadIcon(IDI_ICON_BEAR),(LPCSTR)wp);
 	}catch(...){}
 	return 0;
 }
@@ -1001,6 +966,33 @@ LRESULT CPlayBoxDlg::OnHTTPDonwload(WPARAM w,LPARAM)
 	}
 	return 0;
 }
+
+LRESULT CPlayBoxDlg::OnNewBrowserWnd(WPARAM w,LPARAM l)
+{
+	TAB_ITEM tabItem;
+	tabItem.strTitle = TAB_BROWSER_DEFAULT_TITLE;
+	tabItem.enumType = TAB_BROWSER;
+	tabItem.iLPDISPATCHOnlyForBrowser = static_cast<int>(w);
+	GLOBAL_TABBARDATA->ITabBar_ChangeTab( tabItem );
+	return 0L;
+}
+
+LRESULT CPlayBoxDlg::OnOpenRegDialog(WPARAM w,LPARAM l)
+{
+	// 获取注册地址
+	string strUrl;
+	AfxGetUserConfig()->GetConfigStringValue(CONF_APP_MODULE_NAME, 
+		CONF_APP_REGIST_URL, strUrl);
+	// 获取注册页面大小
+	CRect rctPageSize(0, 0, 520, 420);
+	CWebDlg dlg(AfxGetMainWindow());
+	AfxGetUIManager()->UIAddDialog(&dlg);
+	CUserManager::GetInstance()->SetRegisterWnd(&dlg);
+	dlg.DoModal(_T("注册"), strUrl.c_str(), rctPageSize.Width(), rctPageSize.Height());
+	AfxGetUIManager()->UIRemoveDialog(&dlg);
+	return 0L;
+}
+
 void CPlayBoxDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 {
 	// TODO: Add your message handler code here and/or call default
@@ -1033,13 +1025,38 @@ LRESULT CPlayBoxDlg::OnHotKey(WPARAM wParam, LPARAM lParam)
 			else
 			{
 				ShowWindow(SW_NORMAL);
-				m_ptrayIcon = new CTrayIcon(IDR_MAINFRAME);
+				m_ptrayIcon = new CTrayIcon(IDI_ICON_BEAR);
 				m_ptrayIcon->SetNotificationWnd(this, WM_MY_TRAY_NOTIFICATION);
-				m_ptrayIcon->SetIcon(theApp.LoadIcon(IDR_MAINFRAME),"小宝贝游戏盒");
+				m_ptrayIcon->SetIcon(theApp.LoadIcon(IDI_ICON_BEAR), DESCRIP_MAINEXE);
 			}
 			
 		}
 		break;
 	}
 	return 0;
+}
+
+void CPlayBoxDlg::UserMsg_Login()
+{
+	PostMessage(MSG_DO_TASK, 0, 0);
+}
+
+LRESULT CPlayBoxDlg::OnDoTask(WPARAM w, LPARAM l)
+{
+	CUserManager::GetInstance()->DoTask();
+	return 0L;
+}
+
+void CPlayBoxDlg::UserMsg_LogOut()
+{
+	CUserManager::GetInstance()->DelTask();
+}
+
+void CPlayBoxDlg::UserMsg_LogFaild()
+{
+	CUserManager::GetInstance()->DelTask();
+}
+
+void CPlayBoxDlg::UserMsg_BeginLogin()
+{
 }

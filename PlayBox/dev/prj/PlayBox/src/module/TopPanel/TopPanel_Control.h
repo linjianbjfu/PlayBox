@@ -1,14 +1,9 @@
 #ifndef _TOP_PANEL_CONTROL_H
 #define _TOP_PANEL_CONTROL_H
 
-enum{
-	TOPPANEL_NOWPLAYING,
-	TOPPANEL_COMMEND,
-	TOPPANEL_NETLIB,
-	TOPPANEL_DOWNLOAD
-};
-
 class CTopPanelWnd;
+class CShowMenu;
+
 class CTopPanelControl	
 {
 private:
@@ -20,16 +15,17 @@ public:
 	static CTopPanelControl*	m_pTopPanelControl;
 	static void					DeleteInstance();
 
-	void				SetTopPanel(CTopPanelWnd* pWnd){m_pWndTopPanel = pWnd;};
-	void				ShowMenu(CShowMenu **ppShowMenu, CPoint p);
-	void				ShowMenu(CPoint p);
-	void				DoMin();
-	void				GetAllSkinName( vector<string>& vSkinName );
-	void				HoldWindow();
-	BOOL				IsHold();
+	void SetTopPanel(CTopPanelWnd* pWnd){m_pWndTopPanel = pWnd;};
+	void ShowMenu(CShowMenu **ppShowMenu, CPoint p);
+	void ShowMenu(CPoint p);
+	void DoMin();
+	void GetAllSkinName( vector<string>& vSkinName );
+	void HoldWindow();
+	BOOL IsHold();
 
-	void				ClickButton(int pos);
-	void				AutoRunHideMainWindow();
+	void ClickButton(int pos);
+	void AutoRunHideMainWindow();
+	void DbclickTabBar();
 private:
 	CTopPanelWnd*		m_pWndTopPanel;	
 };

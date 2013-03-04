@@ -25,6 +25,7 @@
 #include "stdafx.h"
 #include "xSkinButton.h"
 #include ".\xskinbutton.h"
+#include "CDataManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -737,9 +738,6 @@ COLORREF CxSkinButton::SetDisableTextColor(COLORREF disableColor)
 /////////////////////////////////////////////////////////////////////////////
 void CxSkinButton::SetToolTipText(CString s)
 {
-	CWnd *pParent;
-	CWnd *pWnd;
-
 	if(m_strToolTip == "")
 	{
 		m_strToolTip = s;
@@ -782,7 +780,7 @@ void CxSkinButton::RelayEvent(UINT message, WPARAM wParam, LPARAM lParam)
 		msg.pt.y = HIWORD(lParam);
 
 		m_tooltip.RelayEvent(&msg);
-		 ::PostMessage(m_tooltip.m_hWnd, TTM_RELAYEVENT, 0, (LPARAM)&msg);
+		//::PostMessage(m_tooltip.m_hWnd, TTM_RELAYEVENT, 0, (LPARAM)&msg);
 	}
 }
 
@@ -832,9 +830,9 @@ void CxSkinButton::OnLButtonDblClk(UINT flags, CPoint point)
 //---------------------------------------------------------
 void CxSkinButton::OnLButtonDown(UINT nFlags, CPoint point)
 {
-    //TRACE("* %08X: down\n", ::GetTickCount());
-
 	//Pass this message to the ToolTip control
+	if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen())
+		m_pToolTip->HideTooTips();
 
 	RelayEvent(WM_LBUTTONDOWN,(WPARAM)nFlags,MAKELPARAM(LOWORD(point.x),LOWORD(point.y)));
 
@@ -846,11 +844,9 @@ void CxSkinButton::OnLButtonDown(UINT nFlags, CPoint point)
             m_hWnd,
             0
         };
-        if (::_TrackMouseEvent(&t)) {
+        if (::_TrackMouseEvent(&t))
             m_tracking = false;
-        }
     }
-
     //Default-process the message
 	CButton::OnLButtonDown(nFlags, point);
     m_button_down = true;
@@ -859,7 +855,6 @@ void CxSkinButton::OnLButtonDown(UINT nFlags, CPoint point)
 void CxSkinButton::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	CButton::OnRButtonDown(nFlags, point);
-
 	if(m_bRClick)
 		PostMessage(WM_LBUTTONDOWN, (WPARAM)nFlags,MAKELPARAM(LOWORD(point.x),LOWORD(point.y)));
 }
@@ -939,7 +934,20 @@ void CxSkinButton::OnMouseMove(UINT nFlags, CPoint point)
     //TRACE("* %08X: Mouse\n", ::GetTickCount());
 
 	//Pass this message to the ToolTip control
-	RelayEvent(WM_MOUSEMOVE,(WPARAM)nFlags,MAKELPARAM(LOWORD(point.x),LOWORD(point.y)));
+	if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen())
+	{
+		CPoint pt;
+		::GetCursorPos(&pt);
+		if( m_ptToolTipPos != pt )
+		{
+			m_ptToolTipPos = pt;
+			m_pToolTip->HideTooTips();
+			m_pToolTip->ShowToolTips( m_strToolTip, pt);
+		}
+	}else
+	{
+		RelayEvent(WM_MOUSEMOVE,(WPARAM)nFlags,MAKELPARAM(LOWORD(point.x),LOWORD(point.y)));
+	}
 
 
     //If we are in capture mode, button has been pressed down

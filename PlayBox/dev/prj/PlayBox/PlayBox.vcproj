@@ -97,7 +97,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="Wininet.lib winmm.lib dbghelp.lib NetOp.lib zlib.lib DocOp.lib Log.lib "
 				OutputFile="../../bin_r/PlayBox.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\CommonLib\lib_r;../../lib_r"
 				GenerateDebugInformation="TRUE"
 				GenerateMapFile="TRUE"
@@ -118,6 +118,66 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
+				Culture="2052"
+				AdditionalIncludeDirectories="$(IntDir)"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="xpDebug|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			UseOfMFC="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/GR"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;..\..\..\..\CommonLib\include;..\..\..\..\CommonLib\common;./src;./src/core;./src/datainterface;./src/GUI/CommonControl;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_YLLOG;USE_CRASH_FILE"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				TreatWChar_tAsBuiltInType="TRUE"
+				UsePrecompiledHeader="3"
+				AssemblerOutput="2"
+				WarningLevel="0"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="dbghelp.lib NetOp.lib zlib.lib DocOp.lib Log.lib Wininet.lib winmm.lib"
+				OutputFile="C:\Program files\YoungPlayBox\PlayBox.exe"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\..\..\..\CommonLib\lib_D;../../lib_d;"
+				GenerateDebugInformation="TRUE"
+				GenerateMapFile="TRUE"
+				SubSystem="2"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="FALSE"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
 				Culture="2052"
 				AdditionalIncludeDirectories="$(IntDir)"/>
 			<Tool
@@ -155,6 +215,12 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="xpDebug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="1"/>
@@ -231,6 +297,9 @@
 				RelativePath=".\res\hand.cur">
 			</File>
 			<File
+				RelativePath=".\res\Little_bear.ico">
+			</File>
+			<File
 				RelativePath=".\res\PlayBox.ico">
 			</File>
 			<File
@@ -242,6 +311,9 @@
 			<File
 				RelativePath=".\res\rt_manif.bin">
 			</File>
+			<File
+				RelativePath=".\res\xiong.ico">
+			</File>
 		</Filter>
 		<Filter
 			Name="core"
@@ -250,6 +322,12 @@
 				RelativePath=".\src\Core\AfxGlobals.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="xpDebug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"/>
@@ -278,6 +356,12 @@
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="xpDebug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\src\Core\CMessageManager.h">
@@ -286,6 +370,12 @@
 				RelativePath=".\src\Core\CUIManager.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="xpDebug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"/>
@@ -472,6 +562,12 @@
 							Name="VCCLCompilerTool"
 							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="xpDebug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath=".\src\LayoutMgr\ChangeColor\stdafx.h">
@@ -531,6 +627,12 @@
 							Name="VCCLCompilerTool"
 							UsePrecompiledHeader="0"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="xpDebug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\..\..\CommonLib\common\LhcImg.h">
@@ -551,6 +653,12 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="xpDebug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							UsePrecompiledHeader="0"/>
@@ -576,6 +684,12 @@
 							Name="VCCLCompilerTool"
 							UsePrecompiledHeader="0"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="xpDebug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\..\..\CommonLib\common\YL_Base64.h">
@@ -590,6 +704,12 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="xpDebug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							UsePrecompiledHeader="0"/>
@@ -612,6 +732,12 @@
 							Name="VCCLCompilerTool"
 							UsePrecompiledHeader="0"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="xpDebug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\..\..\CommonLib\common\YL_EncFileReg.h">
@@ -626,6 +752,12 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="xpDebug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							UsePrecompiledHeader="0"/>
@@ -648,6 +780,12 @@
 							Name="VCCLCompilerTool"
 							UsePrecompiledHeader="0"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="xpDebug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\..\..\CommonLib\common\YL_FileInfo.h">
@@ -662,6 +800,12 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="xpDebug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							UsePrecompiledHeader="0"/>
@@ -687,6 +831,12 @@
 							Name="VCCLCompilerTool"
 							UsePrecompiledHeader="0"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="xpDebug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\..\..\CommonLib\common\YL_RegInfo.h">
@@ -701,6 +851,12 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="xpDebug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							UsePrecompiledHeader="0"/>
@@ -723,6 +879,12 @@
 							Name="VCCLCompilerTool"
 							UsePrecompiledHeader="0"/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="xpDebug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\..\..\CommonLib\common\YL_URLEncoder.h">
@@ -737,6 +899,12 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="xpDebug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							UsePrecompiledHeader="0"/>
@@ -852,6 +1020,12 @@
 					RelativePath=".\src\Gui\CommonControl\ie_explorer.h">
 				</File>
 				<File
+					RelativePath=".\src\Gui\CommonControl\LocalSearchEdit.cpp">
+				</File>
+				<File
+					RelativePath=".\src\Gui\CommonControl\LocalSearchEdit.h">
+				</File>
+				<File
 					RelativePath=".\src\Gui\CommonControl\MyBtnTreeCtrl.cpp">
 				</File>
 				<File
@@ -937,6 +1111,12 @@
 								Name="VCCLCompilerTool"
 								UsePrecompiledHeader="0"/>
 						</FileConfiguration>
+						<FileConfiguration
+							Name="xpDebug|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\src\Gui\CommonControl\SkinScroll\coolsb_detours.h">
@@ -958,6 +1138,12 @@
 								Name="VCCLCompilerTool"
 								UsePrecompiledHeader="0"/>
 						</FileConfiguration>
+						<FileConfiguration
+							Name="xpDebug|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\src\Gui\CommonControl\SkinScroll\coolsblib.h">
@@ -972,6 +1158,12 @@
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release|Win32">
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="xpDebug|Win32">
 							<Tool
 								Name="VCCLCompilerTool"
 								UsePrecompiledHeader="0"/>
@@ -1172,6 +1364,12 @@
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="0"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="xpDebug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\src\util\Markup.h">
@@ -1181,6 +1379,30 @@
 			</File>
 			<File
 				RelativePath=".\src\util\MarkupArchive.h">
+			</File>
+			<File
+				RelativePath=".\src\util\md5.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="xpDebug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\src\util\md5.h">
 			</File>
 			<File
 				RelativePath=".\src\util\Mixer.cpp">
@@ -1377,6 +1599,12 @@
 				Name="httpDown"
 				Filter="">
 				<File
+					RelativePath=".\src\module\httpDown\GameDataImp.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\httpDown\GameDataImp.h">
+				</File>
+				<File
 					RelativePath=".\src\module\httpDown\HttpDownCtrl.cpp">
 					<FileConfiguration
 						Name="Debug|Win32">
@@ -1384,21 +1612,15 @@
 							Name="VCCLCompilerTool"
 							UsePrecompiledHeader="3"/>
 					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\src\module\httpDown\HttpDownCtrl.h">
-				</File>
-				<File
-					RelativePath=".\src\module\httpDown\LocalGameData.cpp">
 					<FileConfiguration
-						Name="Debug|Win32">
+						Name="xpDebug|Win32">
 						<Tool
 							Name="VCCLCompilerTool"
 							UsePrecompiledHeader="3"/>
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath=".\src\module\httpDown\LocalGameData.h">
+					RelativePath=".\src\module\httpDown\HttpDownCtrl.h">
 				</File>
 			</Filter>
 			<Filter
@@ -1418,6 +1640,12 @@
 				</File>
 				<File
 					RelativePath=".\src\module\PlayedGamePanel\LocalMusicCoverList.h">
+				</File>
+				<File
+					RelativePath=".\src\module\PlayedGamePanel\PlayedGameListPanelWnd.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\PlayedGamePanel\PlayedGameListPanelWnd.h">
 				</File>
 				<File
 					RelativePath=".\src\module\PlayedGamePanel\PlayedGameWnd.cpp">
@@ -1461,6 +1689,12 @@
 				<File
 					RelativePath=".\src\module\BrowserPanel\BrowserPanelWnd.h">
 				</File>
+				<File
+					RelativePath=".\src\module\BrowserPanel\FavUrlMenuDlg.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\BrowserPanel\FavUrlMenuDlg.h">
+				</File>
 			</Filter>
 			<Filter
 				Name="AboutPanel"
@@ -1486,13 +1720,84 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="GameCenterPanel"
+				Name="Esc2ExitFullScrPanel"
 				Filter="">
 				<File
-					RelativePath=".\src\module\GameCenterPanel\GameCenterPanelWnd.cpp">
+					RelativePath=".\src\module\Esc2ExitFullScrPanel\ESCFullDlg.cpp">
 				</File>
 				<File
-					RelativePath=".\src\module\GameCenterPanel\GameCenterPanelWnd.h">
+					RelativePath=".\src\module\Esc2ExitFullScrPanel\ESCFullDlg.h">
+				</File>
+				<File
+					RelativePath=".\src\module\Esc2ExitFullScrPanel\ESCTEXT.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\Esc2ExitFullScrPanel\ESCTEXT.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="UserMan"
+				Filter="">
+				<File
+					RelativePath=".\src\module\UserMan\DlgLogin.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\UserMan\DlgLogin.h">
+				</File>
+				<File
+					RelativePath=".\src\module\UserMan\UserInfo.h">
+				</File>
+				<File
+					RelativePath=".\src\module\UserMan\UserLogedInPanelWnd.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\UserMan\UserLogedInPanelWnd.h">
+				</File>
+				<File
+					RelativePath=".\src\module\UserMan\UserLogedOutPanelWnd.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\UserMan\UserLogedOutPanelWnd.h">
+				</File>
+				<File
+					RelativePath=".\src\module\UserMan\UserManager.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\UserMan\UserManager.h">
+				</File>
+				<File
+					RelativePath=".\src\module\UserMan\WebWnd.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\UserMan\WebWnd.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="CheckUpdate"
+				Filter="">
+				<File
+					RelativePath=".\src\module\CheckUpdate\CheckUpdate.cpp">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="xpDebug|Win32">
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\src\module\CheckUpdate\CheckUpdate.h">
 				</File>
 			</Filter>
 		</Filter>
@@ -1521,13 +1826,16 @@
 				RelativePath=".\src\datainterface\IDownDataDef.h">
 			</File>
 			<File
+				RelativePath=".\src\datainterface\IGameData.h">
+			</File>
+			<File
+				RelativePath=".\src\datainterface\IGameDataObserver.h">
+			</File>
+			<File
 				RelativePath=".\src\datainterface\IHttpDownObserver.h">
 			</File>
 			<File
 				RelativePath=".\src\datainterface\ILayoutChangeObserver.h">
-			</File>
-			<File
-				RelativePath=".\src\datainterface\ILocalGameData.h">
 			</File>
 			<File
 				RelativePath=".\src\datainterface\IPanelChange.h">
@@ -1536,16 +1844,10 @@
 				RelativePath=".\src\datainterface\IPanelChangeObserver.h">
 			</File>
 			<File
-				RelativePath=".\src\datainterface\IQQItemCountChangeObserver.h">
-			</File>
-			<File
 				RelativePath=".\src\datainterface\ITabBarData.h">
 			</File>
 			<File
 				RelativePath=".\src\datainterface\ITabBarObserver.h">
-			</File>
-			<File
-				RelativePath=".\src\datainterface\IUserDataDef.h">
 			</File>
 			<File
 				RelativePath=".\src\datainterface\IWebRefreshObserver.h">

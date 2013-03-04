@@ -11,6 +11,7 @@ static const char* CONF_LAYOUT_WIDTH		= "Width";
 static const char* CONF_LAYOUT_HEIGHT		= "Height";
 static const char* CONF_LAYOUT_MIN_WIDTH	= "mincx";
 static const char* CONF_LAYOUT_MIN_HEIGHT	= "mincy";
+static const char* CONF_LAYOUT_ESC_ALL		= "EscFullAllValue";
 
 static const char* CONF_LAYOUT[] =
 { 
@@ -20,7 +21,8 @@ static const char* CONF_LAYOUT[] =
 	CONF_LAYOUT_WIDTH,		TYPE_CONFIG_INT,
 	CONF_LAYOUT_HEIGHT,		TYPE_CONFIG_INT,
 	CONF_LAYOUT_MIN_WIDTH,  TYPE_CONFIG_INT,
-	CONF_LAYOUT_MIN_HEIGHT, TYPE_CONFIG_INT
+	CONF_LAYOUT_MIN_HEIGHT, TYPE_CONFIG_INT,
+	CONF_LAYOUT_ESC_ALL,	TYPE_CONFIG_INT
 };
 
 #endif

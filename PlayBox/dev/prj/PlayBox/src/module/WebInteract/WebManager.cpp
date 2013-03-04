@@ -7,10 +7,10 @@
 #include "../../Core/CDataManager.h"
 #include "YL_DirInfo.h"
 #include "MyWebBrowserWnd.h"
-
 #include "../../AppConfig/config/ConfigSettingDef.h"
 #include "../../AppConfig/config/ConfigAppDef.h"
 #include "../TabMan/TabPageControl.h"
+#include "../UserMan/UserManager.h"
 
 CWebManager* CWebManager::m_pSelf = NULL;
 
@@ -43,12 +43,12 @@ void CWebManager::CallGBoxFromWeb(const string& strCommand,string& strRes)
 	string strHeader;
 	string strContent;
 
-	size_t iHeader = strCommand.find("\n");
+	size_t iHeader = strCommand.find(BOX_DELIMITERS);
 	if( iHeader == string::npos)
 		return;
 	
 	strHeader	= strCommand.substr(0,iHeader);
-	strContent	= strCommand.substr(iHeader+1);
+	strContent	= strCommand.substr(iHeader+strlen(BOX_DELIMITERS));
 	//header
 	CString str(strHeader.c_str());
 	CString strLeft,strRight;
@@ -57,32 +57,23 @@ void CWebManager::CallGBoxFromWeb(const string& strCommand,string& strRes)
 	if( strLeft == "method" )
 	{
 		if( strRight == "flashgame")//点击玩flash游戏
-		{
 			strRes = _command_playswfgame( strContent );
-			return;			
-		}else
+		else
 		if( strRight == "webgame")//点击玩web游戏（也可玩嵌在网页里的flash游戏）
-		{
 			strRes = _command_playwebgame( strContent );
-			return;			
-		}else
+		else
 		if( strRight == "refresh" )
-		{
 			strRes = _command_refresh( strContent );
-			return;
-		}else
+		else
 		if (strRight == "browser")
-		{
 			strRes = _command_openBrowser(strContent);
-			return;
-		}else
+		else
+		if (strRight == "login")
+			strRes = _command_login(strContent);
+		else
 		if (strRight == "checkdlstatus")
-		{
 			strRes = _command_checkdlstatus (strContent);
-			return;
-		}
 	}
-
 }
 
 void CWebManager::NotifyWebRefresh( const  char* psz)
@@ -99,13 +90,12 @@ void CWebManager::NotifyWebRefresh( const  char* psz)
 string CWebManager::_command_refresh( string& strContent )
 {
 	string strUrl   = GetValue( strContent, "url" );
-
 	if( strUrl.length() != 0 )
 	{
 		NotifyWebRefresh( strUrl.c_str() );
-		return "res=ok\n\n";
+		return "res=ok";
 	}	
-	return "res=err\n\n";
+	return "res=err";
 }
 
 string CWebManager::_command_playswfgame(string& strContent)
@@ -117,35 +107,29 @@ string CWebManager::_command_playswfgame(string& strContent)
 	//判断id是否OK
 	bool bIDOK = false;
 	if( strID.length() > 0 && IsNumber( strID ) ) //ID必须是数字
-	{
 		bIDOK = true;
-	}
+
 	//判断name是否OK
 	bool bNameOK = false;
 	if( strName.length() != 0 )
-	{
 		bNameOK = true;
-	}
+
 	//判断url是否OK
 	bool bUrlOK = false;
 	CString cstrUrl = CString( strUrl.c_str() );
 	if( cstrUrl.Right(4).MakeLower() == ".swf" ) //url末4位必须是.swf
-	{
 		bUrlOK = true;
-	}	
 	
 	if( bIDOK && bNameOK && bUrlOK )
 	{
 		TAB_ITEM tItem;
-		tItem.eumType = TAB_FLASHGAME;
-		tItem.strName = strName;
+		tItem.enumType = TAB_FLASHGAME;
+		tItem.strTitle = strName;
 		tItem.strParam = strContent;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
-		return "res=ok\n\n";
+		return "res=ok";
 	}else
-	{
-		return "res=err\n\n";
-	}	
+		return "res=err";
 }
 
 string CWebManager::_command_playwebgame(string& strContent)
@@ -156,34 +140,43 @@ string CWebManager::_command_playwebgame(string& strContent)
 	if( strID.length() > 0 && IsNumber( strID ) && !strName.empty() )	
 	{
 		TAB_ITEM tItem;
-		tItem.eumType = TAB_WEBGAME;
-		tItem.strName = strName;
+		tItem.enumType = TAB_WEBGAME;
+		tItem.strTitle = strName;
 		tItem.strParam = strContent;
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
-
-		return "res=ok\n\n";
+		return "res=ok";
 	}	
-	return "res=err\n\n";
+	return "res=err";
 }
 
 string CWebManager::_command_openBrowser (string & strContent)
 {
 	TAB_ITEM tItem;
-	tItem.eumType = TAB_BROWSER;
-	tItem.strName = "酷游浏览器";
+	tItem.enumType = TAB_BROWSER;
+	tItem.strTitle = TAB_BROWSER_DEFAULT_TITLE;
 	tItem.strParam = strContent;
 	GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
 	return "";
 }
 
+string CWebManager::_command_login(string & strContent)
+{
+	string strName = GetValue (strContent, "username");
+	string strMD5Pass = GetValue (strContent, "pass");
+	if (!strName.empty() && !strMD5Pass.empty())
+	{
+		CUserManager::GetInstance()->User_Login_After_Reg_Suc(strName.c_str(), strMD5Pass.c_str());
+		return "res=ok";
+	}else
+		return "res=err";
+}
+
 string CWebManager::_command_checkdlstatus (string &strContent)
 {
 	string strID = GetValue (strContent, "id");
-
-	OneLocalGame olg;
-
+	OneGame olg;
 	string strStatus  = 
-		GLOBAL_LOCALGAME->ILocalGameData_GetGameByID (strID, olg) ? "run" : "download";
+		GLOBAL_GAME->IGameData_GetGameByID (strID, OneGame::FLASH_GAME, olg) ? "run" : "download";
 
 	vector<TAB_ITEM> vTab;
 	GLOBAL_TABBARDATA->ITabBar_GetTabBarData (vTab);
@@ -197,10 +190,7 @@ string CWebManager::_command_checkdlstatus (string &strContent)
 	pParam->strParam2 = strStatus;
 
 	CTabPageControl::GetInstance ()->CallJS ((LPVOID)pParam);
-
 	delete pParam;
-	pParam = NULL;
-
 	return "";
 }
 
@@ -210,7 +200,7 @@ string CWebManager::GetValue( string& strContent, string strKey )
 	CString str(strContent.c_str());
 	CString strOneItem;
 	int curPos = 0;
-	strOneItem= str.Tokenize("\n",curPos);
+	strOneItem= str.Tokenize(BOX_DELIMITERS,curPos);
 	while(strOneItem != "")
 	{		
 		CString strLeft,strRight;
@@ -220,7 +210,7 @@ string CWebManager::GetValue( string& strContent, string strKey )
 			strRes = strRight;
 			break;
 		}
-		strOneItem = str.Tokenize("\n", curPos);
+		strOneItem = str.Tokenize(BOX_DELIMITERS, curPos);
 	};
 	return strRes;
 }
@@ -260,10 +250,7 @@ void CWebManager::_string_help(const CString& strInput,CString& strLeft,CString&
 
 	int iPosEq = strInput.Find('=');
 	if( iPosEq == -1 )
-	{
 		return;
-	}
 	strLeft		= strInput.Left(iPosEq);
 	strRight	= strInput.Mid(iPosEq+1,strInput.GetLength()-iPosEq-1);
 }
-

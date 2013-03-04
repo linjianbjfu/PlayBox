@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "EditGlow.h"
 
+#define BORDER 6
 
 IMPLEMENT_DYNAMIC(CEditGlow, CEdit)
 CEditGlow::CEditGlow():
@@ -12,8 +13,8 @@ m_textSize(9),
 	m_bFocus = false;
 	m_pImgBorderGlow = NULL;
 
-	m_colText = RGB( 238,238,238 );
-	m_colBk	  = RGB( 59,59,59 );
+	m_colText = RGB( 0,0,0 );
+	m_colBk	  = RGB( 255,255,255 );
 	m_hBrush.CreateSolidBrush( m_colBk );
 }
 
@@ -63,6 +64,16 @@ END_MESSAGE_MAP()
 void CEditGlow::SetTextSize( UINT textSize)
 {
 	m_textSize = textSize;
+}
+
+void CEditGlow::SetTextColor(COLORREF col)
+{
+	m_colText = col;
+}
+
+void CEditGlow::SetBkColor(COLORREF col)
+{
+	m_colBk = col;
 }
 
 int CEditGlow::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -180,8 +191,7 @@ void CEditGlow::ShowSearchEditFrame(CDC *pdc, bool bUse)
 	{
 		if(m_bMouseOn || m_bFocus)
 		{
-			Rect rr(rectEdit.left-2 , rectEdit.top-2 , m_pImgBorderGlow->GetWidth(), m_pImgBorderGlow->GetHeight());
-
+			Rect rr(rectEdit.left-BORDER, rectEdit.top-BORDER, m_pImgBorderGlow->GetWidth(), m_pImgBorderGlow->GetHeight());
 			graph.DrawImage(m_pImgBorderGlow,
 				rr,
 				(int)0, 
@@ -192,8 +202,7 @@ void CEditGlow::ShowSearchEditFrame(CDC *pdc, bool bUse)
 		}
 		else
 		{
-			Rect rr(rectEdit.left-2 , rectEdit.top-2 , m_pImgBorder->GetWidth(), m_pImgBorder->GetHeight());
-
+			Rect rr(rectEdit.left-BORDER, rectEdit.top-BORDER, m_pImgBorder->GetWidth(), m_pImgBorder->GetHeight());
 			graph.DrawImage(m_pImgBorder,
 				rr,
 				(int)0, 
@@ -201,15 +210,9 @@ void CEditGlow::ShowSearchEditFrame(CDC *pdc, bool bUse)
 				(int)m_pImgBorder->GetWidth(), 
 				(int)m_pImgBorder->GetHeight(),
 				UnitPixel );
-
 		}
-
 	} 
-
 	return;
-
-
-
 
 	ISkinMgr*	pSkinMgr = AfxGetUIManager()->UIGetSkinMgr();
 
@@ -222,11 +225,8 @@ void CEditGlow::ShowSearchEditFrame(CDC *pdc, bool bUse)
 	CDibBitmap*	m_bmpEditCenterGray = pSkinMgr->GetDibBmp("AuthorListPanelSearchCenterGray");
 	CDibBitmap*	m_bmpEditRightGray = pSkinMgr->GetDibBmp("AuthorListPanelSearchRightGray");
 
-
-
 	int nTop = rectEdit.top - m_bmpEditTop->GetHeight();
 	int nLeft = rectEdit.left-m_bmpEditLeft->GetWidth();
-
 	if( bUse )
 	{
 		CDC* pdc = pWnd->GetDC();
@@ -251,10 +251,8 @@ void CEditGlow::ShowSearchEditFrame(CDC *pdc, bool bUse)
 
 		m_bmpEditRightGray->SetCDibRect( CRect(rectEdit.right,nTop, rectEdit.right+m_bmpEditRightGray->GetWidth(), nTop+m_bmpEditRightGray->GetHeight()) );
 		m_bmpEditRightGray->Draw( pdc, FALSE );
-
 		//m_bmpEditCenterGray->SetCDibRect( CRect(rectEdit.left,nTop, rectEdit.left+rectEdit.Width(), nTop+m_bmpEditCenter->GetHeight()) );
 		//m_bmpEditCenter->Draw( pdc, FALSE );
-
 		ReleaseDC(pdc);
 	}
 }

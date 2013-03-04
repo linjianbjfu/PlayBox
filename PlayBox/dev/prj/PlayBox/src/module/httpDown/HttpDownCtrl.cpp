@@ -6,6 +6,7 @@
 #include "YL_DirInfo.h"
 #include "../../AppConfig/config/ConfigAppDef.h"
 #include "../../AppConfig/config/ConfigParaDefault.h"
+#include "Global/GlobalSwfPath.h"
 
 #define ID_WND_HTTP_DOWN_CTRL	2030
 #define ELAPSE_DOWN				500
@@ -63,14 +64,7 @@ void HttpDownCtrl::StartDown( string strID, string strSwfUrl )
 
 	//将swf文件放入存放目录
 	string strSwfSavePath;
-	AfxGetUserConfig()->GetConfigStringValue( CONF_APP_MODULE_NAME, CONF_APP_SWF_PATH, strSwfSavePath );
-	YL_DirInfo::MakeDir( strSwfSavePath ); //创建该目录
-	if( !YL_FileInfo::IsDirectory( strSwfSavePath ) )
-	{
-		strSwfSavePath = ConfigParaDefault::GetDefaultAPP_SWF_PATH();
-		YL_DirInfo::MakeDir( strSwfSavePath );
-		AfxGetUserConfig()->SetConfigStringValue( CONF_APP_MODULE_NAME, CONF_APP_SWF_PATH, strSwfSavePath );
-	}
+	GlobalSwfPath::GetConfigSwfPath(strSwfSavePath);
 	//开始下载
 	string strFileName = strID + ".swf";
 	string strLocalPath = YL_StringUtil::ComposeDirPath( strSwfSavePath, strFileName );
@@ -180,9 +174,9 @@ void HttpDownCtrl::OnTimer(UINT nIDEvent)
 						pHttpDownFile->GetFileSize(), pHttpDownFile->GetSpeed()*1024 );
 				}else
 				{
+					vecGidFinish.push_back( strGid );
 					string strSwfPath = pHttpDownFile->GetParamLocalFile();
 					NotifyDownFinish( strGid, strSwfPath );
-					vecGidFinish.push_back( strGid );
 				}				
 			}
 		}

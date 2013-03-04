@@ -5,7 +5,6 @@
 #include "../../gui/Bitmap/DibBitmap.h"
 #include "YL_FileInfo.h"
 #include "../gui/util/CBufferDC.h"
-#include "../../../json/json.h"
 
 #define _USE_MATH_DEFINES
 #include "math.h"

@@ -1,0 +1,10 @@
+; BHO_Demo.def : 定义模块参数。
+
+LIBRARY      "BHO_Demo.DLL"
+
+EXPORTS
+	DllCanUnloadNow		PRIVATE
+	DllGetClassObject	PRIVATE
+	DllRegisterServer	PRIVATE
+	DllUnregisterServer	PRIVATE
+	DllInstall		PRIVATE

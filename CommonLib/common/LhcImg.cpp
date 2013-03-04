@@ -77,12 +77,6 @@ bool CLhcImg::GetTempConfigPath(char szFilePath[], int pathlen)
 	return true;
 }
 
-bool CLhcImg::GetRegServer(char szSvr[], int svrlen)
-{
-	YL_EncFileReg::GetString( "RegServer", "regsvr", szSvr, svrlen );
-	return true;
-}
-
 bool CLhcImg::GetUpdateServer(char szSvr[], int svrlen)
 {
 	YL_EncFileReg::GetString( "UpdateServer", "updatesvr", szSvr, svrlen );
@@ -104,6 +98,12 @@ bool CLhcImg::GetUpLogServer(char szUrl[], int urllen)
 bool CLhcImg::GetConfigServer(char szUrl[], int urllen)
 {
 	YL_EncFileReg::GetString( "ConfigServer", "confsvr", szUrl, urllen );
+	return true;
+}
+
+bool CLhcImg::GetRegServer(char szUrl[], int urllen)
+{
+	YL_EncFileReg::GetString( "ConfigServer", "regsvr", szUrl, urllen );
 	return true;
 }
 

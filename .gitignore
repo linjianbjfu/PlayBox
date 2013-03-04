@@ -16,6 +16,7 @@
 *.cod
 *.exe
 *.rar
-
-
-
+*.map
+*.htm
+*.asm
+*.dat

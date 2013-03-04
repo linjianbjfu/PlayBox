@@ -26,10 +26,6 @@ CCleanCacheDlg::CCleanCacheDlg(CWnd* pParent /*=NULL*/)
 
 	for (int i=0; i<8; i++)
 	{
-// 		char szBmpName[24] = {0};
-// 		sprintf(szBmpName, "bmpLoading%d", i+1);
-// 		m_pLoadingBmp[i] = ::AfxGetUIManager()->UIGetSkinMgr()->GetDibBmp(szBmpName);
-
 		m_LoadingBmp[i].LoadBitmap(IDB_BMP_LOADING1+i);
 	}
 
@@ -59,6 +55,7 @@ void CCleanCacheDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CCleanCacheDlg, CDialog)
 	ON_BN_CLICKED(IDC_CLEANCACHE_BTN_CLEAN,		OnBnClickedCleanCache)
 	ON_BN_CLICKED(IDC_CLEANCACHE_BTN_CANCEL,	OnBnClickedCancel)
+	ON_BN_CLICKED(IDC_CLEANCACHE_BTN_RESTART,	OnBnClickedRestart)
 	ON_WM_NCHITTEST()
 	ON_WM_ERASEBKGND()
 	ON_WM_TIMER()
@@ -177,6 +174,11 @@ void CCleanCacheDlg::OnBnClickedCancel()	// 取消或者关闭
 		m_hCleanThread = NULL;
 	}
 	return __super::OnCancel();
+}
+
+void CCleanCacheDlg::OnBnClickedRestart()
+{
+	return __super::OnOK();
 }
 
 LRESULT CCleanCacheDlg::OnCleanCacheDone(WPARAM wParam, LPARAM lParam)

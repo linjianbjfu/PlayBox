@@ -4,9 +4,20 @@
 #include "../../DataInterface/IPanelChangeObserver.h"
 #include "../../LayoutMgr/ISkinMgr.h"
 #include "Global/GlobalVariable.h"
+#include "src/module/Esc2ExitFullScrPanel/ESCFullDlg.h"
+#include "IGameData.h"
 
 class MyWebBrowserWnd;
 class CxSkinButton;
+class ESCFullDlg;
+
+#if! defined(__ESC_FULL_SCR_TIP_TIMER_DEF__)
+#define __ESC_FULL_SCR_TIP_TIMER_DEF__
+
+#define ID_TIMER_ESCFULL_TIP	10086
+#define TIME_TIMER_ESCFULL_TIP	3000
+
+#endif // __ESC_FULL_SCR_TIP_TIMER_DEF__
 
 class WebGamePanelWnd : public CBasicWnd,
 						public IPanelChangeObserver
@@ -17,7 +28,7 @@ public:
 	virtual ~WebGamePanelWnd();
 	void	LoadSkin();
 	void	SetTabItem( TAB_ITEM ti );
-	void	Init();
+	void	SetMainWindow(bool isTopMost);
 protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void	OnClickedRefresh();
@@ -34,10 +45,12 @@ protected:
 	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void	OnDestroy();
 	afx_msg BOOL	OnEraseBkgnd(CDC* pDC);
-public:
-	virtual void	IPanelChangeOb_ToFullScreen( CWnd* pWnd );
-	virtual void	IPanelChangeOb_ExitFullScreen( CWnd* pWnd );
-	void	SetMainWindow(bool isTopMost);
+	afx_msg void	OnTimer(UINT_PTR nIDEvent);
+	BOOL	PreTranslateMessage(MSG* pMsg);
+	void	IPanelChangeOb_ToFullScreen( CWnd* pWnd );
+	void	IPanelChangeOb_ExitFullScreen( CWnd* pWnd );
+
+	void	ShowHideEseFull(bool isShow);
 private:
 	MyWebBrowserWnd*	m_pWndWebGame;
 	CxSkinButton*		m_pBtnRefresh;
@@ -50,13 +63,16 @@ private:
 	CxSkinButton*		m_pBtnCustomService;
 	CxSkinButton*		m_pBtnPay;
 
-	WEB_GAME			m_webGame;
+	ESCFullDlg*			m_pEscFullTipDlg;
+	OneGame				m_olg;
 	bool				m_isMainWindowTopMost;
 	bool				m_bFullScreen;	//ÊÇ·ñÈ«ÆÁ
 	CRect				m_rectBeforeFull;
 	CRect				m_rectFullScreen;
 	CWnd*				m_pWndParent;
-public:
-	void	Recycle();
-	
+
+	bool GenerateFlag(OUT std::string& strFlag,
+		IN const std::string& id,
+		IN const std::string& svrid,
+		IN const std::string& userName);
 };

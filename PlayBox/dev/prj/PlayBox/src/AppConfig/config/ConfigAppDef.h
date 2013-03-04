@@ -11,6 +11,8 @@ static const char* CONF_APP_RUN_COUNT			= "RunCount";
 static const char* CONF_APP_PLAYED_GAME			= "PlayedGame";
 static const char* CONF_APP_PLAYED_PC_GAME		= "playedPcGame";
 static const char* CONF_APP_PLAYED_ICON_SIZE	= "PlayedIconSize";
+static const char* CONF_APP_REGIST_URL			= "RegistUrl";
+static const char* CONF_APP_RESET_PWD_URL		= "ResetPwdUrl";
 
 static const char* CONF_APP_PIC_SAVE_PATH		= "PictureSavePath";
 static const char* BOTTOM_AD_JSON				= "BottomADJson";
@@ -25,7 +27,9 @@ static const char* CONF_APP[] =
 	CONF_APP_PLAYED_PC_GAME,	TYPE_CONFIG_INT,
 	CONF_APP_PLAYED_ICON_SIZE,	TYPE_CONFIG_INT, //玩过的游戏panel显示icon的大小0,1,2
 	CONF_APP_PIC_SAVE_PATH,		TYPE_CONFIG_STR,
-	BOTTOM_AD_JSON,				TYPE_CONFIG_STR
+	BOTTOM_AD_JSON,				TYPE_CONFIG_STR,
+	CONF_APP_REGIST_URL,		TYPE_CONFIG_STR,
+	CONF_APP_RESET_PWD_URL,		TYPE_CONFIG_STR
 };
 
 #endif

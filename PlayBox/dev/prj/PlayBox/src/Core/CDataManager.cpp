@@ -65,8 +65,8 @@ IData* CDataManager::GetDataObject(const DWORD& guidDataObject)
 	case ID_DATA_TABBAR:
 		pData = CTabBarData::GetInstance();
 		break;
-	case ID_DATA_LOCALGAME:
-		pData = LocalGameData::GetInstance();
+	case ID_DATA_GAME:
+		pData = CGameDataImp::GetInstance();
 		break;
 	case ID_DATA_PANELCHANGE:
 		pData = CPanelChange::GetInstance();
