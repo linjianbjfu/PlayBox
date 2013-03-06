@@ -11,10 +11,15 @@
 #include "AfxGlobals.h"
 #include "AppConfig\config\ConfigSettingDef.h"
 #include "..\UserMan\UserManager.h"
+#include "GameCenterWelcomePanelWnd.h"
 
 static const char* s_USER_MAN_LOGED_IN_OUT	= "UserMan_LogedIn_LogedOut";
 static const char* s_USER_MAN_LOGED_IN	= "UserMan_LogedIn";
 static const char* s_USER_MAN_LOGED_OUT	= "UserMan_LogedOut";
+
+static const char* s_PLAYED_GAME_WELCOME_GAMELIST = "PlayedGame_Welcome_GameList";
+static const char* s_PLAYED_GAME_WELCOME	= "PlayedGameWelcome";
+static const char* s_PLAYED_GAME_GAMELIST	= "PlayedGameGameListPanel";
 
 IMPLEMENT_DYNAMIC(PlayedGameWnd, CBasicWnd)
 
@@ -29,7 +34,8 @@ PlayedGameWnd::PlayedGameWnd()
 	NEW_SKIN_BTN(m_pBtnToWebGame);
 	NEW_SKIN_BTN(m_pBtnToFlashGame);
 	NEW_SKIN_BTN(m_pBtnToCollectedGame);
-	m_pWndGameListWnd = new PlayedGameListPanelWnd();
+	m_pWndGameList = new PlayedGameListPanelWnd();
+	m_pWndWelcome  = new CGameCenterWelcomeWnd();
 	m_pWndRecommand = new MyWebBrowserWnd();
 	m_pWndLogedIn	= new CUserLogedInWnd();
 	m_pWndLogedOut	= new CUserLogedOutWnd();
@@ -50,7 +56,8 @@ PlayedGameWnd::~PlayedGameWnd()
 	delete m_pBtnToWebGame;
 	delete m_pBtnToFlashGame;
 	delete m_pBtnToCollectedGame;
-	delete m_pWndGameListWnd;
+	delete m_pWndGameList;
+	delete m_pWndWelcome;
 	delete m_pWndLogedIn;
 	delete m_pWndLogedOut;
 	//do not delete m_pWndRecommand
@@ -84,7 +91,8 @@ int PlayedGameWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_pBtnToWebGame->Create(NULL,NULL,rectNULL,this,ID_BTN_PLAYED_GAME_TO_WEB_GAME);
 	m_pBtnToFlashGame->Create(NULL,NULL,rectNULL,this,ID_BTN_PLAYED_GAME_TO_FLASH_GAME);
 	m_pBtnToCollectedGame->Create(NULL,NULL,rectNULL,this,ID_BTN_PLAYED_GAME_TO_COLLECTED_GAME);
-	m_pWndGameListWnd->Create(NULL,NULL,WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS,rectNULL,this,ID_WND_PLAYED_GAME_LIST);
+	m_pWndGameList->Create(NULL,NULL,WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS,rectNULL,this,ID_WND_PLAYED_GAME_LIST);
+	m_pWndWelcome->Create(NULL,NULL,WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN|WS_CLIPSIBLINGS,rectNULL,this,ID_WND_PLAYED_GAME_WELCOME);
 	m_pWndRecommand->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN,rectNULL,this,ID_WND_PLAYED_GAME_RECOMMAND);
 	m_pWndLogedIn->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN,rectNULL,this,ID_WND_USER_LOGED_IN);
 	m_pWndLogedOut->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN,rectNULL,this,ID_WND_USER_LOGED_OUT);
@@ -94,7 +102,8 @@ int PlayedGameWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	pLayoutMgr->RegisterCtrl(this,"PlayedGameToWebGame",m_pBtnToWebGame);
 	pLayoutMgr->RegisterCtrl(this,"PlayedGameToFlashGame",m_pBtnToFlashGame);
 	pLayoutMgr->RegisterCtrl(this,"PlayedGameToCollectedGame",m_pBtnToCollectedGame);
-	pLayoutMgr->RegisterCtrl(this,"PlayedGameGameListPanel",m_pWndGameListWnd);
+	pLayoutMgr->RegisterCtrl(this,"PlayedGameGameListPanel",m_pWndGameList);
+	pLayoutMgr->RegisterCtrl(this,"PlayedGameWelcome",m_pWndWelcome);
 	pLayoutMgr->RegisterCtrl(this,"PlayedGameRecommandWebPanel",m_pWndRecommand);
 	pLayoutMgr->RegisterCtrl(this,"UserMan_LogedIn",m_pWndLogedIn);
 	pLayoutMgr->RegisterCtrl(this,"UserMan_LogedOut",m_pWndLogedOut);
@@ -116,7 +125,8 @@ int PlayedGameWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void PlayedGameWnd::OnDestroy()
 {
-	m_pWndGameListWnd->DestroyWindow();
+	m_pWndGameList->DestroyWindow();
+	m_pWndWelcome->DestroyWindow();
 	m_pWndLogedIn->DestroyWindow();
 	m_pWndLogedOut->DestroyWindow();
 	m_pWndRecommand->DestroyWindow();
@@ -147,7 +157,7 @@ void PlayedGameWnd::OnClickedTimerOrder()
 	}
 	lgl.clear();
 	m_bSortTimeByAsc = !m_bSortTimeByAsc;  // 默认是升序排序 假如多次点击排序的时候需要反序 则取消注释
-	m_pWndGameListWnd->ReSetGameList(m_gameList);
+	m_pWndGameList->ReSetGameList(m_gameList);
 	*/
 }
 
@@ -230,7 +240,13 @@ void PlayedGameWnd::ValidateInterface()
 	if (m_pBtnToCollectedGame->GetCheck())
 		m_iGameType |= OneGame::COLLECTED;
 	GLOBAL_GAME->IGameData_GetGame(m_gameList, m_iGameType);
-	m_pWndGameListWnd->ReSetGameList(m_gameList);
+	if(m_gameList.empty())
+		AfxGetUIManager()->UIGetLayoutMgr()->ShowLayer(s_PLAYED_GAME_WELCOME_GAMELIST, s_PLAYED_GAME_WELCOME);
+	else
+	{
+		AfxGetUIManager()->UIGetLayoutMgr()->ShowLayer(s_PLAYED_GAME_WELCOME_GAMELIST, s_PLAYED_GAME_GAMELIST);
+		m_pWndGameList->ReSetGameList(m_gameList);
+	}	
 	Invalidate(FALSE);
 }
 

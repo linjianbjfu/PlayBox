@@ -13,6 +13,7 @@
 #include "YL_HTTPRequest.h"
 #include "Global/GlobalSwfPath.h"
 #include "IGameDataObserver.h"
+#include "YL_HTTPDownFile.h"
 
 CGameDataImp*	CGameDataImp::m_pData = NULL;
 #define MAX_TAB_COUNT	3
@@ -348,6 +349,14 @@ void CGameDataImp::IGameData_SetLoginGameList(GameList& lgl)
 
 void CGameDataImp::DownloadPics()
 {
+	std::vector<DownloadPicPara> * para = new std::vector<DownloadPicPara>;
+	AddDownloadPicPara(para, m_vecLocalGame);
+	AddDownloadPicPara(para, m_vecLoginGame);
+	if (para->empty())
+	{
+		delete para;
+		return;
+	}
 	//cancel thread
 	DWORD dwThreadExitCode = 0;
 	if( m_hThread != NULL && 
@@ -360,9 +369,6 @@ void CGameDataImp::DownloadPics()
 		m_hThread = NULL;
 	}
 	//start a new thread
-	std::vector<DownloadPicPara> * para = new std::vector<DownloadPicPara>;
-	AddDownloadPicPara(para, m_vecLocalGame);
-	AddDownloadPicPara(para, m_vecLoginGame);
 	m_hThread = CreateThread(0,0,ThreadDownloadPic, para, 0, 0);
 	NotifyGameDataChanged();
 }
@@ -388,9 +394,10 @@ DWORD CGameDataImp::ThreadDownloadPic(void* pPara)
 	std::vector<DownloadPicPara> *p = (std::vector<DownloadPicPara> *)pPara;
 	for (std::vector<DownloadPicPara>::iterator i = p->begin(); i != p->end(); i++)
 	{
-		i->strPicSvrUrl;
-		i->strPicLocalPath;
+		YL_CHTTPDownFile httpDownFile;
+		httpDownFile.DownloadFile(i->strPicSvrUrl, i->strPicLocalPath);
 	}
+	NotifyGameDataChanged();
 	delete p;
 	return 0;
 }

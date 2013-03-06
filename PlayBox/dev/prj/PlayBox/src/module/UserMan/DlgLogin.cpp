@@ -18,20 +18,6 @@ CDlgLogin::CDlgLogin(CWnd* pParent /*=NULL*/)
 	,m_bShowErrStatic(false)
 	,m_lpszPassPlaceHolder("passw0rd")
 {
-	m_editFont.CreateFont(14,      // nHeight
-		0,                         // nWidth
-		0,                         // nEscapement
-		0,                         // nOrientation
-		FW_NORMAL,                 // nWeight
-		FALSE,                     // bItalic
-		FALSE,                     // bUnderline
-		0,                         // cStrikeOut
-		ANSI_CHARSET,              // nCharSet
-		OUT_DEFAULT_PRECIS,        // nOutPrecision
-		CLIP_DEFAULT_PRECIS,       // nClipPrecision
-		DEFAULT_QUALITY,           // nQuality
-		DEFAULT_PITCH | FF_SWISS,  // nPitchAndFamily
-		"宋体");
 	m_bkg= ::AfxGetUIManager()->UIGetSkinMgr()->GetDibBmp("LoginBK");
 	AfxGetMessageManager()->AttachMessage(ID_MESSAGE_USER, (IUserMsgObserver*)this);
 }
@@ -61,8 +47,6 @@ void CDlgLogin::InitEditControl(CEditGlow* pEdit,
 								LPCSTR lpszPicPath,
 								LPCSTR lpszGlowPicPath)
 {
-	//pEdit->SetFont(&m_editFont);
-	//pEdit->SetMargins(3, 0);
 	ISkinMgr* pSkinMgr = AfxGetUIManager()->UIGetSkinMgr();
 	pEdit->SetPngBorder(std::string(pSkinMgr->GetDibBmp(lpszPicPath)->GetPath()),
 		std::string(pSkinMgr->GetDibBmp(lpszGlowPicPath)->GetPath()));
@@ -119,9 +103,7 @@ BOOL CDlgLogin::OnInitDialog()
 
 	pLayoutMgr->CreateControlPane( this,"LoginDlg","normal" );
 	pLayoutMgr->CreateBmpPane( this,"LoginDlg","normal" );
-
 	ValidateCheckBoxOrShowFailText();
-
 	//用户名和密码填入CEdit
 	std::string strUserName;
 	AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
@@ -196,7 +178,6 @@ void CDlgLogin::ValidateCheckBoxOrShowFailText()
 		m_staticError.ShowWindow(SW_HIDE);
 		m_btnRememberPassCheck.ShowWindow(m_bRememberPassChecked ? SW_SHOW : SW_HIDE);
 		m_btnRememberPassUnCheck.ShowWindow(!m_bRememberPassChecked ? SW_SHOW : SW_HIDE);
-
 		m_btnAutoLoginCheck.ShowWindow(m_bAutoLoginChecked ? SW_SHOW : SW_HIDE);
 		m_btnAutoLoginUnCheck.ShowWindow(!m_bAutoLoginChecked ? SW_SHOW : SW_HIDE);
 	}
@@ -244,9 +225,7 @@ void CDlgLogin::OnLoginClicked()
 		YL_Base64Decode(szMD5, strBase64MD5Pass.c_str());
 		CUserManager::GetInstance()->User_Login(cstrUserName, szMD5, true);
 	}else
-	{
 		CUserManager::GetInstance()->User_Login(cstrUserName, cstrPassWord);
-	}	
 }
 
 void CDlgLogin::OnCancelClicked()

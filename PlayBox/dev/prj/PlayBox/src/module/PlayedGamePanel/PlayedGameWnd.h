@@ -6,6 +6,7 @@
 
 class CxSkinButton;
 class PlayedGameListPanelWnd;
+class CGameCenterWelcomeWnd;
 class MyWebBrowserWnd;
 class CUserLogedInWnd;
 class CUserLogedOutWnd;
@@ -49,7 +50,8 @@ private:
 	CxSkinButton*	m_pBtnToWebGame;
 	CxSkinButton*	m_pBtnToFlashGame;
 	CxSkinButton*	m_pBtnToCollectedGame;
-	PlayedGameListPanelWnd*	m_pWndGameListWnd;
+	PlayedGameListPanelWnd*	m_pWndGameList;
+	CGameCenterWelcomeWnd*	m_pWndWelcome;
 	MyWebBrowserWnd*	m_pWndRecommand;
 	CUserLogedInWnd*	m_pWndLogedIn;
 	CUserLogedOutWnd*	m_pWndLogedOut;

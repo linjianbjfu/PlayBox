@@ -1621,6 +1621,12 @@
 				Name="PlayedGamePanel"
 				Filter="">
 				<File
+					RelativePath=".\src\module\PlayedGamePanel\GameCenterWelcomePanelWnd.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\PlayedGamePanel\GameCenterWelcomePanelWnd.h">
+				</File>
+				<File
 					RelativePath=".\src\module\PlayedGamePanel\LMCDataMgr.cpp">
 				</File>
 				<File

@@ -265,6 +265,8 @@
 #define ID_STATIC_LOGIN_ERR				340
 #define ID_STATIC_LOGEDOUT_LOGIN_ERR	341
 #define ID_BTN_USER_MAN_LOGOUT			342
+#define ID_BTN_GO_TO_GAME_CENTER		343
+#define ID_WND_PLAYED_GAME_WELCOME		344
 
 // Next default values for new objects
 // 

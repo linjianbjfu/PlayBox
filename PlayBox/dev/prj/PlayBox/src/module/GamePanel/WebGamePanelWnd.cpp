@@ -196,12 +196,12 @@ void WebGamePanelWnd::SetTabItem( TAB_ITEM ti )
 		return;
 	
 	std::string strFlag;
-	GenerateFlag(strFlag, m_olg.strID, m_olg.strSrvID, pUserInfo->strName);
+	GenerateFlag(strFlag, strID, strSvrID, pUserInfo->strName);
 	string strUrl = strValue + "username/" + pUserInfo->strName +
 		"/pass/" + pUserInfo->strPassMD5 +
 		"/flag/" + strFlag +
-		"/id/" + m_olg.strID + 
-		"/svrid/" + m_olg.strSrvID;
+		"/id/" + strID + 
+		"/svrid/" + strSvrID;
 	m_pWndWebGame->Navigate(strUrl);
 
 	m_olg.Clear();

@@ -265,10 +265,11 @@ void PlayedGameListPanelWnd::OnMouseMove(UINT nFlags, CPoint point)
 		OneGame og;
 		memset (&og, 0, sizeof (OneGame));
 		og.strName = ii.strItemName;
-		if( GLOBAL_GAME->IGameData_GetGameByID( ii.strGID, ii.nGameType, og ) )
-			info.Format("名称: %s$#游戏简介:%s", og.strName.c_str(), og.strIntro.c_str() );
-		else
-			info.Format("名称: %s", ii.strItemName );
+		//if( GLOBAL_GAME->IGameData_GetGameByID( ii.strGID, ii.nGameType, og ) )
+		//	info.Format("名称: %s$#游戏简介:%s", og.strName.c_str(), og.strIntro.c_str() );
+		//else
+		//	info.Format("名称: %s", ii.strItemName );
+		info.Format("名称: %s", ii.strItemName );
 
 		CPoint pt(0,0);
 		GetCursorPos(&pt);
@@ -284,6 +285,7 @@ void PlayedGameListPanelWnd::OnMouseMove(UINT nFlags, CPoint point)
 		m_iMovePreItem=-1;
 		ipreITem = -1;
 	}
+	::SetCursor(::LoadCursor(NULL, blHitTest ? IDC_HAND : IDC_ARROW));
 	__super::OnMouseMove(nFlags, point);
 }
 

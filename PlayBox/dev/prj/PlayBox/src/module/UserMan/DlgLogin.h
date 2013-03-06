@@ -12,17 +12,16 @@ class CDlgLogin : public CDialog, public IUserMsgObserver
 {
 	DECLARE_DYNAMIC(CDlgLogin)
 public:
-	CDlgLogin(CWnd* pParent = NULL);   // 标准构造函数
+	CDlgLogin(CWnd* pParent = NULL);
 	virtual ~CDlgLogin();
+	void AddTask(const TAB_ITEM& ti);
 
-// 对话框数据
 	enum { IDD = IDD_DLG_LOGIN };
 protected:
 	BOOL OnInitDialog();
 	afx_msg void OnPaint();
 	DECLARE_MESSAGE_MAP()
 private:
-	CFont m_editFont;
 	CxSkinButton m_btnClose;
 	CEditGlow m_editUserName;
 	CEditGlow m_editPassWord;
@@ -39,6 +38,8 @@ private:
 	bool m_bShowErrStatic;
 	CDibBitmap*  m_bkg;
 	CxStaticText m_staticError;
+	TAB_ITEM m_task;
+	LPCSTR m_lpszPassPlaceHolder;
 	
 	afx_msg void OnCloseClicked();
 	afx_msg void OnRegClicked();
@@ -63,9 +64,4 @@ private:
 	void UserMsg_LogFaild();
 	void UserMsg_BeginLogin();
 	void WriteConf();
-public:
-	void AddTask(const TAB_ITEM& ti);
-private:
-	TAB_ITEM m_task;
-	LPCSTR m_lpszPassPlaceHolder;
 };

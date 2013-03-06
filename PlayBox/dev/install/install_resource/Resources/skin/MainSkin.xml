@@ -78,12 +78,24 @@
 		<paneitem name="PlayedGameToWebGame" type="button" tooltip="显示网页游戏" bmp="PlayedGameToWebGame" start_x_right="400"  start_y_top="36" x_delta="30" y_delta="24" />
 		<paneitem name="PlayedGameToFlashGame" type="button" tooltip="显示小游戏" bmp="PlayedGameToFlashGame" start_x_right="370"  start_y_top="36" x_delta="30" y_delta="24" />
 		<paneitem name="PlayedGameToCollectedGame" type="button" tooltip="显示收藏" bmp="PlayedGameToCollectedGame" start_x_right="340"  start_y_top="36" x_delta="30" y_delta="24" />
-		<paneitem name="PlayedGameGameListPanel" type = "wnd" start_x_left="0"  start_y_top="94" end_x_right="259" end_y_bottom="0" />
+		<panemulti name="PlayedGame_Welcome_GameList" ori="VERT" current="PlayedGameGameListPanel" start_x_left="0"  start_y_top="94" end_x_right="259" end_y_bottom="0" >
+			<paneitem name="PlayedGameGameListPanel" type="wnd" greedy="1"/>	
+			<paneitem name="PlayedGameWelcome" type="wnd" greedy="1"/>
+		</panemulti>
 		<panemulti name="UserMan_LogedIn_LogedOut" ori="VERT" current="UserMan_LogedOut" start_x_right="258" start_y_top="0" x_delta="258" y_delta="109">
 			<paneitem name="UserMan_LogedIn" type="wnd" greedy="1"/>	
 			<paneitem name="UserMan_LogedOut" type="wnd" greedy="1"/>
 		</panemulti>
 		<paneitem name="PlayedGameRecommandWebPanel"   type="wnd"  start_x_right="258" x_delta="258" start_y_top="110" end_y_bottom="0" /> 
+	</controlpanel>
+</wndpanel>
+
+<wndpanel name="playedgamewelcomepanel" mode="normal">
+	<background name="normal" ori="NO_POS" background_color="ffffff">
+		<paneitem name="GameCenterWelcome" type="bmp" start_x_left="115" start_y_top="210" x_delta="467" y_delta="173" />
+	</background>
+	<controlpanel name="normal" ori="NO_POS">
+		<paneitem name="PlayedGameGoToGameCenter" type="button" tooltip="前往游戏中心"  bmp="PlayedGameGoToGameCenter" start_x_left="360" start_y_top="240" x_delta="203" y_delta="53" />
 	</controlpanel>
 </wndpanel>
 

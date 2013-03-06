@@ -300,10 +300,27 @@ void CTabBarWnd::DrawTabItemRect( CDC* pDc, CRect& rcRect,
 
 void CTabBarWnd::ITabBarOb_CreateNewTab(TAB_ITEM &item)
 {
-	AfxGetMainWindow()->Invalidate ();
+	AfxGetMainWindow()->Invalidate();
 
 	CalcTabPosition();
 	Invalidate();
+	if (item.enumType == TAB_WEBGAME)
+	{
+		//第一次点击游戏资讯，最大化
+		static bool bHasClickGameInfo = false;
+		if (!bHasClickGameInfo)
+		{
+			AfxGetUserConfig()->GetConfigBoolValue(CONF_LAYOUT_MODULE_NAME, 
+				CONF_LAYOUT_HAS_START_WEB_GAME, bHasClickGameInfo);
+			if(!bHasClickGameInfo)
+			{
+				AfxGetUserConfig()->SetConfigBoolValue(CONF_LAYOUT_MODULE_NAME, 
+					CONF_LAYOUT_HAS_START_WEB_GAME, true);
+				bHasClickGameInfo = true;
+				GLOBAL_PANELCHANGEDATA->IPanelChange_Max();
+			}
+		}
+	}
 }
 
 void CTabBarWnd::ITabBarOb_OpenExistTab(TAB_ITEM& item)
@@ -381,7 +398,7 @@ void CTabBarWnd::CalcTabPosition()
 		
 		m_vecTab.push_back( rcBtn );
 	
-		if(i == 0 || i == 1 || i == 2) //头3个不能关闭
+		if(i == 0 || i == 1) //头2个不能关闭
 		{
 			rcClose.right = rcBtn.right - WIDTH_CLOSE_TO_RIGHT;
 			rcClose.left  = rcClose.right;	
@@ -424,20 +441,6 @@ void CTabBarWnd::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		TAB_ITEM tmpTI = m_vecTi[m_iTabOver];
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tmpTI );
-		if (tmpTI.enumType == TAB_GAME_INFO_HOME)
-		{
-			//第一次点击游戏资讯，最大化
-			bool bHasClickGameInfo = false;
-			AfxGetUserConfig()->GetConfigBoolValue(CONF_LAYOUT_MODULE_NAME, 
-				CONF_LAYOUT_HAS_CLICK_GAME_INFO, bHasClickGameInfo);
-			if (!bHasClickGameInfo)
-			{
-				AfxGetUserConfig()->SetConfigBoolValue(CONF_LAYOUT_MODULE_NAME, 
-					CONF_LAYOUT_HAS_CLICK_GAME_INFO, true);
-				GLOBAL_PANELCHANGEDATA->IPanelChange_Max();
-			}
-			
-		}
 	}
 	//是否落在了newwindow按钮上
 	if ( m_bOverNewWindow )

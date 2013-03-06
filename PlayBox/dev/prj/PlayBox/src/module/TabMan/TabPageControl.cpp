@@ -67,15 +67,6 @@ void CTabPageControl::ITabBarOb_CreateNewTab(TAB_ITEM & item)
 		pWnd->Navigate();
 		pWndTmp = pWnd;
 	}else
-	if( item.enumType == TAB_GAME_INFO_HOME )
-	{
-		MyWebBrowserWnd* pWnd = TabWndFactory::GetInstance()->CreateWndGameInfoPanel();
-		std::string strGameInfoMainPage;
-		AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME,
-			CONF_SETTING_CONFIG_GAME_INFO_HOME_URL,strGameInfoMainPage);
-		pWnd->Navigate(strGameInfoMainPage);
-		pWndTmp = pWnd;
-	}else
 	if( item.enumType == TAB_FLASHGAME )
 	{
 		GamePanelWnd *pWnd = TabWndFactory::GetInstance()->CreateWndGamePanel();
@@ -205,13 +196,6 @@ void CTabPageControl::OpenHomePage()
 	TAB_ITEM tiGameCenter;
 	tiGameCenter.strTitle = TAB_GAMECENTER_TITLE;
 	tiGameCenter.enumType  = TAB_HOME;
-	GLOBAL_TABBARDATA->ITabBar_ChangeTab( tiGameCenter );
-
-	TAB_ITEM tiGameInfo;
-	tiGameInfo.strTitle = TAB_GAMEINFO_TITLE;
-	tiGameInfo.enumType  = TAB_GAME_INFO_HOME;
-	GLOBAL_TABBARDATA->ITabBar_ChangeTab( tiGameInfo );
-
 	GLOBAL_TABBARDATA->ITabBar_ChangeTab( tiGameCenter );
 }
 

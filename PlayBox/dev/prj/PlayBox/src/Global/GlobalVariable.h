@@ -9,7 +9,6 @@ enum TAB_TYPE
 {
 	TAB_UNKNOWN,
 	TAB_HOME,			//主页
-	TAB_GAME_INFO_HOME,	//游戏资讯
 	TAB_WEBGAME,		//web game wnd
 	TAB_FLASHGAME,		//flash游戏wnd
 	TAB_PLAYED_GAME,	//玩过的游戏
