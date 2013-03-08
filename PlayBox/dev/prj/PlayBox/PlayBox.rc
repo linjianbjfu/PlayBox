@@ -327,7 +327,6 @@ IDR_MENU_TITLE MENU
 BEGIN
     POPUP "TITLE"
     BEGIN
-        MENUITEM "退出登录",                    ID_MEMU_LOGON_OUT
         MENUITEM "问题反馈",                    ID_MEMU_PROBLEM_REPORT
         MENUITEM "设置",                        ID_MEMU_SETTING
         POPUP "帮助"

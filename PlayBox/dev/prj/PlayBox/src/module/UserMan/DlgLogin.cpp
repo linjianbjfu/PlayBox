@@ -130,9 +130,11 @@ BOOL CDlgLogin::OnInitDialog()
 void CDlgLogin::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-	AfxGetUIManager()->UIGetLayoutMgr()->PaintBkGround( m_hWnd ,&dc,false ) ;	
+	AfxGetUIManager()->UIGetLayoutMgr()->PaintBkGround( m_hWnd ,&dc,false );
 	m_editUserName.ShowSearchEditFrame(&dc,true);
 	m_editPassWord.ShowSearchEditFrame(&dc,true);
+	if (m_bShowErrStatic)
+		dc.FillSolidRect(1, 167, 318, 22, RGB(245, 203, 204));
 }
 
 void CDlgLogin::OnCloseClicked()
@@ -181,6 +183,7 @@ void CDlgLogin::ValidateCheckBoxOrShowFailText()
 		m_btnAutoLoginCheck.ShowWindow(m_bAutoLoginChecked ? SW_SHOW : SW_HIDE);
 		m_btnAutoLoginUnCheck.ShowWindow(!m_bAutoLoginChecked ? SW_SHOW : SW_HIDE);
 	}
+	Invalidate();
 }
 
 void CDlgLogin::OnAutoLoginCheckClicked()
