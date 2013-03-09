@@ -125,5 +125,8 @@ void ReInitUSB_Disk_Letter(char * szMoveDiskName);
 
 HBITMAP LoadAnImage(const char* FileName);
 
+int PinOrUnpinCmd(int iResIndex);
+void TaskBarPin();
+void TaskBarUnPin();
 
 #endif

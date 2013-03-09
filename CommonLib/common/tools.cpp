@@ -8,6 +8,8 @@
 #include <iomanip>
 #include <time.h>
 #include "Wininet.h"
+#include <shldisp.h>
+#include "YL_FileInfo.h"
 
 #pragma comment(lib,"Wininet.lib")
 
@@ -892,4 +894,68 @@ bool IsNumber( string strNum )
 		}
 	}
 	return true;
+}
+
+//5386 pin
+int PinOrUnpinCmd(int iResIndex)
+{
+	char lpszModulePath[MAX_PATH]={'\0'};
+	::GetModuleFileName(NULL, lpszModulePath, MAX_PATH);
+
+	string strDirPath, strFileName;
+	YL_FileInfo::GetFileDirPath(lpszModulePath, strDirPath);
+	YL_FileInfo::GetFileName(lpszModulePath, strFileName);
+	if (strDirPath.empty() || strFileName.empty())
+		return 1;
+
+	HMODULE hShell32 = ::LoadLibrary("shell32.dll");
+	if (!hShell32)
+		return 1;
+
+	char szCmd[512];
+	int nLen = ::LoadString(hShell32, iResIndex, szCmd, 512);
+
+	::CoInitialize(NULL);
+	CComPtr<IShellDispatch> pShell;
+	if (FAILED(::CoCreateInstance(CLSID_Shell, NULL, CLSCTX_SERVER, IID_IDispatch, (LPVOID*)&pShell)) || !pShell)
+		return 1;
+
+	CComPtr<Folder> pFolder;
+	if (FAILED(pShell->NameSpace(CComVariant(strDirPath.c_str()), &pFolder)) || !pFolder)
+		return 1;
+	CComPtr<FolderItem> pItem;
+	if (FAILED(pFolder->ParseName(CComBSTR(strFileName.c_str()), &pItem)) || !pItem)
+		return 1;
+
+	CComPtr<FolderItemVerbs> pItemVerbs;
+	if (FAILED(pItem->Verbs(&pItemVerbs)) || !pItemVerbs)
+		return 1;
+	long lCount = 0;
+	pItemVerbs->get_Count(&lCount);
+	for (long i = 0; i < lCount; i++)
+	{
+		CComPtr<FolderItemVerb> pItemVerb;
+		pItemVerbs->Item(CComVariant(i), &pItemVerb);
+		if (pItemVerb)
+		{
+			CComBSTR bstrName;
+			pItemVerb->get_Name(&bstrName);
+			if (bstrName == szCmd)
+			{
+				pItemVerb->DoIt();
+				return 0;
+			}
+		}
+	}
+	return 0;
+}
+
+void TaskBarPin()
+{
+	PinOrUnpinCmd(5386);
+}
+
+void TaskBarUnPin()
+{
+	PinOrUnpinCmd(5387);
 }

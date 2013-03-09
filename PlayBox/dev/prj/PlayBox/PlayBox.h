@@ -15,15 +15,11 @@ public:
 	HANDLE	m_hMutexhandle;
 	BOOL    m_bHasGdiPlus;
 	virtual BOOL InitInstance();
-
 	int		GetProcessNum();
 	int		KillOtherInstance();
 	void	SendCmdLineMsg(HWND hKwMusic);
 
 	CString m_strCmdLine;
 	DECLARE_MESSAGE_MAP()
-
-	virtual int ExitInstance();
 };
-
 extern CPlayBoxApp theApp;

@@ -20,15 +20,13 @@
 HWND	  g_hSharedWnd = NULL;
 #pragma   data_seg()
 #pragma   comment(linker,   "/section:SHARED,RWS")
-
-#pragma comment( lib, "Urlmon.lib" ) 
+#pragma   comment( lib, "Urlmon.lib" ) 
 
 // CPlayBoxApp
 
 BEGIN_MESSAGE_MAP(CPlayBoxApp, CWinApp)
 	//ON_COMMAND(ID_HELP, CWinApp::OnHelp)
 END_MESSAGE_MAP()
-
 
 // CPlayBoxApp 构造
 
@@ -41,20 +39,13 @@ CPlayBoxApp theApp;
 
 BOOL CPlayBoxApp::InitInstance()
 {
-	// 如果一个运行在 Windows XP 上的应用程序清单指定要
-	// 使用 ComCtl32.dll 版本 6 或更高版本来启用可视化方式，
-	//则需要 InitCommonControls()。否则，将无法创建窗口。
 	HANDLE curMutexHandle = CreateMutex(NULL,true,"PBMutex");
-
 	AfxOleInit();
 	InitCommonControls();
 	CWinApp::InitInstance();
 
 	//点击webbrowser里链接的声音禁止
-	
 	//CoInternetSetFeatureEnabled( FEATURE_DISABLE_NAVIGATION_SOUNDS, SET_FEATURE_ON_THREAD, TRUE );
-
-
 	//Get the command when started 
 	/*m_strCmdLine = GetCommandLine();
 	YL_Log("debug.txt",LOG_DEBUG,"commandline","%s",(LPCTSTR)m_strCmdLine);
@@ -127,9 +118,6 @@ BOOL CPlayBoxApp::InitInstance()
 		}
 		LocalFree(szArgList);
 	}
-
-	/* = m_strCmdLine.Find ("startuprun") != -1;*/
-
 	// 初始化 gdi+
 	HINSTANCE lib = LoadLibrary("GdiPlus.dll");
 	if( lib != NULL)
@@ -140,35 +128,22 @@ BOOL CPlayBoxApp::InitInstance()
 	ULONG_PTR m_gdiplusToken;
 	GdiplusStartupInput gdiplusStartupInput;
 	if(m_bHasGdiPlus)
-	{
-		if( GdiplusStartup(&m_gdiplusToken,&gdiplusStartupInput,NULL) != Ok )
-		{
-			//LogUserActMsg("GdiplusStartupInput","FAILED:0");
-		}
-		else
-		{
-			//LogUserActMsg("GdiplusStartupInput","FAILED:1");
-		}
-	}
+		GdiplusStartup(&m_gdiplusToken,&gdiplusStartupInput,NULL);
+	
 	HWND hKwMusic = g_hSharedWnd;
 	//判断是否已经存在实例
-	if (hKwMusic != NULL)
+	if (hKwMusic)
 	{
 		ReleaseMutex(curMutexHandle);
-
 		//显示原来的界面
-		if( ::IsIconic( hKwMusic ) ||
-			!::IsWindowVisible (hKwMusic))//最小化
-		{
+		if( ::IsIconic( hKwMusic ) || !::IsWindowVisible (hKwMusic))//最小化
 			PostMessage(hKwMusic, WM_COMMAND, ID_OPEN, 0);
-		}else
-		{
+		else
 			::SetForegroundWindow( hKwMusic );
-		}
+
 		//过去的代码，点击ID_OPEN，如果游戏盒正显示，就会最小化，如果最小化，就会显示
 		//if(!::IsWindowVisible(hKwMusic))
 		//	PostMessage(hKwMusic, WM_COMMAND, ID_OPEN, 0); //ID_WAKE_UP 是模拟鼠标双击托盘
-
 		SendCmdLineMsg( g_hSharedWnd );
 		return FALSE;
 	}	
@@ -204,9 +179,7 @@ BOOL CPlayBoxApp::InitInstance()
 		ReleaseMutex(curMutexHandle);
 		KillOtherInstance();
 	}
-
 	AfxEnableControlContainer();
-
 	LogInit( "PlayGame" );
 	AfxGetUserConfig()->Config_AppStart();
 	AfxGetDataManager2()->DataManAppStart();	
@@ -214,33 +187,21 @@ BOOL CPlayBoxApp::InitInstance()
 
 	CPlayBoxDlg dlg (bStartupRun);
 	dlg.Create(IDD_PLAYBOX_DIALOG,NULL);
-
-	//记录是否开机启动
-	bool bAutoRun = GlobalFunc::IsAutoRun();
-	string strLog;
-	YL_StringUtil::Format( strLog, "AutoRun:%d", bAutoRun );
-	LogRealMsg( "AppStart", strLog.c_str() );
-
 	m_pMainWnd = &dlg;
 
 	MSG   Msg;
 	while(GetMessage(&Msg,NULL,0,0))
 	{
-		//AfxPreTranslateMessage(&Msg);
 		if (!AfxPreTranslateMessage(&Msg))
 		{
 			TranslateMessage(&Msg);
 			DispatchMessage(&Msg);
 		}
 		if(dlg.m_bExit)
-		{
 			break;
-		}
 	}
-
 	AfxGetDataManager2()->DataManAppExit();
 	AfxGetUserConfig()->Config_AppExit();
-
 	if(m_bHasGdiPlus)
 		GdiplusShutdown( m_gdiplusToken );
 	//删除皮肤文件
@@ -249,6 +210,7 @@ BOOL CPlayBoxApp::InitInstance()
 #endif
 	return FALSE;
 }
+
 int CPlayBoxApp::GetProcessNum()
 {
 	int num = 0;
@@ -352,30 +314,4 @@ void CPlayBoxApp::SendCmdLineMsg(HWND hKwMusic)
 	default:
 		break;
 	}
-}
-
-int CPlayBoxApp::ExitInstance()
-{
-	////判断是否还有其他主进程
-	//SECURITY_DESCRIPTOR     sd_wideopen;
-	//InitializeSecurityDescriptor(&sd_wideopen, SECURITY_DESCRIPTOR_REVISION);
-	//SetSecurityDescriptorDacl(
-	//	&sd_wideopen,	// addr of SD
-	//	TRUE,		    // TRUE = DACL present
-	//	NULL,		    // ... but it's empty (wide open)
-	//	FALSE);		    // DACL explicitly set, not defaulted
-
-	//SECURITY_ATTRIBUTES     sa;
-	//memset(&sa, 0, sizeof sa);
-	//sa.nLength              = sizeof sa;
-	//sa.lpSecurityDescriptor = &sd_wideopen;
-	//sa.bInheritHandle       = FALSE;
-	//HANDLE handle = ::CreateMutex(&sa, FALSE, "YPLAYBOX_2011_3_3");
-	//::ReleaseMutex(handle);
-	//CloseHandle(handle);
-	//
-	//g_hSharedWnd = NULL;
-
-	//win32exec("PlayBox.exe", GetExePath().c_str(), false);
-	return __super::ExitInstance();
 }
