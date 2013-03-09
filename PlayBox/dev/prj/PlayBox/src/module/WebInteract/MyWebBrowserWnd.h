@@ -27,7 +27,8 @@ public:
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName,DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID,CCreateContext* pContext = NULL);
 	virtual void OnTitleChange(LPCTSTR lpszText);
 	virtual void OnNewWindow2(LPDISPATCH* ppDisp, BOOL* Cancel);
-	virtual void OnDownloadBegin();
+	virtual void OnNavigateComplete2(LPCTSTR strURL);
+
 	void	Navigate(const string& strUrl );
 	void	NavigetePost(const string& strUrl, const string& strHeader,
 		const string& strPostData);

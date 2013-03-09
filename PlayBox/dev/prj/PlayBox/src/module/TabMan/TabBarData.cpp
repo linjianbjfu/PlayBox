@@ -92,11 +92,6 @@ void CTabBarData::ITabBar_ChangeTab(TAB_ITEM &item)
 	for(vector<TAB_ITEM>::iterator it = m_vecItem.begin();
 		it != m_vecItem.end(); it++ )
 	{
-		if (!bFound && 
-			item.id != -1 && 
-			it->id == item.id)
-			 bFound = true;
-
 		if (!bFound &&
 			(item.enumType == TAB_HOME || 
 			item.enumType == TAB_PLAYED_GAME) &&
@@ -104,7 +99,9 @@ void CTabBarData::ITabBar_ChangeTab(TAB_ITEM &item)
 			bFound = true;
 
 		if (!bFound &&
-			(item.enumType == TAB_WEBGAME || item.enumType == TAB_FLASHGAME) &&
+			(item.enumType == TAB_WEBGAME || 
+			item.enumType == TAB_FLASHGAME || 
+			item.enumType == TAB_BROWSER) &&
 			it->strParam == item.strParam)
 			bFound = true;
 

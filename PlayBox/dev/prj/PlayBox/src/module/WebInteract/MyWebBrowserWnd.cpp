@@ -64,11 +64,9 @@ void MyWebBrowserWnd::NavigetePost(const string& strUrl,
 		(LPVOID)(strPostData.c_str()), strPostData.length());
 }
 
-void MyWebBrowserWnd::OnDownloadBegin()
+void MyWebBrowserWnd::OnNavigateComplete2(LPCTSTR strURL)
 {
-	CString url = GetLocationURL();
-	GetParent()->SendMessage(WM_PAGE_CHANGED, (WPARAM)url.GetBuffer(0), 0);
-	url.ReleaseBuffer();
+	GetParent()->SendMessage(WM_PAGE_CHANGED, (WPARAM)strURL, 0);
 }
 
 LRESULT MyWebBrowserWnd::OnCallJavaScript(WPARAM w,LPARAM l)
@@ -86,6 +84,6 @@ void MyWebBrowserWnd::OnNewWindow2(LPDISPATCH* ppDisp, BOOL* Cancel)
 
 void MyWebBrowserWnd::OnTitleChange(LPCTSTR lpszText)
 {
-	GetParent()->SendMessage(WM_PAGE_CHANGED, 0, (LPARAM)lpszText );
+	GetParent()->SendMessage(WM_PAGE_CHANGED, 0, (LPARAM)lpszText);
 	__super::OnTitleChange(lpszText);
 }

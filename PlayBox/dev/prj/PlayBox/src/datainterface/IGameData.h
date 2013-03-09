@@ -95,7 +95,10 @@ typedef std::vector<OneGame> GameList;
 class IGameData : public IData
 {
 public:
-	virtual bool IGameData_GetGameByID(const std::string& strID, int nGameType, OneGame& og) = 0;
+	//virtual bool IGameData_GetGameByID(int nGameType, const std::string& strID, 
+	//	const std::string& strID, OneGame& og) = 0;
+	virtual bool IGameData_GetGameByID(const std::string& strID, int nGameType,
+		OneGame& og) = 0;
 	virtual bool IGameData_AddGame(const OneGame& og) = 0;
 	virtual bool IGameData_DelGame(const string& strID , int nGameType) = 0;
 	virtual bool IGameData_DelGame(const std::vector<std::string>& vecID, 
