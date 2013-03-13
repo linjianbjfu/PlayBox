@@ -267,6 +267,8 @@
 #define ID_BTN_USER_MAN_LOGOUT			342
 #define ID_BTN_GO_TO_GAME_CENTER		343
 #define ID_WND_PLAYED_GAME_WELCOME		344
+#define ID_STATIC_BOTTOM_PANEL_WEB_GAME1	345
+#define ID_STATIC_BOTTOM_PANEL_WEB_GAME2	346
 
 // Next default values for new objects
 // 

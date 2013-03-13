@@ -173,12 +173,15 @@ void CGameDataImp::UnLoadGameData()
 	CopyFile( strTmp.c_str(), m_strDataFilePath.c_str(), FALSE );
 }
 
-bool CGameDataImp::IGameData_GetGameByID(const std::string& strID, int nGameType, OneGame& og)
+bool CGameDataImp::IGameData_GetGameByID(int nGameType, const std::string& strGameID, 
+										 const std::string& strSvrID, OneGame& og)
 {
 	assert(!((nGameType & OneGame::WEB_GAME) && (nGameType & OneGame::FLASH_GAME)));
 	GameList::iterator it1 = m_pVecGame->begin();
 	for( ; it1 != m_pVecGame->end(); it1 ++ )
-		if((nGameType & it1->nGameType) && strID == it1->strID)
+		if((nGameType & it1->nGameType) && 
+			strGameID == it1->strID &&
+			strSvrID == it1->strSrvID)
 			break;
 	
 	if( it1 != m_pVecGame->end() )
@@ -189,21 +192,24 @@ bool CGameDataImp::IGameData_GetGameByID(const std::string& strID, int nGameType
 	return false;
 }
 
+//如果已有，则把og的nGameType更新进去
+//已有的游戏，也可能再次被收藏或玩过
 bool CGameDataImp::IGameData_AddGame(const OneGame& og)
 {
 	assert((og.nGameType & OneGame::FLASH_GAME) || (og.nGameType & OneGame::WEB_GAME));
-	int iFlashOrWeb = (og.nGameType & OneGame::FLASH_GAME) ? OneGame::FLASH_GAME : OneGame::WEB_GAME;
+	OneGame olg = og;
 
-	//删除原有的信息
+	int iFlashOrWeb = (og.nGameType & OneGame::FLASH_GAME) ? 
+		OneGame::FLASH_GAME : OneGame::WEB_GAME;
+
 	GameList::iterator it1 = m_pVecGame->begin();
 	for(; it1 != m_pVecGame->end(); it1 ++ )
 		if((iFlashOrWeb & it1->nGameType) && og.strID == it1->strID)
 			break;
 
 	if( it1 != m_pVecGame->end() )
-		return false;
+		it1->nGameType = olg.nGameType | it1->nGameType;
 
-	OneGame olg = og;
 	// 获取系统日期
 	struct tm* tmLocal;
 	time_t t = time(NULL);;
@@ -214,7 +220,8 @@ bool CGameDataImp::IGameData_AddGame(const OneGame& og)
 		tmLocal->tm_hour, tmLocal->tm_min);// time
 	
 	//加入本地游戏数据
-	m_pVecGame->push_back( olg );
+	if( it1 == m_pVecGame->end() )
+		m_pVecGame->push_back( olg );
 	//玩过的游戏告知server
 	//这里添加的必定是flashgame
 	if ((olg.nGameType & OneGame::FLASH_GAME) ||
@@ -225,30 +232,29 @@ bool CGameDataImp::IGameData_AddGame(const OneGame& og)
 			gt = FLASH;
 		else if (olg.nGameType & OneGame::WEB_GAME)
 			gt = WEB;
-		IGameData_UserGameChangeInfoToSvr(gt, ADD, PLAYED, olg.strID, olg.strSrvID);
+
+		Status s = PLAYED;
+		if (og.nGameType & OneGame::RECENT_PLAY)
+			s = PLAYED;
+		else if (og.nGameType & OneGame::COLLECTED)
+			s = COLLECT;
+
+		IGameData_UserGameChangeInfoToSvr(gt, ADD, s, olg.strID, olg.strSrvID);
 	}
 	NotifyGameDataChanged();
 	return true;
 }
 
-bool CGameDataImp::IGameData_DelGame(const string& strID, int nGameType)
+bool CGameDataImp::IGameData_DelGame(const std::vector<GameKey>& vec)
 {
-	DelGameInternal(strID, nGameType);
-	NotifyGameDataChanged();
-	return true;
-}
-
-bool CGameDataImp::IGameData_DelGame(const std::vector<std::string>& vecID, 
-									 std::vector<int> vecGameType)
-{
-	for (int i=0; i<vecID.size(); i++)
-		DelGameInternal(vecID[i], vecGameType[i]);
+	for (int i=0; i<vec.size(); i++)
+		DelGameInternal(vec[i].nGameType, vec[i].strGameID, vec[i].strSvrID);
 
 	NotifyGameDataChanged();
 	return true;
 }
 
-bool CGameDataImp::DelGameInternal(const string& strID, int nGameType)
+bool CGameDataImp::DelGameInternal(int nGameType, const string& strID, const string& strSvrID)
 {
 	assert((nGameType & OneGame::FLASH_GAME) || (nGameType & OneGame::WEB_GAME));
 	int iFlashOrWeb = (nGameType & OneGame::FLASH_GAME) ? 
@@ -257,7 +263,8 @@ bool CGameDataImp::DelGameInternal(const string& strID, int nGameType)
 	GameList::iterator it1 = m_pVecGame->begin();
 	for( ; it1 != m_pVecGame->end(); it1 ++ )
 		if((iFlashOrWeb & it1->nGameType) && 
-			strID == it1->strID)
+			strID == it1->strID &&
+			strSvrID == it1->strSrvID)
 			break;
 
 	if( it1 != m_pVecGame->end() )
@@ -481,7 +488,7 @@ void CGameDataImp::IGameData_UserGameChangeInfoToSvr(GameType gt,
 		);
 	YL_CHTTPRequest http;
 	bool bAsync = true;
-	if (bAsync)
+	if (false)
 	{
 		http.SendRequest(strUrl, YL_CHTTPRequest::REQUEST_GET);
 	}else

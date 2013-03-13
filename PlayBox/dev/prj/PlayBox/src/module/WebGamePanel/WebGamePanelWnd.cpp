@@ -205,15 +205,12 @@ void WebGamePanelWnd::SetTabItem( TAB_ITEM ti )
 	m_pWndWebGame->Navigate(strUrl);
 
 	m_olg.Clear();
-	if (!GLOBAL_GAME->IGameData_GetGameByID(strID, OneGame::WEB_GAME, m_olg))
-	{
-		m_olg.strID = strID;
-		m_olg.strName = strName;
-		m_olg.strPicSvrPath = strPicSvrUrl;
-		m_olg.strSrvID = strSvrID;
-		m_olg.nGameType = OneGame::WEB_GAME | OneGame::RECENT_PLAY;
-		GLOBAL_GAME->IGameData_AddGame(m_olg);
-	}
+	m_olg.strID = strID;
+	m_olg.strName = strName;
+	m_olg.strPicSvrPath = strPicSvrUrl;
+	m_olg.strSrvID = strSvrID;
+	m_olg.nGameType = OneGame::WEB_GAME | OneGame::RECENT_PLAY;
+	GLOBAL_GAME->IGameData_AddGame(m_olg);
 	
 	std::string strLocalPicPath;
 	if (m_olg.GetLocalPicPath(strLocalPicPath) && 

@@ -82,6 +82,7 @@ BEGIN_MESSAGE_MAP(CPlayBoxDlg, CDialog)
 	ON_MESSAGE(MSG_HTTP_DOWNLOAD,OnHTTPDonwload)
 	ON_MESSAGE(MSG_NEW_BROWSER_WND, OnNewBrowserWnd)
 	ON_MESSAGE(MSG_OPEN_REG_DIALOG, OnOpenRegDialog)
+	ON_MESSAGE(MSG_OPEN_FORGET_PASS_DIALOG, OnOpenForgetPassDialog)
 	ON_MESSAGE(MSG_DO_TASK, OnDoTask)
 	ON_WM_TIMER()
 	ON_WM_SHOWWINDOW()
@@ -985,6 +986,22 @@ LRESULT CPlayBoxDlg::OnOpenRegDialog(WPARAM w,LPARAM l)
 		CONF_APP_REGIST_URL, strUrl);
 	// 获取注册页面大小
 	CRect rctPageSize(0, 0, 520, 420);
+	CWebDlg dlg(AfxGetMainWindow());
+	AfxGetUIManager()->UIAddDialog(&dlg);
+	CUserManager::GetInstance()->SetRegisterWnd(&dlg);
+	dlg.DoModal(_T("注册"), strUrl.c_str(), rctPageSize.Width(), rctPageSize.Height());
+	AfxGetUIManager()->UIRemoveDialog(&dlg);
+	return 0L;
+}
+
+LRESULT CPlayBoxDlg::OnOpenForgetPassDialog(WPARAM w,LPARAM l)
+{
+	// 获取找回密码地址
+	string strUrl;
+	AfxGetUserConfig()->GetConfigStringValue(CONF_APP_MODULE_NAME, 
+		CONF_APP_RESET_PWD_URL, strUrl);
+	// 获取找回密码页面大小
+	CRect rctPageSize(0, 0, 520, 180);
 	CWebDlg dlg(AfxGetMainWindow());
 	AfxGetUIManager()->UIAddDialog(&dlg);
 	CUserManager::GetInstance()->SetRegisterWnd(&dlg);

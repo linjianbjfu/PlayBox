@@ -318,9 +318,17 @@ void CUserManager::AddTask(const TAB_ITEM& ti)
 	if (ti.enumType != TAB_UNKNOWN)
 		m_task = ti;
 }
+
+void CUserManager::AddTask(const OneGame& g)
+{
+	if (g.nGameType != 0)
+		m_collectedWegGame = g;
+}
+
 void CUserManager::DelTask()
 {
 	m_task.enumType = TAB_UNKNOWN;
+	m_collectedWegGame.nGameType = 0;
 }
 
 void CUserManager::DoTask()
@@ -328,4 +336,8 @@ void CUserManager::DoTask()
 	if (m_task.enumType != TAB_UNKNOWN)
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab(m_task);
 	m_task.enumType = TAB_UNKNOWN;
+
+	if (m_collectedWegGame.nGameType != 0)
+		GLOBAL_GAME->IGameData_AddGame(m_collectedWegGame);
+	m_collectedWegGame.nGameType = 0;
 }

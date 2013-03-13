@@ -14,6 +14,7 @@ class CTabPageControl : public ITabBarObserver
 private:
 	vector<ONE_TAB>		m_mapTab;
 	CWnd*				m_pWndParent;
+	CWnd*				m_pWndCurShow;
 public:
 	static CTabPageControl*	m_pTabPageControl;
 	static CTabPageControl*	GetInstance();
@@ -24,6 +25,9 @@ public:
 
 public:
 	void SetParentWnd(CWnd* pWnd);
+	HWND GetParentWnd();
+	CWnd* GetCurShowWnd();
+
 	void ITabBarOb_CreateNewTab(TAB_ITEM & item);
 	void ITabBarOb_OpenExistTab(TAB_ITEM & item);
 	void ITabBarOb_DelTab(TAB_ITEM & item);

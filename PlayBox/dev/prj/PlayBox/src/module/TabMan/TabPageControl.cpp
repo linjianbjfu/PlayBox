@@ -37,7 +37,7 @@ void CTabPageControl::DelInstance()
 	}
 }
 
-CTabPageControl::CTabPageControl()
+CTabPageControl::CTabPageControl() : m_pWndParent(NULL), m_pWndCurShow(NULL)
 {
 	AfxGetMessageManager()->AttachMessage( ID_MESSAGE_TABBAR,(ITabBarObserver*) this);
 }
@@ -51,6 +51,16 @@ void CTabPageControl::SetParentWnd(CWnd* pWnd)
 {
 	m_pWndParent = pWnd;
 	TabWndFactory::GetInstance()->SetParent( pWnd );
+}
+
+HWND CTabPageControl::GetParentWnd()
+{
+	return m_pWndParent ? m_pWndParent->GetSafeHwnd() : NULL;
+}
+
+CWnd* CTabPageControl::GetCurShowWnd()
+{
+	return m_pWndCurShow;
 }
 
 //展现游戏列表时，第一个tab打开
@@ -136,17 +146,19 @@ void CTabPageControl::ITabBarOb_OpenExistTab(TAB_ITEM & item)
 {
 	for( vector<ONE_TAB>::iterator it = m_mapTab.begin();
 		it != m_mapTab.end(); it++ )
-		it->second->ShowWindow( it->first.id == item.id ? SW_SHOW : SW_HIDE );
+	{
+		if (it->first.id == item.id)
+			m_pWndCurShow = it->second;
+		it->second->ShowWindow(it->first.id == item.id ? SW_SHOW : SW_HIDE );
+	}
 }
 
 void CTabPageControl::ITabBarOb_DelTab(TAB_ITEM & item)
 {
 	vector<ONE_TAB>::iterator it = m_mapTab.begin();
 	for( ; it != m_mapTab.end(); it++ )
-	{
 		if( it->first.id == item.id )
 			break;
-	}
 	if( it != m_mapTab.end() )
 	{
 		TabWndFactory::GetInstance()->Recycle( it->second );
@@ -179,10 +191,7 @@ void CTabPageControl::ResizePage()
 
 	for( vector<ONE_TAB>::iterator it = m_mapTab.begin();
 		it != m_mapTab.end(); it++ )
-	{
 		it->second->MoveWindow (rc, FALSE);
-		it->second->ShowWindow(it->first.id == ti.id ? SW_SHOW : SW_HIDE);
-	}
 }
 
 void CTabPageControl::OpenHomePage()
@@ -206,8 +215,6 @@ void CTabPageControl::CallJS (LPVOID lpVoid)
 	{
 		MyWebBrowserWnd * pBrowser = (MyWebBrowserWnd *)it->second;
 		if (pBrowser != NULL && ::IsWindow (pBrowser->m_hWnd))
-		{
 			pBrowser->OnCallJavaScript ((WPARAM)pBrowser, (LPARAM)lpVoid);
-		}
 	}
 }

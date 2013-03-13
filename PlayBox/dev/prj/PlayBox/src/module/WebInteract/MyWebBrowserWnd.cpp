@@ -3,18 +3,13 @@
 #include "WebManager.h"
 
 IMPLEMENT_DYNAMIC(MyWebBrowserWnd, CHtmlView)
-MyWebBrowserWnd::MyWebBrowserWnd(BOOL bShowLoading/* = TRUE*/)
-{
-}
-
-MyWebBrowserWnd::~MyWebBrowserWnd()
-{
-}
+MyWebBrowserWnd::MyWebBrowserWnd(BOOL bShowLoading/* = TRUE*/){}
+MyWebBrowserWnd::~MyWebBrowserWnd(){}
 
 BEGIN_MESSAGE_MAP(MyWebBrowserWnd, CHtmlView)
 	ON_MESSAGE(WM_CALL_JAVASCRIPT,OnCallJavaScript)	
+	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
-
 
 BOOL MyWebBrowserWnd::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName,DWORD dwStyle, const RECT& rect, CWnd* pParentWnd,UINT nID, CCreateContext* pContext)
 {	
@@ -24,7 +19,6 @@ BOOL MyWebBrowserWnd::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName,DWORD
 		return FALSE;
 
 	AfxEnableControlContainer(m_Mgr);
-
 	RECT rectClient;
 	GetClientRect(&rectClient);
 	if (!m_wndBrowser.CreateControl(CLSID_WebBrowser, lpszWindowName,WS_VISIBLE | WS_CHILD, rectClient, this, AFX_IDW_PANE_FIRST))

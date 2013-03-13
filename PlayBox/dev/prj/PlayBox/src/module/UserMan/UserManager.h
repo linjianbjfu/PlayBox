@@ -2,6 +2,7 @@
 #define USERMANAGER_H
 #pragma once
 #include "windows.h"
+#include "IGameData.h"
 
 struct UserInfo;
 
@@ -52,11 +53,13 @@ private:
 	static void ParseJson(const std::string strJson, bool& bLoginSuc);
 	static void SetUserInfo(LPCSTR lpszUserName, LPCSTR lpszPass);
 public:
-	void AddTask(const TAB_ITEM& ti);
+	void AddTask(const TAB_ITEM& ti); //登陆后打开webgame
+	void AddTask(const OneGame& g); //登陆后收藏游戏
 	void DelTask();
 	void DoTask();
 private:
 	TAB_ITEM m_task;
+	OneGame m_collectedWegGame;
  };
 
 #endif // USERMANAGER_H

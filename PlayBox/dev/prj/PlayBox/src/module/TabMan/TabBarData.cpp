@@ -3,6 +3,11 @@
 #include "../../core/CDataManager.h"
 #include "../UserMan/UserManager.h"
 #include "../UserMan/DlgLogin.h"
+#include "TabPageControl.h"
+#include "../GamePanel/WebGamePanelWnd.h"
+#include "../WebInteract/MyWebBrowserWnd.h"
+#include "../BrowserPanel/BrowserPanelWnd.h"
+#include "../GameCenterPanel/GameCenterPanelWnd.h"
 
 CTabBarData*	CTabBarData::m_pTabBarData = NULL;
 #define MAX_TAB_COUNT	10
@@ -87,30 +92,53 @@ void CTabBarData::ITabBar_ChangeTab(TAB_ITEM &item)
 	if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
 		GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
 
-	//1 item有id是打开已有tab
 	bool bFound = false;
-	for(vector<TAB_ITEM>::iterator it = m_vecItem.begin();
-		it != m_vecItem.end(); it++ )
+	vector<TAB_ITEM>::iterator it = m_vecItem.begin();
+	if (item.id != -1) //item有id是打开已有tab
 	{
-		if (!bFound &&
-			(item.enumType == TAB_HOME || 
-			item.enumType == TAB_PLAYED_GAME) &&
-			it->enumType == item.enumType)
-			bFound = true;
-
-		if (!bFound &&
-			(item.enumType == TAB_WEBGAME || 
-			item.enumType == TAB_FLASHGAME || 
-			item.enumType == TAB_BROWSER) &&
-			it->strParam == item.strParam)
-			bFound = true;
-
-		if (bFound)
+		for(it = m_vecItem.begin();	it != m_vecItem.end(); it++ )
+			if (item.id == it->id)
+			{
+				bFound = true;
+				break;
+			}
+	}else
+	{
+		for(it = m_vecItem.begin(); it != m_vecItem.end(); it++)
 		{
-			m_iPos = int(it - m_vecItem.begin());
-			NotifyOpenExistTab(m_vecItem[m_iPos]);
-			return;
+			if (!bFound &&
+				item.enumType == TAB_BROWSER &&
+				item.iLPDISPATCHOnlyForBrowser != 0) //新建窗口
+			{
+				bFound = false;
+				break;
+			}
+
+			if (!bFound &&
+				(item.enumType == TAB_HOME || 
+				item.enumType == TAB_PLAYED_GAME) &&
+				it->enumType == item.enumType)
+			{
+				bFound = true;
+				break;
+			}
+
+			if (!bFound &&
+				(item.enumType == TAB_WEBGAME || 
+				item.enumType == TAB_FLASHGAME) &&
+				it->strParam == item.strParam)
+			{
+				bFound = true;
+				break;
+			}
 		}
+	}
+
+	if (bFound)
+	{
+		m_iPos = int(it - m_vecItem.begin());
+		NotifyOpenExistTab(m_vecItem[m_iPos]);
+		return;
 	}
 
 	if( m_vecItem.size() >= MAX_TAB_COUNT )
@@ -120,7 +148,6 @@ void CTabBarData::ITabBar_ChangeTab(TAB_ITEM &item)
 	{
 		//if open new webgamepanel, should check whether login
 		if (item.enumType == TAB_WEBGAME &&
-			item.id == -1 &&
 			CUserManager::GetInstance()->User_GetUserInfo() == NULL)
 		{
 			CDlgLogin dlgLogin;
@@ -136,6 +163,22 @@ void CTabBarData::ITabBar_ChangeTab(TAB_ITEM &item)
 			NotifyCreateTab(item);
 		}
 	}
+	//CWnd* pWndFocus = CTabPageControl::GetInstance()->GetCurShowWnd();
+	//if (pWndFocus)
+	//{
+	//	if( dynamic_cast<WebGamePanelWnd*>(pWndFocus) ||
+	//		dynamic_cast<MyWebBrowserWnd*>(pWndFocus) ||
+	//		dynamic_cast<BrowserPanelWnd*>(pWndFocus) ||
+	//		dynamic_cast<GameCenterPanelWnd*>(pWndFocus))
+	//	{
+	//		//模拟鼠标点击右边滚动条的消息
+	//		CRect rc;
+	//		pWndFocus->GetClientRect(&rc);
+	//		int x = rc.Width() - 3;
+	//		int y = rc.Height() / 2;
+	//		pWndFocus->PostMessage(WM_LBUTTONDOWN, MK_LBUTTON, MAKELONG(x, y));
+	//	}
+	//}
 }
 
 void CTabBarData::ITabBar_DeleteTab(TAB_ITEM &item)

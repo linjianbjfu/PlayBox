@@ -150,7 +150,8 @@ void CDlgLogin::OnRegClicked()
 
 void CDlgLogin::OnForgetPassClicked()
 {
-	//打开找回密码的页面
+	EndDialog(0);
+	AfxGetMainWindow()->PostMessage(MSG_OPEN_FORGET_PASS_DIALOG, 0, 0);
 }
 
 void CDlgLogin::OnRememberPassCheckClicked()
@@ -217,6 +218,7 @@ void CDlgLogin::OnLoginClicked()
 	}
 	WriteConf();
 	CUserManager::GetInstance()->AddTask(m_task);
+	CUserManager::GetInstance()->AddTask(m_collectedWebGame);
 
 	if (cstrPassWord.Compare(m_lpszPassPlaceHolder) == 0)
 	{
@@ -261,6 +263,12 @@ void CDlgLogin::AddTask(const TAB_ITEM& ti)
 {
 	if (ti.enumType != TAB_UNKNOWN)
 		m_task = ti;
+}
+
+void CDlgLogin::AddTask(const OneGame& g)
+{
+	if (g.nGameType != 0)
+		m_collectedWebGame = g;
 }
 
 void CDlgLogin::ShowErrStaticAndLaterDisappear(LPCTSTR lpszText)

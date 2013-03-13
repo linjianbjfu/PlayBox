@@ -60,6 +60,7 @@ protected:
 	afx_msg LRESULT OnHTTPDonwload(WPARAM,LPARAM);
 	afx_msg LRESULT OnNewBrowserWnd(WPARAM w,LPARAM l);
 	afx_msg LRESULT OnOpenRegDialog(WPARAM w,LPARAM l);
+	afx_msg LRESULT OnOpenForgetPassDialog(WPARAM w,LPARAM l);
 	afx_msg LRESULT OnDoTask(WPARAM w, LPARAM l);
 	afx_msg LRESULT OnConfUpdate(WPARAM,LPARAM);
 	afx_msg LRESULT OnHotKey(WPARAM wParam, LPARAM lParam);

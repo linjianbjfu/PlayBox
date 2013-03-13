@@ -1568,25 +1568,19 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="GamePanel"
+				Name="FlashGamePanel"
 				Filter="">
 				<File
-					RelativePath=".\src\module\GamePanel\DownPercentWnd.cpp">
+					RelativePath=".\src\module\FlashGamePanel\FlashDownloadWnd.cpp">
 				</File>
 				<File
-					RelativePath=".\src\module\GamePanel\DownPercentWnd.h">
+					RelativePath=".\src\module\FlashGamePanel\FlashDownloadWnd.h">
 				</File>
 				<File
-					RelativePath=".\src\module\GamePanel\GamePanelWnd.cpp">
+					RelativePath=".\src\module\FlashGamePanel\FlashGamePanelWnd.cpp">
 				</File>
 				<File
-					RelativePath=".\src\module\GamePanel\GamePanelWnd.h">
-				</File>
-				<File
-					RelativePath=".\src\module\GamePanel\WebGamePanelWnd.cpp">
-				</File>
-				<File
-					RelativePath=".\src\module\GamePanel\WebGamePanelWnd.h">
+					RelativePath=".\src\module\FlashGamePanel\FlashGamePanelWnd.h">
 				</File>
 			</Filter>
 			<Filter
@@ -1808,6 +1802,16 @@
 				</File>
 				<File
 					RelativePath=".\src\module\GameCenterPanel\GameCenterPanelWnd.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="WebGamePanel"
+				Filter="">
+				<File
+					RelativePath=".\src\module\WebGamePanel\WebGamePanelWnd.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\WebGamePanel\WebGamePanelWnd.h">
 				</File>
 			</Filter>
 		</Filter>

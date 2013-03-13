@@ -77,6 +77,7 @@ private:
 	BITMAPINFOHEADER		m_bmih;
 
 	BOOL					m_bLButtonDown;
+	string	m_strDefaultNewBrowserUrl;
 private:
 	void	DrawBar( CDC* pDc );
 	int		GetOverTab( CPoint pt );

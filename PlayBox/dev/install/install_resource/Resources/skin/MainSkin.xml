@@ -55,12 +55,14 @@
 </wndpanel>
 
 <wndpanel name="bottompanel" mode="normal">
-	<controlpanel name="normal" ori="NO_POS">
-	</controlpanel>
 	<background name="normal" ori="NO_POS" background_color="ffffff">
 		<paneitem name="PlayedGameSeperatorBk" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" y_delta="1" />
-		<paneitem name="BottomLeftText" type="bmp" start_x_left="10" start_y_top="1" x_delta="151" y_delta="28" />
+		<paneitem name="BottomLeftText" type="bmp" start_x_left="19" start_y_top="6" x_delta="55" y_delta="16" />
 	</background>
+	<controlpanel name="normal" ori="NO_POS">
+		<paneitem name="bottomWebGame1" type="static" background_color="ffffff" text_color="0066fd" single_line="1" under_line="1" enable_click="1" font_face="宋体" font_size="13" start_x_left="79" start_y_top="8" x_delta="60" y_delta="16"/>
+		<paneitem name="bottomWebGame2" type="static" background_color="ffffff" text_color="0066fd" single_line="1" under_line="1" enable_click="1" font_face="宋体" font_size="13" start_x_left="144" start_y_top="8" x_delta="60" y_delta="16"/>
+	</controlpanel>
 </wndpanel>
 
 <wndpanel name="tabpanelparent" mode="normal">
@@ -82,7 +84,7 @@
 			<paneitem name="PlayedGameGameListPanel" type="wnd" greedy="1"/>	
 			<paneitem name="PlayedGameWelcome" type="wnd" greedy="1"/>
 		</panemulti>
-		<panemulti name="UserMan_LogedIn_LogedOut" ori="VERT" current="UserMan_LogedOut" start_x_right="258" start_y_top="0" x_delta="258" y_delta="109">
+		<panemulti name="UserMan_LogedIn_LogedOut" ori="VERT" current="UserMan_LogedIn" start_x_right="258" start_y_top="0" x_delta="258" y_delta="109">
 			<paneitem name="UserMan_LogedIn" type="wnd" greedy="1"/>	
 			<paneitem name="UserMan_LogedOut" type="wnd" greedy="1"/>
 		</panemulti>
@@ -92,10 +94,10 @@
 
 <wndpanel name="playedgamewelcomepanel" mode="normal">
 	<background name="normal" ori="NO_POS" background_color="ffffff">
-		<paneitem name="GameCenterWelcome" type="bmp" start_x_left="115" start_y_top="210" x_delta="467" y_delta="173" />
+		<paneitem name="GameCenterWelcome" type="bmp" start_x_left="115" start_y_top="180" x_delta="467" y_delta="173" />
 	</background>
 	<controlpanel name="normal" ori="NO_POS">
-		<paneitem name="PlayedGameGoToGameCenter" type="button" tooltip="前往游戏中心"  bmp="PlayedGameGoToGameCenter" start_x_left="360" start_y_top="240" x_delta="203" y_delta="53" />
+		<paneitem name="PlayedGameGoToGameCenter" type="button" tooltip="前往游戏中心"  bmp="PlayedGameGoToGameCenter" start_x_left="231" start_y_top="353" x_delta="203" y_delta="53" />
 	</controlpanel>
 </wndpanel>
 
@@ -119,23 +121,62 @@
 	</controlpanel>
 </wndpanel>
 
-<wndpanel name="gamepanel" mode="normal">
+<wndpanel name="flashgamepanel" mode="normal">
 	<background name="normal" ori="NO_POS" background_color="90cdfa">
-		<paneitem name="FlashGameControlBarBg" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_top="40" />
 	</background>
-	<controlpanel name="normal" ori="NO_POS">
+	<controlpanel name="normal" ori="VERT">
+		<paneitem name="flashgamectrl" absolute_vert="1" sizeY="40" />
+		<paneitem name="flashgamecenter" greedy="1" />
+	</controlpanel>
+</wndpanel>
+
+<wndpanel name="flashgamectrlpanel" mode="normal">
+	<background name="normal" ori="NO_POS" background_color="90cdfa">
+		<paneitem name="FlashGameControlBarBg" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_bottom="0" />
+	</background>
+	<controlpanel name="normal" ori="VERT">
 		<paneitem name="GameRePlay" type="button" tooltip="重玩"     bmp="GameRePlay" start_x_left="20"   start_y_top="8" x_delta="70" y_delta="25" />
 		<paneitem name="ToFull"     type="button" tooltip="进入全屏" bmp="ToFull"     start_x_left="94"   start_y_top="8" x_delta="70" y_delta="25" />
-		<paneitem name="ExitFull"   type="button" tooltip="退出全屏" bmp="ToSmall"   start_x_left="94"   start_y_top="8" x_delta="70" y_delta="25" />
+		<paneitem name="ExitFull"   type="button" tooltip="退出全屏" bmp="ToSmall"    start_x_left="94"   start_y_top="8" x_delta="70" y_delta="25" />
 		<paneitem name="Mute"       type="button" tooltip="关闭声音" bmp="Mute"       start_x_left="168"  start_y_top="8" x_delta="70" y_delta="25" />
 		<paneitem name="UnMute"     type="button" tooltip="打开声音" bmp="UnMute"     start_x_left="168"  start_y_top="8" x_delta="70" y_delta="25" />
-		<!--
-		<paneitem name="Pause"      type="button" tooltip="暂停"     bmp="Pause"      start_x_left="242"  start_y_top="8" x_delta="70" y_delta="25" />
-		-->
-		<paneitem name="GameFlash"    type="wnd"  start_x_left="0" end_x_right="261" start_y_top="40" end_y_bottom="104"  />
-		<paneitem name="DownPercent"    type="wnd"  start_x_left="0" end_x_right="261" start_y_top="40" end_y_bottom="104"  />
-		<paneitem name="FlashGameBottom"   type="wnd"  start_x_left="0" end_x_right="261" start_y_bottom="104" end_y_bottom="0" /> 
-		<paneitem name="FlashGameRight"    type="wnd"  start_x_right="260" end_x_right="0" start_y_top="40" end_y_bottom="0"/>
+	</controlpanel>
+</wndpanel>
+
+<wndpanel name="flashgamecenterpanel" mode="normal">
+	<background name="normal" ori="NO_POS" background_color="90cdfa">
+	</background>
+	<controlpanel name="normal" ori="HORZ">
+		<paneitem name="flashgamecenterleft" greedy="1" />
+		<paneitem name="flashgameintro" type = "wnd" absolute_horz="1" sizeX="40" />
+	</controlpanel>
+</wndpanel>
+
+<wndpanel name="flashgamecenterleftpanel" mode="normal">
+	<background name="normal" ori="NO_POS" background_color="90cdfa">
+	</background>
+	<controlpanel name="normal" ori="VERT">
+		<panemulti name="flashgame_play_download" ori="VERT" current="flashgame_play" greedy="1" >
+			<paneitem name="flashgame_play" type="wnd" greedy="1"/>	
+			<paneitem name="flashgame_download" type="wnd" greedy="1"/>
+		</panemulti>
+		<paneitem name="flashgamerecommand" type="wnd" absolute_horz="1" sizeY="104" />
+	</controlpanel>
+</wndpanel>
+	
+<wndpanel name="flashgameplaypanel" mode="normal">
+	<background name="normal" ori="NO_POS" background_color="90cdfa">
+	</background>
+	<controlpanel name="normal" ori="HORZ">
+		<paneitem name="GameFlash" greedy="1" />
+	</controlpanel>
+</wndpanel>	
+
+<wndpanel name="flashgamedownloadpanel" mode="normal">
+	<background name="normal" ori="NO_POS" background_color="90cdfa">
+	</background>
+	<controlpanel name="normal" ori="HORZ">
+		<paneitem name="DownPercent" greedy="1" />
 	</controlpanel>
 </wndpanel>
 
@@ -298,8 +339,8 @@
 </wndpanel>
 
 <wndpanel name="WebWnd" mode="normal">
-	<background name="normal" ori="NO_POS" background_color="FFFFFF">
-		<paneitem name="bkWebWnd" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_bottom="0" dont_change_color="1" />
+	<background name="normal" ori="NO_POS" background_color="93ccfc">
+		<paneitem name="bkWebWnd" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" y_delta="30" dont_change_color="1" />
 	</background>
 	<controlpanel name="normal" ori="NO_POS">
 		<paneitem name="btnClose" type="button" bmp="minorexitclose" start_x_left="492" start_y_top="8"  x_delta="14" y_delta="14" dont_change_color="1"/>
@@ -333,4 +374,3 @@
 </colors>
 </root>
 
-<!--trick-->

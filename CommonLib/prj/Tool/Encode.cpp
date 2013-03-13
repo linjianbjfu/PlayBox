@@ -26,6 +26,20 @@ int _tmain(int argc, _TCHAR* argv[])
 		return 0;
 	}
 
+	if( argc == 2
+		&& stricmp( argv[1], "TASKBARPIN" ) == 0 )
+	{
+		TaskBarPin();
+		return 0;
+	}
+
+	if( argc == 2
+		&& stricmp( argv[1], "TASKBARUNPIN" ) == 0 )
+	{
+		TaskBarUnPin();
+		return 0;
+	}
+
 	if( argc == 5 
 		&& stricmp( argv[1], "WRITE" ) == 0 )
 	{

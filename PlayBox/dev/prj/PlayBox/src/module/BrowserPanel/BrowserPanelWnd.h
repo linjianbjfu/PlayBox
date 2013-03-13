@@ -30,14 +30,11 @@ protected:
 	afx_msg void	OnClickedRefresh();
 	afx_msg void	OnClickedFav();	
 	afx_msg LRESULT OnPageChanging(WPARAM wParam, LPARAM lParam);
-
 	// WM_MENU_CICKED : (WM_USER+120)
 	afx_msg LRESULT OnClickeFavMenuItem(WPARAM wParam, LPARAM lParam);
 	// WM_NEWPAGE
 	afx_msg LRESULT OnNewPageWindow(WPARAM, LPARAM);
-
 	void	ShowFavUrlMenu();
-
 	//////////////////////////////////////////////////////////////////////////
 	// input:
 	//		int &nStartItemID		-- menu item ID
@@ -56,7 +53,6 @@ private:
 	MyWebBrowserWnd*	m_pWndBrowser;
 	CFavUrlMenuDlg*		m_pFavUrlDlg;
 	TAB_ITEM			m_tabItem;
-
 	vector<string>		m_arrFavMenuItemParam;
 public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);

@@ -35,6 +35,7 @@ enum LMCImgState
 typedef struct _tagLMCItemInfo
 {
 	string		strGID;				// 游戏ID
+	string		strSvrID;			
 	int			iIndex;				// 项唯一标识
 	BOOL		blSel;				// 是否选中
 	CDibBitmap* pImg;				// 显示图片

@@ -92,17 +92,20 @@ struct OneGame
 
 typedef std::vector<OneGame> GameList;
 
+struct GameKey
+{
+	int nGameType;
+	string strGameID;
+	string strSvrID;
+};
+
 class IGameData : public IData
 {
 public:
-	//virtual bool IGameData_GetGameByID(int nGameType, const std::string& strID, 
-	//	const std::string& strID, OneGame& og) = 0;
-	virtual bool IGameData_GetGameByID(const std::string& strID, int nGameType,
-		OneGame& og) = 0;
+	virtual bool IGameData_GetGameByID(int nGameType, const std::string& strGameID, 
+		const std::string& strSvrID, OneGame& og) = 0;
 	virtual bool IGameData_AddGame(const OneGame& og) = 0;
-	virtual bool IGameData_DelGame(const string& strID , int nGameType) = 0;
-	virtual bool IGameData_DelGame(const std::vector<std::string>& vecID, 
-		std::vector<int> vecGameType) = 0;
+	virtual bool IGameData_DelGame(const std::vector<GameKey>& vec) = 0;
 	virtual bool IGameData_GetGame(GameList& lgl, int iGameType) = 0;
 	virtual unsigned int IGameData_GetGameCount() = 0;
 	virtual void IGameData_SetLoginGameList(GameList& lgl) = 0;

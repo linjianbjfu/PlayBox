@@ -11,6 +11,7 @@
 #include "../../AppConfig/config/ConfigAppDef.h"
 #include "../TabMan/TabPageControl.h"
 #include "../UserMan/UserManager.h"
+#include "../UserMan/DlgLogin.h"
 
 CWebManager* CWebManager::m_pSelf = NULL;
 
@@ -71,8 +72,11 @@ void CWebManager::CallGBoxFromWeb(const string& strCommand,string& strRes)
 		if (strRight == "login")
 			strRes = _command_login(strContent);
 		else
-		if (strRight == "checkdlstatus")
-			strRes = _command_checkdlstatus (strContent);
+		if (strRight == "collectgame")
+			strRes = _command_collect_game(strContent);
+		else
+		if (strRight == "close_find_pass_and_open_browser")
+			strRes = _command_close_find_pass_and_open_browser(strContent);
 	}
 }
 
@@ -171,28 +175,70 @@ string CWebManager::_command_login(string & strContent)
 		return "res=err";
 }
 
-string CWebManager::_command_checkdlstatus (string &strContent)
+string CWebManager::_command_collect_game(string & strContent)
 {
-	string strID = GetValue (strContent, "id");
-	OneGame olg;
-	string strStatus  = 
-		GLOBAL_GAME->IGameData_GetGameByID (strID, OneGame::FLASH_GAME, olg) ? "run" : "download";
+	//game_type: flashgame, webgame
+	string strGameType= GetValue (strContent, "game_type");
+	string strGameName = GetValue (strContent, "game_name");
+	string strGameID = GetValue (strContent, "game_id");
+	string strSvrID = GetValue (strContent, "server_id");
+	string strPicUrl = GetValue (strContent, "picurl");
+	string strSwfUrl = GetValue (strContent, "swfurl");
 
-	vector<TAB_ITEM> vTab;
-	GLOBAL_TABBARDATA->ITabBar_GetTabBarData (vTab);
+	if (strGameType.empty() || strGameName.empty() || 
+		strGameID.empty() || strPicUrl.empty())
+		return "res=err";
 
-	CallJSParam * pParam = new CallJSParam;
-	memset (pParam, 0, sizeof (CallJSParam));
-
-	pParam->strFunc = "setdownloadpic";
-	pParam->nParam = 2;
-	pParam->strParam1 = strID;
-	pParam->strParam2 = strStatus;
-
-	CTabPageControl::GetInstance ()->CallJS ((LPVOID)pParam);
-	delete pParam;
-	return "";
+	if (strGameType == "flashgame" || strGameType == "webgame")
+	{
+		OneGame g;
+		g.nGameType = (strGameType == "flashgame") ? 
+			OneGame::FLASH_GAME : OneGame::WEB_GAME;
+		g.nGameType = g.nGameType | OneGame::COLLECTED;
+		g.strID = strGameID;
+		g.strSrvID = strSvrID;
+		g.strName = strGameName;
+		g.strPicSvrPath = strPicUrl;
+		g.strGameSvrPath = strSwfUrl;
+		if (CUserManager::GetInstance()->User_GetUserInfo() == NULL)
+		{
+			CDlgLogin dlgLogin;
+			dlgLogin.AddTask(g);
+			dlgLogin.DoModal();
+			return "res=ok";
+		}else
+		{
+			GLOBAL_GAME->IGameData_AddGame(g);
+			return "res=ok";
+		}
+	}
+	return "res=err";
 }
+
+
+string CWebManager::_command_close_find_pass_and_open_browser(string & strContent)
+{
+	//method=close_find_pass_and_open_browser;;email_site=https://mail.qq.com
+	string strEmailSite = GetValue (strContent, "email_site");
+	if (!strEmailSite.empty())
+	{
+		CDialog* pDlg = CUserManager::GetInstance()->GetRegisterWnd();
+		if (pDlg)
+		{
+			pDlg->EndDialog(0);
+			CUserManager::GetInstance()->SetRegisterWnd(NULL);
+		}
+
+		TAB_ITEM tItem;
+		tItem.enumType = TAB_BROWSER;
+		tItem.strTitle = "ÕÒ»ØÃÜÂë";
+		tItem.strParam = "url=" + strEmailSite;;
+		GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
+		return "res=ok";
+	}else
+		return "res=err";
+}
+
 
 string CWebManager::GetValue( string& strContent, string strKey )
 {

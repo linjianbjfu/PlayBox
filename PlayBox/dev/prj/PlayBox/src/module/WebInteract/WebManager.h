@@ -37,7 +37,8 @@ private:
 	string	_command_playexegame (string & strContent);
 	string  _command_openBrowser (string & strContent);
 	string  _command_login (string & strContent);
-	string  _command_checkdlstatus (string & strContent);
+	string  _command_collect_game (string & strContent);
+	string  _command_close_find_pass_and_open_browser(string & strContent);
 	void	NotifyWebRefresh( const  char* psz);
 };
 

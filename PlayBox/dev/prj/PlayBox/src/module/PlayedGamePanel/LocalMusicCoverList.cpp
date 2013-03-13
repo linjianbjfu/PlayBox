@@ -206,24 +206,28 @@ int CLocalMusicCoverList::InsertItem(CDibBitmap* pImg,
 									 CString strItemName,
 									 CString strdetail,
 									 string strGID,
+									 string strSvrID,
 									 string strAddTime,
 									 int nGameType,
 									 BOOL blSel/* =FALSE */)
 {
 	int iHeightSpaceS = m_iItemHeight+SPACEH + ITEMTXTH + SPACEH;
-	int iHeightSpaceMB = m_iItemHeight+SPACEH + ITEMTXTH + SPACEH + ITEMTXTH + SPACEH  ;	
-	return m_DataMgr.InsertItem(pImg,strItemName,strdetail, strGID, strAddTime, nGameType, blSel);
+	int iHeightSpaceMB = m_iItemHeight+SPACEH + ITEMTXTH + SPACEH + ITEMTXTH + SPACEH ;	
+	return m_DataMgr.InsertItem(pImg,strItemName,strdetail, strGID, strSvrID,
+		strAddTime, nGameType, blSel);
 }
 
 int CLocalMusicCoverList::InsertItem(LPCTSTR szImgPath, 
 									 CString strItemName, 
 									 CString strdetail,
 									 string strGID,
+									 string strSvrID,
 									 string strAddTime,
 									 int nGameType,
 									 BOOL blSel/* =FALSE */)
 {
-	return m_DataMgr.InsertItem(szImgPath,strItemName,strdetail,strGID,strAddTime,nGameType,blSel);
+	return m_DataMgr.InsertItem(szImgPath,strItemName,strdetail,strGID,
+		strSvrID, strAddTime,nGameType,blSel);
 }
 
 vector<int> CLocalMusicCoverList::GetSelectItem()
@@ -537,12 +541,12 @@ void CLocalMusicCoverList::DrawItem(CPoint ptS, LMC_ItemInfo& lmci)
 		graphics.SetSmoothingMode(SmoothingModeHighQuality );
 		int dis = 10;
 		int ipy=8;
-		//Pen grpen(Color(57,137,194),3);
 		COLORREF col = AfxGetUIManager()->UIGetSkinMgr()->GetColor("PlayedGameFrameBorder");
 		Color colPen;
 		colPen.SetFromCOLORREF( col );
 		Pen grpen(colPen,3);
-		GraphicsPath * pPath = MakeRoundRect(Point(ptS.x+2,ptS.y+2),Point(ptS.x+m_iItemWidth-6, ptS.y+m_iItemHeight-5), 10);
+		//GraphicsPath * pPath = MakeRoundRect(Point(ptS.x+2,ptS.y+2),Point(ptS.x+m_iItemWidth-6, ptS.y+m_iItemHeight-5), 10);
+		GraphicsPath * pPath = MakeRoundRect(Point(ptS.x,ptS.y),Point(ptS.x+m_iItemWidth-8, ptS.y+m_iItemHeight-8), 30);
 		graphics.DrawPath(&grpen,pPath);
 	}
 	// »æÖÆÎÄ±¾

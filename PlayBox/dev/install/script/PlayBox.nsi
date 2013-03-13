@@ -326,7 +326,9 @@ Check_KwMusic_End:
 	#删除启动升级程序标记
 	#DeleteRegValue HKLM ${REG_ROOT} "PLAYERCMD"
 	ExecWait '"$INSTDIR\Tool.exe" DEL ${REG_ROOT} PLAYERCMD'
-
+	
+	#创建win7任务栏pin
+	ExecWait '"$INSTDIR\Tool.exe" TASKBARPIN'
 	SetRebootFlag false
 	AnimGif::stop
 	Delete $INSTDIR\instpage.gif
@@ -358,6 +360,8 @@ Section "Uninstall"
 		${EndIf}
 		Quit
 Un_Check_KwMusic_End:
+	#win7 taskbar unpin
+	ExecWait '"$INSTDIR\Tool.exe" TASKBARUNPIN'
 	#发送卸载消息
 	ExecWait '"$INSTDIR\Tool.exe" UNINSTALL'
 	Delete "$INSTDIR\Uninstall.exe"

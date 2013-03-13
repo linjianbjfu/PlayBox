@@ -23,12 +23,10 @@ END_MESSAGE_MAP()
 int CTabPageParentWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if(__super::OnCreate(lpCreateStruct) == -1)
-	{
 		return -1;
-	}
+
 	ILayoutMgr* pLayoutMgr =  AfxGetUIManager()->UIGetLayoutMgr();
 	pLayoutMgr->CreateBmpPane( this,"tabpanelparent","normal" );
-
 	CTabPageControl::GetInstance()->SetParentWnd(this);
 	return 0;
 }
@@ -43,4 +41,3 @@ BOOL CTabPageParentWnd::OnEraseBkgnd(CDC* pDC)
 {
 	return TRUE;
 }
-

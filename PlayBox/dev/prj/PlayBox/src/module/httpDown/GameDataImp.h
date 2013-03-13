@@ -14,12 +14,11 @@ public:
 	void		DataAppStart();
 	void		DataAppExit();
 
-	bool IGameData_GetGameByID(const std::string& strID, int nGameType, OneGame& og);
+	bool IGameData_GetGameByID(int nGameType, const std::string& strGameID, 
+		const std::string& strSvrID, OneGame& og);
 	/*游戏信息和图片在该函数中获取*/
 	bool IGameData_AddGame(const OneGame& og);
-	bool IGameData_DelGame(const string& strID, int nGameType );
-	bool IGameData_DelGame(const std::vector<std::string>& vecID, 
-		std::vector<int> vecGameType);
+	bool IGameData_DelGame(const std::vector<GameKey>& vec);
 	bool IGameData_GetGame(GameList& lgl, int iGameType);
 	unsigned int IGameData_GetGameCount();
 	void IGameData_SetLoginGameList(GameList& lgl);
@@ -41,7 +40,7 @@ private:
 	void		LoadGameData();
 	void		UnLoadGameData();
 	static void NotifyGameDataChanged();
-	bool DelGameInternal(const string& strID, int nGameType);
+	bool DelGameInternal(int nGameType, const string& strID, const string& strSvrID);
 	static DWORD WINAPI ThreadDownloadPic(void* pPara);
 	void AddDownloadPicPara(std::vector<DownloadPicPara>* para, GameList& gl);
 	void DownloadPics();

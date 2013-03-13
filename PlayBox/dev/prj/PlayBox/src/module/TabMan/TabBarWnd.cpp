@@ -6,6 +6,7 @@
 #include "../../gui/util/WToolTips.h"
 #include "../TopPanel/TopPanel_Control.h"
 #include "AppConfig/config/ConfigLayoutDef.h"
+#include "AppConfig/config/ConfigSettingDef.h"
 
 #define ONE_TAB_MAX_WIDTH	100
 #define WIDTH_TEXT_LEFT_MARGIN 5 //tab上文字距离左边的间距
@@ -80,8 +81,7 @@ CTabBarWnd::CTabBarWnd()
 	lf.lfWeight = FW_BOLD;
 	m_fontDown.CreateFontIndirect(&lf);
 
-	m_pToolTip = new CCWToolTips();
-
+	m_pToolTip = new CCWToolTips();	
 	AfxGetMessageManager()->AttachMessage( ID_MESSAGE_TABBAR,(ITabBarObserver*) this);
 }
 
@@ -107,9 +107,8 @@ END_MESSAGE_MAP()
 int CTabBarWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if(__super::OnCreate(lpCreateStruct) == -1)
-	{
 		return -1;
-	}
+
 	m_pToolTip->m_pClientWnd = GetParent();
 	m_pToolTip->m_hParent	 = m_hWnd;
 	m_pToolTip->CreateEx(WS_EX_TOOLWINDOW|WS_EX_TOPMOST,TOOLTIPS_CLASS,"",TTS_ALWAYSTIP,CRect(0,0,0,0),NULL,0);	
@@ -120,6 +119,8 @@ int CTabBarWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	pLayoutMgr->CreateBmpPane( this,"tabbarWnd","normal" );
 
 	AfxGetUIManager()->UIGetSkinMgr()->AddSkinWnd( this );
+	AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME,
+		CONF_SETTING_DEFALT_NEW_BROWSER_URL, m_strDefaultNewBrowserUrl);
 	return 0;
 }
 
@@ -448,6 +449,9 @@ void CTabBarWnd::OnLButtonDown(UINT nFlags, CPoint point)
 		TAB_ITEM tItem;
 		tItem.enumType = TAB_BROWSER;
 		tItem.strTitle = TAB_BROWSER_DEFAULT_TITLE;
+		if (!m_strDefaultNewBrowserUrl.empty())
+			tItem.strParam = "url=" + m_strDefaultNewBrowserUrl;
+
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
 	}
 	__super::OnLButtonDown(nFlags, point);

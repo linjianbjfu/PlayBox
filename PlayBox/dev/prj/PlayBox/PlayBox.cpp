@@ -58,6 +58,7 @@ BOOL CPlayBoxApp::InitInstance()
 
 	if(szArgList != NULL&&nArgs>1)
 	{
+		//这里强制从宽字符转到窄字符有问题，错误代码
 		if(_stricmp ((CONST char *)szArgList[1],"startuprun")==0)
 		{
 			bStartupRun = true;
@@ -68,10 +69,7 @@ BOOL CPlayBoxApp::InitInstance()
 			memset(szHomePath, 0 , MAX_PATH);
 			memset(szTool, 0, MAX_PATH);
 			if(!CLhcImg::GetHomePath(szHomePath, MAX_PATH))
-			{
-				YL_Log("debug.txt",LOG_DEBUG,"commandline","Cannot get the home path.");
 				return FALSE;
-			}
 			_snprintf(szTool, MAX_PATH-1, "%s\\Tool.dll", szHomePath);
 			HMODULE hLib = LoadLibrary(szTool);
 			if(hLib != NULL)
@@ -120,7 +118,7 @@ BOOL CPlayBoxApp::InitInstance()
 	}
 	// 初始化 gdi+
 	HINSTANCE lib = LoadLibrary("GdiPlus.dll");
-	if( lib != NULL)
+	if(lib)
 	{
 		FreeLibrary(lib);
 		m_bHasGdiPlus = TRUE;

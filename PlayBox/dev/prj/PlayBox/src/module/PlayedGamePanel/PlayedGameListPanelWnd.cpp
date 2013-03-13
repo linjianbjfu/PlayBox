@@ -77,17 +77,16 @@ BOOL PlayedGameListPanelWnd::OnCommand(WPARAM wParam, LPARAM lParam)
 			std::vector<int> vAlbum;
 			int iRmLast = 0,iCount = 0;
 			vAlbum = GetSelectItem();
-			std::vector<std::string> vecID;
-			std::vector<int> vecGameType;
-
+			std::vector<GameKey> vecGameKey;
 			for (int i=0;i<vAlbum.size();i++)
 			{
-				string strGID = m_DataMgr.m_vItem[vAlbum[i]].strGID;
-				vecID.push_back(strGID);
-				int nGameType = m_DataMgr.m_vItem[vAlbum[i]].nGameType;
-				vecGameType.push_back(nGameType);
+				GameKey gameKey;
+				gameKey.nGameType = m_DataMgr.m_vItem[vAlbum[i]].nGameType;
+				gameKey.strGameID = m_DataMgr.m_vItem[vAlbum[i]].strGID;
+				gameKey.strSvrID = m_DataMgr.m_vItem[vAlbum[i]].strSvrID;
+				vecGameKey.push_back(gameKey);
 			}	
-			GLOBAL_GAME->IGameData_DelGame(vecID, vecGameType);
+			GLOBAL_GAME->IGameData_DelGame(vecGameKey);
 			//通过gamedata_observer回调来刷新界面，而不是用下面的代码
 			//for (int i=0;i<vAlbum.size();i++)
 			//{
@@ -113,7 +112,7 @@ void PlayedGameListPanelWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 	{
 		LMC_ItemInfo ii = m_DataMgr.m_vItem[vSel[0]];
 		OneGame og;
-		if (GLOBAL_GAME->IGameData_GetGameByID(ii.strGID, ii.nGameType, og))
+		if (GLOBAL_GAME->IGameData_GetGameByID(ii.nGameType, ii.strGID, ii.strSvrID, og))
 		{
 			TAB_ITEM tItem;
 			if (ii.nGameType & OneGame::FLASH_GAME)
@@ -157,6 +156,7 @@ int PlayedGameListPanelWnd::ReGetData()
 			it1->strName.c_str(), 
 			"", 
 			it1->strID, 
+			it1->strSrvID,
 			"",
 			it1->nGameType, 
 			FALSE );
@@ -183,11 +183,17 @@ void PlayedGameListPanelWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	if (nChar==VK_DELETE)
 	{
 		std::vector<int> vItem = GetSelectItem();
+		std::vector<GameKey> vecGameKey;
 		for(int i = 0; i<vItem.size(); i++)
 		{
 			LMC_ItemInfo ii = GetItemInfoByIndex( vItem[i] );
-			GLOBAL_GAME->IGameData_DelGame(ii.strGID, ii.nGameType);
-		}
+			GameKey gameKey;
+			gameKey.nGameType = ii.nGameType;
+			gameKey.strGameID = ii.strGID;
+			gameKey.strSvrID = ii.strSvrID;
+			vecGameKey.push_back(gameKey);
+		}	
+		GLOBAL_GAME->IGameData_DelGame(vecGameKey);
 		UpdateList();
 		OnMemoryDraw();	
 	}
@@ -265,10 +271,6 @@ void PlayedGameListPanelWnd::OnMouseMove(UINT nFlags, CPoint point)
 		OneGame og;
 		memset (&og, 0, sizeof (OneGame));
 		og.strName = ii.strItemName;
-		//if( GLOBAL_GAME->IGameData_GetGameByID( ii.strGID, ii.nGameType, og ) )
-		//	info.Format("名称: %s$#游戏简介:%s", og.strName.c_str(), og.strIntro.c_str() );
-		//else
-		//	info.Format("名称: %s", ii.strItemName );
 		info.Format("名称: %s", ii.strItemName );
 
 		CPoint pt(0,0);
@@ -354,6 +356,7 @@ void PlayedGameListPanelWnd::ReSetGameList(GameList arrGames)
 				   it->strName.c_str(),
 				   "",
 				   it->strID,
+				   it->strSrvID,
 				   "",
 				   it->nGameType,
 				   FALSE);

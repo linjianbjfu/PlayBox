@@ -10,6 +10,7 @@
 #include "Wininet.h"
 #include <shldisp.h>
 #include "YL_FileInfo.h"
+#include "LhcImg.h"
 
 #pragma comment(lib,"Wininet.lib")
 
@@ -899,14 +900,14 @@ bool IsNumber( string strNum )
 //5386 pin
 int PinOrUnpinCmd(int iResIndex)
 {
-	char lpszModulePath[MAX_PATH]={'\0'};
-	::GetModuleFileName(NULL, lpszModulePath, MAX_PATH);
+	char szPath[MAX_PATH];
+	if(!CLhcImg::GetHomePath(szPath, MAX_PATH))
+		return 0;
 
-	string strDirPath, strFileName;
-	YL_FileInfo::GetFileDirPath(lpszModulePath, strDirPath);
-	YL_FileInfo::GetFileName(lpszModulePath, strFileName);
-	if (strDirPath.empty() || strFileName.empty())
-		return 1;
+	string strDirPath = string(szPath);
+	if (strDirPath.empty())
+		return 0;
+	string strFileName = "PlayBox.exe";
 
 	HMODULE hShell32 = ::LoadLibrary("shell32.dll");
 	if (!hShell32)

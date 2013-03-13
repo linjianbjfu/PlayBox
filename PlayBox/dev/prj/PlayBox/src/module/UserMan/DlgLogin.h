@@ -5,6 +5,7 @@
 #include "EditGlow.h"
 #include "IUserMsgObserver.h"
 #include "xStaticText.h"
+#include "IGameData.h"
 
 class CDibBitmap;
 
@@ -15,6 +16,7 @@ public:
 	CDlgLogin(CWnd* pParent = NULL);
 	virtual ~CDlgLogin();
 	void AddTask(const TAB_ITEM& ti);
+	void AddTask(const OneGame& g);
 
 	enum { IDD = IDD_DLG_LOGIN };
 protected:
@@ -39,6 +41,7 @@ private:
 	CDibBitmap*  m_bkg;
 	CxStaticText m_staticError;
 	TAB_ITEM m_task;
+	OneGame m_collectedWebGame;
 	LPCSTR m_lpszPassPlaceHolder;
 	
 	afx_msg void OnCloseClicked();
