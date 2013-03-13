@@ -1577,10 +1577,34 @@
 					RelativePath=".\src\module\FlashGamePanel\FlashDownloadWnd.h">
 				</File>
 				<File
+					RelativePath=".\src\module\FlashGamePanel\FlashGameCtrlPanel.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\FlashGamePanel\FlashGameCtrlPanel.h">
+				</File>
+				<File
 					RelativePath=".\src\module\FlashGamePanel\FlashGamePanelWnd.cpp">
 				</File>
 				<File
 					RelativePath=".\src\module\FlashGamePanel\FlashGamePanelWnd.h">
+				</File>
+				<File
+					RelativePath=".\src\module\FlashGamePanel\FlashGamePlay.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\FlashGamePanel\FlashGamePlay.h">
+				</File>
+				<File
+					RelativePath=".\src\module\FlashGamePanel\FlashGameStageLeft.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\FlashGamePanel\FlashGameStageLeft.h">
+				</File>
+				<File
+					RelativePath=".\src\module\FlashGamePanel\FlashGameStagePanelWnd.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\FlashGamePanel\FlashGameStagePanelWnd.h">
 				</File>
 			</Filter>
 			<Filter

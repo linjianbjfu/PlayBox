@@ -1,25 +1,20 @@
 #pragma once
-
 #include "../../gui/CommonControl/BasicSkinWnd.h"
-#include "../../gui/CommonControl/shockwaveflash.h"
-#include "../../datainterface/IAdData.h"
 #include <vector>
 #include <string>
 using std::vector;
 using std::string;
 
-class CMyHtmlView;
 class CDibBitmap;
 class CxSkinButton;
 class MyWebBrowserWnd;
 
-class DownPercentWnd : public CWnd,
-					   public CBasicSkinWnd
+class CFlashGameDownloadWnd : public CWnd, public CBasicSkinWnd
 {
-	DECLARE_DYNAMIC(DownPercentWnd)
+	DECLARE_DYNAMIC(CFlashGameDownloadWnd)
 public:
-	DownPercentWnd();
-	virtual ~DownPercentWnd();
+	CFlashGameDownloadWnd();
+	virtual ~CFlashGameDownloadWnd();
 	void	SetDownPercent( double dPercent );
 	void	SetText( vector<string>& vecText );
 	void	SetFailed( bool bFailed );

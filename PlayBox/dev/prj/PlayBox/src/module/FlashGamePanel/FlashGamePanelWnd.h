@@ -4,7 +4,7 @@
 #include "../../LayoutMgr/ISkinMgr.h"
 
 class CFlashGameCtrlPanelWnd;
-class CFlashGameCenterPanelWnd;
+class CFlashGameStagePanelWnd;
 
 class CFlashGamePanelWnd : public CBasicWnd
 {
@@ -18,5 +18,5 @@ protected:
 
 private:
 	CFlashGameCtrlPanelWnd*   m_pGameCtrlPanelWnd;
-	CFlashGameCenterPanelWnd* m_pGameCenterPanelWnd;
+	CFlashGameStagePanelWnd*  m_pGameStagePanelWnd;
 };

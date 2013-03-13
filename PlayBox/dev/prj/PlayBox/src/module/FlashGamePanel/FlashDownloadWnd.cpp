@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "DownPercentWnd.h"
+#include "FlashDownloadWnd.h"
 #include "YL_StringUtil.h"
 #include "../../Global/GlobalSwfPath.h"
 #include "../../Core/CDataManager.h"
@@ -11,8 +11,9 @@
 static int AD_WIDTH  = 360;
 static int AD_HEIGHT = 300;
 
-IMPLEMENT_DYNAMIC(DownPercentWnd, CWnd)
-DownPercentWnd::DownPercentWnd() : m_pBtnClose(new CxSkinButton),
+IMPLEMENT_DYNAMIC(CFlashGameDownloadWnd, CWnd)
+
+CFlashGameDownloadWnd::CFlashGameDownloadWnd() : m_pBtnClose(new CxSkinButton),
 	m_isFailed(false), m_dDownPercent(0), m_colBk(RGB(255,255,255)),
 	m_colText(RGB(103,103,103)), m_pBmpBgM(NULL), m_pBmpBgR(NULL),
 	m_pBmpM(NULL), m_pAdWebWnd(new MyWebBrowserWnd)
@@ -37,13 +38,13 @@ DownPercentWnd::DownPercentWnd() : m_pBtnClose(new CxSkinButton),
 	m_font.CreateFontIndirect(&lf);
 }
 
-DownPercentWnd::~DownPercentWnd()
+CFlashGameDownloadWnd::~CFlashGameDownloadWnd()
 {
 	m_font.DeleteObject();
 	m_pAdWebWnd = NULL;
 }
 
-BEGIN_MESSAGE_MAP(DownPercentWnd, CWnd)
+BEGIN_MESSAGE_MAP(CFlashGameDownloadWnd, CWnd)
 	ON_WM_CREATE()
 	ON_WM_PAINT()
 	ON_WM_SIZE()
@@ -51,7 +52,7 @@ BEGIN_MESSAGE_MAP(DownPercentWnd, CWnd)
 	ON_BN_CLICKED(IDC_BTN_CLOSETAB,	OnBnCloseTab)
 END_MESSAGE_MAP()
 
-int DownPercentWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
+int CFlashGameDownloadWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
@@ -72,7 +73,7 @@ int DownPercentWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 
-void DownPercentWnd::OnPaint()
+void CFlashGameDownloadWnd::OnPaint()
 {
 	CPaintDC dc(this);
 	//双缓冲
@@ -103,7 +104,7 @@ void DownPercentWnd::OnPaint()
 	__super::OnPaint();
 }
 
-void DownPercentWnd::DrawProgress( CDC* pDc, CRect rc )
+void CFlashGameDownloadWnd::DrawProgress( CDC* pDc, CRect rc )
 {
 	if(!m_pBmpBg_Full || !m_pBmpBgM || !m_pBmpBgR)
 		return;
@@ -138,7 +139,7 @@ void DownPercentWnd::DrawProgress( CDC* pDc, CRect rc )
 	m_pBtnClose->MoveWindow(rcBtn.right,rcBtn.top,20,20,true);
 }
 
-void DownPercentWnd::DrawInfoText( CDC* pDc, CRect rc )
+void CFlashGameDownloadWnd::DrawInfoText( CDC* pDc, CRect rc )
 {
 	//确定进度条范围:中心点向下50像素
 	CRect rect;
@@ -157,7 +158,7 @@ void DownPercentWnd::DrawInfoText( CDC* pDc, CRect rc )
 	}	
 }
 
-void DownPercentWnd::SetDownPercent( double dPercent )
+void CFlashGameDownloadWnd::SetDownPercent( double dPercent )
 {
 	m_dDownPercent = dPercent;
 	CRect rect;
@@ -166,18 +167,18 @@ void DownPercentWnd::SetDownPercent( double dPercent )
 	InvalidateRect (rect);
 }
 
-void DownPercentWnd::SetText( vector<string>& vecText )
+void CFlashGameDownloadWnd::SetText( vector<string>& vecText )
 {
 	m_vecText.clear();
 	copy( vecText.begin(), vecText.end(), back_inserter(m_vecText) );
 }
 
-void DownPercentWnd::SetFailed( bool bFailed )
+void CFlashGameDownloadWnd::SetFailed( bool bFailed )
 {
 	m_isFailed = bFailed;
 }
 
-void DownPercentWnd::LoadSkin()
+void CFlashGameDownloadWnd::LoadSkin()
 {
 	ISkinMgr* pSkinMgr = AfxGetUIManager()->UIGetSkinMgr();
 	m_colText  = pSkinMgr->GetColor( "DownProgressWndTextColor" );
@@ -185,13 +186,13 @@ void DownPercentWnd::LoadSkin()
 	m_pBmpBgM  = pSkinMgr->GetDibBmp( "Progress_Bg_M" );
 	m_pBmpBgR  = pSkinMgr->GetDibBmp( "Progress_Bg_R" );
 }
-void DownPercentWnd::OnDestroy()
+void CFlashGameDownloadWnd::OnDestroy()
 {
 	AfxGetUIManager()->UIGetSkinMgr()->RemoveSkinWnd( this );
 	__super::OnDestroy();
 }
 
-void DownPercentWnd::OnSize(UINT nType, int cx, int cy)
+void CFlashGameDownloadWnd::OnSize(UINT nType, int cx, int cy)
 {
 	if (cx != 0 && cy != 0)
 	{
@@ -205,7 +206,7 @@ void DownPercentWnd::OnSize(UINT nType, int cx, int cy)
 	__super::OnSize(nType,cx,cy);
 }
 
-void DownPercentWnd::OnBnCloseTab()
+void CFlashGameDownloadWnd::OnBnCloseTab()
 {
 	TAB_ITEM tabItem;
 	GLOBAL_TABBARDATA->ITabBar_GetCurItem(tabItem);
