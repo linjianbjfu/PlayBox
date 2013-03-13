@@ -187,8 +187,6 @@ BOOL CPlayBoxDlg::OnInitDialog()
 	::SetProcessWorkingSetSize(::GetCurrentProcess(), -1, -1);
 	::SetTimer(m_hWnd,TIMER_TRIM_MEM,30*1000,NULL);
 
-	GLOBAL_ADDATA;
-
 	AfxUserConfig* pUserConfig = AfxGetUserConfig();
 	AfxGetUserConfig()->GetConfigIntValue( CONF_LAYOUT_MODULE_NAME, CONF_LAYOUT_MIN_WIDTH, m_nMinCx );
 	AfxGetUserConfig()->GetConfigIntValue( CONF_LAYOUT_MODULE_NAME, CONF_LAYOUT_MIN_HEIGHT, m_nMinCy );

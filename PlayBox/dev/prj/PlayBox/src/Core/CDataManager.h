@@ -11,7 +11,6 @@
 #define  GLOBAL_PANELCHANGEDATA		((IPanelChange*)AfxGetDataManager2()->GetDataObject(ID_DATA_PANELCHANGE))
 #define	 GLOBAL_TABBARDATA			((ITabBarData*)AfxGetDataManager2()->GetDataObject(ID_DATA_TABBAR))
 #define	 GLOBAL_GAME				((IGameData*)AfxGetDataManager2()->GetDataObject(ID_DATA_GAME))
-#define	 GLOBAL_ADDATA				((IAdData*)AfxGetDataManager2()->GetDataObject(ID_DATA_AD))
 
 //数据管理类
 class CDataManager: public IDataManager

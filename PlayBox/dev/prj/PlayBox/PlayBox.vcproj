@@ -1649,16 +1649,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="DownAD"
-				Filter="">
-				<File
-					RelativePath=".\src\module\DownAD\DownAD.cpp">
-				</File>
-				<File
-					RelativePath=".\src\module\DownAD\DownAD.h">
-				</File>
-			</Filter>
-			<Filter
 				Name="BottomPanel"
 				Filter="">
 				<File

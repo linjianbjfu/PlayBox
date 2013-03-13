@@ -5,9 +5,6 @@
 #include "xStaticText.h"
 #include "Global/GlobalVariable.h"
 
-class CShowMenu;
-class CBottomAdPanel;
-
 class CBottomPanelWnd : public CBasicWnd
 {
 	DECLARE_DYNAMIC(CBottomPanelWnd)
@@ -26,7 +23,6 @@ private:
 	afx_msg LRESULT	OnClickStatic(WPARAM wParam, LPARAM lParam);
 	
 	string	m_strRecommandWebGameUrl;
-	CBottomAdPanel*	m_pAdPanel;
 	CxStaticText	m_staticWegGame1;
 	CxStaticText	m_staticWegGame2;
 	TAB_ITEM	m_webGame1;

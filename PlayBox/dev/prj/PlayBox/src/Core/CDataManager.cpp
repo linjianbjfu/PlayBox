@@ -71,9 +71,6 @@ IData* CDataManager::GetDataObject(const DWORD& guidDataObject)
 	case ID_DATA_PANELCHANGE:
 		pData = CPanelChange::GetInstance();
 		break;
-	case ID_DATA_AD:
-		pData = CDownAD::GetInstance();
-		break;
 	default:
 		pData = NULL;
 		break;
