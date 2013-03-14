@@ -1606,6 +1606,12 @@
 				<File
 					RelativePath=".\src\module\FlashGamePanel\FlashGameStagePanelWnd.h">
 				</File>
+				<File
+					RelativePath=".\src\module\FlashGamePanel\OneFlashGameControl.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\FlashGamePanel\OneFlashGameControl.h">
+				</File>
 			</Filter>
 			<Filter
 				Name="httpDown"

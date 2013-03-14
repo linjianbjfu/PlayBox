@@ -1,12 +1,14 @@
 #include "stdafx.h"
 #include "resource.h"
 #include "FlashGameStagePanelWnd.h"
+#include "FlashGameStageLeft.h"
+#include "..\WebInteract\MyWebBrowserWnd.h"
 
 IMPLEMENT_DYNAMIC(CFlashGameStagePanelWnd, CBasicWnd)
 
 CFlashGameStagePanelWnd::CFlashGameStagePanelWnd()
 {
-	m_pStageLeft = new CFlashGameStageLeftPanelWnd();
+	m_pStageLeft = new CFlashGameStageLeft();
 	m_pIntro = new MyWebBrowserWnd();
 }
 
@@ -35,6 +37,8 @@ int CFlashGameStagePanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	pLayoutMgr->CreateControlPane( this, "flashgamestagepanel", "normal" );
 	pLayoutMgr->CreateBmpPane( this,"flashgamestagepanel","normal" );
+
+	m_pIntro->Navigate("http://www.baidu.com");
 
 	return 0;
 }

@@ -67,29 +67,18 @@ void CUserLogedOutWnd::OnClickedRegister()
 
 void CUserLogedOutWnd::UserMsg_Login()
 {
-	//登陆成功或失败，都不显示文字
-	//m_staticError.SetWindowText(_T(""));
-	//m_staticError.ShowWindow(SW_HIDE);	
 }
 
 void CUserLogedOutWnd::UserMsg_LogOut()
 {
-	//登陆成功或失败，都不显示文字
-	//m_staticError.SetWindowText(_T(""));
-	//m_staticError.ShowWindow(SW_HIDE);	
 }
 
 void CUserLogedOutWnd::UserMsg_LogFaild()
 {
-	//登陆成功或失败，都不显示文字
-	//m_staticError.SetWindowText(_T(""));
-	//m_staticError.ShowWindow(SW_HIDE);	
 }
 
 void CUserLogedOutWnd::UserMsg_BeginLogin()
 {
-	//m_staticError.SetWindowText(_T("登录中..."));
-	//m_staticError.ShowWindow(SW_SHOW);
 }
 
 void CUserLogedOutWnd::OnTimer(UINT_PTR nIDEvent)

@@ -4,7 +4,7 @@
 #include "../UserMan/UserManager.h"
 #include "../UserMan/DlgLogin.h"
 #include "TabPageControl.h"
-#include "../GamePanel/WebGamePanelWnd.h"
+#include "../WebGamePanel/WebGamePanelWnd.h"
 #include "../WebInteract/MyWebBrowserWnd.h"
 #include "../BrowserPanel/BrowserPanelWnd.h"
 #include "../GameCenterPanel/GameCenterPanelWnd.h"

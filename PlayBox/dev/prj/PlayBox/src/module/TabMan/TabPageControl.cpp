@@ -5,8 +5,8 @@
 #include "YL_StringUtil.h"
 #include "YL_URLEncoder.h"
 #include "tools.h"
-#include "../GamePanel/GamePanelWnd.h"
-#include "../GamePanel/WebGamePanelWnd.h"
+#include "../FlashGamePanel/FlashGamePanelWnd.h"
+#include "../WebGamePanel/WebGamePanelWnd.h"
 #include "../WebInteract/MyWebBrowserWnd.h"
 #include "../WebInteract/WebManager.h"
 #include "../PlayedGamePanel/PlayedGameWnd.h"
@@ -79,7 +79,7 @@ void CTabPageControl::ITabBarOb_CreateNewTab(TAB_ITEM & item)
 	}else
 	if( item.enumType == TAB_FLASHGAME )
 	{
-		GamePanelWnd *pWnd = TabWndFactory::GetInstance()->CreateWndGamePanel();
+		CFlashGamePanelWnd *pWnd = TabWndFactory::GetInstance()->CreateWndGamePanel();
 		pWnd->SetTabItem( item );
 		pWndTmp = pWnd;
 	}else

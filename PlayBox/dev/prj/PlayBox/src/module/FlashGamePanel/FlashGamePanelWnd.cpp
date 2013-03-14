@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "resource.h"
 #include "FlashGamePanelWnd.h"
+#include "FlashGameCtrlPanel.h"
+#include "FlashGameStagePanelWnd.h"
 
 IMPLEMENT_DYNAMIC(CFlashGamePanelWnd, CBasicWnd)
 
-CFlashGamePanelWnd::CFlashGamePanelWnd() : m_curPageType(PT_MAIN_PAGE)
+CFlashGamePanelWnd::CFlashGamePanelWnd()
 {
 	m_pGameCtrlPanelWnd = new CFlashGameCtrlPanelWnd();
 	m_pGameStagePanelWnd = new CFlashGameStagePanelWnd();
@@ -37,4 +39,9 @@ int CFlashGamePanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	pLayoutMgr->CreateBmpPane( this,"flashgamepanel","normal" );
 
 	return 0;
+}
+
+void CFlashGamePanelWnd::SetTabItem( TAB_ITEM ti )
+{
+
 }

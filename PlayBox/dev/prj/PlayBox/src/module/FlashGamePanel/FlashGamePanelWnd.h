@@ -12,6 +12,8 @@ class CFlashGamePanelWnd : public CBasicWnd
 public:
 	CFlashGamePanelWnd();
 	virtual ~CFlashGamePanelWnd();
+
+	void	SetTabItem( TAB_ITEM ti );
 protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg int	OnCreate(LPCREATESTRUCT lpCreateStruct);

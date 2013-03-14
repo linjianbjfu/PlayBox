@@ -3,12 +3,12 @@
 #include "../../gui/CommonControl/BasicWnd.h"
 #include "../../LayoutMgr/ISkinMgr.h"
 
-class CFlashGameStageLeftPanelWnd;
+class CFlashGameStageLeft;
 class MyWebBrowserWnd;
 
 class CFlashGameStagePanelWnd : public CBasicWnd
 {
-	DECLARE_DYNAMIC(CFlashGamePanelWnd)
+	DECLARE_DYNAMIC(CFlashGameStagePanelWnd)
 public:
 	CFlashGameStagePanelWnd();
 	virtual ~CFlashGameStagePanelWnd();
@@ -17,6 +17,6 @@ protected:
 	afx_msg int	OnCreate(LPCREATESTRUCT lpCreateStruct);
 
 private:
-	CFlashGameStageLeftPanelWnd*   m_pStageLeft;
+	CFlashGameStageLeft*   m_pStageLeft;
 	MyWebBrowserWnd* m_pIntro;
 };

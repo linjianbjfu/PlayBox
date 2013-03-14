@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "CDataManager.h"
 #include "../module/HTTPControl/HTTPControl.h"
-#include "../module/DownAD/downad.h"
 
 CDataManager::CDataManager()
 {

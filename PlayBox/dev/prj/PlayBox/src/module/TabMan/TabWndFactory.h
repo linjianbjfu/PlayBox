@@ -3,7 +3,7 @@
 using std::vector;
 
 class PlayedGameWnd;
-class GamePanelWnd;
+class CFlashGamePanelWnd;
 class WebGamePanelWnd;
 class GameCenterPanelWnd;
 class BrowserPanelWnd;
@@ -26,7 +26,7 @@ public:
 	int		GenerateID();
 	void	SetParent( CWnd* pWndParent );
 	PlayedGameWnd*		CreateWndPlayedGame( );
-	GamePanelWnd*		CreateWndGamePanel( );
+	CFlashGamePanelWnd*	CreateWndGamePanel( );
 	WebGamePanelWnd*	CreateWndWebGamePanel( );
 	GameCenterPanelWnd*	CreateWndGameCenterPanel( );
 	BrowserPanelWnd*	CreateWndBrowserPanel( );

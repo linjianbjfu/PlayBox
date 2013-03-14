@@ -279,7 +279,6 @@
 #define ID_FLASH_GAME_SHOCK_WAVE		354
 #define IDC_BTN_FLASH_GAME_INTRO_CTRL	355
 #define IDC_BTN_FLASH_GAME_RECOMMAND_CTRL	356
-#define 
 
 // Next default values for new objects
 // 

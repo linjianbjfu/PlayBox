@@ -126,7 +126,7 @@
 	</background>
 	<controlpanel name="normal" ori="VERT">
 		<paneitem name="flashgamectrl" absolute_vert="1" sizeY="40" />
-		<paneitem name="flashgamecenter" greedy="1" />
+		<paneitem name="flashgamestage" greedy="1" />
 	</controlpanel>
 </wndpanel>
 
@@ -134,7 +134,7 @@
 	<background name="normal" ori="NO_POS" background_color="90cdfa">
 		<paneitem name="FlashGameControlBarBg" type="bmp" start_x_left="0" start_y_top="0" end_x_right="0" end_y_bottom="0" />
 	</background>
-	<controlpanel name="normal" ori="VERT">
+	<controlpanel name="normal" ori="NO_POS">
 		<paneitem name="GameRePlay" type="button" tooltip="重玩"     bmp="GameRePlay" start_x_left="20"   start_y_top="8" x_delta="70" y_delta="25" />
 		<paneitem name="ToFull"     type="button" tooltip="进入全屏" bmp="ToFull"     start_x_left="94"   start_y_top="8" x_delta="70" y_delta="25" />
 		<paneitem name="ExitFull"   type="button" tooltip="退出全屏" bmp="ToSmall"    start_x_left="94"   start_y_top="8" x_delta="70" y_delta="25" />
@@ -143,16 +143,16 @@
 	</controlpanel>
 </wndpanel>
 
-<wndpanel name="flashgamecenterpanel" mode="normal">
+<wndpanel name="flashgamestagepanel" mode="normal">
 	<background name="normal" ori="NO_POS" background_color="90cdfa">
 	</background>
 	<controlpanel name="normal" ori="HORZ">
-		<paneitem name="flashgamecenterleft" greedy="1" />
-		<paneitem name="flashgameintro" type = "wnd" absolute_horz="1" sizeX="40" />
+		<paneitem name="flashgamestageleft" greedy="1" />
+		<paneitem name="flashgameintro" type="wnd" absolute_horz="1" sizeX="260" />
 	</controlpanel>
 </wndpanel>
 
-<wndpanel name="flashgamecenterleftpanel" mode="normal">
+<wndpanel name="flashgamestageleftpanel" mode="normal">
 	<background name="normal" ori="NO_POS" background_color="90cdfa">
 	</background>
 	<controlpanel name="normal" ori="VERT">
@@ -160,25 +160,19 @@
 			<paneitem name="flashgame_play" type="wnd" greedy="1"/>	
 			<paneitem name="flashgame_download" type="wnd" greedy="1"/>
 		</panemulti>
-		<paneitem name="flashgamerecommand" type="wnd" absolute_horz="1" sizeY="104" />
+		<paneitem name="flashgamerecommand" type="wnd" absolute_vert="1" sizeY="104" />
 	</controlpanel>
 </wndpanel>
 	
 <wndpanel name="flashgameplaypanel" mode="normal">
 	<background name="normal" ori="NO_POS" background_color="90cdfa">
 	</background>
-	<controlpanel name="normal" ori="HORZ">
-		<paneitem name="GameFlash" greedy="1" />
+	<controlpanel name="normal" ori="NO_POS">
+		<paneitem name="FlashGameShockwave" type="wnd" start_x_left="0"  start_y_top="0" end_x_right="20" end_y_bottom="20" />
+		<paneitem name="FlashGameBtnIntroCtrl" type="button" tooltip="控制介绍页面" bmp="" start_x_right="20"  start_y_top="50" x_delta="20" y_delta="20" />
+		<paneitem name="FlashGameBtnRecommandCtrl" type="button" tooltip="控制推荐" bmp="" start_x_left="50"  start_y_bottom="20" x_delta="20" y_delta="20" />
 	</controlpanel>
 </wndpanel>	
-
-<wndpanel name="flashgamedownloadpanel" mode="normal">
-	<background name="normal" ori="NO_POS" background_color="90cdfa">
-	</background>
-	<controlpanel name="normal" ori="HORZ">
-		<paneitem name="DownPercent" greedy="1" />
-	</controlpanel>
-</wndpanel>
 
 <wndpanel name="browserpanel" mode="normal">
 	<background name="normal" ori="NO_POS" background_color="90cdfa">

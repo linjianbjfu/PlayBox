@@ -4,7 +4,7 @@
 #include "../../LayoutMgr/ISkinMgr.h"
 
 class CFlashGamePlay;
-class CFlashGameDownload;
+class CFlashGameDownloadWnd;
 class MyWebBrowserWnd;
 
 class CFlashGameStageLeft : public CBasicWnd
@@ -19,6 +19,6 @@ protected:
 
 private:
 	CFlashGamePlay*   m_pPlay;
-	CFlashGameDownload* m_pDownload;
+	CFlashGameDownloadWnd* m_pDownload;
 	MyWebBrowserWnd* m_pRecommand;
 };

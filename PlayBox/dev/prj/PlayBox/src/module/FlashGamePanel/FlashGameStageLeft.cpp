@@ -1,13 +1,16 @@
 #include "stdafx.h"
 #include "resource.h"
 #include "FlashGameStageLeft.h"
+#include "FlashGamePlay.h"
+#include "FlashDownloadWnd.h"
+#include "..\WebInteract\MyWebBrowserWnd.h"
 
 IMPLEMENT_DYNAMIC(CFlashGameStageLeft, CBasicWnd)
 
 CFlashGameStageLeft::CFlashGameStageLeft()
 {
 	m_pPlay = new CFlashGamePlay();
-	m_pDownload = new CFlashGameDownload();
+	m_pDownload = new CFlashGameDownloadWnd();
 	m_pRecommand = new MyWebBrowserWnd();
 }
 
@@ -36,9 +39,10 @@ int CFlashGameStageLeft::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	pLayoutMgr->RegisterCtrl( this, "flashgame_play", m_pPlay );
 	pLayoutMgr->RegisterCtrl( this, "flashgame_download", m_pDownload );
 	pLayoutMgr->RegisterCtrl( this, "flashgamerecommand", m_pRecommand );
-
 	pLayoutMgr->CreateControlPane( this, "flashgamestageleftpanel", "normal" );
 	pLayoutMgr->CreateBmpPane( this,"flashgamestageleftpanel","normal" );
+
+	m_pRecommand->Navigate("http://www.sogou.com");
 
 	return 0;
 }
