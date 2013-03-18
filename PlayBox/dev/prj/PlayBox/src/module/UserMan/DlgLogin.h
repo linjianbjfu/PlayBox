@@ -27,8 +27,8 @@ private:
 	CxSkinButton m_btnClose;
 	CEditGlow m_editUserName;
 	CEditGlow m_editPassWord;
-	CxSkinButton m_btnLoginReg;
-	CxSkinButton m_btnForgetPass;
+	CxStaticText m_staticLoginReg;
+	CxStaticText m_staticForgetPass;
 	CxSkinButton m_btnRememberPassCheck;
 	CxSkinButton m_btnRememberPassUnCheck;
 	CxSkinButton m_btnAutoLoginCheck;
@@ -45,8 +45,6 @@ private:
 	LPCSTR m_lpszPassPlaceHolder;
 	
 	afx_msg void OnCloseClicked();
-	afx_msg void OnRegClicked();
-	afx_msg void OnForgetPassClicked();
 	afx_msg void OnRememberPassCheckClicked();
 	afx_msg void OnRememberPassUnCheckClicked();
 	afx_msg void OnAutoLoginCheckClicked();
@@ -56,6 +54,7 @@ private:
 	afx_msg void OnUserNameEditSetFocus();
 	afx_msg void OnPasswordEditSetFocus();
 	afx_msg UINT OnNcHitTest(CPoint point);
+	afx_msg LRESULT	OnClickStatic(WPARAM wParam, LPARAM lParam);
 	void OnOK();
 	void ValidateCheckBoxOrShowFailText();
 	void ShowErrStaticAndLaterDisappear(LPCTSTR lpszText);

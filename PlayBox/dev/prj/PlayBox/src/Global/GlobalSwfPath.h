@@ -9,21 +9,26 @@
 
 class GlobalSwfPath
 {
-public:
-	static CString Net_Loading()
-	{
-		return GetSwfPath() + "loading.swf";
-	}
-	
-	static CString GetSwfPath()
+private:
+	static std::string GetSwfPath()
 	{
 		char szBuffer[512];
 		if( CLhcImg::GetHomePath( szBuffer,512) )
-			return CString( szBuffer ) + "\\Resources\\StandardUI\\";
+			return std::string( szBuffer ) + "\\Resources\\StandardUI\\";
 		else
 			return "";
 	}
-
+public:
+	static std::string Net_Loading()
+	{
+		return GetSwfPath() + "blank.swf";
+	}
+	
+	static std::string BlankSwfPath()
+	{
+		return GetSwfPath() + "blank.swf";
+	}
+	
 	static bool GetConfigSwfPath(std::string& strSwfSavePath)
 	{
 		AfxGetUserConfig()->GetConfigStringValue( CONF_APP_MODULE_NAME, CONF_APP_SWF_PATH, strSwfSavePath );

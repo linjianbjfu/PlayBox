@@ -48,7 +48,6 @@ bool Encryption( char* szSrc, unsigned int iSrclength, char** szDest )
 {
 	bool bRet = false;
 	try{
-		YL_Log(STR_CHECK_NEW_VER_LOG, LOG_NOTICE, "UserReg", "Encryption in, src is %s.", szSrc);
 		int i = BASE64_LENGTH(iSrclength)+1;
 		*szDest = new char[BASE64_LENGTH(iSrclength)+1];//Base64::Encode((unsigned char*) pTemp,iSrclength);
 		if(*szDest != NULL)
@@ -58,7 +57,6 @@ bool Encryption( char* szSrc, unsigned int iSrclength, char** szDest )
 			if(YL_Base64Encode(*szDest, szSrc, iSrclength, "yeelion ")>0)
 				bRet = true;
 		}
-		YL_Log(STR_CHECK_NEW_VER_LOG, LOG_NOTICE, "UserReg", "Encryption YL_Base64Encode out.");
 	}
 	catch(...)
 	{
@@ -156,7 +154,6 @@ void CheckThread(void *pparam)
 				}
 			}
 		}
-
 		SendMessage((HWND)pparam, WM_CHECK_RESULT, 0, 0);// 没有更新版本
 	}
 }

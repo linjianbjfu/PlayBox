@@ -25,6 +25,6 @@ private:
 	string	m_strRecommandWebGameUrl;
 	CxStaticText	m_staticWegGame1;
 	CxStaticText	m_staticWegGame2;
-	TAB_ITEM	m_webGame1;
-	TAB_ITEM	m_webGame2;
+	TAB_ITEM	m_web1;
+	TAB_ITEM	m_web2;
 };

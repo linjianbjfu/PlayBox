@@ -7,17 +7,21 @@
 #include "../WebInteract/MyWebBrowserWnd.h"
 #include "../TabMan/TabWndFactory.h"
 #include "AppConfig/config/ConfigSettingDef.h"
+#include "OneFlashGameControl.h"
 
 static int AD_WIDTH  = 360;
 static int AD_HEIGHT = 300;
 
 IMPLEMENT_DYNAMIC(CFlashGameDownloadWnd, CWnd)
 
-CFlashGameDownloadWnd::CFlashGameDownloadWnd() : m_pBtnClose(new CxSkinButton),
+CFlashGameDownloadWnd::CFlashGameDownloadWnd(COneFlashGameControl* pCtrl) 
+	: m_pBtnClose(new CxSkinButton),
 	m_isFailed(false), m_dDownPercent(0), m_colBk(RGB(255,255,255)),
 	m_colText(RGB(103,103,103)), m_pBmpBgM(NULL), m_pBmpBgR(NULL),
-	m_pBmpM(NULL), m_pAdWebWnd(new MyWebBrowserWnd)
+	m_pBmpM(NULL), m_pAdWebWnd(new MyWebBrowserWnd),
+	m_pCtrl(pCtrl)
 {
+	m_pCtrl->SetFlashDownload(this);
 	AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME,
 		CONF_SETTING_CONFIG_FLASH_DOWN_AD_URL, m_strAdUrl);
 	//×ÖÌו

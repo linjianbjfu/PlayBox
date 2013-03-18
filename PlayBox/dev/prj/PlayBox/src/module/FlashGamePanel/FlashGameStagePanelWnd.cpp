@@ -3,13 +3,17 @@
 #include "FlashGameStagePanelWnd.h"
 #include "FlashGameStageLeft.h"
 #include "..\WebInteract\MyWebBrowserWnd.h"
+#include "OneFlashGameControl.h"
 
 IMPLEMENT_DYNAMIC(CFlashGameStagePanelWnd, CBasicWnd)
 
-CFlashGameStagePanelWnd::CFlashGameStagePanelWnd()
+CFlashGameStagePanelWnd::CFlashGameStagePanelWnd(COneFlashGameControl* pCtrl)
 {
-	m_pStageLeft = new CFlashGameStageLeft();
+	m_pCtrl = pCtrl;
+	m_pCtrl->SetStage(this);
+	m_pStageLeft = new CFlashGameStageLeft(pCtrl);
 	m_pIntro = new MyWebBrowserWnd();
+	m_pCtrl->SetBrowserIntro(m_pIntro);
 }
 
 CFlashGameStagePanelWnd::~CFlashGameStagePanelWnd()

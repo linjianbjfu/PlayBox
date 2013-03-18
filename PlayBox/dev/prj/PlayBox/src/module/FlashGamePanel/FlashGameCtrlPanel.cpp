@@ -2,17 +2,22 @@
 #include "resource.h"
 #include "FlashGameCtrlPanel.h"
 #include "..\..\Gui\CommonControl\xSkinButton.h"
+#include "OneFlashGameControl.h"
+#include "MessageID.h"
+#include "util\Sound.h"
 
 IMPLEMENT_DYNAMIC(CFlashGameCtrlPanelWnd, CBasicWnd)
 
-CFlashGameCtrlPanelWnd::CFlashGameCtrlPanelWnd()
+CFlashGameCtrlPanelWnd::CFlashGameCtrlPanelWnd(COneFlashGameControl* pCtrl)
 {
+	m_pCtrl = pCtrl; 
 	m_pBtnRePlay   = new CxSkinButton();
 	m_pBtnMute     = new CxSkinButton();
 	m_pBtnUnMute   = new CxSkinButton();
 	m_pBtnToFullScreen  = new CxSkinButton();
 	m_pBtnExitFullScreen = new CxSkinButton();
 	m_pBtnPause = new CxSkinButton();
+	AfxGetMessageManager()->AttachMessage(ID_MESSAGE_MUTE,(IMuteMsgObserver*) this);	
 }
 
 CFlashGameCtrlPanelWnd::~CFlashGameCtrlPanelWnd()
@@ -23,6 +28,7 @@ CFlashGameCtrlPanelWnd::~CFlashGameCtrlPanelWnd()
 	delete m_pBtnToFullScreen;
 	delete m_pBtnExitFullScreen;
 	delete m_pBtnPause;
+	AfxGetMessageManager()->DetachMessage(ID_MESSAGE_MUTE,(IMuteMsgObserver*) this);	
 }
 
 BEGIN_MESSAGE_MAP(CFlashGameCtrlPanelWnd, CBasicWnd)
@@ -43,10 +49,12 @@ int CFlashGameCtrlPanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CRect rectNull(0,0,0,0);
 	m_pBtnRePlay->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_REPLAY);
 	m_pBtnToFullScreen->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_FULL_SCREEN);
-	m_pBtnExitFullScreen->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_EXIT_FULL_SCREEN);
-	m_pBtnMute->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_MUTE);
-	m_pBtnUnMute->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_UN_MUTE);
+	m_pBtnExitFullScreen->Create(NULL,WS_CHILD,rectNull,this,IDC_BTN_EXIT_FULL_SCREEN);
+	m_pBtnMute->Create(NULL,WS_CHILD,rectNull,this,IDC_BTN_MUTE);
+	m_pBtnUnMute->Create(NULL,WS_CHILD,rectNull,this,IDC_BTN_UN_MUTE);
 	m_pBtnPause->Create (NULL, WS_VISIBLE, rectNull, this, IDC_BTN_PAUSE);
+	m_bMute = CSound::GetInstance()->GetMute( 1 );
+	UpdateBtnState();
 
 	ILayoutMgr* pLayoutMgr =  AfxGetUIManager()->UIGetLayoutMgr();	
 	pLayoutMgr->RegisterCtrl( this, "GameRePlay", m_pBtnRePlay );
@@ -64,31 +72,11 @@ int CFlashGameCtrlPanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void CFlashGameCtrlPanelWnd::OnClickedReplay()
 {
-	//std::string strLocalSwfPath;
-	//m_olg.GetLocalSwfPath(strLocalSwfPath);
-	//PlayMovie(strLocalSwfPath);
-	//if(GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen())
-	//{
-	//	this->m_pWndRight->ShowWindow(SW_HIDE);
-	//	this->m_pWndBottom->ShowWindow(SW_HIDE);
-	//	CRect rect;
-	//	this->GetClientRect(&rect);
-	//	rect.top +=40;
-	//	this->m_pGameFlash->MoveWindow(rect,false);
-	//}
+	m_pCtrl->RePlay();
 }
 
 void CFlashGameCtrlPanelWnd::OnClickedPause()
 {
-	//if(GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen())
-	//{
-	//	this->m_pWndRight->ShowWindow(SW_HIDE);
-	//	this->m_pWndBottom->ShowWindow(SW_HIDE);
-	//	CRect rect;
-	//	this->GetClientRect(&rect);
-	//	rect.top +=40;
-	//	this->m_pGameFlash->MoveWindow(rect,false);
-	//}
 }
 
 void CFlashGameCtrlPanelWnd::OnClickedCut()
@@ -138,61 +126,33 @@ void CFlashGameCtrlPanelWnd::OnClickedCut()
 
 void CFlashGameCtrlPanelWnd::OnClickedMute()
 {
-	//bool bIsMute = CSound::GetInstance()->GetMute( 1 );
-	//CSound::GetInstance()->SetMute( 1, !bIsMute );
-	//UpdateAllWnd();
-	//if(GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen())
-	//{
-	//	this->m_pWndRight->ShowWindow(SW_HIDE);
-	//	this->m_pWndBottom->ShowWindow(SW_HIDE);
-	//	CRect rect;
-	//	this->GetClientRect(&rect);
-	//	rect.top +=40;
-	//	this->m_pGameFlash->MoveWindow(rect,false);
-	//}
+	m_pCtrl->SetMute(true);
 }
 
 void CFlashGameCtrlPanelWnd::OnClickedUnMute()
 {
-	//bool bIsMute = CSound::GetInstance()->GetMute( 1 );
-	//CSound::GetInstance()->SetMute( 1, !bIsMute );
-	//UpdateAllWnd();
-	//if(GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen())
-	//{
-	//	this->m_pWndRight->ShowWindow(SW_HIDE);
-	//	this->m_pWndBottom->ShowWindow(SW_HIDE);
-	//	CRect rect;
-	//	this->GetClientRect(&rect);
-	//	rect.top +=40;
-	//	this->m_pGameFlash->MoveWindow(rect,false);
-	//}
+	m_pCtrl->SetMute(false);
 }
 
 void CFlashGameCtrlPanelWnd::OnClickedFullScreen()
 {
-	//if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
-	//	GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
-	//else
-	//{
-	//	GLOBAL_PANELCHANGEDATA->IPanelChange_ToFullScreen( this );
-	//	this->m_pWndRight->ShowWindow(SW_HIDE);
-	//	this->m_pWndBottom->ShowWindow(SW_HIDE);
-	//	CRect rect;
-	//	this->GetClientRect(&rect);
-	//	rect.top +=40;
-	//	this->m_pGameFlash->MoveWindow(rect,false);
-	//}
+	m_pCtrl->ToFullScreen();
 }
 
 void CFlashGameCtrlPanelWnd::OnClickedExitFullScreen()
 {
-	//if( GLOBAL_PANELCHANGEDATA->IPanelChange_IsFullScreen() )
-	//	GLOBAL_PANELCHANGEDATA->IPanelChange_ExitFullScreen();
-	//else
-	//{
-	//	GLOBAL_PANELCHANGEDATA->IPanelChange_ToFullScreen( this );
-	//	this->m_pWndRight->ShowWindow(SW_SHOW);
-	//	this->m_pWndBottom->ShowWindow(SW_SHOW);
-	//}
+	m_pCtrl->ExitFullScreen();
 }
 
+void CFlashGameCtrlPanelWnd::MuteMsg_Change(bool bMute)
+{
+	m_bMute = bMute;
+	UpdateBtnState();	
+}
+
+void CFlashGameCtrlPanelWnd::UpdateBtnState()
+{
+	m_pBtnMute->ShowWindow(m_bMute ? SW_HIDE : SW_SHOW);
+	m_pBtnUnMute->ShowWindow(m_bMute ? SW_SHOW : SW_HIDE);
+	Invalidate(TRUE);
+}

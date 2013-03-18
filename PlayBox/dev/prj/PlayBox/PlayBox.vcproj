@@ -1682,12 +1682,6 @@
 				Name="BottomPanel"
 				Filter="">
 				<File
-					RelativePath=".\src\module\BottomPanel\BottomAdPanel.cpp">
-				</File>
-				<File
-					RelativePath=".\src\module\BottomPanel\BottomAdPanel.h">
-				</File>
-				<File
 					RelativePath=".\src\module\BottomPanel\BottomPanelWnd.cpp">
 				</File>
 				<File
@@ -1872,6 +1866,9 @@
 				RelativePath=".\src\datainterface\ILayoutChangeObserver.h">
 			</File>
 			<File
+				RelativePath=".\src\datainterface\IMuteMsgObserver.h">
+			</File>
+			<File
 				RelativePath=".\src\datainterface\IPanelChange.h">
 			</File>
 			<File
@@ -1882,6 +1879,9 @@
 			</File>
 			<File
 				RelativePath=".\src\datainterface\ITabBarObserver.h">
+			</File>
+			<File
+				RelativePath=".\src\datainterface\IUserMsgObserver.h">
 			</File>
 			<File
 				RelativePath=".\src\datainterface\IWebRefreshObserver.h">

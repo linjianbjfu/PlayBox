@@ -4,21 +4,22 @@
 #include "FlashGamePlay.h"
 #include "FlashDownloadWnd.h"
 #include "..\WebInteract\MyWebBrowserWnd.h"
+#include "OneFlashGameControl.h"
 
 IMPLEMENT_DYNAMIC(CFlashGameStageLeft, CBasicWnd)
 
-CFlashGameStageLeft::CFlashGameStageLeft()
+CFlashGameStageLeft::CFlashGameStageLeft(COneFlashGameControl* pCtrl)
 {
-	m_pPlay = new CFlashGamePlay();
-	m_pDownload = new CFlashGameDownloadWnd();
+	m_pCtrl = pCtrl;
+	m_pCtrl->SetStageLeft(this);
+	m_pPlay = new CFlashGamePlay(pCtrl);
 	m_pRecommand = new MyWebBrowserWnd();
+	m_pCtrl->SetBrowserRecommand(m_pRecommand);
 }
 
 CFlashGameStageLeft::~CFlashGameStageLeft()
 {
 	delete m_pPlay;
-	delete m_pDownload;
-	//delete m_pRecommand;
 }
 
 BEGIN_MESSAGE_MAP(CFlashGameStageLeft, CBasicWnd)
@@ -32,17 +33,12 @@ int CFlashGameStageLeft::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	CRect rectNull(0,0,0,0);
 	m_pPlay->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN,rectNull,this,ID_FLASH_GAME_PLAY);
-	m_pDownload->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN,rectNull,this,ID_FLASH_GAME_DOWNLOAD);
 	m_pRecommand->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN,rectNull,this,ID_FLASH_GAME_RECOMMAND);
 
 	ILayoutMgr* pLayoutMgr =  AfxGetUIManager()->UIGetLayoutMgr();	
-	pLayoutMgr->RegisterCtrl( this, "flashgame_play", m_pPlay );
-	pLayoutMgr->RegisterCtrl( this, "flashgame_download", m_pDownload );
+	pLayoutMgr->RegisterCtrl( this, "flashgameplay", m_pPlay );
 	pLayoutMgr->RegisterCtrl( this, "flashgamerecommand", m_pRecommand );
 	pLayoutMgr->CreateControlPane( this, "flashgamestageleftpanel", "normal" );
 	pLayoutMgr->CreateBmpPane( this,"flashgamestageleftpanel","normal" );
-
-	m_pRecommand->Navigate("http://www.sogou.com");
-
 	return 0;
 }

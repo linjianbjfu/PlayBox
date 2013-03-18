@@ -3,19 +3,23 @@
 #include "FlashGamePanelWnd.h"
 #include "FlashGameCtrlPanel.h"
 #include "FlashGameStagePanelWnd.h"
+#include "OneFlashGameControl.h"
 
 IMPLEMENT_DYNAMIC(CFlashGamePanelWnd, CBasicWnd)
 
 CFlashGamePanelWnd::CFlashGamePanelWnd()
 {
-	m_pGameCtrlPanelWnd = new CFlashGameCtrlPanelWnd();
-	m_pGameStagePanelWnd = new CFlashGameStagePanelWnd();
+	m_pControl = new COneFlashGameControl();
+	m_pGameCtrlPanelWnd = new CFlashGameCtrlPanelWnd(m_pControl);
+	m_pGameStagePanelWnd = new CFlashGameStagePanelWnd(m_pControl);
+	m_pControl->SetFlashGamePanel(this);
 }
 
 CFlashGamePanelWnd::~CFlashGamePanelWnd()
 {
 	delete m_pGameCtrlPanelWnd;
 	delete m_pGameStagePanelWnd;
+	delete m_pControl;
 }
 
 BEGIN_MESSAGE_MAP(CFlashGamePanelWnd, CBasicWnd)
@@ -43,5 +47,5 @@ int CFlashGamePanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void CFlashGamePanelWnd::SetTabItem( TAB_ITEM ti )
 {
-
+	m_pControl->SetTabItem(ti);
 }

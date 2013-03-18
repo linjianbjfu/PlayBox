@@ -5,6 +5,7 @@
 
 class CFlashGameCtrlPanelWnd;
 class CFlashGameStagePanelWnd;
+class COneFlashGameControl;
 
 class CFlashGamePanelWnd : public CBasicWnd
 {
@@ -17,8 +18,8 @@ public:
 protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg int	OnCreate(LPCREATESTRUCT lpCreateStruct);
-
 private:
 	CFlashGameCtrlPanelWnd*   m_pGameCtrlPanelWnd;
 	CFlashGameStagePanelWnd*  m_pGameStagePanelWnd;
+	COneFlashGameControl* m_pControl;
 };

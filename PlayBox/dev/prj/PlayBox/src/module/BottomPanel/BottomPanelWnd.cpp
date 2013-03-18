@@ -32,8 +32,8 @@ int CBottomPanelWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	CRect r(0,0,0,0);
-	m_staticWegGame1.Create(NULL,WS_VISIBLE, r,this,ID_STATIC_BOTTOM_PANEL_WEB_GAME1);
-	m_staticWegGame2.Create(NULL,WS_VISIBLE, r,this,ID_STATIC_BOTTOM_PANEL_WEB_GAME2);
+	m_staticWegGame1.Create(NULL,WS_CHILD, r,this,ID_STATIC_BOTTOM_PANEL_WEB_GAME1);
+	m_staticWegGame2.Create(NULL,WS_CHILD, r,this,ID_STATIC_BOTTOM_PANEL_WEB_GAME2);
 
 	ILayoutMgr* pLayoutMgr =  AfxGetUIManager()->UIGetLayoutMgr();
 	pLayoutMgr->RegisterCtrl(this,"bottomWebGame1",&m_staticWegGame1);
@@ -60,44 +60,33 @@ DWORD CBottomPanelWnd::ThreadGetRecommandWebGame(void* pPara)
 	if(pbyIndex && size != 0)
 	{
 		std::string strContent = std::string((char*)pbyIndex, size);
-
-		//{"recommend_webgame":[{"id":"115","server_id":"3","game_name":"\u4e8c\u6218\u524d\u7ebf","thumbnail_url":"http:\/\/www.najiuwan.com"},{"id":"114","server_id":"13","game_name":"\u5927\u4fa0\u4f20","thumbnail_url":"http:\/\/www.najiuwan.com"}]}
+		//{"recommend_web":[{"name":"\u4e8c\u6218\u524d\u7ebf","url":"http:\/\/www.najiuwan.com"}]}
 		Json::Reader reader;
 		Json::Value root;  
 		if (reader.parse(strContent, root))  // reader将Json字符串解析到root，root将包含Json里所有子元素  
 		{
-			Json::Value jsonGame = root["recommend_webgame"];
+			Json::Value jsonGame = root["recommend_web"];
 			if (jsonGame.isArray())
 			{
 				for (int i=0; i<jsonGame.size(); i++)
 				{
-					string strID = jsonGame[i]["id"].asString();
-					string strSvrID = jsonGame[i]["server_id"].asString();
-					string strGameName = UTF8ToGB(jsonGame[i]["game_name"].asString().c_str());
-					string strPicUrl = jsonGame[i]["thumbnail_url"].asString();
+					string strName = UTF8ToGB(jsonGame[i]["name"].asString().c_str());
+					string strUrl = jsonGame[i]["url"].asString();
 
-					if(strID.empty() || strSvrID.empty() || strGameName.empty() || strPicUrl.empty())
+					if(strName.empty() || strUrl.empty())
 						continue;
 
 					if(i == 0)
 					{
-						p->m_webGame1.enumType = TAB_WEBGAME;
-						p->m_webGame1.strTitle = strGameName;
-						p->m_webGame1.strParam = string("method=webgame") + BOX_DELIMITERS
-							+ "id=" + strID + BOX_DELIMITERS
-							+ "svrid=" + strSvrID + BOX_DELIMITERS
-							+ "name=" + strGameName + BOX_DELIMITERS
-							+ "picurl=" + strPicUrl + BOX_DELIMITERS;
+						p->m_web1.enumType = TAB_BROWSER;
+						p->m_web1.strTitle = strName;
+						p->m_web1.strParam = string("url=") + strUrl;
 					} else
 					if (i == 1)
 					{
-						p->m_webGame2.enumType = TAB_WEBGAME;
-						p->m_webGame2.strTitle = strGameName;
-						p->m_webGame2.strParam = string("method=webgame") + BOX_DELIMITERS
-							+ "id=" + strID + BOX_DELIMITERS
-							+ "svrid=" + strSvrID + BOX_DELIMITERS
-							+ "name=" + strGameName + BOX_DELIMITERS
-							+ "picurl=" + strPicUrl + BOX_DELIMITERS;
+						p->m_web2.enumType = TAB_WEBGAME;
+						p->m_web2.strTitle = strName;
+						p->m_web2.strParam = string("url=") + strUrl;
 					}else
 						break;
 				}
@@ -114,15 +103,21 @@ void CBottomPanelWnd::LoadSkin()
 
 LRESULT	CBottomPanelWnd::OnBottomWebGameIsOK(WPARAM wParam, LPARAM lParam)
 {
-	if(m_webGame1.enumType == TAB_UNKNOWN)
+	if(m_web1.enumType == TAB_UNKNOWN)
 		m_staticWegGame1.ShowWindow(SW_HIDE);
 	else
-		m_staticWegGame1.SetWindowText(m_webGame1.strTitle.c_str());
+	{
+		m_staticWegGame1.ShowWindow(SW_SHOW);
+		m_staticWegGame1.SetWindowText(m_web1.strTitle.c_str());
+	}
 
-	if(m_webGame2.enumType == TAB_UNKNOWN)
+	if(m_web1.enumType == TAB_UNKNOWN)
 		m_staticWegGame2.ShowWindow(SW_HIDE);
 	else
-		m_staticWegGame2.SetWindowText(m_webGame2.strTitle.c_str());
+	{
+		m_staticWegGame2.ShowWindow(SW_SHOW);
+		m_staticWegGame2.SetWindowText(m_web1.strTitle.c_str());
+	}
 
 	return 0L;
 }
@@ -131,11 +126,11 @@ LRESULT	CBottomPanelWnd::OnClickStatic(WPARAM wParam, LPARAM lParam)
 {
 	if (wParam == ID_STATIC_BOTTOM_PANEL_WEB_GAME1)
 	{
-		GLOBAL_TABBARDATA->ITabBar_ChangeTab(m_webGame1);
+		GLOBAL_TABBARDATA->ITabBar_ChangeTab(m_web1);
 	} else
 	if (wParam == ID_STATIC_BOTTOM_PANEL_WEB_GAME2)
 	{
-		GLOBAL_TABBARDATA->ITabBar_ChangeTab(m_webGame2);
+		GLOBAL_TABBARDATA->ITabBar_ChangeTab(m_web1);
 	}
 	return 0L;
 }

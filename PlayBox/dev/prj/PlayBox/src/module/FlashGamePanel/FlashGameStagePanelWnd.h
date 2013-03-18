@@ -5,18 +5,19 @@
 
 class CFlashGameStageLeft;
 class MyWebBrowserWnd;
+class COneFlashGameControl;
 
 class CFlashGameStagePanelWnd : public CBasicWnd
 {
 	DECLARE_DYNAMIC(CFlashGameStagePanelWnd)
 public:
-	CFlashGameStagePanelWnd();
+	CFlashGameStagePanelWnd(COneFlashGameControl* pCtrl);
 	virtual ~CFlashGameStagePanelWnd();
 protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg int	OnCreate(LPCREATESTRUCT lpCreateStruct);
-
 private:
-	CFlashGameStageLeft*   m_pStageLeft;
+	COneFlashGameControl* m_pCtrl;
+	CFlashGameStageLeft*  m_pStageLeft;
 	MyWebBrowserWnd* m_pIntro;
 };

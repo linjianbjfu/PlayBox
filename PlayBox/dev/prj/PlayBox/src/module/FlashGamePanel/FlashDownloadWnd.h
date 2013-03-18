@@ -8,17 +8,19 @@ using std::string;
 class CDibBitmap;
 class CxSkinButton;
 class MyWebBrowserWnd;
+class COneFlashGameControl;
 
 class CFlashGameDownloadWnd : public CWnd, public CBasicSkinWnd
 {
 	DECLARE_DYNAMIC(CFlashGameDownloadWnd)
 public:
-	CFlashGameDownloadWnd();
+	CFlashGameDownloadWnd(COneFlashGameControl* pCtrl);
 	virtual ~CFlashGameDownloadWnd();
 	void	SetDownPercent( double dPercent );
 	void	SetText( vector<string>& vecText );
 	void	SetFailed( bool bFailed );
 private:
+	COneFlashGameControl* m_pCtrl;
 	bool			m_isFailed;
 	double			m_dDownPercent;
 	CFont			m_font;

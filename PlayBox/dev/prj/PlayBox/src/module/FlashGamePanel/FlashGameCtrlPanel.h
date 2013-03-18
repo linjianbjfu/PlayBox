@@ -1,14 +1,17 @@
 #pragma once
 #include "../../gui/CommonControl/BasicWnd.h"
 #include "../../LayoutMgr/ISkinMgr.h"
+#include "IMuteMsgObserver.h"
 
 class CxSkinButton;
+class COneFlashGameControl;
 
-class CFlashGameCtrlPanelWnd : public CBasicWnd
+class CFlashGameCtrlPanelWnd : public CBasicWnd,
+	public IMuteMsgObserver
 {
 	DECLARE_DYNAMIC(CFlashGameCtrlPanelWnd)
 public:
-	CFlashGameCtrlPanelWnd();
+	CFlashGameCtrlPanelWnd(COneFlashGameControl* pCtrl);
 	virtual ~CFlashGameCtrlPanelWnd();
 protected:
 	DECLARE_MESSAGE_MAP()
@@ -22,10 +25,15 @@ protected:
 	afx_msg void	OnClickedCut();
 
 private:
+	void MuteMsg_Change(bool bMute);
+	void UpdateBtnState();
+	COneFlashGameControl* m_pCtrl;
 	CxSkinButton*		m_pBtnRePlay;
 	CxSkinButton*		m_pBtnMute;
 	CxSkinButton*		m_pBtnUnMute;
 	CxSkinButton*		m_pBtnToFullScreen;
 	CxSkinButton*		m_pBtnExitFullScreen;
 	CxSkinButton*		m_pBtnPause;
+
+	bool m_bMute;
 };

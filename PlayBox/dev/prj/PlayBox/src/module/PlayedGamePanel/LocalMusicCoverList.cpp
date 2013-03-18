@@ -93,7 +93,7 @@ int CLocalMusicCoverList::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CClientDC dc(this);
 	m_dcMem.CreateCompatibleDC(&dc);
 	m_dcTracker.CreateCompatibleDC(&dc);
-	m_fName.CreateFont(12, 0, 0, 0, FW_BOLD , FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, _T("宋体"));
+	m_fName.CreateFont(12, 0, 0, 0, FW_NORMAL , FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, _T("宋体"));
 	m_fDeInfo.CreateFont(12, 0, 0, 0, FW_NORMAL , FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, _T("宋体"));
 	// 竖直滚动控制
 	m_vScrollTimer = SetTimer(100,1,NULL);

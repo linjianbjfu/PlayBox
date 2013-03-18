@@ -30,7 +30,7 @@ int CFlashWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_flash.Create("WebInfo", WS_CHILD, CRect(0,0,0,0), this, 12456);
 	m_flash.ShowWindow(SW_SHOW);
 	m_flash.SetBGColor( 0 );
-	m_flash.SetMovie(GlobalSwfPath::Net_Loading());
+	m_flash.SetMovie(GlobalSwfPath::Net_Loading().c_str());
 	return 1;
 }
 

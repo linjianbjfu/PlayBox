@@ -33,14 +33,13 @@ BEGIN_MESSAGE_MAP(CDlgLogin, CDialog)
 	ON_EN_SETFOCUS(IDC_EDIT_LOGIN_USER_NAME, OnUserNameEditSetFocus)
 	ON_EN_SETFOCUS(IDC_EDIT_LOGIN_PASS_WORD, OnPasswordEditSetFocus)
 	ON_BN_CLICKED(ID_BTN_LOGIN_CLOSE,OnCloseClicked)
-	ON_BN_CLICKED(ID_BTN_LOGIN_REG, OnRegClicked)
-	ON_BN_CLICKED(ID_BTN_LOGIN_FORGET_PASS, OnForgetPassClicked)
 	ON_BN_CLICKED(ID_BTN_REMEMBER_PASS_CHECK,OnRememberPassCheckClicked)
 	ON_BN_CLICKED(ID_BTN_REMEMBER_PASS_UNCHECK,OnRememberPassUnCheckClicked)
 	ON_BN_CLICKED(ID_BTN_AUTO_LOGIN_CHECK,OnAutoLoginCheckClicked)
 	ON_BN_CLICKED(ID_BTN_AUTO_LOGIN_UNCHECK,OnAutoLoginUnCheckClicked)
 	ON_BN_CLICKED(ID_BTN_LOGIN_LOGIN,OnLoginClicked)
 	ON_BN_CLICKED(ID_BTN_LOGIN_CANCEL,OnCancelClicked)
+	ON_MESSAGE(WM_STATICCLICKED, OnClickStatic)
 END_MESSAGE_MAP()
 
 void CDlgLogin::InitEditControl(CEditGlow* pEdit, 
@@ -76,23 +75,26 @@ BOOL CDlgLogin::OnInitDialog()
 	InitEditControl(&m_editPassWord, "LoginEditBorderNormal", "LoginEditBorderGlow");
 
 	CREATE_BTN(m_btnClose, ID_BTN_LOGIN_CLOSE);
-	CREATE_BTN(m_btnLoginReg, ID_BTN_LOGIN_REG);
-	CREATE_BTN(m_btnForgetPass, ID_BTN_LOGIN_FORGET_PASS);
 	CREATE_BTN(m_btnRememberPassCheck, ID_BTN_REMEMBER_PASS_CHECK);
 	CREATE_BTN(m_btnRememberPassUnCheck, ID_BTN_REMEMBER_PASS_UNCHECK);
 	CREATE_BTN(m_btnAutoLoginCheck, ID_BTN_AUTO_LOGIN_CHECK);
 	CREATE_BTN(m_btnAutoLoginUnCheck, ID_BTN_AUTO_LOGIN_UNCHECK);
 	CREATE_BTN(m_btnLogin, ID_BTN_LOGIN_LOGIN);
 	CREATE_BTN(m_btnCancel, ID_BTN_LOGIN_CANCEL);
-	m_staticError.Create(NULL,WS_VISIBLE, CRect(0,0,0,0),this,ID_STATIC_LOGIN_ERR);
-	
+	CRect r(0,0,0,0);
+	m_staticError.Create(NULL,WS_VISIBLE, r,this,ID_STATIC_LOGIN_ERR);
+	m_staticLoginReg.Create(NULL,WS_VISIBLE, r,this,ID_BTN_LOGIN_REG);
+	m_staticLoginReg.SetWindowText("×¢²áÕËºÅ");
+	m_staticForgetPass.Create(NULL,WS_VISIBLE, r,this,ID_BTN_LOGIN_FORGET_PASS);
+	m_staticForgetPass.SetWindowText("Íü¼ÇÃÜÂë");
+		
 	ILayoutMgr* pLayoutMgr =  AfxGetUIManager()->UIGetLayoutMgr();
 	
 	pLayoutMgr->RegisterCtrl( this,"LoginBtnClose",&m_btnClose);
 	pLayoutMgr->RegisterCtrl( this,"LoginEditUserName",&m_editUserName);
 	pLayoutMgr->RegisterCtrl( this,"LoginEditPassWord",&m_editPassWord);
-	pLayoutMgr->RegisterCtrl( this,"LoginReg",&m_btnLoginReg);
-	pLayoutMgr->RegisterCtrl( this,"LoginForgetPass",&m_btnForgetPass);
+	pLayoutMgr->RegisterCtrl( this,"LoginReg",&m_staticLoginReg);
+	pLayoutMgr->RegisterCtrl( this,"LoginForgetPass",&m_staticForgetPass);
 	pLayoutMgr->RegisterCtrl( this,"LoginRememberPassCheck",&m_btnRememberPassCheck);
 	pLayoutMgr->RegisterCtrl( this,"LoginRememberPassUnCheck",&m_btnRememberPassUnCheck);
 	pLayoutMgr->RegisterCtrl( this,"LoginAutoLoginCheck",&m_btnAutoLoginCheck);
@@ -124,6 +126,7 @@ BOOL CDlgLogin::OnInitDialog()
 	int t = (GetSystemMetrics(SM_CYSCREEN) - m_bkg->GetHeight())/2;
 	CRect wndRect(l, t, l+m_bkg->GetWidth(), t+m_bkg->GetHeight());
 	MoveWindow(wndRect);
+	CenterWindow(AfxGetMainWindow());
 	return FALSE; //must return FALSE, so cedit can setfocus
 }
 
@@ -140,18 +143,6 @@ void CDlgLogin::OnPaint()
 void CDlgLogin::OnCloseClicked()
 {
 	CDialog::OnCancel();
-}
-
-void CDlgLogin::OnRegClicked()
-{
-	EndDialog(0);
-	AfxGetMainWindow()->PostMessage(MSG_OPEN_REG_DIALOG, 0, 0);
-}
-
-void CDlgLogin::OnForgetPassClicked()
-{
-	EndDialog(0);
-	AfxGetMainWindow()->PostMessage(MSG_OPEN_FORGET_PASS_DIALOG, 0, 0);
 }
 
 void CDlgLogin::OnRememberPassCheckClicked()
@@ -346,4 +337,19 @@ UINT CDlgLogin::OnNcHitTest(CPoint point)
 	ClientToScreen(&rc);
 	rc.bottom = rc.top + 80;
 	return rc.PtInRect(point) ? HTCAPTION : CDialog::OnNcHitTest(point);
+}
+
+LRESULT	CDlgLogin::OnClickStatic(WPARAM wParam, LPARAM lParam)
+{
+	if (wParam == ID_BTN_LOGIN_REG)
+	{
+		EndDialog(0);
+		AfxGetMainWindow()->PostMessage(MSG_OPEN_REG_DIALOG, 0, 0);
+	} else
+		if (wParam == ID_BTN_LOGIN_FORGET_PASS)
+		{
+			EndDialog(0);
+			AfxGetMainWindow()->PostMessage(MSG_OPEN_FORGET_PASS_DIALOG, 0, 0);
+		}
+		return 0L;
 }
