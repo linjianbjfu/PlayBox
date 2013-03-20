@@ -157,8 +157,9 @@ void COneFlashGameControl::NavigateRecommand(std::string strID)
 
 void COneFlashGameControl::UpdateAllWnd()
 {
-	m_pPlay->ShowWindow(m_bDown ? FALSE : TRUE);
-	m_pDownload->ShowWindow(m_bDown ? TRUE : FALSE);
+	m_pFlashCore->ShowWindow(m_bDown ? SW_HIDE : SW_SHOW);
+	m_pDownload->ShowWindow(m_bDown ? SW_SHOW : SW_HIDE);
+	ShowRecommand(m_bDown);
 }
 
 void COneFlashGameControl::PlayMovie(string strPath)
@@ -204,8 +205,7 @@ void COneFlashGameControl::IPanelChangeOb_ToFullScreen( CWnd* pWnd )
 		m_rectFullScreen.top, m_rectFullScreen.Width(),
 		m_rectFullScreen.Height(),SWP_SHOWWINDOW);
 	m_bFullScreen = true;
-	m_pPlay->ShowButtons(false);
-
+	m_pPlay->ShowButtons();
 	m_pPlay->SetFocus();
 	ShowHideEseFull(true);
 }
@@ -243,7 +243,7 @@ void COneFlashGameControl::IPanelChangeOb_ExitFullScreen( CWnd* pWnd )
 		AfxGetMainWindow()->SetWindowPos(&CWnd::wndTopMost,
 		-1,-1,-1,-1, SWP_NOSIZE|SWP_NOMOVE);
 	UpdateAllWnd();
-	m_pPlay->ShowButtons(true);
+	m_pPlay->ShowButtons();
 	//游戏界面获取焦点
 	m_pPlay->SetFocus();
 	ShowHideEseFull(false);
@@ -506,4 +506,9 @@ void COneFlashGameControl::ShowRecommand(bool bShow)
 bool COneFlashGameControl::IsDownloading()
 {
 	return m_bDown;
+}
+
+bool COneFlashGameControl::IsFullScreen()
+{
+	return m_bFullScreen;
 }

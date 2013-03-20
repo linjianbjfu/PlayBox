@@ -37,6 +37,7 @@ public:
 	bool IsRecommandShow();
 	void ShowRecommand(bool bShow);
 	bool IsDownloading();
+	bool IsFullScreen();
 private:
 	void NavigateIntro(std::string strID);
 	void NavigateRecommand(std::string strID);

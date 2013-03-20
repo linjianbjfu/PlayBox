@@ -15,19 +15,19 @@ class CFlashGamePlay : public CBasicWnd,
 public:
 	CFlashGamePlay(COneFlashGameControl* pCtrl);
 	virtual ~CFlashGamePlay();
-	void ShowButtons(bool bShow);
+	void ShowButtons();
 protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg int	OnCreate(LPCREATESTRUCT lpCreateStruct);
 	BOOL PreTranslateMessage(MSG* pMsg);
-	afx_msg void OnIntroClicked();
-	afx_msg void OnRecommandClicked();
+	afx_msg void OnIntroShowClicked();
+	afx_msg void OnIntroHideClicked();
 	void ILayoutChangeOb_UpdateLayout(HWND hWnd);
 private:
 	COneFlashGameControl* m_pCtrl;
 	void InitFlashParams();
-	CxSkinButton* m_pBtnIntroCtrl;
-	CxSkinButton* m_pBtnRecommandCtrl;
+	CxSkinButton* m_pBtnIntroCtrlShow;
+	CxSkinButton* m_pBtnIntroCtrlHide;
 	CShockwaveFlash* m_pShockwave;
 	CFlashGameDownloadWnd* m_pDownload;
 };
