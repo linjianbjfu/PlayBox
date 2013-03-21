@@ -15,9 +15,10 @@
 #include "util\Sound.h"
 #include "IMuteMsgObserver.h"
 #include "FlashGameStagePanelWnd.h"
+#include "FlashGameIntro.h"
 
 COneFlashGameControl::COneFlashGameControl()
-: m_pBrowserIntro(NULL), m_pBrowserRecommand(NULL),
+: m_pIntro(NULL), m_pBrowserRecommand(NULL),
 m_pPlay(NULL), m_pFlashCore(NULL),m_pDownload(NULL),
 m_pFlashGamePanel(NULL), m_bDown(false), m_isMainWindowTopMost(false),
 m_bFullScreen(false), m_pEscFullTipDlg(NULL), m_pWndParent(NULL)
@@ -33,9 +34,9 @@ COneFlashGameControl::~COneFlashGameControl()
 	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_HTTP_DOWN,(IHttpDownObserver*) this);
 }
 
-void COneFlashGameControl::SetBrowserIntro(MyWebBrowserWnd* pWnd)
+void COneFlashGameControl::SetFlashGameIntro(CFlashGameIntro* pWnd)
 {
-	m_pBrowserIntro = pWnd;
+	m_pIntro = pWnd;
 }
 
 void COneFlashGameControl::SetBrowserRecommand(MyWebBrowserWnd* pWnd)
@@ -51,6 +52,11 @@ void COneFlashGameControl::SetFlashPlay(CFlashGamePlay* pWnd)
 void COneFlashGameControl::SetFlashDownload(CFlashGameDownloadWnd* pWnd)
 {
 	m_pDownload = pWnd;
+}
+
+void COneFlashGameControl::SetFlashDownloadAd(MyWebBrowserWnd* pWnd)
+{
+	m_pDownloadAd = pWnd;
 }
 
 void COneFlashGameControl::SetFlashCore(CShockwaveFlash* pWnd)
@@ -143,7 +149,7 @@ void COneFlashGameControl::NavigateIntro(std::string strID)
 	AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME, 
 		CONF_SETTING_CONFIG_FLASH_GAME_RIGHT_URL,strFlashGameRightUrl);
 	if (!strFlashGameRightUrl.empty())
-		m_pBrowserIntro->Navigate(strFlashGameRightUrl+strID);
+		m_pIntro->Navigate(strFlashGameRightUrl+strID);
 }
 
 void COneFlashGameControl::NavigateRecommand(std::string strID)
@@ -159,6 +165,7 @@ void COneFlashGameControl::UpdateAllWnd()
 {
 	m_pFlashCore->ShowWindow(m_bDown ? SW_HIDE : SW_SHOW);
 	m_pDownload->ShowWindow(m_bDown ? SW_SHOW : SW_HIDE);
+	m_pDownloadAd->ShowWindow(m_bDown ? SW_SHOW : SW_HIDE);
 	ShowRecommand(m_bDown);
 }
 

@@ -6,6 +6,7 @@
 class CFlashGameStageLeft;
 class MyWebBrowserWnd;
 class COneFlashGameControl;
+class CFlashGameIntro;
 
 class CFlashGameStagePanelWnd : public CBasicWnd
 {
@@ -19,5 +20,5 @@ protected:
 private:
 	COneFlashGameControl* m_pCtrl;
 	CFlashGameStageLeft*  m_pStageLeft;
-	MyWebBrowserWnd* m_pIntro;
+	CFlashGameIntro* m_pIntro;
 };

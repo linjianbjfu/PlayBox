@@ -154,6 +154,15 @@
 	</controlpanel>
 </wndpanel>
 
+<wndpanel name="flashgameintropanel" mode="normal">
+	<background name="normal" ori="NO_POS" background_color="90cdfa">
+	</background>
+	<controlpanel name="normal" ori="NO_POS">
+		<paneitem name="FlashGameIntroWeb" type="wnd" start_x_left="0"  start_y_top="0" end_x_right="0" end_y_bottom="0" />
+		<paneitem name="FlashGameBtnIntroHide" type="button" tooltip="" bmp="SpliterToRight" start_x_left="0" start_y_top="50" x_delta="10" y_delta="40" />
+	</controlpanel>
+</wndpanel>
+
 <wndpanel name="flashgamestageleftpanel" mode="normal">
 	<background name="normal" ori="NO_POS" background_color="90cdfa">
 	</background>
@@ -169,7 +178,6 @@
 	<controlpanel name="normal" ori="NO_POS">
 		<paneitem name="FlashGameShockwave" type="wnd" start_x_left="0"  start_y_top="0" end_x_right="0" end_y_bottom="0" />
 		<paneitem name="FlashGameDownload" type="wnd" start_x_left="0"  start_y_top="0" end_x_right="0" end_y_bottom="0" />
-		<paneitem name="FlashGameBtnIntroHide" type="button" tooltip="" bmp="SpliterToRight" start_x_right="10" start_y_top="50" x_delta="10" y_delta="40" />
 		<paneitem name="FlashGameBtnIntroShow" type="button" tooltip="" bmp="SpliterToLeft" start_x_right="10" start_y_top="50" x_delta="10" y_delta="40" />
 		<!--
 		<paneitem name="FlashGameBtnRecommandCtrl" type="button" tooltip="" bmp="SpliterV" start_x_left="50"  start_y_bottom="5" x_delta="40" y_delta="5" />

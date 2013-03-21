@@ -12,6 +12,7 @@ class CShockwaveFlash;
 class CFlashGamePanelWnd;
 class CFlashGameStagePanelWnd;
 class CFlashGameStageLeft;
+class CFlashGameIntro;
 
 class COneFlashGameControl : public IHttpDownObserver, public IPanelChangeObserver
 {
@@ -19,10 +20,11 @@ public:
 	COneFlashGameControl();
 	~COneFlashGameControl();
 
-	void SetBrowserIntro(MyWebBrowserWnd* pWnd);
+	void SetFlashGameIntro(CFlashGameIntro* pWnd);
 	void SetBrowserRecommand(MyWebBrowserWnd* pWnd);
 	void SetFlashPlay(CFlashGamePlay* pWnd);
 	void SetFlashDownload(CFlashGameDownloadWnd* pWnd);
+	void SetFlashDownloadAd(MyWebBrowserWnd* pWnd);
 	void SetFlashCore(CShockwaveFlash* pWnd);
 	void SetFlashGamePanel(CFlashGamePanelWnd* pWnd);
 	void SetStage(CFlashGameStagePanelWnd* pWnd);
@@ -54,11 +56,12 @@ private:
 	void HttpDownOb_DownProgress( string& strID, double dPercent, unsigned int unFileSize, unsigned int unSpeed);
 	void SetMainWindow(bool isTopMost);
 
-	MyWebBrowserWnd* m_pBrowserIntro;
+	CFlashGameIntro* m_pIntro;
 	MyWebBrowserWnd* m_pBrowserRecommand;
 	CFlashGamePlay* m_pPlay;
 	CShockwaveFlash* m_pFlashCore;
 	CFlashGameDownloadWnd* m_pDownload;
+	MyWebBrowserWnd* m_pDownloadAd;
 	CFlashGamePanelWnd* m_pFlashGamePanel;
 	CFlashGameStagePanelWnd* m_pStage;
 	CFlashGameStageLeft* m_pStageLeft;

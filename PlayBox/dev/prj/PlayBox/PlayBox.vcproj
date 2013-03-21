@@ -1583,6 +1583,12 @@
 					RelativePath=".\src\module\FlashGamePanel\FlashGameCtrlPanel.h">
 				</File>
 				<File
+					RelativePath=".\src\module\FlashGamePanel\FlashGameIntro.cpp">
+				</File>
+				<File
+					RelativePath=".\src\module\FlashGamePanel\FlashGameIntro.h">
+				</File>
+				<File
 					RelativePath=".\src\module\FlashGamePanel\FlashGamePanelWnd.cpp">
 				</File>
 				<File

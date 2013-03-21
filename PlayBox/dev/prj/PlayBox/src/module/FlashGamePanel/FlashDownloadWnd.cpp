@@ -22,6 +22,7 @@ CFlashGameDownloadWnd::CFlashGameDownloadWnd(COneFlashGameControl* pCtrl)
 	m_pCtrl(pCtrl)
 {
 	m_pCtrl->SetFlashDownload(this);
+	m_pCtrl->SetFlashDownloadAd(m_pAdWebWnd);
 	AfxGetUserConfig()->GetConfigStringValue(CONF_SETTING_MODULE_NAME,
 		CONF_SETTING_CONFIG_FLASH_DOWN_AD_URL, m_strAdUrl);
 	//×ÖÌו

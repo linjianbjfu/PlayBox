@@ -15,7 +15,6 @@ CFlashGamePlay::CFlashGamePlay(COneFlashGameControl* pCtrl)
 	m_pShockwave = new CShockwaveFlash();
 	m_pCtrl->SetFlashCore(m_pShockwave);
 	m_pBtnIntroCtrlShow = new CxSkinButton();
-	m_pBtnIntroCtrlHide = new CxSkinButton();
 	m_pDownload = new CFlashGameDownloadWnd(pCtrl);
 	AfxGetMessageManager()->AttachMessage( ID_MESSAGE_LAYOUTMGR,(ILayoutChangeObserver*) this);
 }
@@ -24,7 +23,6 @@ CFlashGamePlay::~CFlashGamePlay()
 {
 	delete m_pShockwave;
 	delete m_pBtnIntroCtrlShow;
-	delete m_pBtnIntroCtrlHide;
 	delete m_pDownload;
 	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_LAYOUTMGR,(ILayoutChangeObserver*) this);
 }
@@ -44,7 +42,6 @@ int CFlashGamePlay::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_pShockwave->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN|WS_CLIPSIBLINGS,
 		rectNull,this,ID_FLASH_GAME_SHOCK_WAVE);
 	m_pBtnIntroCtrlShow->Create(NULL,WS_VISIBLE,rectNull,this,IDC_BTN_FLASH_GAME_INTRO_CTRL_SHOW);
-	m_pBtnIntroCtrlHide->Create(NULL,WS_CHILD,rectNull,this,IDC_BTN_FLASH_GAME_INTRO_CTRL_HIDE);
 	m_pDownload->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN|WS_CLIPSIBLINGS,
 		rectNull,this,ID_FLASH_GAME_DOWNLOAD);
 
@@ -52,7 +49,6 @@ int CFlashGamePlay::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	pLayoutMgr->RegisterCtrl( this, "FlashGameShockwave", m_pShockwave );
 	pLayoutMgr->RegisterCtrl( this, "FlashGameDownload", m_pDownload );
 	pLayoutMgr->RegisterCtrl( this, "FlashGameBtnIntroShow", m_pBtnIntroCtrlShow );
-	pLayoutMgr->RegisterCtrl( this, "FlashGameBtnIntroHide", m_pBtnIntroCtrlHide );
 	pLayoutMgr->CreateControlPane( this, "flashgameplaypanel", "normal" );
 	pLayoutMgr->CreateBmpPane( this,"flashgameplaypanel","normal" );
 	InitFlashParams();
@@ -77,11 +73,9 @@ void CFlashGamePlay::ShowButtons()
 	if (m_pCtrl->IsFullScreen())
 	{
 		m_pBtnIntroCtrlShow->ShowWindow(SW_HIDE);
-		m_pBtnIntroCtrlHide->ShowWindow(SW_HIDE);
 	} else 
 	{
 		m_pBtnIntroCtrlShow->ShowWindow(m_pCtrl->IsIntroShow() ? SW_HIDE : SW_SHOW);
-		m_pBtnIntroCtrlHide->ShowWindow(m_pCtrl->IsIntroShow() ? SW_SHOW : SW_HIDE);
 	}
 	CRect r;
 	m_pBtnIntroCtrlShow->GetWindowRect(&r);

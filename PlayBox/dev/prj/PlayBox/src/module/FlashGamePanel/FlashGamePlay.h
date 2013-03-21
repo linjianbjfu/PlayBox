@@ -27,7 +27,6 @@ private:
 	COneFlashGameControl* m_pCtrl;
 	void InitFlashParams();
 	CxSkinButton* m_pBtnIntroCtrlShow;
-	CxSkinButton* m_pBtnIntroCtrlHide;
 	CShockwaveFlash* m_pShockwave;
 	CFlashGameDownloadWnd* m_pDownload;
 };

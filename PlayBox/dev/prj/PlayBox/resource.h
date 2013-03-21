@@ -279,6 +279,7 @@
 #define ID_FLASH_GAME_SHOCK_WAVE		354
 #define IDC_BTN_FLASH_GAME_INTRO_CTRL_SHOW	355
 #define IDC_BTN_FLASH_GAME_INTRO_CTRL_HIDE	356
+#define ID_FLASH_GAME_INTRO_WEB			357
 
 // Next default values for new objects
 // 
