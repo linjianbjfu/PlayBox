@@ -212,6 +212,13 @@ Section "-YPLAYBOX" realSection
 	Call RenameAndDeleteReboot
 	File  ..\install_resource\NetOp.dll
 
+	IfFileExists "$INSTDIR\MSVCR71.DLL" +2 0
+		File  "..\install_resource\MSVCR71.DLL"
+	IfFileExists "$INSTDIR\MSVCP71.DLL" +2 0
+		File  "..\install_resource\MSVCP71.DLL"
+	IfFileExists "$INSTDIR\MFC71.dll" +2 0
+		File  "..\install_resource\MFC71.dll"
+
 	File  ..\install_resource\Tool.exe
 	File  /r /x .svn /x *.db ..\install_resource\Resources
 	
@@ -258,12 +265,6 @@ Check_KwMusic_End:
 	CreateDirectory "$INSTDIR\update"
 	##################################################################################
 	SetOutPath "$INSTDIR"
-	IfFileExists "$INSTDIR\MSVCR71.DLL" +2 0
-		File  "..\install_resource\MSVCR71.DLL"
-	IfFileExists "$INSTDIR\MSVCP71.DLL" +2 0
-		File  "..\install_resource\MSVCP71.DLL"
-	IfFileExists "$INSTDIR\MFC71.dll" +2 0
-		File  "..\install_resource\MFC71.dll"
 
 	StrCpy $R0 "$INSTDIR\Log.dll"
 	Call RenameAndDeleteReboot

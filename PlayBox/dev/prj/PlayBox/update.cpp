@@ -188,7 +188,7 @@ void realUpdate(LPVOID pparam)
 	{
 		return;
 	}
-	_snprintf(szUpdate, MAX_PATH-1, "%s\\LhUpdate.dll", szsysdir);
+	_snprintf(szUpdate, MAX_PATH-1, "%s\\Update.dll", szsysdir);
 
 	HMODULE hLib = LoadLibrary(szUpdate);
 	if(hLib != NULL)
