@@ -280,7 +280,7 @@ string CHttpInterface::GetTempFileByUrl(const char* szUrl)
 
 	// 获取URL中的后缀
 	string strSuffix;
-	char *p = strrchr(szUrl, '.');
+	const char *p = strrchr(szUrl, '.');
 	if ((p != NULL) && (strlen(p) <= 7))
 	{
 		strSuffix = p;

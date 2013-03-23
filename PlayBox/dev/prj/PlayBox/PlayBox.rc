@@ -13,7 +13,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Chinese (P.R.C.) resources
+// 中文(中华人民共和国) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 #ifdef _WIN32
@@ -69,13 +69,6 @@ IDI_ICON_BEAR           ICON                    "res\\xiong.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// RT_MANIFEST
-//
-
-IDR_RT_MANIFEST1        RT_MANIFEST             "res\\rt_manif.bin"
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // Dialog
 //
 
@@ -105,8 +98,7 @@ BEGIN
 END
 
 IDD_DIALOG_CHECK_NEW_VER DIALOGEX 0, 0, 196, 44
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
-    WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "检测新版本"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
@@ -138,8 +130,7 @@ IDD_CONFIG DIALOGEX 0, 0, 406, 271
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "",IDC_HOTKEY_BOSSKEY,"msctls_hotkey32",WS_BORDER | 
-                    WS_TABSTOP,203,94,147,14,WS_EX_TRANSPARENT
+    CONTROL         "",IDC_HOTKEY_BOSSKEY,"msctls_hotkey32",WS_BORDER | WS_TABSTOP,203,94,147,14,WS_EX_TRANSPARENT
 END
 
 IDD_DIALOG_DOWN DIALOGEX 0, 0, 250, 35
@@ -149,10 +140,8 @@ BEGIN
     LTEXT           "游戏保存到",IDC_STATIC1,14,12,41,8
     EDITTEXT        IDC_EDIT1,58,10,148,12,ES_AUTOHSCROLL | ES_READONLY
     PUSHBUTTON      "浏览",IDC_BUTTON1,212,10,26,12
-    LTEXT           "截图保存到",IDC_STATIC_PIC_SAVE_PATH,14,25,41,8,NOT 
-                    WS_VISIBLE
-    EDITTEXT        IDC_EDIT_SAVE_PATH,58,23,148,12,ES_AUTOHSCROLL | 
-                    ES_READONLY | NOT WS_VISIBLE
+    LTEXT           "截图保存到",IDC_STATIC_PIC_SAVE_PATH,14,25,41,8,NOT WS_VISIBLE
+    EDITTEXT        IDC_EDIT_SAVE_PATH,58,23,148,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_VISIBLE
     PUSHBUTTON      "浏览",IDC_BTN_BRO_SAVE_PATH,212,23,26,12,NOT WS_VISIBLE
 END
 
@@ -160,18 +149,13 @@ IDD_DIALOG_SYS DIALOGEX 0, 0, 250, 89
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "开机自动启动",IDC_CHECK_AUTORUN,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,32,3,98,10
+    CONTROL         "开机自动启动",IDC_CHECK_AUTORUN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,32,3,98,10
     LTEXT           "点击关闭按钮时：",IDC_STATIC_MINOREXIT,13,40,74,10
-    CONTROL         "最小化，不退出程序",IDC_RAD_MIN,"Button",
-                    BS_AUTORADIOBUTTON | WS_GROUP,36,49,138,11
-    CONTROL         "退出程序",IDC_RAD_EXIT,"Button",BS_AUTORADIOBUTTON,36,
-                    61,54,10
-    CONTROL         "每次关闭时不再提示",IDC_CHK_NOASK,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,28,72,99,14
+    CONTROL         "最小化，不退出程序",IDC_RAD_MIN,"Button",BS_AUTORADIOBUTTON | WS_GROUP,36,49,138,11
+    CONTROL         "退出程序",IDC_RAD_EXIT,"Button",BS_AUTORADIOBUTTON,36,61,54,10
+    CONTROL         "每次关闭时不再提示",IDC_CHK_NOASK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,28,72,99,14
     LTEXT           "快捷键",IDC_STATIC_HOTKEY,13,15,25,8
-    CONTROL         "老板键",IDC_CHK_BOSSKEY,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,29,26,40,10
+    CONTROL         "老板键",IDC_CHK_BOSSKEY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,29,26,40,10
 END
 
 IDD_DLG_CLEANCHACHE DIALOGEX 0, 0, 187, 93
@@ -327,17 +311,16 @@ IDR_MENU_TITLE MENU
 BEGIN
     POPUP "TITLE"
     BEGIN
-        MENUITEM "问题反馈",                    ID_MEMU_PROBLEM_REPORT
-        MENUITEM "设置",                        ID_MEMU_SETTING
+        MENUITEM "问题反馈",                        ID_MEMU_PROBLEM_REPORT
+        MENUITEM "设置",                          ID_MEMU_SETTING
         POPUP "帮助"
         BEGIN
-            MENUITEM "页游客服",                    ID_MENU_WEB_GAME_CUSTOM_SERVICE
-
-            MENUITEM "官方网站",                    ID_MEMU_MAIN_PAGE
-            MENUITEM "关于我们",                    ID_MEMU_HELP_ABOUT
+            MENUITEM "页游客服",                        ID_MENU_WEB_GAME_CUSTOM_SERVICE
+            MENUITEM "官方网站",                        ID_MEMU_MAIN_PAGE
+            MENUITEM "关于我们",                        ID_MEMU_HELP_ABOUT
         END
-        MENUITEM "检查更新",                    ID_CHECK_UPDATE
-        MENUITEM "退出酷游",                    ID_APP_EXIT
+        MENUITEM "检查更新",                        ID_CHECK_UPDATE
+        MENUITEM "退出酷游",                        ID_APP_EXIT
     END
 END
 
@@ -345,7 +328,7 @@ IDR_MENU_COVERLIST MENU
 BEGIN
     POPUP ""
     BEGIN
-        MENUITEM "删除",                        ID_CL_DELFROMDISK
+        MENUITEM "删除",                          ID_CL_DELFROMDISK
     END
 END
 
@@ -353,8 +336,8 @@ IDR_MENU_TRAYICON MENU
 BEGIN
     POPUP "TITLE"
     BEGIN
-        MENUITEM "选项设置",                    ID_MEMU_SETTING
-        MENUITEM "退出",                        ID_APP_EXIT
+        MENUITEM "选项设置",                        ID_MEMU_SETTING
+        MENUITEM "退出",                          ID_APP_EXIT
     END
 END
 
@@ -365,7 +348,7 @@ END
 //
 
 IDC_CURSOR1             CURSOR                  "res\\hand.cur"
-#endif    // Chinese (P.R.C.) resources
+#endif    // 中文(中华人民共和国) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

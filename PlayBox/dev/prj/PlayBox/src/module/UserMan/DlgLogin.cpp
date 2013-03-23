@@ -330,7 +330,7 @@ void CDlgLogin::OnOK()
 	OnLoginClicked();
 }
 
-UINT CDlgLogin::OnNcHitTest(CPoint point)
+LRESULT CDlgLogin::OnNcHitTest(CPoint point)
 {
 	CRect rc;
 	GetClientRect(&rc);

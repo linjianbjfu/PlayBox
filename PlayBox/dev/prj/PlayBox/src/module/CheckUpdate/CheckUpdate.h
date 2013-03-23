@@ -85,7 +85,7 @@ private:
 public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnPaint();
-	afx_msg UINT OnNcHitTest(CPoint point);
+	afx_msg LRESULT OnNcHitTest(CPoint point);
 	afx_msg void OnTimer(UINT nIDEvent);
 	virtual BOOL OnInitDialog();
 };

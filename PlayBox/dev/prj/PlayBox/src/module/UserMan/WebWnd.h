@@ -26,5 +26,5 @@ protected:
 
 public:
 	virtual LRESULT DoModal(CString strTitle, CString strUrl, int nPageWidth, int nPageHeight);
-	afx_msg UINT OnNcHitTest(CPoint point);
+	afx_msg LRESULT OnNcHitTest(CPoint point);
 };

@@ -436,7 +436,7 @@ bool CSkinMgr::GetDibBmpSubject( const char* pszBitmapName,const string& strSkin
 	}
 
 	ITER_DIBBMP_MAP iter = m_dibbmpmap.find(CString( pszBitmapName).MakeLower());
-	if( iter != NULL && pBmp !=NULL )
+	if( iter != m_dibbmpmap.end() && pBmp !=NULL )
 	{
 		pBmp->is_ChangeColor	= (*iter).second->is_ChangeColor;
 		pBmp->is_Loaded			= (*iter).second->is_Loaded;

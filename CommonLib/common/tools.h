@@ -3,6 +3,7 @@
 
 #include "atlstr.h"
 #include <string>
+#include <winioctl.h>
 using namespace std;
 
 #ifdef __AFXWIN_H__
@@ -76,48 +77,7 @@ typedef enum CP_STORAGE_BUS_TYPE {
 	CP_BusTypeMaxReserved = 0x7F
 } CP_STORAGE_BUS_TYPE, *CP_PSTORAGE_BUS_TYPE;
 
-// retrieve the storage device descriptor data for a device. 
-typedef struct _STORAGE_DEVICE_DESCRIPTOR {
-	ULONG  Version;
-	ULONG  Size;
-	UCHAR  DeviceType;
-	UCHAR  DeviceTypeModifier;
-	BOOLEAN  RemovableMedia;
-	BOOLEAN  CommandQueueing;
-	ULONG  VendorIdOffset;
-	ULONG  ProductIdOffset;
-	ULONG  ProductRevisionOffset;
-	ULONG  SerialNumberOffset;
-	CP_STORAGE_BUS_TYPE  BusType;
-	ULONG  RawPropertiesLength;
-	UCHAR  RawDeviceProperties[1];
 
-} STORAGE_DEVICE_DESCRIPTOR, *PSTORAGE_DEVICE_DESCRIPTOR;
-
-// retrieve the properties of a storage device or adapter. 
-typedef enum _STORAGE_QUERY_TYPE {
-	PropertyStandardQuery = 0,
-	PropertyExistsQuery,
-	PropertyMaskQuery,
-	PropertyQueryMaxDefined
-
-} STORAGE_QUERY_TYPE, *PSTORAGE_QUERY_TYPE;
-
-// retrieve the properties of a storage device or adapter. 
-typedef enum _STORAGE_PROPERTY_ID {
-	StorageDeviceProperty = 0,
-	StorageAdapterProperty,
-	StorageDeviceIdProperty
-
-} STORAGE_PROPERTY_ID, *PSTORAGE_PROPERTY_ID;
-
-// retrieve the properties of a storage device or adapter. 
-typedef struct _STORAGE_PROPERTY_QUERY {
-	STORAGE_PROPERTY_ID  PropertyId;
-	STORAGE_QUERY_TYPE  QueryType;
-	UCHAR  AdditionalParameters[1];
-
-} STORAGE_PROPERTY_QUERY, *PSTORAGE_PROPERTY_QUERY;
 
 BOOL GetDisksProperty(HANDLE hDevice, PSTORAGE_DEVICE_DESCRIPTOR pDevDesc);
 char chFirstDriveFromMask (ULONG unitmask);

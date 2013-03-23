@@ -768,22 +768,23 @@ void CGdiEx::DrawPointFrameXOR(HDC DC,  RECT& aRect)
 	Pen.CreatePen(0, 1, RGB(0, 0, 0));
 	pOldPen = pDC->SelectObject(&Pen);
 
-	for( int i= aRect.left+1, int j=aRect.top; i<aRect.right; i++ )
+	int i,j;
+	for( i= aRect.left+1, j=aRect.top; i<aRect.right; i++ )
 	{
 		pDC->SetPixel(i,j,0);
 		i++;
 	}
-	for( int i= aRect.right, int j=aRect.top+1; j<aRect.bottom; j++ )
+	for( i= aRect.right, j=aRect.top+1; j<aRect.bottom; j++ )
 	{
 		pDC->SetPixel(i,j,0 );
 		j++;
 	}
-	for( int i= aRect.right-1, int j=aRect.bottom; i>aRect.left; i-- )
+	for( i= aRect.right-1, j=aRect.bottom; i>aRect.left; i-- )
 	{
 		pDC->SetPixel(i,j,0);
 		i--;
 	}
-	for( int i= aRect.left, int j=aRect.bottom-1; j>aRect.top; j-- )
+	for( i= aRect.left, j=aRect.bottom-1; j>aRect.top; j-- )
 	{
 		pDC->SetPixel(i,j,0);
 		j--;

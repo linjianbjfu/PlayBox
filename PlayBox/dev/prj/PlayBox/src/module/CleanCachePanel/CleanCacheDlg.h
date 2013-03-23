@@ -41,7 +41,7 @@ protected:
 
 public:
 	virtual BOOL OnInitDialog();
-	afx_msg UINT OnNcHitTest(CPoint point);
+	afx_msg LRESULT OnNcHitTest(CPoint point);
 	afx_msg void OnBnClickedCleanCache();
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnBnClickedRestart();

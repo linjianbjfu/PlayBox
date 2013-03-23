@@ -104,7 +104,7 @@ BOOL CCleanCacheDlg::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-UINT CCleanCacheDlg::OnNcHitTest(CPoint point)
+LRESULT CCleanCacheDlg::OnNcHitTest(CPoint point)
 {
 	CRect rc;
 	GetClientRect(&rc);
@@ -139,7 +139,7 @@ void CCleanCacheDlg::OnTimer(UINT_PTR nIDEvent)
 		rct.right = rct.left+22;
 		rct.bottom = rct.top+22;
 
-		static i = 0;
+		static int i = 0;
 		CDC *pDC = GetDC();
 		m_staticBmpLoading.SetBitmap(m_LoadingBmp[i++]);
 		i = i>7 ? 0:i;

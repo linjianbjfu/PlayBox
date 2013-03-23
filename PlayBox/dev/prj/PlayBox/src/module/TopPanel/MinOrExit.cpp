@@ -224,7 +224,7 @@ void CMinOrExit::OnLButtonUp(UINT nFlags, CPoint point)
 	CDialog::OnLButtonUp(nFlags, point);
 }
 
-UINT CMinOrExit::OnNcHitTest(CPoint point)
+LRESULT CMinOrExit::OnNcHitTest(CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 

@@ -350,11 +350,7 @@ void CScrollBarEx::MoveThumb(CPoint aPointOffset)
 
 	//取得父控件类名
 	char szTemp[MAX_PATH];
-#if _MSC_VER   <   1400
 	GetClassName(mpWnd->GetSafeHwnd(), (LPTSTR)szTemp, sizeof(szTemp));
-#else
-	GetClassName(mpWnd->GetSafeHwnd(), T2W((LPTSTR)szTemp), sizeof(szTemp));
-#endif
 
 	if (mScrollOrientation == esoVertical)
 	{
@@ -370,11 +366,7 @@ void CScrollBarEx::MoveThumb(CPoint aPointOffset)
 
 		if (liPos >= mScrollInfo.nMin && liPos <= mpWnd->GetScrollLimit(SB_VERT))
 		{
-			#if _MSC_VER   <   1400
 			if (lstrcmpi( (LPTSTR)szTemp, _T("SysListView32")) == 0)		//ListCtrl单独处理
-			#else
-			if (lstrcmpi(T2W((LPTSTR)szTemp), _T("SysListView32")) == 0)
-            #endif
 			{
 				/*bool lbDirDown = mScrollInfo.nPos < liPos;
 				CSize lSize;
@@ -426,11 +418,7 @@ void CScrollBarEx::MoveThumb(CPoint aPointOffset)
 
 		if (liPos >= mScrollInfo.nMin && liPos <= mpWnd->GetScrollLimit(SB_HORZ))
 		{
-			#if _MSC_VER   <   1400
 			if (lstrcmpi( (LPTSTR)szTemp, _T("SysListView32")) == 0)		//ListCtrl单独处理
-			#else
-			if (lstrcmpi(T2W((LPTSTR)szTemp), _T("SysListView32")) == 0)
-			#endif
 			{
 				/*bool lbDirDown = mScrollInfo.nPos < liPos;
 				CSize lSize;

@@ -25,5 +25,5 @@ private:
 	//CDibBitmap * m_pBmpBkAbout;
 public:
 	afx_msg void OnPaint();
-	afx_msg UINT OnNcHitTest(CPoint point);
+	afx_msg LRESULT OnNcHitTest(CPoint point);
 };

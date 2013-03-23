@@ -100,7 +100,7 @@ void CAboutDlg::OnPaint()
 	AfxGetUIManager()->UIGetLayoutMgr()->PaintBkGround( m_hWnd ,&dc,false ) ;	
 }
 
-UINT CAboutDlg::OnNcHitTest(CPoint point)
+LRESULT CAboutDlg::OnNcHitTest(CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CRect rc;

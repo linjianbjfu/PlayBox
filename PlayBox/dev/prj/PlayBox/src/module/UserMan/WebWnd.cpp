@@ -82,7 +82,7 @@ LRESULT CWebDlg::DoModal(CString strTitle, CString strUrl, int nPageWidth, int n
 	return __super::DoModal();
 }
 
-UINT CWebDlg::OnNcHitTest(CPoint point)
+LRESULT CWebDlg::OnNcHitTest(CPoint point)
 {
 	CRect rc;
 	GetClientRect(&rc);

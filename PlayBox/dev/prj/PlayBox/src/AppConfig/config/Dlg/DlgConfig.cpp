@@ -435,7 +435,7 @@ BOOL CConfigDialog::UpdateData( BOOL bSaveAndValidate /* = TRUE */ )
 	return __super::UpdateData(bSaveAndValidate);
 }
 
-UINT CConfigDialog::OnNcHitTest(CPoint point)
+LRESULT CConfigDialog::OnNcHitTest(CPoint point)
 {
 	CRect rc;
 	GetClientRect(&rc);

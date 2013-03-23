@@ -232,7 +232,8 @@ void CHostWndMgr::ShowHostWindows(BOOL bShow)
 
 	if(!bShow)
 	{
-		for(int i = 0 ; i<m_vecHostWnds.size(); i++)
+		int i = 0;
+		for(i = 0 ; i<m_vecHostWnds.size(); i++)
 		{
 			if(m_vecHostWnds[i]->IsWindowVisible())
 			{
@@ -261,7 +262,8 @@ void CHostWndMgr::ShowHostWindows(BOOL bShow)
 	if(bShow)
 	{
 		ShowPopupWndsBeforeMainChange(true);
-		for(int i = 0 ; i<m_vecVisibleWnds.size(); i++)
+		int i = 0;
+		for(i = 0 ; i<m_vecVisibleWnds.size(); i++)
 			m_vecVisibleWnds[i]->ShowWindow(SW_SHOW);
 
 		if( i == 0)

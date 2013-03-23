@@ -391,7 +391,7 @@ void CCheckUpdate::OnPaint()
 
 }
 
-UINT CCheckUpdate::OnNcHitTest(CPoint point)
+LRESULT CCheckUpdate::OnNcHitTest(CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CRect rc;

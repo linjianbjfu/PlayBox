@@ -8,7 +8,7 @@
 #include "YL_Ini.h"
 #include "shellapi.h"
 #include <string>
-#include "shfolder.h"
+
 #include "tools.h"
 #include <io.h>
 #include <time.h>

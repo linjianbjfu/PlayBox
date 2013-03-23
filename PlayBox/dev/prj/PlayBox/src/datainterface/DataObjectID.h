@@ -1,7 +1,7 @@
 #ifndef _DATA_OBJECT_H
 #define _DATA_OBJECT_H
 
-static g_iDataIDCounter = 0;
+static int g_iDataIDCounter = 0;
 #define DATA_ID(sig) const DWORD sig = g_iDataIDCounter++;
 #define DATA_ID_CONST(i, sig) const DWORD sig = i;
 
