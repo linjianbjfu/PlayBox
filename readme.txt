@@ -1,3 +1,4 @@
+
 申请ID是本地计算
 封装一个函数，计算好的放在reg里
 
@@ -102,3 +103,5 @@ function check_num($mac){
 1小夏的安装包
 3和server端的对接
 4主程序的icogaochaohua
+
+test
