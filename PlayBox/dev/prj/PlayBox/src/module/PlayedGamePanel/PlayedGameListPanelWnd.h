@@ -41,4 +41,6 @@ protected:
 public:
 	void	Recycle();
 	void	ReSetGameList(GameList arrGames);
+private:
+	void PlaySelectedItem();
 };

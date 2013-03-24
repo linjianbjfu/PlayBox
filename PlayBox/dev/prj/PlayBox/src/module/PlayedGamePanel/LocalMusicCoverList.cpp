@@ -40,21 +40,7 @@ CLocalMusicCoverList::CLocalMusicCoverList()
 	m_gdires.colDetail = pSkinMgr->GetColor( "PlayedGameDetailTextColor" );
 	m_gdires.colListBK = pSkinMgr->GetColor( "PlayedGameBkColor" );
 	m_gdires.colName = pSkinMgr->GetColor( "PlayedGameNameColor" );
-	
-	int iValue = 0;
-	AfxGetUserConfig()->GetConfigIntValue( CONF_APP_MODULE_NAME,CONF_APP_PLAYED_ICON_SIZE, iValue);
-	switch( iValue )
-	{
-	case 0: //小图标
-		SetItemWH(80,80);
-		break;
-	case 1:
-		SetItemWH(100,100);
-		break;
-	default:
-		SetItemWH(130,130);
-		break;
-	}
+	SetItemWH(92,92);
 }
 
 CLocalMusicCoverList::~CLocalMusicCoverList()
@@ -149,10 +135,7 @@ void CLocalMusicCoverList::OnPaint()
 		m_PaintScrollBar = FALSE;
 	}
 	CPaintDC dc(this); 
-	CRect rcClient;
-	GetClientRect(&rcClient);
 	CSize sz = CSize(m_rect.Width(),m_rect.Height());
-	
 	dc.BitBlt(0,0,sz.cx,sz.cy,&m_dcMem,0,0,SRCCOPY);
 }
 
@@ -180,23 +163,18 @@ void CLocalMusicCoverList::SetItemWH(int iItemWidth, int iItemHeight)
 void CLocalMusicCoverList::SetImgState(LMCImgState is)
 {
 	m_ImgState=is;
-	int iValue = 0;
 	switch(m_ImgState)
 	{
 	case LMCI_Small:
 		SetItemWH(80,80);
-		iValue = 0;
 		break;
 	case LMCI_Middle:
-		SetItemWH(100,100);
-		iValue = 1;
+		SetItemWH(92,92);
 		break;
 	case LMCI_Big:
 		SetItemWH(130,130);
-		iValue = 2;
 		break;
 	}
-	AfxGetUserConfig()->SetConfigIntValue( CONF_APP_MODULE_NAME,CONF_APP_PLAYED_ICON_SIZE, iValue);
 	m_ptClientStart.SetPoint(0,0);
 	UpdateList();
 	OnMemoryDraw();
@@ -309,10 +287,13 @@ void CLocalMusicCoverList::OnDrawTracker()
 
 void CLocalMusicCoverList::OnMemoryDraw(BOOL blRePaint/* =TRUE */)
 {
-	if (m_rect.Width()==0) return;
+	if (m_rect.Width() == 0) 
+		return;
+
 	m_dcMem.FillSolidRect(&m_rect,m_gdires.colListBK);
 	
-	if (m_rect.Width()<550&&m_rect.Height()>m_rcRealRect.Height())
+	if (m_rect.Width() <550 && 
+		m_rect.Height() > m_rcRealRect.Height())
 	{// 右边与RmPanel区域的分割线
 		CRect rcRightLine=m_rect;
 		rcRightLine.left=rcRightLine.right-1;
@@ -322,14 +303,16 @@ void CLocalMusicCoverList::OnMemoryDraw(BOOL blRePaint/* =TRUE */)
 	OnCalcTracker();
 	int iHeightSpace=0;
 	int iWidthSpace=0;
-	if (m_ImgState==LMCI_Small)
+	if (m_ImgState == LMCI_Small)
 		iHeightSpace = m_iItemHeight+SPACEH + ITEMTXTH + SPACEH*2;
 	else
 		iHeightSpace = m_iItemHeight+SPACEH + ITEMTXTH + SPACEH + ITEMTXTH + SPACEH*3;
-	if (m_ImgState==LMCI_Small)
+
+	if (m_ImgState == LMCI_Small)
 		iWidthSpace = SPACEWS;
 	else
 		iWidthSpace = SPACEW;
+
 	CPoint ptS = m_ptClientStart;
 	ptS.x = iWidthSpace+m_ptClientStart.x;
 	ptS.y = SPACEH+m_ptClientStart.y;
@@ -355,14 +338,9 @@ void CLocalMusicCoverList::OnMemoryDraw(BOOL blRePaint/* =TRUE */)
 			else
 			{
 				if (ptS.y+iHeightSpace>=m_rect.top)
-				{
 					DrawItem(ptS,m_DataMgr.m_vItem[i]);
-				}
-				else
-				{
-					// 超出屏幕的区域只是计算Item所在的区域，并不绘制
+				else// 超出屏幕的区域只是计算Item所在的区域，并不绘制
 					CalcHideItemRect(ptS,m_DataMgr.m_vItem[i]);
-				}
 				//ptS.x = ptS.x+m_iItemWidth+SPACEW;
 				ptS.x = ptS.x+m_iItemWidth+iWidthSpace;
 			}
@@ -370,7 +348,6 @@ void CLocalMusicCoverList::OnMemoryDraw(BOOL blRePaint/* =TRUE */)
 	}
 	// 绘制拖拽区域
 	OnDrawTracker();
-	//Invalidate();
 	RedrawWindow();
 
 	int lenVbar = (float)m_rect.Height()/m_rcRealRect.Height()*m_rect.Height();
@@ -534,21 +511,22 @@ void CLocalMusicCoverList::DrawItem(CPoint ptS, LMC_ItemInfo& lmci)
 	lmci.rc.top = ptS.y+iSpaceforline/2;
 	lmci.rc.right = ptS.x+m_iItemWidth-iSpaceforline/2;
 	lmci.rc.bottom = ptS.y+m_iItemHeight-iSpaceforline/2;
+	//外边框不画了
 	// 绘制选中框
-	if (lmci.blSel)
-	{
-		Graphics   graphics(m_dcMem.GetSafeHdc()); 
-		graphics.SetSmoothingMode(SmoothingModeHighQuality );
-		int dis = 10;
-		int ipy=8;
-		COLORREF col = AfxGetUIManager()->UIGetSkinMgr()->GetColor("PlayedGameFrameBorder");
-		Color colPen;
-		colPen.SetFromCOLORREF( col );
-		Pen grpen(colPen,3);
-		//GraphicsPath * pPath = MakeRoundRect(Point(ptS.x+2,ptS.y+2),Point(ptS.x+m_iItemWidth-6, ptS.y+m_iItemHeight-5), 10);
-		GraphicsPath * pPath = MakeRoundRect(Point(ptS.x,ptS.y),Point(ptS.x+m_iItemWidth-8, ptS.y+m_iItemHeight-8), 30);
-		graphics.DrawPath(&grpen,pPath);
-	}
+	//if (lmci.blSel)
+	//{
+	//	Graphics   graphics(m_dcMem.GetSafeHdc()); 
+	//	graphics.SetSmoothingMode(SmoothingModeHighQuality );
+	//	int dis = 10;
+	//	int ipy=8;
+	//	COLORREF col = AfxGetUIManager()->UIGetSkinMgr()->GetColor("PlayedGameFrameBorder");
+	//	Color colPen;
+	//	colPen.SetFromCOLORREF( col );
+	//	Pen grpen(colPen,3);
+	//	//GraphicsPath * pPath = MakeRoundRect(Point(ptS.x+2,ptS.y+2),Point(ptS.x+m_iItemWidth-6, ptS.y+m_iItemHeight-5), 10);
+	//	GraphicsPath * pPath = MakeRoundRect(Point(ptS.x,ptS.y),Point(ptS.x+m_iItemWidth-8, ptS.y+m_iItemHeight-8), 30);
+	//	graphics.DrawPath(&grpen,pPath);
+	//}
 	// 绘制文本
 	CFont *pOldFont = m_dcMem.GetCurrentFont();
 	COLORREF oldText = m_dcMem.GetTextColor();

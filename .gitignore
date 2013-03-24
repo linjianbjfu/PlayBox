@@ -20,3 +20,5 @@
 *.htm
 *.asm
 *.dat
+*.dep
+*.user

@@ -20,16 +20,12 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 public:
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext = NULL);
-public:
-	
 	// 功能：设置每一项的高度及宽度
 	// 参数：iItemWidth	宽度
 	// 参数：iItemHeight 高度
 	// 返回值：void
 	void SetItemWH(int iItemWidth, int iItemHeight);
-
 	void SetImgState(LMCImgState is);
-
 	// 功能：插入一项
 	// 参数：pImg	显示图片
 	// 参数：strItemName 项的名称
@@ -45,7 +41,6 @@ public:
 	// 功能：获取选中Item的Index
 	// 返回值：vector<int> 一组Index 
 	vector<int> GetSelectItem();
-
 	LMC_ItemInfo GetItemInfoByIndex(int iItem);
 
 	// 设置滚动条
@@ -75,8 +70,6 @@ protected:
 	// 绘制圆角矩形GDI+
 	//void DrawRoundRect(Graphics& gc, Pen& pen, int x,int y,int w, int h, int X, int Y);
 	GraphicsPath* MakeRoundRect(Point topLeft, Point bottomRight, INT percentageRounded);
-
-
 	// 将所有项置为未选择状态
 	void UnSelectAll();
 	// 更新
@@ -99,7 +92,6 @@ private:
 	GdiRes				m_gdires;			// 绘图相关资源
 	BOOL				m_blMutil;			// 多选
 	int					m_iPreSel;
-	
 	//===============================================================
 	CDC					m_dcTracker;		// 位图dc
 	CBitmap				m_bmpTracker;		// 内存位图
@@ -111,7 +103,6 @@ private:
 	UINT				m_vScrDownTimer;	// 向下自动滚屏定时器
 	UINT				m_vScrUpTimer;		// 向上自动滚屏定时器
 	//================================================================
-
 	BOOL				m_blIsJudgeDrag;	// 判断多拽
 	CBitmap*			m_pBitmapYes;		// yes 
 	CBitmap*			m_pBitmapNo;		// no
@@ -119,7 +110,6 @@ private:
 	CDibBitmap*	m_pBitmapScrollHorz;
 	bool m_bInit;
 	BOOL m_PaintScrollBar;
-	
 	Gdiplus::Image *pImageFrame;
 
 protected:

@@ -107,6 +107,11 @@ BOOL PlayedGameListPanelWnd::OnCommand(WPARAM wParam, LPARAM lParam)
 void PlayedGameListPanelWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	__super::OnLButtonDblClk(nFlags, point);
+	PlaySelectedItem();
+}
+
+void PlayedGameListPanelWnd::PlaySelectedItem()
+{
 	std::vector<int> vSel = GetSelectItem();
 	if ( vSel.size() > 0 )
 	{
@@ -139,7 +144,7 @@ void PlayedGameListPanelWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 			tItem.strTitle = string(ii.strItemName);
 			GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
 		}
-	}	
+	}
 }
 
 int PlayedGameListPanelWnd::ReGetData()
@@ -294,16 +299,17 @@ void PlayedGameListPanelWnd::OnMouseMove(UINT nFlags, CPoint point)
 void PlayedGameListPanelWnd::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	__super::OnLButtonDown(nFlags, point);
-	
-	int iItem;
-	BOOL blHittest = HitTest(iItem,point);
-	if (blHittest)
-	{
-		CRect rc=m_DataMgr.m_vItem[iItem].rc;
-		rc.SetRect(rc.right-32,rc.bottom-32,rc.right-7,rc.bottom-7);
-		if (rc.PtInRect(point))
-			DrawPlayBtn(rc,FALSE);
-	}
+	PlaySelectedItem();
+	//单击选中一个item
+	//int iItem;
+	//BOOL blHittest = HitTest(iItem,point);
+	//if (blHittest)
+	//{
+	//	CRect rc=m_DataMgr.m_vItem[iItem].rc;
+	//	rc.SetRect(rc.right-32,rc.bottom-32,rc.right-7,rc.bottom-7);
+	//	if (rc.PtInRect(point))
+	//		DrawPlayBtn(rc,FALSE);
+	//}
 }
 
 void PlayedGameListPanelWnd::OnLButtonUp(UINT nFlags, CPoint point)
