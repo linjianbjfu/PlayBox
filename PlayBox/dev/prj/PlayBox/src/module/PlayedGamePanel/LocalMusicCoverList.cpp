@@ -256,13 +256,11 @@ void CLocalMusicCoverList::OnCalcTracker()
 			m_rcTracker.top = point.y;
 			m_rcTracker.bottom = m_ptDown.y;
 		}
-
 		// 确定拖拽矩形左右边界不出界
 		if (m_rcTracker.left<m_rect.left)
 			m_rcTracker.left = m_rect.left;
 		if (m_rcTracker.right>m_rect.right)
 			m_rcTracker.right = m_rect.right;
-
 	}
 }
 
@@ -289,20 +287,11 @@ void CLocalMusicCoverList::OnMemoryDraw(BOOL blRePaint/* =TRUE */)
 {
 	if (m_rect.Width() == 0) 
 		return;
-
 	m_dcMem.FillSolidRect(&m_rect,m_gdires.colListBK);
-	
-	if (m_rect.Width() <550 && 
-		m_rect.Height() > m_rcRealRect.Height())
-	{// 右边与RmPanel区域的分割线
-		CRect rcRightLine=m_rect;
-		rcRightLine.left=rcRightLine.right-1;
-		m_dcMem.FillSolidRect(&rcRightLine,RGB(165,186,214));
-	}
 	// 首先计算拖拽区域
 	OnCalcTracker();
-	int iHeightSpace=0;
-	int iWidthSpace=0;
+	int iHeightSpace = 0;
+	int iWidthSpace = 0;
 	if (m_ImgState == LMCI_Small)
 		iHeightSpace = m_iItemHeight+SPACEH + ITEMTXTH + SPACEH*2;
 	else
@@ -314,7 +303,7 @@ void CLocalMusicCoverList::OnMemoryDraw(BOOL blRePaint/* =TRUE */)
 		iWidthSpace = SPACEW;
 
 	CPoint ptS = m_ptClientStart;
-	ptS.x = iWidthSpace+m_ptClientStart.x;
+	ptS.x = 45+m_ptClientStart.x;
 	ptS.y = SPACEH+m_ptClientStart.y;
 	
 	for(int i=0;i<m_DataMgr.m_vItem.size();i++)
@@ -322,7 +311,6 @@ void CLocalMusicCoverList::OnMemoryDraw(BOOL blRePaint/* =TRUE */)
 		if (ptS.x+m_iItemWidth>m_rect.right)
 		{
 			ptS.y = ptS.y + iHeightSpace;
-			//ptS.x = m_ptClientStart.x+SPACEW;
 			ptS.x = m_ptClientStart.x+iWidthSpace;
 			i--;// 这个超屏幕了，下一个画的时候还要画这个，所以这里要减1
 		}
