@@ -165,6 +165,29 @@ bool MyMusic::GetMacAddress(char *szMac)
 	}
 }
 
+bool MyMusic::GetKYMacString(std::string& strMac)
+{
+	char szMac[13] = {0};
+	if (!GetMacAddress(szMac))
+		return false;
+	//mac的12位字符里,对第一个字符开始，相隔的6个字符
+	//如果是字符，就用10进制的个位数
+	//如果是数字，就用10减去这个数
+	char szLater[7] = {0};
+	for (int i=0; i<6; i++)
+	{
+		int j = i*2 + 1;
+		szMac[j] = tolower(szMac[j]);
+		if (szMac[j] >= 'a')
+			szLater[i] = szMac[j]- 'a' + '0';
+		else
+			szLater[i] = '9' - szMac[j] + '0';
+	}
+	strMac.append(szMac);
+	strMac.append(szLater);
+	return false;
+}
+
 bool MyMusic::GetOSVersion( char* szOSVersion )
 {
 	OSVERSIONINFO osinfo;
