@@ -50,7 +50,6 @@ void CWebSubWnd::OnNavigateError(LPCTSTR lpszURL, LPCTSTR lpszFrame, DWORD dwErr
 		Navigate2(str.c_str(), navNoReadFromCache, NULL);
 		m_bSucceed = FALSE;
 
-		LogUserActMsg("ERROR", "WEB_COMMEND_ERR");
 		CJudgeFirewall::SetHTTPRes( HTTP_WEB_COMMAND,0 );
 	}
 }
@@ -66,12 +65,7 @@ HRESULT CWebSubWnd::OnGetHostInfo(DOCHOSTUIINFO *pInfo)
 void CWebSubWnd::OnNavigateComplete2( LPCTSTR strURL )
 {
 	if( m_strURL == strURL )
-	{
-		char szBuf[32];
-		sprintf(szBuf,"T:%d",GetTickCount() - m_dwStartShowTime );
-		LogUserActMsg("WEBLOADRECOM",szBuf);
 		CJudgeFirewall::SetHTTPRes( HTTP_WEB_COMMAND,1 );
-	}	
 
 	m_dwStartShowTime = 0;
 	if(strstr(strURL, "skinerror") != 0)

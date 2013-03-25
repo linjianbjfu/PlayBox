@@ -49,10 +49,7 @@ void CSubSkinButton::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		delrc.SetRect(rc.right-m_pPngDeleteNormal->m_pBitmap->GetWidth()-5,2,rc.right+2,2+m_pPngDeleteNormal->m_pBitmap->GetHeight());
 		if(PtInRect(&delrc,point)&& strcmp(m_string,"1"))//&&m_bShowDel
-		{
 			m_bClickPng = 1;
-			LogUserActMsg(STR_USER_CLICK, string("BTN:DELETE_BTN_"+m_string));
-		}
 	}
 	CSkinButton::OnLButtonDown(nFlags, point);
 }
@@ -299,13 +296,11 @@ BOOL CSubSkinButton::IsClickPng()
 
  void CSubSkinButton::OnDeleteSkin()
  {
-	 LogUserActMsg(STR_USER_CLICK, string("BTN:DELETE_MENU_"+m_string));
 	 m_bClickPng = 1;
 	 CSkinButton::OnLButtonDown(0, 0);
  }
 
  void CSubSkinButton::OnMoreSkin()
  {
-	 LogUserActMsg(STR_USER_CLICK, "BTN:DOWN_MORE_MENU");
 	 ShellExecute(NULL, "open", _T("iexplore"), "http://www.kuwo.cn/skin/", NULL, SW_SHOWNORMAL);
  }

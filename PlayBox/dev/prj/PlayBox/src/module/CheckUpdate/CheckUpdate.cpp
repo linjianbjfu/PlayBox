@@ -1,6 +1,3 @@
-// CheckUpdate.cpp : implementation file
-//
-
 #include "stdafx.h"
 #include "resource.h"
 #include "PlayBox.h"
@@ -14,6 +11,7 @@
 #include "LhcImg.h"
 #include "YL_DirInfo.h"
 #include "YL_EncFileReg.h"
+#include "YL_UserId.h"
 
 #define UPDATE_CONF	"\\Update.ini"
 #define UPDATE_SECTION "Update"
@@ -23,8 +21,6 @@
 #define UPDATE_PATH	"\\Update"
 #define TIMER_ID_CHKDOWN	1002
 #define PROGRESS_LEN	0.10
-
-// CCheckUpdate dialog
 
 IMPLEMENT_DYNAMIC(CCheckUpdate, CDialog)
 CCheckUpdate::CCheckUpdate(CWnd* pParent /*=NULL*/)
@@ -44,7 +40,6 @@ m_bDown(false)
 	m_pBtnChkInstall	= new CxSkinButton;
 	m_pBtnChkIsDown = new CxSkinButton;
 	m_pBtnChkClose	= new CxSkinButton;
-	//m_pHTTPDownFile = new YL_CHTTPDownFile;
 	memset(m_szUpdateServ,0,sizeof(m_szUpdateServ));
 	memset(m_szUpdateUrl,0,sizeof(m_szUpdateUrl));
 	m_bRun = false;
@@ -52,26 +47,21 @@ m_bDown(false)
 
 CCheckUpdate::~CCheckUpdate()
 {
-	if(m_pBtnChkInstall != NULL)
-	{
-		delete m_pBtnChkInstall;
-	}
-	if(m_pBtnChkDone != NULL)
-	{
-		delete m_pBtnChkDone;
-	}
-	m_pBtnChkCancel == NULL ? NULL:(delete m_pBtnChkCancel);
-	m_pBtnChkIsDown == NULL ?NULL:(delete m_pBtnChkIsDown);
-	m_pBtnChkClose	== NULL ? NULL:(delete m_pBtnChkClose);
-	m_hMutexhandle	== NULL ? NULL:(CloseHandle(m_hMutexhandle));
-	m_hDownMutexhandle == NULL ? NULL:(CloseHandle(m_hDownMutexhandle));
+	delete m_pBtnChkInstall;
+	delete m_pBtnChkDone;
+	delete m_pBtnChkCancel;
+	delete m_pBtnChkIsDown;
+	delete m_pBtnChkClose;
+	if (m_hMutexhandle)
+		CloseHandle(m_hMutexhandle);
+	if (m_hDownMutexhandle)
+		CloseHandle(m_hMutexhandle);
 }
 
 void CCheckUpdate::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 }
-
 
 BEGIN_MESSAGE_MAP(CCheckUpdate, CDialog)
 	ON_BN_CLICKED(IDC_BTN_CHK_INSTALL,OnBnClickedInstall)
@@ -87,7 +77,6 @@ BEGIN_MESSAGE_MAP(CCheckUpdate, CDialog)
 	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
-
 // CCheckUpdate message handlers
 void CCheckUpdate::LoadSkin()
 {
@@ -98,7 +87,6 @@ void CCheckUpdate::LoadSkin()
 	m_pBmpBkChkNoUp = pSkinMgr->GetDibBmp("bkChkNoUp");
 	m_pBmpBkChkInstall = pSkinMgr->GetDibBmp("bkChkIntall");
 	m_pBmpBkChkCur = m_pBmpBkChkCheckingUpdate;
-
 	m_pBmpBg_Full  = pSkinMgr->GetDibBmp( "Progress_Bg_Full" );
 	m_pBmpBgM  = pSkinMgr->GetDibBmp( "Progress_Bg_M" );
 	m_pBmpBgR  = pSkinMgr->GetDibBmp( "Progress_Bg_R" );
@@ -109,26 +97,27 @@ void CCheckUpdate::OnBnClickedCancel()
 	SendMessage(WM_CLOSE);
 	CDialog::OnCancel();
 }
+
 void CCheckUpdate::OnBnClickedDone()
 {
-	this->OnBnClickedCancel();
+	OnBnClickedCancel();
 }
+
 void CCheckUpdate::OnBnClickedInstall()
 {
 	char szCurPath[MAX_PATH];
 	::GetCurrentDirectory(MAX_PATH,szCurPath);
 	strcat(szCurPath,UPDATE_PATH);
 	strcat(szCurPath,"\\UpdateInstall.exe");
-
 	ShellExecute(NULL,"Open",szCurPath,NULL,NULL,SW_SHOW);
 	CDialog::OnOK();
 }
+
 int CCheckUpdate::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CDialog::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	// TODO:  Add your specialized creation code here
 	LoadSkin();
 	SetWindowPos(NULL, 0, 0, 320, 180, SWP_NOMOVE);
 	COLORREF color(RGB(255, 0, 255));
@@ -164,7 +153,6 @@ void CCheckUpdate::CheckUpdate()
 		m_pBtnChkDone->ShowWindow(SW_HIDE);
 		m_pBtnChkIsDown->ShowWindow(SW_HIDE);
 		m_pBtnChkInstall->ShowWindow(SW_HIDE);
-		
 	}
 	//Detect whether there is another update process.
 	SECURITY_DESCRIPTOR     sd_wideopen;
@@ -186,7 +174,6 @@ void CCheckUpdate::CheckUpdate()
 		m_hMutexhandle = NULL;
 		return;
 	}
-	
 	::AfxBeginThread(checkUpdate,(LPVOID)this->m_hWnd);
 }
 UINT __cdecl checkUpdate(LPVOID pParam)
@@ -194,34 +181,20 @@ UINT __cdecl checkUpdate(LPVOID pParam)
 	//http://g.najiuwan.com/up/up.php?type=box&qudao=all&ver=1.10&instime=2013-01-12&action=1
 	YL_CHTTPRequest http;
 	char szUpdateServUrl[1024]={0},szUpdateServ[1024]={0};
-	char szUserID[INT_SERV_LEN]={0},szVer[16]={0},szInstTime[]={"2013-01-12"},szMarketChannel[]={"all"};
+	char szInstTime[]={"2013-01-12"},szMarketChannel[]={"all"};
 	HWND hWnd = (HWND)pParam;
-#ifndef DEBUG
+
 	CLhcImg::GetUpdateServer(szUpdateServ,INT_SERV_LEN);
-	assert(std::strlen(szUpdateServ )!= 0);
-	/*if(std::strlen(szUpdateServ) == 0)
-	{
-		MessageBox("Update server not found.","Warning!",MB_OK|MB_ICONEXCLAMATION);
-		SendMessage(WM_CLOSE);
-		return ;
-	}*/
-	CLhcImg::GetUserID(szUserID,INT_USER_LEN);
-	assert(std::strlen(szUserID) != 0);
-	CLhcImg::GetSoftwareVersion(szVer,16);
-	assert(std::strlen(szVer) != 0);
-#else  DEBUG
-	_snprintf(szUpdateServ,1024,"%s","http://g.najiuwan.com/up");
-	_snprintf(szVer,16,"%s","1.10");
-#endif
+
+	std::string strID;
+	YL_UserId::Get(YL_UserId::USER_ID, strID);
 	
-	
-	
-#ifdef DEBUG
-	_snprintf(szUpdateServUrl,1024,"%s/up.php?type=box&qudao=%s&instime=%s&action=1",szUpdateServ,szMarketChannel,szInstTime);
-#else
+	std::string strVersion;
+	YL_UserId::Get(YL_UserId::VERSION, strVersion);
+
 	_snprintf(szUpdateServUrl,1024,"%s/up.php?type=box&id=%s&qd=%s&v=%s&instime=%s",\
-		szUpdateServ,szUserID,szMarketChannel,szVer,szInstTime);
-#endif
+		szUpdateServ,strID.c_str(), szMarketChannel, strVersion.c_str(), szInstTime);
+
 	if( http.Request( szUpdateServUrl ,YL_CHTTPRequest::REQUEST_GET,30*1000 ) )
 	{
 		FILE *fp = NULL;
@@ -230,12 +203,12 @@ UINT __cdecl checkUpdate(LPVOID pParam)
 		strcat(tempFile,UPDATE_CONF);
 		if((fp = fopen(tempFile,"w+"))  != NULL)
 		{
-			long		   lConLen = 0;
+			long lConLen = 0;
 			unsigned char* pContent = http.GetContent(lConLen);
 			fprintf(fp,"%s",pContent);
 			fclose(fp);
 		}
-		float fOldVer = atof(szVer);
+		float fOldVer = atof(strVersion.c_str());
 		float fNewVer=0;
 		char szNewVer[16]={0}; 
 		update_param_t *pPara = new update_param_t;
@@ -275,6 +248,7 @@ void CCheckUpdate::OnBnClickedIsDown()
 	m_bDown = true;
 	DownloadPackage();
 }
+
 UINT __cdecl downloadPackage(LPVOID lPvoid)
 {
 	char szUpdateUrl[1024] ;
@@ -283,9 +257,7 @@ UINT __cdecl downloadPackage(LPVOID lPvoid)
 	strcpy(szUpdateUrl,pPara->szDownloadUrl);
 
 	if(szUpdateUrl == NULL )
-	{
 		return 1;
-	}
 
 	char szCurPath[MAX_PATH] = {0};
 	DWORD dwSize = ::GetCurrentDirectory(MAX_PATH,szCurPath);
@@ -328,11 +300,8 @@ UINT __cdecl downloadPackage(LPVOID lPvoid)
 
 void CCheckUpdate::drawProgress(CDC *pDc,CRect rc)
 {
-	if( m_pBmpBg_Full == NULL || m_pBmpBgM == NULL 
-		|| m_pBmpBgR == NULL )
-	{
+	if( !m_pBmpBg_Full || !m_pBmpBgM || !m_pBmpBgR )
 		return;
-	}
 	//确定进度条范围：中心点向下30像素
 	CPoint ptCenter = rc.CenterPoint();
 	CRect rcProgressBarBg( rc );
@@ -380,20 +349,17 @@ void CCheckUpdate::OnPaint()
 	assert(m_pBmpBkChkCur != NULL);
 	m_pBmpBkChkCur->Draw(&MemDC,FALSE,RGB(255,255,255));
 
-	if(m_bDown == true)
-	{
+	if(m_bDown)
 		drawProgress(&MemDC,rect);
-	}
+
 	dc.BitBlt( 0, 0, rect.Width(), rect.Height(), &MemDC, 0, 0, SRCCOPY );
 	MemDC.RestoreDC(iSavedDC);
 	MemDC.DeleteDC();	
 	MemBitmap.DeleteObject();
-
 }
 
 LRESULT CCheckUpdate::OnNcHitTest(CPoint point)
 {
-	// TODO: Add your message handler code here and/or call default
 	CRect rc;
 	GetClientRect(&rc);
 	rc.bottom = rc.top + 40;
@@ -403,7 +369,6 @@ LRESULT CCheckUpdate::OnNcHitTest(CPoint point)
 
 void CCheckUpdate::OnTimer(UINT nIDEvent)
 {
-	// TODO: Add your message handler code here and/or call default
 	switch(nIDEvent)
 	{
 	case TIMER_ID_CHKDOWN:
@@ -424,9 +389,7 @@ void CCheckUpdate::OnTimer(UINT nIDEvent)
 				m_pBtnChkIsDown->ShowWindow(SW_HIDE);   
 			}
 			else
-			{
 				Invalidate();
-			}
 		}
 		break;
 	default:
@@ -439,13 +402,11 @@ void CCheckUpdate::OnBnClickedClose()
 {
 	SendMessage(WM_CLOSE);
 }
+
 BOOL CCheckUpdate::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-
-	// TODO:  Add extra initialization here
-	CheckUpdate();		
-
+	CheckUpdate();
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -453,7 +414,6 @@ BOOL CCheckUpdate::OnInitDialog()
 LRESULT CCheckUpdate::OnUserMsg(WPARAM wParam, LPARAM lParam)
 {
 	update_param_t* para = (update_param_t* )wParam;
-	
 	if(para->isNewer == true)
 	{
 		StrCpy(m_szUpdateUrl ,para->szUpdateUrl);
@@ -473,8 +433,6 @@ LRESULT CCheckUpdate::OnUserMsg(WPARAM wParam, LPARAM lParam)
 				m_pBtnChkDone->ShowWindow(SW_HIDE);
 				m_pBtnChkIsDown->ShowWindow(SW_SHOW);
 			}
-
-			
 		}
 		else
 		{

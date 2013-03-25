@@ -84,24 +84,15 @@ bool CMarkupArchive::Save()
 		f.Close();
 
 		if(len == 0)
-		{
-			LogUserActMsg("SAVEPANEL", string("panel.xml.temp is 0 byte:" + szFileName));
 			return false;
-		}
+
 		Close();
 		if(!Open(szFileName))
-		{
-			LogUserActMsg("SAVEPANEL", string("Open panel.xml.temp file failed:" + szFileName));
 			return false;
-		}
 		else
 			Close();
-		//CFile::Remove(m_sFileName);
-		//CFile::Rename(szFileName, m_sFileName);
-		if(!CopyFile(szFileName, m_strRealFileName, FALSE))
-		{
-			LogUserActMsg("SAVEPANEL", string("Copy panel.xml.temp to panel.xml failed:" + szFileName));
-		}
+
+		CopyFile(szFileName, m_strRealFileName, FALSE);
 	}
 	return true;
 }

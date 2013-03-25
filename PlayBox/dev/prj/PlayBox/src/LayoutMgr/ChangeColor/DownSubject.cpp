@@ -19,7 +19,6 @@ HANDLE s_Event = NULL;
 
 DWORD WINAPI	DownSub_Thread(void* ppar)
 {
-	YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","4");
 	YL_CHTTPDownFile* httpDownFile = new YL_CHTTPDownFile;
 	::PostMessage( s_hMsgWnd,MSG_DOWNSUBSTART,(WPARAM)httpDownFile,0);
 
@@ -27,23 +26,17 @@ DWORD WINAPI	DownSub_Thread(void* ppar)
 	while( iRetryTime < 3 )
 	{	
 		YL_StringUtil::Format(s_strDesFile,"%s%d",s_strDesFile.c_str(),GetTickCount());
-		YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","5");
 		if( httpDownFile->DownloadFile( s_strURL,s_strDesFile) )
-		{			
-			YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","6");
+		{
 			char szbuffer[512];
 			CLhcImg::GetHomePath(szbuffer,512);
 			strcat(szbuffer,"\\skin\\");
 
 			vector<string> vec;
 			if( YL_CFileZip::UnCompress( s_strDesFile.c_str(), szbuffer,vec,true) )
-			{
 				::PostMessage( s_hMsgWnd,MSG_DOWNSUBCLOSE,1,0);
-			}
 			else
-			{
 				::PostMessage( s_hMsgWnd,MSG_DOWNSUBCLOSE,0,0);
-			}		
 			break;
 		}
 		iRetryTime++;
@@ -55,8 +48,7 @@ DWORD WINAPI	DownSub_Thread(void* ppar)
 	{
 		delete httpDownFile;
 		::PostMessage( s_hMsgWnd,MSG_DOWNSUBCLOSE,0,0);
-	}	
-	YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","8");
+	}
 
 	return 0;
 }

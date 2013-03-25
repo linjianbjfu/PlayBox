@@ -15,22 +15,17 @@ IData* CPanelChange::GetInstance()
 
 void CPanelChange::DataAppStart()
 {
-	YL_Log( STR_LOG_FILE,LOG_NOTICE,"CPanelChangeData","DataAppStart");
 	m_bFullScreen = false;
 	pWndFullScreen = NULL;
-	YL_Log( STR_LOG_FILE,LOG_NOTICE,"CPanelChangeData","DataAppStart--OUT");
 }
 
 void CPanelChange::DataAppExit()
 {
-	YL_Log( STR_LOG_FILE,LOG_NOTICE,"CPanelChangeData","DataAppExit");
 	delete this;
-	YL_Log( STR_LOG_FILE,LOG_NOTICE,"CPanelChangeData","DataAppExit--out");
 }
 
 void CPanelChange::IPanelChange_ToFullScreen( CWnd* pWnd )
 {
-	YL_Log("ShowUI.txt",LOG_DEBUG,"ToFull","ToFull");
 	AfxGetMainWindow()->ShowWindow( SW_SHOW );
 	m_bFullScreen = true;
 	pWndFullScreen = pWnd;

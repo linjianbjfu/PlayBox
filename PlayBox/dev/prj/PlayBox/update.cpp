@@ -4,7 +4,6 @@
 #include "YL_FileInfo.h"
 #include "YL_DirInfo.h"
 #include "YL_EncFileReg.h"
-#include "../../../../CommonLib/prj/Update/Update.h"
 #include "./src/AppConfig/config/ConfigAppDef.h"
 #include "./src/AppConfig/config/ConfigSettingDef.h"
 #include "./src/core/AfxGlobals.h"
@@ -123,7 +122,6 @@ void runPopUpUpdate(LPVOID pparam)
 			_snprintf(uppath, MAX_PATH-1, "%s\\update", dir);
 			win32Showexec(setupexe, uppath, false);
 			//πÿ±’”Œœ∑∫–
-			YL_Log(UPDATE_LOG, LOG_NOTICE, "runPopUpUpdate", "SendMessage to Close Player %s.", playerName.c_str());
 			if(playerName == "PLAYBOX")
 				PostMessage(*((HWND*)pparam), WM_CLOSE, 0,0);
 			else

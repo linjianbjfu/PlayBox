@@ -98,17 +98,13 @@ BOOL CMinOrExit::OnInitDialog()
 	int x,y;
 	x=(wndRect.left+wndRect.right)/2-160;
 	y=(wndRect.top+wndRect.bottom)/2-90;
-	YL_Log("MinOrExit.txt",LOG_DEBUG,"OnInitDialog","win rect x: %d, y: %d, r: %d, b: %d.", wndRect.left, wndRect.top, wndRect.right, wndRect.bottom);
 	int screenX=GetSystemMetrics(SM_CXSCREEN);
 	int screenY=GetSystemMetrics(SM_CYSCREEN);
 	if (x>=0)
-	{
 		winPos.left=x;
-	}
 	else
-	{
 		winPos.left=20;
-	}
+
 	winPos.right=winPos.left+320;
 	
 	if (winPos.right>screenX)
@@ -117,13 +113,10 @@ BOOL CMinOrExit::OnInitDialog()
 		winPos.left=winPos.right-320;
 	}
 	if (y>0)
-	{
 		winPos.top=y;
-	}
 	else
-	{
 		winPos.top=20;
-	}
+
 	winPos.bottom=winPos.top+180;
 	if (winPos.bottom>screenY)
 	{

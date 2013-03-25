@@ -1241,10 +1241,6 @@
 				Name="Inc"
 				>
 				<File
-					RelativePath="..\..\..\..\CommonLib\prj\LhLogSvr\KwLogSvr.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\..\..\CommonLib\include\YL_FileZip.h"
 					>
 				</File>

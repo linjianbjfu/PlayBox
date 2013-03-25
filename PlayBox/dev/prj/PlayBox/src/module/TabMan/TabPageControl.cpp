@@ -77,6 +77,17 @@ void CTabPageControl::ITabBarOb_CreateNewTab(TAB_ITEM & item)
 		pWnd->Navigate();
 		pWndTmp = pWnd;
 	}else
+	if( item.enumType == TAB_GAME_NEWS )
+	{
+		MyWebBrowserWnd *pWnd = TabWndFactory::GetInstance()->CreateWndGameInfoPanel();
+		std::string strGameNewsUrl;
+		AfxGetUserConfig()->GetConfigStringValue( CONF_SETTING_MODULE_NAME,
+			CONF_SETTING_CONFIG_GAME_NEWS_URL, strGameNewsUrl);
+		if (!strGameNewsUrl.empty())
+			pWnd->Navigate(strGameNewsUrl);
+
+		pWndTmp = pWnd;
+	}else
 	if( item.enumType == TAB_FLASHGAME )
 	{
 		CFlashGamePanelWnd *pWnd = TabWndFactory::GetInstance()->CreateWndGamePanel();
@@ -206,6 +217,11 @@ void CTabPageControl::OpenHomePage()
 	tiGameCenter.strTitle = TAB_GAMECENTER_TITLE;
 	tiGameCenter.enumType  = TAB_HOME;
 	GLOBAL_TABBARDATA->ITabBar_ChangeTab( tiGameCenter );
+
+	TAB_ITEM tiGameNews;
+	tiGameNews.strTitle = TAB_GAMENEWS_TITLE;
+	tiGameNews.enumType  = TAB_GAME_NEWS;
+	GLOBAL_TABBARDATA->ITabBar_ChangeTab( tiGameNews );
 }
 
 void CTabPageControl::CallJS (LPVOID lpVoid)

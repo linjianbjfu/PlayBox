@@ -117,24 +117,19 @@ void CHostWndMgr::DetachAllMovingWnd()
 	if(m_vecHostWnds.size() == 0)
 		return ;
 
-	YL_Log(STR_LOG_FILE,LOG_DEBUG,"CUIManager","3");	
 	for(int i = 0 ; i<m_vecHostWnds.size(); i++)
 	{
 		CHostWnd* pHost = (CHostWnd*)m_vecHostWnds[i];
 		pHost->DetachWindow();
 	}
 
-	YL_Log(STR_LOG_FILE,LOG_DEBUG,"CUIManager","31");	
 	map<HWND, CWndData>::iterator it = m_mapContentWnd.begin();
 	while(it != m_mapContentWnd.end())
 	{
 		CWndData d = it->second;
 		it->second.pWnd->SetParent(it->second.pParentWnd);
-		//it->second.pWnd->SetParent(::AfxGetMainWindow());
 		it++;
 	}
-
-	YL_Log(STR_LOG_FILE,LOG_DEBUG,"CUIManager","32");	
 	for(int i = 0 ; i<m_vecHostWnds.size(); i++)
 	{
 		CHostWnd* pHost = (CHostWnd*)m_vecHostWnds[i];
@@ -142,19 +137,11 @@ void CHostWndMgr::DetachAllMovingWnd()
 		delete pHost;
 	}
 	m_vecHostWnds.clear();
-	YL_Log(STR_LOG_FILE,LOG_DEBUG,"CUIManager","33");	
 	CWindowsMover::GetInstance()->Clear();
-
-	YL_Log(STR_LOG_FILE,LOG_DEBUG,"CUIManager","34");	
 }
 
-//void CHostWndMgr::DetachMovingWnd(CHostWnd *pHostWnd)
-//{
-//	pHostWnd->get
-//}
 void CHostWndMgr::MoveMainWindow(CRect rcNew)
 {
-
 }
 
 void CHostWndMgr::test()

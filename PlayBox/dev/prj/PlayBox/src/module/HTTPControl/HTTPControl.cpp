@@ -130,39 +130,33 @@ static void  NotifyUpdate(int i)
 
 void CHTTPControl::HTTPFinish_TodayRecommend()
 {
-	YL_Log("log_httpr.txt",LOG_DEBUG,"HTTP-Finish","TodayRecommand");
 	SetEvent( s_EventTodayRecommend );
 	NotifyUpdate(1);
 }
 
 void CHTTPControl::HTTPFinish_BangDan()
 {
-	YL_Log("log_httpr.txt",LOG_DEBUG,"HTTP-Finish","BangDan");
 	SetEvent( s_EventBangDan );
 	NotifyUpdate(3);
 }
 
 void CHTTPControl::HTTPFinish_RegID()
 {
-	YL_Log("log_httpr.txt",LOG_DEBUG,"HTTP-Finish","RegID");
 	SetEvent( s_EventRegID );	
 	NotifyUpdate(2);
 }
 
 void CHTTPControl::HTTPFinish_ConfigFile()
 {
-	YL_Log("log_httpr.txt",LOG_DEBUG,"HTTP-Finish","ConfigFile");
 	SetEvent( s_EventConfigFile );
 }
 
 void CHTTPControl::HTTPFinish_UpClientLog()
 {
-	YL_Log("log_httpr.txt",LOG_DEBUG,"HTTP-Finish","UpClientLog");
 	SetEvent(s_EventUpClientLog );
 }
 
 void CHTTPControl::HTTPFinish_DownAD()
 {
-	YL_Log("log_httpr.txt",LOG_DEBUG,"HTTP-Finish","DownloadAD");
 	SetEvent(s_EventDownAD );
 }

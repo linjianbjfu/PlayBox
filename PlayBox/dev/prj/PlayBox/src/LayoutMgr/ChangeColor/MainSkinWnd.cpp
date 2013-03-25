@@ -362,7 +362,6 @@ void CMainSkinWnd::OnClickMoreCol()
 
 void CMainSkinWnd::OnClickDownMore()
 {
-	LogUserActMsg(STR_USER_CLICK, "BTN:DOWN_MORE");
 	ShellExecute(NULL, "open", _T("iexplore"), "http://www.kuwo.cn/skin/", NULL, SW_SHOWNORMAL);
 }
 

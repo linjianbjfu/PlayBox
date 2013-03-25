@@ -6,8 +6,6 @@
 #include "IUIManager.h"
 #include "IMessageManager.h"
 #include "../AppConfig/config/AfxUserConfig.h"
-#include "../../../../CommonLib/prj/Log/KwLogSvr.h"
-
 
 //获得数据管理类全局变量
 IDataManager*		AfxGetDataManager2();

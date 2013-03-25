@@ -236,15 +236,15 @@ void CTabBarWnd::DrawBar( CDC* pDc )
 		}
 	}
 	//5画newwindow按钮
-	if (m_bOverNewWindow)
-	{
-		m_pBmpNewWindowOver->SetCDibRect( m_rectNewWindow );
-		m_pBmpNewWindowOver->Draw( pDc, TRUE, m_colMask );
-	}else
-	{
-		m_pBmpNewWindowNormal->SetCDibRect( m_rectNewWindow );
-		m_pBmpNewWindowNormal->Draw( pDc, TRUE, m_colMask );
-	}
+	//if (m_bOverNewWindow)
+	//{
+	//	m_pBmpNewWindowOver->SetCDibRect( m_rectNewWindow );
+	//	m_pBmpNewWindowOver->Draw( pDc, TRUE, m_colMask );
+	//}else
+	//{
+	//	m_pBmpNewWindowNormal->SetCDibRect( m_rectNewWindow );
+	//	m_pBmpNewWindowNormal->Draw( pDc, TRUE, m_colMask );
+	//}
 }
 
 void CTabBarWnd::DrawTabItemRect( CDC* pDc, CRect& rcRect,
@@ -307,7 +307,7 @@ void CTabBarWnd::ITabBarOb_CreateNewTab(TAB_ITEM &item)
 	Invalidate();
 	if (item.enumType == TAB_WEBGAME)
 	{
-		//第一次点击游戏资讯，最大化
+		//第一次点击,最大化
 		static bool bHasClickGameInfo = false;
 		if (!bHasClickGameInfo)
 		{
@@ -399,7 +399,7 @@ void CTabBarWnd::CalcTabPosition()
 		
 		m_vecTab.push_back( rcBtn );
 	
-		if(i == 0 || i == 1) //头2个不能关闭
+		if(i == 0 || i == 1 || i == 2) //头3个不能关闭
 		{
 			rcClose.right = rcBtn.right - WIDTH_CLOSE_TO_RIGHT;
 			rcClose.left  = rcClose.right;	
@@ -444,16 +444,16 @@ void CTabBarWnd::OnLButtonDown(UINT nFlags, CPoint point)
 		GLOBAL_TABBARDATA->ITabBar_ChangeTab( tmpTI );
 	}
 	//是否落在了newwindow按钮上
-	if ( m_bOverNewWindow )
-	{
-		TAB_ITEM tItem;
-		tItem.enumType = TAB_BROWSER;
-		tItem.strTitle = TAB_BROWSER_DEFAULT_TITLE;
-		if (!m_strDefaultNewBrowserUrl.empty())
-			tItem.strParam = "url=" + m_strDefaultNewBrowserUrl;
+	//if ( m_bOverNewWindow )
+	//{
+	//	TAB_ITEM tItem;
+	//	tItem.enumType = TAB_BROWSER;
+	//	tItem.strTitle = TAB_BROWSER_DEFAULT_TITLE;
+	//	if (!m_strDefaultNewBrowserUrl.empty())
+	//		tItem.strParam = "url=" + m_strDefaultNewBrowserUrl;
 
-		GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
-	}
+	//	GLOBAL_TABBARDATA->ITabBar_ChangeTab(tItem);
+	//}
 	__super::OnLButtonDown(nFlags, point);
 }
 
@@ -474,7 +474,7 @@ void CTabBarWnd::OnMouseMove(UINT nFlags, CPoint point)
 		CalcTabPosition();
 		Invalidate();
 	}
-	m_bOverNewWindow = m_rectNewWindow.PtInRect(point);
+	//m_bOverNewWindow = m_rectNewWindow.PtInRect(point);
 
 	if( m_iTabOver != -1 )
 	{

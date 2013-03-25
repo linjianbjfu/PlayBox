@@ -77,8 +77,6 @@ typedef enum CP_STORAGE_BUS_TYPE {
 	CP_BusTypeMaxReserved = 0x7F
 } CP_STORAGE_BUS_TYPE, *CP_PSTORAGE_BUS_TYPE;
 
-
-
 BOOL GetDisksProperty(HANDLE hDevice, PSTORAGE_DEVICE_DESCRIPTOR pDevDesc);
 char chFirstDriveFromMask (ULONG unitmask);
 void ReInitUSB_Disk_Letter(char * szMoveDiskName);
@@ -88,5 +86,6 @@ HBITMAP LoadAnImage(const char* FileName);
 int PinOrUnpinCmd(int iResIndex);
 void TaskBarPin();
 void TaskBarUnPin();
+void SendInstallMsgToSvr(int iType);
 
 #endif

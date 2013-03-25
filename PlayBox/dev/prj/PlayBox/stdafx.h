@@ -52,7 +52,6 @@
 #include "./src/Core/IUIManager.h"
 #include "./src/Core/UIWindowID.h"
 #include "./AppConfig/config/AfxUserConfig.h"
-#include "../../../../CommonLib/prj/Log/KwLogSvr.h"
 #include "./src/GUI/CommonControl/ListCtrol/GdiEx.h"
 #define ULONG_PTR ULONG
 #include <gdiplus.h>

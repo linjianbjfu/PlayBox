@@ -141,10 +141,7 @@ bool CUIManager::UIManAppStart()
 		::AfxGetUIManager()->UIGetLayoutMgr()->LoadColors();
 		::AfxGetUIManager()->UIGetSkinMgr()->LoadWndsSkin();
 	}	
-
 	m_pPanesMgr->CreateLoadSubjectTread();
-	YL_Log( STR_LOG_FILE,LOG_NOTICE,"CUIManager","UIManAppStart-OUT" );
-
 	// 打开游戏大厅首页
 	CTabPageControl::GetInstance()->OpenHomePage();
 	return true;
@@ -153,11 +150,7 @@ bool CUIManager::UIManAppStart()
 //由系统调用，通知界面管理类程序退出
 void CUIManager::UIManAppExit()
 {
-	YL_Log( STR_LOG_FILE,LOG_NOTICE,"CUIManager","UIManAppExit======IN" );
-	YL_Log(STR_LOG_FILE,LOG_DEBUG,"CUIManager","1");	
 	this->UIGetLayoutMgr()->AppExit();
-	YL_Log(STR_LOG_FILE,LOG_DEBUG,"CUIManager","2");
-
 	list<IMessageObserver*> listOb;
 	AfxGetMessageManager()->QueryObservers( ID_MESSAGE_APPEXIT,listOb);
 
@@ -175,12 +168,9 @@ void CUIManager::UIManAppExit()
 
 	delete m_pAppSkin;
 	m_pAppSkin = NULL;
-	YL_Log( STR_LOG_FILE,LOG_NOTICE,"CUIManager","Del AppSkin" );
 	delete m_pPanesMgr;
 	m_pPanesMgr = NULL;
-	YL_Log( STR_LOG_FILE,LOG_NOTICE,"CUIManager","Del PanesMgr" );
 	m_pChangeColorMgr->DeleteObject();	
-	YL_Log( STR_LOG_FILE,LOG_NOTICE,"CUIManager","UIManAppExit" );
 	CoolSB_UninitializeApp();
 }
 
@@ -261,72 +251,49 @@ void CUIManager::CreateUIWindow(const char* pszWindowName )
 
 	if( strcmp( pszWindowName,"toppanel") == 0 )
 	{
-		YL_Log( "createWindow.txt",LOG_NOTICE,"CreateUIWindow","%s--in",pszWindowName);
-
 		m_pWndTopPanel			= new CTopPanelWnd();
 		m_pWndTopPanel->Create(NULL,NULL,WS_CHILD,rectNull,pMainWnd,id );
 		m_pPanesMgr->RegisterWnd( "toppanel", m_pWndTopPanel );
-
-		YL_Log( "createWindow.txt",LOG_NOTICE,"CreateUIWindow","%s",pszWindowName);
 		return;
 	}
 	else if( strcmp( pszWindowName,"logopanel") == 0 )
 	{
 		id++;
-		YL_Log( "createWindow.txt",LOG_NOTICE,"CreateUIWindow","%s--in",pszWindowName);
-
 		m_pWndLogoPanel		= new CLogoPanelWnd();
 		m_pWndLogoPanel->Create(NULL,NULL,WS_CHILD,rectNull,pMainWnd,id );
 		m_pPanesMgr->RegisterWnd( "logopanel", m_pWndLogoPanel );
-
-		YL_Log( "createWindow.txt",LOG_NOTICE,"CreateUIWindow","%s",pszWindowName);
 		return;
 	}
 	else if( strcmp( pszWindowName,"bottompanel") == 0 )
 	{
 		id++;
-		YL_Log( "createWindow.txt",LOG_NOTICE,"CreateUIWindow","%s--in",pszWindowName);
-
 		m_pWndBottomPanel		= new CBottomPanelWnd();
 		m_pWndBottomPanel->Create(NULL,NULL,WS_CHILD,rectNull,pMainWnd,id );
 		m_pPanesMgr->RegisterWnd( "bottompanel", m_pWndBottomPanel );
-
-		YL_Log( "createWindow.txt",LOG_NOTICE,"CreateUIWindow","%s",pszWindowName);
 		return;
 	}
 	else if( strcmp( pszWindowName,"tabbarWnd") == 0 )
 	{
 		id ++ ;
-		YL_Log( "createWindow.txt",LOG_NOTICE,"CreateUIWindow","%s--in",pszWindowName);
-
 		m_pWndTabBar			= new CTabBarWnd();
 		m_pWndTabBar->Create(NULL,NULL,WS_CHILD,rectNull,pMainWnd,id );
 		m_pPanesMgr->RegisterWnd( "tabbarWnd", m_pWndTabBar );
-
-		YL_Log( "createWindow.txt",LOG_NOTICE,"CreateUIWindow","%s",pszWindowName);
 		return;
 	}
 	else if( strcmp( pszWindowName,"midpanel") == 0 )
 	{
 		id++;
-		YL_Log( "createWindow.txt",LOG_NOTICE,"CreateUIWindow","%s--in",pszWindowName);
-
 		m_SplitterMid.Create("", WS_CHILD|WS_CLIPCHILDREN, rectNull,pMainWnd, id );
 		m_pPanesMgr->RegisterWnd( pszWindowName ,&m_SplitterMid);
-
-		YL_Log( "createWindow.txt",LOG_NOTICE,"CreateUIWindow","%s",pszWindowName);
 		return;
 	}
 
 	else if( strcmp( pszWindowName,"tabpanelparent") == 0 )
 	{
 		id++;
-		YL_Log( "createWindow.txt",LOG_NOTICE,"CreateUIWindow","%s--in",pszWindowName);
 		m_pWndTabPageParent			= new CTabPageParentWnd();
 		m_pWndTabPageParent->Create(NULL,NULL,WS_CHILD|WS_CLIPCHILDREN,rectNull,pMainWnd,id );
 		m_pPanesMgr->RegisterWnd( pszWindowName ,m_pWndTabPageParent);
-
-		YL_Log( "createWindow.txt",LOG_NOTICE,"CreateUIWindow","%s",pszWindowName);
 		return;
 	}
 }

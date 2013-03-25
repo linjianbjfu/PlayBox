@@ -503,7 +503,6 @@ void CSubjectChildWnd::OnDestroy()
 
 void CSubjectChildWnd::OnCliekButton(const CString& strText)
 {
-	YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","1");
 	if( NULL != mp_EventListener)
 	{		
 		mp_EventListener->OnSendChangeSubject( "",strText) ;
@@ -514,12 +513,8 @@ void CSubjectChildWnd::OnCliekButton(const CString& strText)
 		OneSubject* pCurSub = AfxGetUIManager()->UIGetSkinMgr()->GetCurSubject();
 		if( pCurSub != NULL )
 		{
-			YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","1.2");
 			mp_EventListener->OnSendChangeColor( pCurSub->subColor,pCurSub->iLight ,false );
 			::AfxGetUserConfig()->SetConfigIntValue(CONF_SETTING_MODULE_NAME, CONF_SETTING_COLOR_BTN_INDEX,0,true);
-			YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","1.3");
-
-
 			m_colBtnList_itor = m_colBtnList.begin();
 			list<CSubLabel*>::iterator label_itor = m_SubLabelList.begin();
 			while( m_colBtnList_itor != m_colBtnList.end() )
@@ -542,17 +537,13 @@ void CSubjectChildWnd::OnCliekButton(const CString& strText)
 				m_colBtnList_itor ++ ;
 				label_itor++;
 			}
-			m_colBtnList_itor = m_colBtnList.end();			
+			m_colBtnList_itor = m_colBtnList.end();
 		}
-
-		//		::AfxGetMainWindow()->RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE | RDW_ALLCHILDREN);				
 	}
-	YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","2");
 }
 
 void CSubjectChildWnd::OnCliekButton(CButton* pBotton)
 {
-	YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","1");
 	char szBuf[128];
 	sprintf(szBuf,"主题-%s",((CSkinButton*)pBotton)->GetText() );
 
@@ -569,9 +560,7 @@ void CSubjectChildWnd::OnCliekButton(CButton* pBotton)
 		dlgmsg.SetBtnText(2,"取消");
 		
 		if(dlgmsg.DoModal()==1)
-		{		
-			LogUserActMsg(STR_USER_CLICK, string("BTN:DELETE_REAL_"+SkinName));
-			
+		{
 			DelSubjectBtn(pBotton);
 			SkinPath += "\\SbujectSkin\\";
 			SkinPath += SkinName;
@@ -599,17 +588,11 @@ void CSubjectChildWnd::OnCliekButton(CButton* pBotton)
 	}
 	else if( AfxGetUIManager()->UIGetSkinMgr()->IsNeedDownSub( SkinName) )
 	{
-		if( NULL != mp_EventListener)
-		{
-			YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","2");
+		if(mp_EventListener)
 			mp_EventListener->OnStartDownSubject( SkinName );
-		}
 	}
 	else
-	{
 		ClickSubBtn( SkinPath,SkinName);
-	}
-	
 }
 
 void CSubjectChildWnd::ClickSubBtn(const CString& strSkinPath,const CString& strSubName)
@@ -619,7 +602,7 @@ void CSubjectChildWnd::ClickSubBtn(const CString& strSkinPath,const CString& str
 	{
 		string strSkinPathTemp = AfxGetUIManager()->UIGetSkinMgr()->GetSkinPath();
 		string strSkinName;		
-		YL_FileInfo::GetFileName(strSkinPathTemp,strSkinName);				
+		YL_FileInfo::GetFileName(strSkinPathTemp,strSkinName);
 
 		if( strSkinName != STR_DEFAULT_SKIN )
 		{
@@ -648,11 +631,8 @@ void CSubjectChildWnd::ClickSubBtn(const CString& strSkinPath,const CString& str
 		OneSubject* pCurSub = AfxGetUIManager()->UIGetSkinMgr()->GetCurSubject();
 		if( pCurSub != NULL )
 		{
-			YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","1.2");
 			mp_EventListener->OnSendChangeColor( pCurSub->subColor,pCurSub->iLight ,false );
 			::AfxGetUserConfig()->SetConfigIntValue(CONF_SETTING_MODULE_NAME, CONF_SETTING_COLOR_BTN_INDEX,0,true);
-			YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","1.3");
-
 			m_colBtnList_itor = m_colBtnList.begin();
 			list<CSubLabel*>::iterator label_iter = m_SubLabelList.begin();
 			while( m_colBtnList_itor != m_colBtnList.end() )
@@ -677,9 +657,7 @@ void CSubjectChildWnd::ClickSubBtn(const CString& strSkinPath,const CString& str
 			}
 			m_colBtnList_itor = m_colBtnList.end();
 		}
-
 	}
-	YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","2");
 }
 
 void CSubjectChildWnd::DelAllSubjectBtn()

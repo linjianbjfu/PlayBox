@@ -3,7 +3,7 @@
 #define INT_SERV_LEN 128
 #define INT_USER_LEN 64
 #define USER_MSG_CHECKUPDATE WM_USER+31
-#define USER_MSG_DOWNLOAD		WM_USER+32
+#define USER_MSG_DOWNLOAD	WM_USER+32
 // CCheckUpdate dialog
 class CxSkinButton;
 class CDibBitmap;
@@ -48,7 +48,6 @@ protected:
 	CDibBitmap* m_pBmpBg_Full;
 	CDibBitmap* m_pBmpBgM;
 	CDibBitmap* m_pBmpBgR;
-
 
 	//Buttons.
 	CxSkinButton* m_pBtnChkInstall;

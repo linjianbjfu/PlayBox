@@ -479,16 +479,9 @@ void CSkinMgrV1::OnSendChangeColor( COLORREF acolCol, UINT anLightValue,bool bCh
 			m_BaseColor = acolCol;
 			m_nLightPos = anLightValue;
 
-
 			for(size_t idx = 0;idx < mp_changeSkinEven.size();idx++ )
-			{
 				mp_changeSkinEven[idx]->OnchangeColor( acolCol, anLightValue,bChange );
-			}			
-
 		}
-		CString msg;
-		msg.Format("%08x,%d",acolCol, anLightValue );
-		LogUserActMsg("CHAGE_COLOR", (LPCSTR)msg);
 	}
 }
 
@@ -658,24 +651,19 @@ EnterCriticalSection( &m_csDownInfo );
 	mb_isDownSkin = true;
 	if(mp_skinWnd != NULL)
 		mp_skinWnd->SetUseTip(false);
-	LogUserActMsg( "HANDLE_SKIN", "S:DOWN_START" );
 LeaveCriticalSection( &m_csDownInfo );
 
 }
 void CSkinMgrV1::P2POb_DownFinish(const Sign& sign)
 {
 EnterCriticalSection( &m_csDownInfo );
-	YL_Log("downskin.txt",LOG_DEBUG,"DownStart","皮肤下载完成 %u,%u",sign.sign1,sign.sign2 );	
-
 	mb_isDownSkin = false;
-
 	if( mb_HasPopWnd )
 	{
 		SetDownloadPercentage(100, m_strDownSkin);
 		DownloadFinish(m_strDownSkin);	
 		if(mp_skinWnd != NULL)
 			mp_skinWnd->SetUseTip(true);
-		LogUserActMsg( "HANDLE_SKIN", "S:DOWN_FINISHE" );
 	}
 
 	if( mp_changeSkinEven.size() > 0 )
@@ -699,15 +687,12 @@ LeaveCriticalSection( &m_csDownInfo );
 void CSkinMgrV1::P2POb_DownFailed(const Sign& sign, P2P_DOWN_FAILED_REASON pdfr)
 {
 EnterCriticalSection( &m_csDownInfo );
-	YL_Log("downskin.txt",LOG_DEBUG,"DownStart","皮肤下载失败 %u,%u",sign.sign1,sign.sign2 );
-
 	if(!mb_HasPopWnd || mp_skinWnd == NULL || !::IsWindow(mp_skinWnd->m_hWnd))
 	{
 		LeaveCriticalSection( &m_csDownInfo );
 		return;
 	}
 	::PostMessage(mp_skinWnd->m_hWnd, WM_SKIN_DOWNLOAD_FAILED, 0, 0);
-	//MessageBox(mp_skinWnd->m_hWnd, "下载皮肤失败!", "错误", MB_OK);
 	mb_isDownSkin = false;
 	if(mp_skinWnd != NULL)
 	{
@@ -720,8 +705,6 @@ EnterCriticalSection( &m_csDownInfo );
 	mp_mainSkinWnd->Invalidate();
 	mp_mainSkinWnd->UpdateWindow();
 
-	LogUserActMsg( "HANDLE_SKIN", "S:DOWN_FAILED" );
-
 LeaveCriticalSection( &m_csDownInfo );
 }
 void CSkinMgrV1::P2POb_DownProgress(const Sign& sign, unsigned int unContinue, unsigned int unFinished, unsigned int unSpeed)
@@ -732,7 +715,6 @@ EnterCriticalSection( &m_csDownInfo );
 		LeaveCriticalSection( &m_csDownInfo );
 		return;
 	}
-	YL_Log("downskin.txt",LOG_DEBUG,"DownStart","皮肤下载进行中 %u,%u,%u",sign.sign1,sign.sign2,unFinished );
 	SetDownloadPercentage((UINT)unFinished, m_strDownSkin);
 LeaveCriticalSection( &m_csDownInfo );
 }
@@ -740,22 +722,15 @@ LeaveCriticalSection( &m_csDownInfo );
 
 void CSkinMgrV1::OnSendChangeSubject(CString,CString subjectName)
 {
-	CString strLog;
-	strLog.Format("Sub:%s",subjectName);
-	strLog.Replace("%","");
-	LogUserActMsg("ClickSub",string(strLog) );
-
 	NotifyChangeSubject( subjectName );
-
 	CIrregularBorderMgr::GetInstance()->InitTransDlg(true);
 }
 
 void CSkinMgrV1::NotifyChangeSubject(const CString& strSbName)
 {	
 	if( !AfxGetUIManager()->UIGetSkinMgr()->SubjectToSkin( string(strSbName) ) )
-	{
 		return;
-	}
+
 	AfxGetUIManager()->UIGetSkinMgr()->GetSubject()->strCurSubject = strSbName;
 	AfxGetUIManager()->UIGetLayoutMgr()->OnChangeSubject( strSbName );
 
@@ -809,11 +784,8 @@ void CSkinMgrV1::ILayoutChangeOb_SkinChanged(string oldSkinPath, string newSkinP
 
 void CSkinMgrV1::OnStartDownSubject(const CString& strSubName)
 {
-	YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","3");
-	YL_Log("downskin.txt",LOG_DEBUG,"DownStart","需要下载皮肤 %s",strSubName);	
 	DownloadSubStart(strSubName);
 	CDownSub::ReqDownSub( strSubName,mp_downloadSubject->m_hWnd );
-
 	m_strDownSubName = strSubName;
 }
 
@@ -913,19 +885,13 @@ void CSkinMgrV1::DownloadSubStart(const CString& strSub)
 
 void CSkinMgrV1::DownloadSubFinish( const CString& strSub,BOOL bSuc)
 {
-	YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","9");
 	if( mp_SubjectWnd != NULL )
-	{
 		mp_SubjectWnd->EnableSkinBtn( TRUE );
-	}
 
 	if(mp_skinWnd != NULL )
-	{
 		mp_skinWnd->EnableSkinBtn( TRUE );
-	}
 
 	mp_downloadSubject->ShowWindow( SW_HIDE );
-	
 	mp_mainSkinWnd->ShowColorBtn( TRUE );
 	mp_mainSkinWnd->Invalidate();
 	mp_mainSkinWnd->UpdateWindow();
@@ -933,30 +899,19 @@ void CSkinMgrV1::DownloadSubFinish( const CString& strSub,BOOL bSuc)
 	if( bSuc )
 	{	
 		AfxGetUIManager()->UIGetSkinMgr()->SubDownloaded( strSub );
-
 		if( mb_HasPopWnd )
 		{
 			OneSubject* pOneSub = AfxGetUIManager()->UIGetSkinMgr()->GetOneSubject( strSub );
 
 			CString tips = "";
 			if( pOneSub != NULL )
-			{
 				tips.Format( "皮肤:  %s\r\n状态: 已备好",pOneSub->strShowName.c_str()  );
-			}
 			else
-			{
 				tips.Format( "状态: 已备好");
-			}
 			if( mp_SubjectWnd && pOneSub )
-			{
 				mp_SubjectWnd->SetTipText( strSub,tips ,pOneSub->strShowName.c_str());
-			}
-
-			YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","10");
 			mp_SubjectWnd->ClickSubBtn("",strSub );
-			YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","11");
 		}
-		
 	}
 	else
 	{
@@ -968,25 +923,18 @@ void CSkinMgrV1::DownloadSubFinish( const CString& strSub,BOOL bSuc)
 			dlgmsg.SetBtnText(1,"确定");
 			dlgmsg.DoModal();
 		}
-		//	AfxMessageBox("皮肤下载失败!");
 	}
 }
 void CSkinMgrV1::DownloadWebSubFinish( const CString& strSub,BOOL bSuc)
 {
-	YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","9");
 	if( mp_SubjectWnd != NULL )
-	{
 		mp_SubjectWnd->EnableSkinBtn( TRUE );
-	}
 
 	if(mp_skinWnd != NULL )
-	{
 		mp_skinWnd->EnableSkinBtn( TRUE );
-	}
 
 	mp_downloadSubject->ShowWindow( SW_HIDE );
 	mp_mainSkinWnd->ShowToolTip(0);
-
 	mp_mainSkinWnd->ShowColorBtn( TRUE );
 
 	CRect rc;
@@ -998,14 +946,11 @@ void CSkinMgrV1::DownloadWebSubFinish( const CString& strSub,BOOL bSuc)
 	if( bSuc )
 	{	
 		AfxGetUIManager()->UIGetSkinMgr()->SubDownloaded( strSub );
-
 		if( mb_HasPopWnd )
 		{
 			OneSubject* pOneSub = AfxGetUIManager()->UIGetSkinMgr()->GetOneSubject( strSub );
-
 			bool nFirstRun;
 			AfxGetUserConfig()->GetConfigBoolValue( CONF_SETTING_MODULE_NAME,CONF_SETTING_FIRST_TIME_CHANGESKIN,nFirstRun);
-
 			if(nFirstRun)
 			{
 				mp_mainSkinWnd->OnBtnSub();
@@ -1020,22 +965,14 @@ void CSkinMgrV1::DownloadWebSubFinish( const CString& strSub,BOOL bSuc)
 
 			CString tips = "";
 			if( pOneSub != NULL )
-			{
 				tips.Format( "皮肤:  %s\r\n状态: 已备好",pOneSub->strShowName.c_str()  );
-			}
 			else
-			{
 				tips.Format( "状态: 已备好");
-			}
 
 			if(  pOneSub != NULL&&mp_SubjectWnd )
-			{
 				mp_SubjectWnd->SetTipText( strSub,tips ,pOneSub->strShowName.c_str());
-			}
 
-			YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","10");
 			mp_SubjectWnd->ClickSubBtn("",strSub );
-			YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","11");
 		}
 	}
 	else

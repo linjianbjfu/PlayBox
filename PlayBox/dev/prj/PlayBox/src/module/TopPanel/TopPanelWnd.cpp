@@ -234,10 +234,8 @@ void CTopPanelWnd::OnBnClickedClose()
 	{		
 		//点击关闭按钮，界面退出非常慢，所以先hide主窗口
 		AfxGetMainWindow()->ShowWindow( SW_HIDE );
-		LogRealMsg( "AppExit", "");
 		::SendMessage(AfxGetMainWindow()->m_hWnd, MSG_DELETE_TRAY,0,0);
 		::PostMessage( AfxGetMainWindow()->m_hWnd,WM_CLOSE,0,0 );
-		LogUserActMsg(STR_USER_CLICK, "BTN:CLOSE");
 	}
 	else
 	{
@@ -311,7 +309,6 @@ void CTopPanelWnd::ILayoutChangeOb_SkinChanged(string oldSkinPath, string newSki
 void CTopPanelWnd::OnAppExit()
 {
 	::PostMessage( AfxGetMainWindow()->m_hWnd,WM_CLOSE,0,0 );
-	LogUserActMsg(STR_USER_CLICK, "BTN:CLOSE");
 }
 
 void CTopPanelWnd::OnSetting()
@@ -440,7 +437,6 @@ void CTopPanelWnd::IPanelChangeOb_WindowMax()
 		AfxGetUserConfig()->SetConfigBoolValue( CONF_LAYOUT_MODULE_NAME,CONF_LAYOUT_NORMAL,m_bNormal);
 		::MoveWindow( AfxGetMainWindow()->m_hWnd,r.left,r.top, r.right-r.left, r.bottom-r.top,TRUE);
 		AfxGetMainWindow()->ModifyStyle(0, WS_MAXIMIZE, 0);
-		LogUserActMsg(STR_USER_CLICK, "BTN:TO_MAX"); 
 	}	
 }
 
@@ -460,7 +456,6 @@ void CTopPanelWnd::IPanelChangeOb_WindowRestore()
 
 		::MoveWindow( AfxGetMainWindow()->m_hWnd,m_iXPos,m_iYPos,m_iWndNormalWidth,m_iWndNormalHeigth,TRUE);
 		AfxGetMainWindow()->ModifyStyle(WS_MAXIMIZE, 0,0);
-		LogUserActMsg(STR_USER_CLICK, "BTN:TO_NOMARL");
 	}
 }
 
@@ -473,7 +468,6 @@ void CTopPanelWnd::IPanelChangeOb_WindowMin()
 		AfxGetMainWindow()->ShowWindow( SW_MINIMIZE );	//任务栏有图标
 
 	AfxGetUIManager()->UIGetChangeColorMgr()->OnClose();
-	LogUserActMsg(STR_USER_CLICK, "BTN:TO_MIN");
 }
 
 void CTopPanelWnd::IPanelChangeOb_WindowClose()

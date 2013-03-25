@@ -4,7 +4,6 @@
 #include <vector>
 #include "YL_StringUtil.h"
 #include "../../Core/CDataManager.h"
-#include "../../../../CommonLib/prj/Log/KwLogSvr.h"
 #include "../AppConfig/config/ConfigSettingDef.h"
 #include "../../AppConfig/config/ConfigAppDef.h"
 

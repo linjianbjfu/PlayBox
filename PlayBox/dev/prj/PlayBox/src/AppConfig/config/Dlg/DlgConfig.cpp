@@ -188,8 +188,6 @@ BOOL CConfigDialog::OnInitDialog()
 	SetWindowPos(NULL, 0, 0, 520, 370, SWP_NOMOVE);
 	m_BossKeyCtrl.MoveWindow(130, 162, 205, 22);
 	CenterWindow();
-
-	YL_Log("AddDlg.txt",LOG_DEBUG,"add","ConfigDlg");
 	AfxGetUIManager()->UIAddDialog(this);
 	AfxGetMessageManager()->AttachMessage( ID_MESSAGE_APPEXIT,this );
 	return TRUE; 
@@ -235,10 +233,7 @@ void CConfigDialog::OnClickedOK()
 	iKeyValue = (iKeyValue<<16) | wMod;
 	AfxGetUserConfig()->SetConfigIntValue(CONF_SETTING_MODULE_NAME, CONF_SETTING_BOSS_KEY_VALUE, iKeyValue);
 
-
 	g_hLastConfWnd = NULL;
-
-	YL_Log("AddDlg.txt",LOG_DEBUG,"remove","ConfigDlg");
 	AfxGetUIManager()->UIRemoveDialog(this);
 	AfxGetMessageManager()->DetachMessage( ID_MESSAGE_APPEXIT,this );
 	OnOK();
@@ -284,7 +279,6 @@ void CConfigDialog::OnConfigBtnDefaultBnClicked()
 		m_mapBase[i]->SetDefault();
 	}
 	GetDlgItem(IDC_CONF_BTN_OK)->EnableWindow();
-	LogUserActMsg( "SETTING", "SET_CHANGE:DEFAULT" );
 }
 
 void CConfigDialog::IAppExit()

@@ -11,6 +11,8 @@
 #include <shldisp.h>
 #include "YL_FileInfo.h"
 #include "LhcImg.h"
+#include "YL_UserId.h"
+#include "YL_HTTPRequest.h"
 
 #pragma comment(lib,"Wininet.lib")
 
@@ -959,4 +961,22 @@ void TaskBarPin()
 void TaskBarUnPin()
 {
 	PinOrUnpinCmd(5387);
+}
+
+void SendInstallMsgToSvr(int iType)
+{
+	if (iType < 0 || iType > 5)
+		return;
+	//http://g.najiuwan.com/i/i.php?a=1&id=6c626dff145e283564&qd=ldt011&v=1.49
+	//用户情况:   $a （0：安装 1：在线 2：卸载 3：新用户第一次启动 
+	//4：覆盖安装 5：离线卸载[卸载时没有网络]
+	std::string strID, strInstallSrc, strVersion;
+	YL_UserId::Get(YL_UserId::USER_ID, strID);
+	YL_UserId::Get(YL_UserId::INSTALL_SRC, strInstallSrc);
+	YL_UserId::Get(YL_UserId::VERSION, strVersion);
+	YL_CHTTPRequest client;
+	std::string strUrl;
+	YL_StringUtil::Format(strUrl, "http://g.najiuwan.com/i/i.php?a=%d&id=%s&qd=%s&v=%s",
+		iType, strID.c_str(), strInstallSrc.c_str(), strVersion.c_str());
+	client.Request(strUrl, YL_CHTTPRequest::REQUEST_POST, 10*1000);
 }

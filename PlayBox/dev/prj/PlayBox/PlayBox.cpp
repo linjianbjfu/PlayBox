@@ -48,72 +48,40 @@ BOOL CPlayBoxApp::InitInstance()
 	//CoInternetSetFeatureEnabled( FEATURE_DISABLE_NAVIGATION_SOUNDS, SET_FEATURE_ON_THREAD, TRUE );
 	//Get the command when started 
 	/*m_strCmdLine = GetCommandLine();
-	YL_Log("debug.txt",LOG_DEBUG,"commandline","%s",(LPCTSTR)m_strCmdLine);
 	m_strCmdLine.MakeLower();*/
-	LPWSTR *szArgList = NULL;
 	int nArgs = 0;
+	LPWSTR *szArgList = CommandLineToArgvW(GetCommandLineW(), &nArgs);;
 	bool bStartupRun =false;
-	
-	szArgList = CommandLineToArgvW(GetCommandLineW(), &nArgs);
 
-	if(szArgList != NULL&&nArgs>1)
+	if(szArgList != NULL && nArgs > 1)
 	{
-		//这里强制从宽字符转到窄字符有问题，错误代码
-		if(_stricmp ((CONST char *)szArgList[1],"startuprun")==0)
+		if(!wcscmp(szArgList[1], L"TASKBARPIN"))
 		{
+			TaskBarPin();
+			return FALSE;
+		} else
+		if(!wcscmp(szArgList[1], L"TASKBARUNPIN"))
+		{
+			TaskBarUnPin();
+			return FALSE;
+		} else
+		if(!wcscmp(szArgList[1], L"INSTALL"))
+		{
+			SendInstallMsgToSvr(0);
+			return FALSE;
+		} else
+		if(!wcscmp(szArgList[1], L"UNINSTALL"))
+		{
+			SendInstallMsgToSvr(2);
+			return FALSE;
+		} else
+		if(!wcscmp(szArgList[1], L"OVERWRITEINSTALL"))
+		{
+			SendInstallMsgToSvr(4);
+			return FALSE;
+		} else
+		if(!wcscmp(szArgList[1], L"startuprun"))
 			bStartupRun = true;
-		}
-		else
-		{
-			char szHomePath[MAX_PATH], szTool[MAX_PATH];
-			memset(szHomePath, 0 , MAX_PATH);
-			memset(szTool, 0, MAX_PATH);
-			if(!CLhcImg::GetHomePath(szHomePath, MAX_PATH))
-				return FALSE;
-			_snprintf(szTool, MAX_PATH-1, "%s\\Tool.dll", szHomePath);
-			HMODULE hLib = LoadLibrary(szTool);
-			if(hLib != NULL)
-			{
-				//LPCALLTOOLS lpCallTools = (LPCALLTOOLS)GetProcAddress(hLib, "CallTools");
-				//if(lpCallTools != NULL)
-				//{
-				//	CString szArg1,szArg2,szArg3,szArg4;
-				//	
-				//	switch(nArgs)
-				//	{
-				//	case 2:
-				//		szArg1=szArgList[1];
-				//		lpCallTools((int )nArgs,szArg1.GetBuffer(),NULL,NULL,NULL);
-				//		szArg1.ReleaseBuffer();
-				//		break;
-				//	case 4:
-				//		szArg1=szArgList[1];
-				//		szArg2=szArgList[2];
-				//		szArg3=szArgList[3];
-				//		lpCallTools((int )nArgs,szArg1.GetBuffer(),szArg2.GetBuffer(),szArg3.GetBuffer(),NULL);
-				//		szArg1.ReleaseBuffer();
-				//		szArg2.ReleaseBuffer();
-				//		szArg3.ReleaseBuffer();
-				//		break;
-				//	case 5:
-				//		szArg1=szArgList[1];
-				//		szArg2=szArgList[2];
-				//		szArg3=szArgList[3];
-				//		szArg4 =szArgList[4];
-				//		lpCallTools((int )nArgs,szArg1.GetBuffer(),szArg2.GetBuffer(),szArg3.GetBuffer(),szArg4.GetBuffer());
-				//		szArg1.ReleaseBuffer();
-				//		szArg2.ReleaseBuffer();
-				//		szArg3.ReleaseBuffer();
-				//		szArg4.ReleaseBuffer();
-				//		break;
-				//	default:
-				//		break;
-				//	}
-				//	
-				//}
-				FreeLibrary(hLib);
-			}
-		}
 		LocalFree(szArgList);
 	}
 	// 初始化 gdi+
@@ -178,7 +146,6 @@ BOOL CPlayBoxApp::InitInstance()
 		KillOtherInstance();
 	}
 	AfxEnableControlContainer();
-	LogInit( "PlayGame" );
 	AfxGetUserConfig()->Config_AppStart();
 	AfxGetDataManager2()->DataManAppStart();	
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));

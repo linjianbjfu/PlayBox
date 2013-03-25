@@ -272,7 +272,6 @@ void WebGamePanelWnd::IPanelChangeOb_ToFullScreen( CWnd* pWnd )
 
 void WebGamePanelWnd::SetMainWindow(bool isTopMost)
 {
-	YL_Log("WebGamePanelWnd.txt", LOG_DEBUG, "WebGamePanelWnd::SetMainWindow", "===IN");
 	if(isTopMost)
 	{
 		AfxGetMainWindow()->SetWindowPos(&wndTopMost,-1,-1,-1,-1, SWP_NOSIZE|SWP_NOMOVE);
@@ -282,12 +281,10 @@ void WebGamePanelWnd::SetMainWindow(bool isTopMost)
 		AfxGetMainWindow()->SetWindowPos(&wndNoTopMost,-1,-1,-1,-1, SWP_NOSIZE|SWP_NOMOVE);
 		AfxGetUserConfig()->SetConfigBoolValue( CONF_APP_MODULE_NAME,CONF_APP_MAINWND_HOLD,false);
 	}
-	YL_Log("WebGamePanelWnd.txt", LOG_DEBUG, "WebGamePanelWnd::SetMainWindow", "===OUT");
 }
 
 void WebGamePanelWnd::IPanelChangeOb_ExitFullScreen( CWnd* pWnd )
 {
-	YL_Log("WebGamePanelWnd.txt", LOG_DEBUG, "WebGamePanelWnd::IPanelChangeOb_ExitFullScreen", "===IN");
 	if( pWnd != this )
 		return;
 
@@ -324,7 +321,6 @@ void WebGamePanelWnd::IPanelChangeOb_ExitFullScreen( CWnd* pWnd )
 	m_pBtnExitFull->ShowWindow(SW_HIDE);
 	KillTimer(ID_TIMER_ESCFULL_TIP);
 	ShowHideEseFull(false);
-	YL_Log("WebGamePanelWnd.txt", LOG_DEBUG, "WebGamePanelWnd::IPanelChangeOb_ExitFullScreen", "===OUT");
 }
 
 BOOL WebGamePanelWnd::OnEraseBkgnd(CDC* pDC)
@@ -450,26 +446,15 @@ void WebGamePanelWnd::ShowHideEseFull(bool isShow)
 	int allValue=0;
 	static int curValue=0;
 	AfxGetUserConfig()->GetConfigIntValue(CONF_LAYOUT_MODULE_NAME, CONF_LAYOUT_ESC_ALL, allValue);
-	if( isShow
-		&& (curValue<1)
-		&& (allValue<5))
+	if( isShow && curValue < 1 && allValue < 5)
 	{
 		curValue++;
 		m_pEscFullTipDlg->ShowDlg( TRUE );
-
-		if(allValue==0)
-		{
-			LogRealMsg( "ENTER_FULLSCREEN","Yes" );
-		}
 		allValue=allValue+1;
 		allValue = 0;
 		AfxGetUserConfig()->SetConfigIntValue(CONF_LAYOUT_MODULE_NAME,CONF_LAYOUT_ESC_ALL,allValue,true);
-
-	}else if( (isShow==false)
-		&& (curValue<=1) )
-	{
+	} else if( !isShow && curValue <= 1)
 		m_pEscFullTipDlg->ShowDlg( FALSE );
-	}
 }
 
 BOOL WebGamePanelWnd::PreTranslateMessage(MSG* pMsg)

@@ -291,21 +291,11 @@ void CMainHostWnd::ChangeWatchMode()
 	if(!bKeepMVSize)
 		MoveContent();
 
-	if(m_bShowMV)
-		LogUserActMsg(STR_USER_CLICK, "BTN:SHOW_MV");
-	else
-		LogUserActMsg(STR_USER_CLICK, "BTN:HIDE_MV");
 
 	if(m_bShowMV)
-	{
 		CHostWndMgr::GetInstance()->ShowPopupWndsAfterMainChange(true);
-	}
 	else
-	{
 		CHostWndMgr::GetInstance()->ShowPopupWndsAfterMainChange(false);
-	}
-//	RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE | RDW_ALLCHILDREN);
-
 }
 
 
@@ -347,18 +337,6 @@ void CMainHostWnd::ChangePlaylistMode()
 		MoveWindow(&rc);
 		m_isShowMVWhenClosePlaylist = m_bShowMV;
 	}
-
-	//chaohua edit
-	//if(m_bShowPlaylist)
-	//	LogUserActMsg(STR_USER_CLICK, "BTN:SHOW_PLAYLIST");
-	//else
-	//	LogUserActMsg(STR_USER_CLICK, "BTN:HIDE_PLAYLIST");
-
-
-	//if(m_bShowPlaylist)
-	//	AfxGetUserConfig()->SetConfigIntValue( CONF_APP_MODULE_NAME,CONF_APP_SEPMODE_START_MODE,SHOWLIST,true );
-	//else
-	//	AfxGetUserConfig()->SetConfigIntValue( CONF_APP_MODULE_NAME,CONF_APP_SEPMODE_START_MODE,0,true );
 	RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE | RDW_ALLCHILDREN);
 }
 

@@ -50,19 +50,10 @@ void CJudgeFirewall::SetHTTPRes( HTTP_REQUEST_TYPE hrt,int iRes )
 {
 	if( hrt == HTTP_SEARCH )
 	{
-		char szBuf[512];
-		sprintf(szBuf,"%d,%d",hrt,iRes);
-
-		LogRealMsg("Firewall",szBuf);
-		
 		if( s_iHTTPRes == 0 && iRes == 0 )
-		{
 			Test_Ping();
-		}
 	}	
 
 	if( hrt == HTTP_WEB_COMMAND )
-	{
 		s_iHTTPRes = iRes;
-	}
 }

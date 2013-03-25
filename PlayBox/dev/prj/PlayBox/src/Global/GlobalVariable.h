@@ -13,6 +13,7 @@ enum TAB_TYPE
 	TAB_FLASHGAME,		//flash游戏wnd
 	TAB_PLAYED_GAME,	//玩过的游戏
 	TAB_BROWSER,
+	TAB_GAME_NEWS		//资讯页
 };
 
 struct TAB_ITEM
@@ -31,7 +32,7 @@ struct TAB_ITEM
 #define BOX_DELIMITERS ";;"
 #define TAB_BROWSER_DEFAULT_TITLE "空白页"
 #define TAB_GAMECENTER_TITLE "游戏中心"
-#define TAB_GAMEINFO_TITLE "游戏资讯"
+#define TAB_GAMENEWS_TITLE "游戏资讯"
 #define TAB_PLAYED_GAME_TITLE "我的酷游"
 #define TAB_WEB_GAME_CUSTOM_SERVICE_TITLE "页游客服"
 #define TAB_PAY_TITLE "充值"

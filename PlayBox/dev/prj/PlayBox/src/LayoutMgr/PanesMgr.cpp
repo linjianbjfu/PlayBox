@@ -1986,17 +1986,14 @@ bool CPanesMgr::OnChangeSkinTemplate(CString strPath,CString strSub)
 void CPanesMgr::OnchangeColor( COLORREF acolCol, UINT anLightValue,bool bChangeTop )
 {
 	NotifyColorChanging();
-	YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","3");
 	LoadColors();
 	m_pSkin->LoadSkinFromPath(m_pSkin->m_strSkinPath);
 	LoadChangeColorData();
-	YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","3.1");
 
 	string str = AfxGetUIManager()->UIGetSkinMgr()->GetSubject()->strCurSubject;
 	if( str.length()>0 )
 		m_pSkin->SubjectToSkin(str);
 
-	YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","3.2");
 	//改变颜色
 	CString strWndName, strControlName;
 
@@ -2031,7 +2028,6 @@ void CPanesMgr::OnchangeColor( COLORREF acolCol, UINT anLightValue,bool bChangeT
 
 		ChangeWndColor(CWnd::FromHandle(key), strWndName, strControlName);
 	}
-	YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","3.4");
 
 	//改变背景色
 	pos = m_mapBkLayoutMgr.GetStartPosition();
@@ -2053,9 +2049,7 @@ void CPanesMgr::OnchangeColor( COLORREF acolCol, UINT anLightValue,bool bChangeT
 	AfxGetUIManager()->UIGetSkinMgr()->ChangeSkinColor(bChangeTop);
 	AfxGetUIManager()->UIGetChangeColorMgr()->AfterChangeColor();
 
-	YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","3.5");
 	::AfxGetMainWindow()->RedrawWindow(NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE | RDW_ALLCHILDREN);
-
 	::AfxGetUserConfig()->SetConfigIntValue(CONF_SETTING_MODULE_NAME, CONF_SETTING_LIGHT, anLightValue, true);
 	::AfxGetUserConfig()->SetConfigIntValue(CONF_SETTING_MODULE_NAME, CONF_SETTING_COLOR, acolCol, true);
  
@@ -2064,12 +2058,8 @@ void CPanesMgr::OnchangeColor( COLORREF acolCol, UINT anLightValue,bool bChangeT
 	CString value;
 	value.Format("%d,%d,%d", (int)(fHue*240), (int)(fSat*100), (int)(fLight*100));
 
-
 	AfxGetUserConfig()->SetConfigStringValue( CONF_SKINSUB_MODULE_NAME,CONF_SKINSUB_COLOR,value.GetBuffer(),true);
-
-	YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","3.6");
 	this->NotifyColorChanged();
-	YL_Log("SkinB.txt",LOG_DEBUG,"Click-In","3.7");
 }
 
 void CPanesMgr::OnChangeSubject(CString strSubName)
@@ -2079,18 +2069,10 @@ void CPanesMgr::OnChangeSubject(CString strSubName)
 
 	AfxGetUserConfig()->SetConfigStringValue(CONF_SKINSUB_MODULE_NAME,CONF_SKINSUB_CURRSUB,strSubName.GetBuffer(),true);	
 	OneSubject* pSub = AfxGetUIManager()->UIGetSkinMgr()->GetCurSubject();
-	if(pSub != NULL)
-	{
-		CString strmsg;
-		strmsg.Format("NAME:%s|ID:%d",pSub->strShowName.c_str(), pSub->nID);
-		LogRealMsg( "ChangeSub",string(strmsg));
-	}
-	
 	CWnd *pWnd  = this->GetWnd("toppanel");
 	CDibBitmap* pLeft = m_pSkin->GetDibBmp("TopPanelBKLeft");
 	CDibBitmap* pMid = m_pSkin->GetDibBmp("TopPanelBKMid");
 	CDibBitmap* pRight = m_pSkin->GetDibBmp("TopPanelBKRight");
-
 	CString strValue;
 
 	if(!YL_FileInfo::IsValid(strBmpFileName))

@@ -116,7 +116,8 @@ void CTabBarData::ITabBar_ChangeTab(TAB_ITEM &item)
 
 			if (!bFound &&
 				(item.enumType == TAB_HOME || 
-				item.enumType == TAB_PLAYED_GAME) &&
+				item.enumType == TAB_PLAYED_GAME ||
+				item.enumType == TAB_GAME_NEWS) &&
 				it->enumType == item.enumType)
 			{
 				bFound = true;

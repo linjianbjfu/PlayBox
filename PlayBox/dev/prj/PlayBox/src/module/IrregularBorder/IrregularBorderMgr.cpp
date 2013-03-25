@@ -104,9 +104,7 @@ void CIrregularBorderMgr::InitTransDlg(BOOL bMustInit)
 
 	if(pCurSubject != m_curSubject || bMustInit)
 	{
-		LogUserActMsg(STR_USER_CLICK, "Enter InitTransDlg");
 		m_curSubject = pCurSubject;
-
 		string path = pSkin->GetSkinPath();
 
 		DeletePngImage();
@@ -119,23 +117,15 @@ void CIrregularBorderMgr::InitTransDlg(BOOL bMustInit)
 			return;
 		}
 		string pngpath = path + "\\sbujectskin\\" + m_curSubject->strSubName + "\\topleft.png";
-		LogUserActMsg(STR_USER_CLICK, pngpath.c_str());
 		if( YL_FileInfo::IsValid(pngpath) && pCurSubject->ptLeftTop.x != -1000)
 		{
 			m_pTopLeftWnd->ShowWindow(SW_SHOWNOACTIVATE);
 			m_pTopLeftWnd->m_pImage = CloneImage(pngpath.c_str());
-			CString strLog;
-			strLog.Format("cloneTopLeft: %d ,h: %d, %s\r\n", m_pTopLeftWnd->m_pImage->GetWidth(),m_pTopLeftWnd->m_pImage->GetHeight(),path.c_str());
-			LogUserActMsg(STR_USER_CLICK, string(strLog));
 			m_pTopLeftWnd->UpdatePosition( pCurSubject->ptLeftTop);
 		}else
-		{
 			m_pTopLeftWnd->ShowWindow(SW_HIDE);
-			LogUserActMsg(STR_USER_CLICK, "TopLeft hide");
-		}
 
 		pngpath = path + "\\sbujectskin\\" + m_curSubject->strSubName + "\\topright.png";
-		LogUserActMsg(STR_USER_CLICK, pngpath.c_str());
 		if( YL_FileInfo::IsValid(pngpath)&& pCurSubject->ptRightTop.x != -1000)
 		{
 			m_pTopRightWnd->ShowWindow(SW_SHOWNOACTIVATE);
@@ -143,14 +133,11 @@ void CIrregularBorderMgr::InitTransDlg(BOOL bMustInit)
 
 			CString strLog;
 			strLog.Format("cloneTopRight: %d ,h: %d, %s\r\n", m_pTopRightWnd->m_pImage->GetWidth(),m_pTopRightWnd->m_pImage->GetHeight(),path.c_str());
-			LogUserActMsg(STR_USER_CLICK, string(strLog));
-
 			m_pTopRightWnd->UpdatePosition(pCurSubject->ptRightTop);
 		}
 		else
 		{
 			m_pTopRightWnd->ShowWindow(SW_HIDE);
-			LogUserActMsg(STR_USER_CLICK, "TopRight Hide");
 		}
 
 		pngpath = path + "\\sbujectskin\\" + m_curSubject->strSubName + "\\bottomright.png";

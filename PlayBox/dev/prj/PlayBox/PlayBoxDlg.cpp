@@ -120,8 +120,6 @@ void CPlayBoxDlg::OnConfigChange(const string& strKey )
 
 void CPlayBoxDlg::OnClose()
 {
-	YL_Log( STR_LOG_FILE ,LOG_NOTICE,"PlayBoxDlg","OnClose" );
-
 	CIrregularBorderMgr::GetInstance()->ShowTransDlg(false);
 	if(m_ptrayIcon != NULL)
 	{
@@ -153,22 +151,11 @@ LRESULT CPlayBoxDlg::OnDeleteTray(WPARAM wParam, LPARAM lParam)
 // CPlayBoxDlg 消息处理程序
 HANDLE		g_hStartEvent;
 
-DWORD WINAPI Log_StartMessage(void*)
-{
-	if( WaitForSingleObject(g_hStartEvent,10*1000) == WAIT_TIMEOUT )
-	{
-		LogRealMsg("START_TIMEOUT","");
-	}
-	return 0;
-}
-
 BOOL CPlayBoxDlg::OnInitDialog()
 {
 	DWORD dwStart = GetTickCount();
 	AfxSetMainWindow( this );
 	g_hStartEvent = CreateEvent(NULL,FALSE,FALSE,NULL );
-	CloseHandle( CreateThread(0,0,Log_StartMessage,0,0,0) );
-
 	HANDLE curMutexHandle=CreateMutex(NULL,false,"PBMutex");
 
 	CDialog::OnInitDialog();
@@ -203,13 +190,7 @@ BOOL CPlayBoxDlg::OnInitDialog()
 	_AdjustDlgSize();
 
 	m_ptrayIcon->SetIcon(theApp.LoadIcon(IDI_ICON_BEAR),DESCRIP_MAINEXE);
-
 	ReleaseMutex(curMutexHandle);
-
-	char szBuffer[32];
-	sprintf(szBuffer,"T:%d",GetTickCount() - dwStart);	
-	LogUserActMsg( "AppInit",szBuffer );
-
 	//将任务栏上的系统菜单变为自己的内容
 	ModifyStyle(0, WS_SYSMENU|WS_MINIMIZEBOX|WS_MAXIMIZEBOX);
 
@@ -898,15 +879,11 @@ void CPlayBoxDlg::NotifyWebRefresh( const  char* psz)
 
 LRESULT CPlayBoxDlg::OnAfterUiCreate(WPARAM,LPARAM)
 {
-	YL_Log( STR_LOG_FILE ,LOG_NOTICE,"PlayBoxDlg","OnAfterUiCreate==IN" );
 	checkPopUpUpdate(&g_hSharedWnd);
 	checkUpdate("PlayBox");
 	if (m_bStartupRun)
-	{
 		CTopPanelControl::GetInstance()->DoMin();
-	}
 
-	YL_Log( STR_LOG_FILE ,LOG_NOTICE,"PlayBoxDlg","OnAfterUiCreate==OUT" );
 	return 0;
 }
 

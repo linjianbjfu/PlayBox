@@ -15,14 +15,11 @@ CDataManager::~CDataManager()
 
 void CDataManager::DataManAppStart()
 {	
-	YL_Log( STR_LOG_FILE ,LOG_NOTICE,"DataManager","DataManAppStart======IN" );
 	CHTTPControl::Init();
-	YL_Log( STR_LOG_FILE ,LOG_NOTICE,"DataManager","DataManAppStart======OUT" );
 }
 
 void CDataManager::DataManAppExit()
 {
-	YL_Log( STR_LOG_FILE,LOG_NOTICE,"DataManager","DataManAppExit======IN" );
 	for( map<DWORD,IData*>::iterator it1 = m_mapDataObject.begin();
 		it1 != m_mapDataObject.end(); it1++ )
 	{
@@ -30,7 +27,6 @@ void CDataManager::DataManAppExit()
 		it1->second->DataAppExit();
 	}
 	CHTTPControl::Close();
-	YL_Log( STR_LOG_FILE,LOG_NOTICE,"DataManager","DataManAppExit--OUT" );
 }
 
 void CDataManager::AddDataObject( const DWORD& guidDataObject,IData* pData )

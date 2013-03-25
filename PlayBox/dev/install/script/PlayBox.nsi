@@ -12,7 +12,7 @@ SetCompressor /SOLID /FINAL lzma
 	!insertmacro un.DirState
 	!define LOGICLIB_STRCMP
 	!include LogicLib.nsh
-	!define VERSION_NUM  "0.0.3"
+	!define VERSION_NUM  "0.3"
 ;--------------------------------
   	Name  "酷游盒子"
   	OutFile "PlayBox${VERSION_NUM}SetUp.exe"
@@ -207,7 +207,7 @@ FunctionEnd
 Section "-YPLAYBOX" realSection
 	CALL Check_INST_DIRECTORY
 	SetOutPath "$INSTDIR"
-	###########先copy tool.exe和配置文件所在目录
+
 	StrCpy $R0 "$INSTDIR\NetOp.dll"
 	Call RenameAndDeleteReboot
 	File  ..\install_resource\NetOp.dll
@@ -217,7 +217,6 @@ Section "-YPLAYBOX" realSection
 	IfFileExists "$INSTDIR\msvcr90.dll" +2 0
 		File  "..\install_resource\msvcr90.dll"
 
-	File  ..\install_resource\Tool.exe
 	File  /r /x .svn /x *.db ..\install_resource\Resources
 	
 	;File  ..\install_resource\instpage.gif
@@ -236,8 +235,6 @@ Section "-YPLAYBOX" realSection
 			    goto Check_KwMusic_End
 			${EndIf}
 Quit_For_Check_KwMusic:
-		#WriteRegStr HKLM "${REG_ROOT}" "INSTALLED" "PLAYER_RUNNING"
-		ExecWait '"$INSTDIR\Tool.exe" WRITE ${REG_ROOT} INSTALLED PLAYER_RUNNING'
 		Quit
 Check_KwMusic_End:
 	IntCmp $R1 0 +2
@@ -254,24 +251,10 @@ Check_KwMusic_End:
 	ExecShell "open" "Netsh.exe" 'firewall add allowedprogram "$INSTDIR\${MAIN_EXE_NAME}" ${PRODUCT_NAME} ENABLE' SW_HIDE
 	push $INSTDIR
 	Nsis::AddAccessRights
-	###########################
-	#把版本号写入config.ini
- 	#WriteINIStr "$INSTDIR\res\pic\lhc.img" "config" "version" "${CUR_VERSION}"
- 	ExecWait '"$INSTDIR\Tool.exe" WRITE config version ${CUR_VERSION}'
- 	
+
 	CreateDirectory "$INSTDIR\log"
 	CreateDirectory "$INSTDIR\update"
-	##################################################################################
-	SetOutPath "$INSTDIR"
 
-	StrCpy $R0 "$INSTDIR\Log.dll"
-	Call RenameAndDeleteReboot
-	File  ..\install_resource\Log.dll
-	
-	StrCpy $R0 "$INSTDIR\Update.dll"
-	Call RenameAndDeleteReboot
-	File  ..\install_resource\Update.dll
-	
 	StrCpy $R0 "$INSTDIR\DocOp.dll"
 	Call RenameAndDeleteReboot
 	File  ..\install_resource\DocOp.dll
@@ -280,13 +263,7 @@ Check_KwMusic_End:
 	Call RenameAndDeleteReboot
 	File  ..\install_resource\Zlib.dll
 	File  ..\install_resource\run.exe
-	####################################
-	System::Call 'kernel32::GetModuleFileNameA(i 0, t .R0, i 1024) i r1'
-	#WriteRegStr HKLM "${REG_ROOT}\BHO" "First_Start" "$R0"
-	ExecWait '"$INSTDIR\Tool.exe" WRITE ${REG_ROOT}\BHO First_Start $R0'
-	#WriteRegStr HKLM "${REG_ROOT}" "INSTALLED" "Success"
-	ExecWait '"$INSTDIR\Tool.exe" WRITE ${REG_ROOT} INSTALLED Success'
-	
+
 	WriteUninstaller "$INSTDIR\Uninstall.exe"
 	#创建开始程序中单独快捷方式
 	call GetWindowsVersion
@@ -318,16 +295,8 @@ Check_KwMusic_End:
 	WriteRegStr HKLM $UninstPath "VersionMajor" "${VERSION_NUM}"
 	WriteRegStr HKLM $UninstPath "VersionMinor" "${VERSION_NUM}"
 
-	#DeleteRegValue HKLM ${REG_ROOT} "NEW_LYRIC"
-	ExecWait '"$INSTDIR\Tool.exe" DEL ${REG_ROOT} NEW_LYRIC'
-	#DeleteRegValue HKLM ${REG_ROOT} "MB_NEW_LYRIC"
-	ExecWait '"$INSTDIR\Tool.exe" DEL ${REG_ROOT} MB_NEW_LYRIC'
-	#删除启动升级程序标记
-	#DeleteRegValue HKLM ${REG_ROOT} "PLAYERCMD"
-	ExecWait '"$INSTDIR\Tool.exe" DEL ${REG_ROOT} PLAYERCMD'
-	
 	#创建win7任务栏pin
-	ExecWait '"$INSTDIR\Tool.exe" TASKBARPIN'
+	ExecWait '"$INSTDIR\${MAIN_EXE_NAME}" TASKBARPIN'
 	SetRebootFlag false
 	AnimGif::stop
 	Delete $INSTDIR\instpage.gif
@@ -359,10 +328,9 @@ Section "Uninstall"
 		${EndIf}
 		Quit
 Un_Check_KwMusic_End:
-	#win7 taskbar unpin
-	ExecWait '"$INSTDIR\Tool.exe" TASKBARUNPIN'
+	ExecWait '"$INSTDIR\${MAIN_EXE_NAME}" TASKBARUNPIN'
 	#发送卸载消息
-	ExecWait '"$INSTDIR\Tool.exe" UNINSTALL'
+	ExecWait '"$INSTDIR\${MAIN_EXE_NAME}" UNINSTALL'
 	Delete "$INSTDIR\Uninstall.exe"
 	RMDir /r "$INSTDIR\update"
 	RMDir /r "$INSTDIR\log"
@@ -371,17 +339,11 @@ Un_Check_KwMusic_End:
 	#延迟删除可执行文件
 	StrCpy $R0 "$INSTDIR\${MAIN_EXE_NAME}"
 	Call un.RenameAndDeleteReboot
-	StrCpy $R0 "$INSTDIR\Update.dll"
-	Call un.RenameAndDeleteReboot
-	StrCpy $R0 "$INSTDIR\Log.dll"
-	Call un.RenameAndDeleteReboot
 	StrCpy $R0 "$INSTDIR\DocOp.dll"
 	Call un.RenameAndDeleteReboot
 	StrCpy $R0 "$INSTDIR\NetOp.dll"
 	Call un.RenameAndDeleteReboot
 	StrCpy $R0 "$INSTDIR\Zlib.dll"
-	Call un.RenameAndDeleteReboot
-	StrCpy $R0 "$INSTDIR\Tool.exe"
 	Call un.RenameAndDeleteReboot
 	StrCpy $R0 "$INSTDIR\run.exe"
 	Call un.RenameAndDeleteReboot
