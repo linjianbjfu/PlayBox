@@ -58,8 +58,6 @@ allsize=xxxx // 升级包的大小.(字节)
 Run=[0][1]  // 是否立即运行.
 
 
-
-
 function check_num($mac){
     $i_number = array('a'=>10, 'b'=>11, 'c'=>12, 'd'=>13, 'e'=>14, 'f'=>15);
     $mac_key = substr($mac, 12, 17);
@@ -68,15 +66,16 @@ function check_num($mac){
         $c = $i * 2 + 1;
         $k = $mac[$c];
         $v = $mac_key[$i];
-//1,3,5,7,9,11这几个位置的mac字符，如果是字母，就拿到对应的十进制数
+//1,3,5,7,9,11这几个位置的mac字符，如果是字母，就拿到对应的十进制数x
         if(!preg_match('/\d+/',$k)){
             $k = $i_number[$k];
         }
-//mac地址后面补充的6位数字，如果是字母，就拿到对应的十进制数
+//mac地址后面补充的6位数字，如果是字母，就拿到对应的十进制数y
         if(!preg_match('/\d+/',$v)){
             $v = $i_number[$v];
         }
-    
+//如果x大于10，z=x-y
+//否则，z=x+y
         if($k>10){
             $num = $k - $v;
         }else{
@@ -90,6 +89,8 @@ function check_num($mac){
             //echo "有效mac地址!</br>";
         }
     }
+//如果是字符，就用10进制的个位数
+//如果是数字，就用10减去这个数
     
     $mac = substr($mac, 0, 12);
     return $mac;
