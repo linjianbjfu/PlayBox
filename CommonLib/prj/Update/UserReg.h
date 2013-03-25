@@ -117,7 +117,6 @@ private:
 	static bool DoIdentify( HANDLE hPhysicalDriveIOCTL, PSENDCMDINPARAMS pSCIP,
 		PSENDCMDOUTPARAMS pSCOP, BYTE bIDCmd, BYTE bDriveNum, PDWORD lpcbBytesReturned );
 public:
-	static bool GetKYMacString(std::string& strMac);
 	static bool GetMacAddress(char *szMac);
 	static bool GetHDiskSerial(char szDiskSerial[]);
 };
