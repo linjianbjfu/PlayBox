@@ -1,0 +1,8 @@
+Resources\Profiles\conf.ini
+所有配置都在这里，使用编码后
+
+Resources\skin\MainSkin.dat
+皮肤配置文件MainSkin.xml的zip压缩包，压缩密码为!@#$%^&*()
+
+Resources\skin\skin.dat
+皮肤图片bmp的集合包
