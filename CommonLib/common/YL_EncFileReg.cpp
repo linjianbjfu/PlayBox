@@ -57,9 +57,8 @@ bool YL_EncFileReg::GetEncFilePath( string& strPath )
 		if(str.length() <= 0)
 			return false;
 		else if(str[str.length()-1] == '\\')
-		{
 			str = str.substr(0, str.length()-1);
-		}
+
 		YL_RegInfo::WriteString(HKEY_PLAYBOX_ROOT, STR_REG_SOFT, STR_SOFT_HOME_KEY, str.c_str());
 		strPath = str;
 	}

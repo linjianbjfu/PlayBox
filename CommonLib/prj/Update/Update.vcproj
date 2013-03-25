@@ -357,10 +357,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\CheckCmdLimit.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -409,10 +405,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\UpdateConf.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\UserReg.cpp"
 				>
 			</File>
@@ -422,10 +414,6 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath=".\CheckCmdLimit.h"
-				>
-			</File>
 			<File
 				RelativePath=".\resource.h"
 				>
@@ -440,10 +428,6 @@
 			</File>
 			<File
 				RelativePath=".\Update.h"
-				>
-			</File>
-			<File
-				RelativePath=".\UpdateConf.h"
 				>
 			</File>
 			<File

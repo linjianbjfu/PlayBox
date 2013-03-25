@@ -46,14 +46,12 @@ void stopCheckUpdate()
 */
 void checkPopUpUpdate(HWND *phWnd)
 {
-	YL_Log( STR_LOG_FILE ,LOG_NOTICE,"PlayBoxDlg","checkPopUpUpdate==IN" );
 	static bool haveInCheckPopUpUpdate = false;//checkPopUpUpdate只允许进入一次
 	if(!haveInCheckPopUpUpdate)
 	{
 		haveInCheckPopUpUpdate = true;	
 		_beginthread(runPopUpUpdate, 0, (void*)phWnd);
 	}
-	YL_Log( STR_LOG_FILE ,LOG_NOTICE,"PlayBoxDlg","checkPopUpUpdate==OUT" );
 }
 
 /*
@@ -61,53 +59,25 @@ void checkPopUpUpdate(HWND *phWnd)
 */
 void runPopUpUpdate(LPVOID pparam)
 {
-	YL_Log(UPDATE_LOG, LOG_NOTICE, "runPopUpUpdate", "IN==");
 	//检测是否应该出现升级提示
 	//没玩够10个游戏，不进行升级
 	int nListen = 0;
 	AfxGetUserConfig()->GetConfigIntValue( CONF_APP_MODULE_NAME, CONF_APP_PLAYED_GAME, nListen );
 	if(nListen < 4)
-	{
-		YL_Log(UPDATE_LOG, LOG_NOTICE, "runPopUpUpdate", "OUT0==");
 		return;
-	}
+
 	unsigned int dwDate = 0, dwInstDate = 0, dwCurDate = 0;
 	time_t timer;
 	time(&timer);
 	dwCurDate = (DWORD)(timer/(60 * 60 * 24));
-	//检查安装时间
-	if(YL_EncFileReg::ReadDWORD(HKEY_PLAYBOX_ROOT, STR_REG_UPDATE, "INSTALL_DATE", dwInstDate))
-	{
-		int delay = CLhcImg::GetUpdateTipsDelay();
-		if(dwCurDate - dwInstDate < delay)
-		{
-			YL_Log(UPDATE_LOG, LOG_NOTICE, "runPopUpUpdate", "OUT1==");
-			return;
-		}
-	}
-	//上次执行时间
-	if(YL_EncFileReg::ReadDWORD(HKEY_PLAYBOX_ROOT, STR_REG_UPDATE, "UPTIP_DATE", dwDate))
-	{
-		//比较时间间隔
-		if(dwCurDate - dwDate < 3)
-		{
-			YL_Log(UPDATE_LOG, LOG_NOTICE, "runPopUpUpdate", "OUT2==");
-			return;
-		}
-	}
 	
 	char cfname[MAX_PATH];
 	GetModuleFileName(NULL, cfname, MAX_PATH);	
 	string playerName;
-	if(strstr(strupr(cfname), "PLAYBOX") != NULL)
-	{
+	if(strstr(strupr(cfname), "PLAYBOX"))
 		playerName = "PLAYBOX";
-	}
 	else
-	{
-		YL_Log(UPDATE_LOG, LOG_NOTICE, "runPopUpUpdate", "OUT3==");
 		return;
-	}
 	//从注册表判断是否下载了新版本
 	char pszNewVer[128], pszMbNewVer[128];
 	memset(pszNewVer, 0, 128);
@@ -128,19 +98,16 @@ void runPopUpUpdate(LPVOID pparam)
 			strcpy(setupexe, pszMbNewVer);
 		
 		//静默安装的升级包不处理，由bho处理
-		if(strstr(strupr(setupexe), "_SILENT") != NULL)
-		{
-			YL_Log(UPDATE_LOG, LOG_NOTICE, "runPopUpUpdate", "OUT4==");
+		if(strstr(strupr(setupexe), "_SILENT"))
 			return;
-		}		
+
 		int forceUpdate;
-		if(strstr(strupr(setupexe), "_FORCE") != NULL)
+		if(strstr(strupr(setupexe), "_FORCE"))
 			forceUpdate = MB_OK;
 		else
 			forceUpdate = MB_OKCANCEL;
 
 		HWND hMain = NULL;
-
 		CUpdateTipDlg dlg;
 		dlg.SetForceUpdate(forceUpdate);
 		Sleep(6000); // wait for main window shown
@@ -158,17 +125,11 @@ void runPopUpUpdate(LPVOID pparam)
 			//关闭游戏盒
 			YL_Log(UPDATE_LOG, LOG_NOTICE, "runPopUpUpdate", "SendMessage to Close Player %s.", playerName.c_str());
 			if(playerName == "PLAYBOX")
-			{
 				PostMessage(*((HWND*)pparam), WM_CLOSE, 0,0);
-			}
 			else
-			{
-				YL_Log(UPDATE_LOG, LOG_NOTICE, "runPopUpUpdate", "OUT5==");
 				exit(0);
-			}
 		}
 	}
-	YL_Log(UPDATE_LOG, LOG_NOTICE, "runPopUpUpdate", "OUT6==");
 }
 /*
 @brief	具体操作更新服务器列表，下载升级包等工作
@@ -176,30 +137,22 @@ void runPopUpUpdate(LPVOID pparam)
 typedef void (__stdcall *LPCREATERECOGNISE)(const char* szSoft, const char* szModule, HWND hWnd);
 void realUpdate(LPVOID pparam)
 {
-	YL_Log(UPDATE_LOG, LOG_NOTICE, "realUpdate", "IN==");
-
-	char szsysdir[MAX_PATH], szUpdate[MAX_PATH], szPlayer[64];
-	memset(szsysdir, 0 , MAX_PATH);
-	memset(szUpdate, 0, MAX_PATH);
-	memset(szPlayer, 0, 64);
+	char szsysdir[MAX_PATH] = {0};
+	char szUpdate[MAX_PATH] = {0};
+	char szPlayer[64] = {0};
 	_snprintf(szPlayer, 64-1, "%s", (char*)pparam);
 
 	if(!CLhcImg::GetHomePath(szsysdir, MAX_PATH))
-	{
 		return;
-	}
 	_snprintf(szUpdate, MAX_PATH-1, "%s\\Update.dll", szsysdir);
 
 	HMODULE hLib = LoadLibrary(szUpdate);
 	if(hLib != NULL)
 	{
 		LPCREATERECOGNISE lpfn = (LPCREATERECOGNISE)GetProcAddress(hLib, "BeginUpdate2");	
-		if(lpfn != NULL)
-		{
-			YL_Log(UPDATE_LOG, LOG_NOTICE, "realUpdate", "Call BeginUpdate2.");
+		if(lpfn)
 			lpfn(g_szSoftName, szPlayer, g_hSharedWnd);
-		}
+
 		FreeLibrary(hLib);
 	}
-	YL_Log(UPDATE_LOG, LOG_NOTICE, "realUpdate", "OUT==");
 }

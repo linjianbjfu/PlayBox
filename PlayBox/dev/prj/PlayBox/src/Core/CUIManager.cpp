@@ -32,11 +32,8 @@ CUIManager::~CUIManager()
 //由系统调用，通知界面管理类程序启动
 bool CUIManager::UIManAppStart()
 {	
-	YL_Log( STR_LOG_FILE,LOG_NOTICE,"CUIManager","UIManAppStart======IN" );
-
 	//滚动条初始化
 	CoolSB_InitializeApp();
-
 	m_pAppSkin			= new CSkinMgr();
 	m_pPanesMgr			= new CPanesMgr();
 	m_pChangeColorMgr	= CSkinMgrV1::GetObject();

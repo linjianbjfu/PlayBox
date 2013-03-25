@@ -89,11 +89,8 @@ bool GlobalFunc::GetSkinConfPath( string& strPath )
 	//homepath
 	char szHome[512];
 	CLhcImg::GetHomePath(szHome, 512);
-	//temppath
-	char szTempPath[MAX_PATH];
-	memset(szTempPath, 0, MAX_PATH);
-	//::GetTempPath(MAX_PATH, szTempPath);  //临时文件夹
-	//_snprintf( szTempPath, MAX_PATH, "%s\\Resources\\skin\\", szHome );  //和MainSkin.dat同目录
+
+	char szTempPath[MAX_PATH] = {0};
 	SHGetSpecialFolderPath(NULL,szTempPath,CSIDL_APPDATA,FALSE);
 	strcat( szTempPath, "\\PP\\" );
 	YL_DirInfo::MakeDir( szTempPath );

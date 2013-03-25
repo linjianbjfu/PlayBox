@@ -102,15 +102,10 @@ typedef DWORD  (__stdcall *ZWUMV )( HANDLE,PVOID);
 class MyMusic
 {
 public:
-
 	MyMusic(void);
 	~MyMusic(void);	
-	
-	static bool ApplyIDFromServer(const char* szUserFilePath, const char* szSource, bool bFirstStart=false);
-
 	static bool Encryption( char* szSrc, unsigned int iSrclength, char** szDest );
 	static bool Decryption( char* szSrc, char** szDest, unsigned int iLength );
-
 private:
 	static bool GetLocalIP( char* szIP );
 	static bool GetLocalMACAddress( char* szMacAddr );
@@ -121,7 +116,6 @@ private:
 	//static bool WinNTHDSerialNumAsScsiRead( BYTE* dwSerial, UINT* puSerialLen, UINT uMaxSerialLen );
 	static bool DoIdentify( HANDLE hPhysicalDriveIOCTL, PSENDCMDINPARAMS pSCIP,
 		PSENDCMDOUTPARAMS pSCOP, BYTE bIDCmd, BYTE bDriveNum, PDWORD lpcbBytesReturned );
-
 public:
 	static bool GetMacAddress(char *szMac);
 	static bool GetHDiskSerial(char szDiskSerial[]);

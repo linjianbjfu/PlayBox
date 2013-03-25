@@ -20,121 +20,6 @@ MyMusic::~MyMusic(void)
 {
 }
 
-bool MyMusic::ApplyIDFromServer(const char* szUserFilePath, const char* szSource, bool bFirstStart)
-{
-	char szID[INT_LENGTH], szSysInfo[64];
-	YL_UserId::GetUserID(szID, INT_LENGTH);
-
-	char szTransfer[1024];
-	char* pEncodeTransfer = NULL;	
-	memset( szTransfer,0,1024 );
-	_snprintf( szTransfer, 1023, "id=%s", szID );
-
-	strcat(szTransfer, "&type=");
-	if( strlen(szID) == 0 )
-	{
-		strcat(szTransfer, "reg");
-	}else
-	{
-		strcat(szTransfer, "auth");
-	}	
-
-	strcat( szTransfer,"&mac=" );
-	memset( szSysInfo, 0, 64 );
-	if(GetMacAddress(szSysInfo))
-	{
-		strcat(szTransfer, szSysInfo);
-	}
-
-	strcat(szTransfer, "&hd=");
-	memset(szSysInfo, 0, 64);
-	if(GetHDiskSerial(szSysInfo))
-	{
-		strcat(szTransfer, szSysInfo);
-	}
-
-	strcat(szTransfer, "&vmac=");
-	memset(szSysInfo, 0, 64);
-	if(GetLocalMACAddress(szSysInfo))
-	{
-		strcat(szTransfer, szSysInfo);
-	}
-	//software version
-	char szVersion[VERSION_LENGTH];
-	CLhcImg::GetSoftwareVersion(szVersion, VERSION_LENGTH);
-	strcat( szTransfer, "&ver=" );
-	strcat( szTransfer, szVersion );
-	strcat( szTransfer,"&src=" );
-	strcat( szTransfer,szSource );
-	unsigned int len = (unsigned int)strlen(szTransfer);
-	memset( szTransfer+1023, 0, 1 );
-
-	Encryption( szTransfer, len, &pEncodeTransfer );
-	CString url;
-	char szRegServer[128];
-
-	if(CLhcImg::GetRegServer(szRegServer, 128))
-	{
-		url.Format("%s/register?%s", szRegServer, pEncodeTransfer);
-	}
-	else
-	{
-		return false;
-	}
-
-	unsigned char *pContent = NULL;
-	long lResultSize = 0, dwHeaderSize = 0;
-	int nRetCode = 0;
-	if(pEncodeTransfer != NULL)
-		delete[] pEncodeTransfer;
-
-	USES_CONVERSION;
-	YL_CHTTPRequest client;
-	YL_Log(UPDATE_LOG_FILE, LOG_NOTICE, "UserReg", "Request url:%s", url.GetString());
-	if(!client.Request((LPCTSTR)url, YL_CHTTPRequest::REQUEST_GET, 30*1000))
-	{
-		YL_Log(UPDATE_LOG_FILE, LOG_WARNING, "UserReg", "Get ID Error!!");
-		return false;
-	}
-	else
-	{
-		pContent = client.GetContent(lResultSize);
-		if(lResultSize <= 0 || pContent == NULL)
-		{
-			YL_Log(UPDATE_LOG_FILE, LOG_WARNING, "UserReg", "HTTP Request for Apply id error, No Result!");
-		} 
-		else
-		{
-			char szContent[VERSION_LENGTH];
-			memset(szContent, 0, VERSION_LENGTH);
-			if(lResultSize > VERSION_LENGTH-1)
-				lResultSize = VERSION_LENGTH-1;
-			memcpy(szContent, pContent, lResultSize);
-
-			YL_Log(UPDATE_LOG_FILE, LOG_NOTICE, "UserReg", "get content:%s", szContent);
-
-			string::size_type  nLast, nIdx = string(szContent).find("=");
-			if(nIdx != string::npos)
-			{
-				nLast = nIdx+1;
-				//数字0到9之间的ASCII码
-				while(szContent[nLast] > 47 && szContent[nLast] < 58 && nLast <= strlen(szContent))
-					nLast++; 
-				_snprintf(szID, INT_LENGTH-1, string(szContent).substr(nIdx + 1, nLast - nIdx - 1).c_str());
-			}
-		}
-	}
-
-	if(atoi(szID) >0 )
-	{
-		YL_UserId::SetUserID(szID);
-		YL_UserId::SetInstallSRC(szSource);
-
-		YL_Log(UPDATE_LOG_FILE, LOG_NOTICE, "UserReg", "Write New ID %s to File.", szID);
-	}
-	return true;
-}
-
 bool MyMusic::Encryption( char* szSrc, unsigned int iSrclength, char** szDest )
 {
 	bool bRet = false;
@@ -219,9 +104,7 @@ bool MyMusic::GetLocalMACAddress( char* szMacAddr )
 		AdapterInfo,							// [out] buffer to receive data
 		&dwBufLen);								// [in] size of receive data buffer
 	if(dwStatus != ERROR_SUCCESS)			// Verify return value is valid, no buffer overflow
-	{
 		return false;
-	}
 
 	PIP_ADAPTER_INFO pAdapterInfo = AdapterInfo;// Contains pointer to current adapter info
 	_snprintf( szMacAddr, 12, "%02X%02X%02X%02X%02X%02X", 
@@ -236,9 +119,7 @@ bool MyMusic::GetMacAddress(char *szMac)
 	char m_SubKey[] = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\NetworkCards", szName[MAX_PATH], szValue[MAX_PATH];
 	DWORD cbNameLen = MAX_PATH, cbValueLen = MAX_PATH, dwIndex = 0, dwAttr = 0;
 	if(RegOpenKeyEx(HKEY_PLAYBOX_ROOT, m_SubKey, 0, KEY_READ, &hKey) != ERROR_SUCCESS)
-	{
 		return false;
-	}
 
 	BYTE mac[6];
 	BOOL result = FALSE;
@@ -286,7 +167,6 @@ bool MyMusic::GetMacAddress(char *szMac)
 
 bool MyMusic::GetOSVersion( char* szOSVersion )
 {
-	
 	OSVERSIONINFO osinfo;
 	osinfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 

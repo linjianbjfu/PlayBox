@@ -1,14 +1,16 @@
 //¥¶¿Ìlylk.dat, mylk.dat
 
 #include "windows.h"
+#include <string>
 
 class YL_UserId
 {
 public:
-	static bool GetUserFileName(char szFileName[], int namelen);
-	static bool GetUserFilePath(char szFilePath[], int pathlen);
-	static bool GetUserID(char szID[], int idlen);
-	static bool SetUserID(const char *szID);
-	static bool GetInstallSRC(char szSRC[], int srclen);
-	static bool SetInstallSRC(const char* szSRC);	
+	static LPCSTR USER_ID;
+	static LPCSTR INSTALL_SRC;
+	static LPCSTR VERSION;
+	static bool Set(LPCSTR key, LPCSTR value);
+	static bool Get(LPCSTR key, std::string& strValue);
+private:
+	static bool GetUserFilePath(std::string& strPath);
 };

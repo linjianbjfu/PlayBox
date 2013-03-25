@@ -303,34 +303,32 @@ void CLocalMusicCoverList::OnMemoryDraw(BOOL blRePaint/* =TRUE */)
 		iWidthSpace = SPACEW;
 
 	CPoint ptS = m_ptClientStart;
-	ptS.x = 45+m_ptClientStart.x;
-	ptS.y = SPACEH+m_ptClientStart.y;
+	ptS.x = START_X_LEFT + m_ptClientStart.x;
+	ptS.y = SPACEH + m_ptClientStart.y;
 	
 	for(int i=0;i<m_DataMgr.m_vItem.size();i++)
 	{
-		if (ptS.x+m_iItemWidth>m_rect.right)
+		if (ptS.x + m_iItemWidth > m_rect.right)
 		{
 			ptS.y = ptS.y + iHeightSpace;
-			ptS.x = m_ptClientStart.x+iWidthSpace;
+			ptS.x = m_ptClientStart.x + START_X_LEFT;
 			i--;// 这个超屏幕了，下一个画的时候还要画这个，所以这里要减1
 		}
 		else
 		{
-			if (ptS.y>m_rect.bottom)
+			if (ptS.y > m_rect.bottom)
 			{
 				// 超出屏幕的区域只是计算Item所在的区域，并不绘制
 				CalcHideItemRect(ptS,m_DataMgr.m_vItem[i]);
-				//ptS.x = ptS.x+m_iItemWidth+SPACEW;
-				ptS.x = ptS.x+m_iItemWidth+iWidthSpace;
+				ptS.x = ptS.x + m_iItemWidth + iWidthSpace;
 			}
 			else
 			{
-				if (ptS.y+iHeightSpace>=m_rect.top)
+				if (ptS.y + iHeightSpace >= m_rect.top)
 					DrawItem(ptS,m_DataMgr.m_vItem[i]);
 				else// 超出屏幕的区域只是计算Item所在的区域，并不绘制
 					CalcHideItemRect(ptS,m_DataMgr.m_vItem[i]);
-				//ptS.x = ptS.x+m_iItemWidth+SPACEW;
-				ptS.x = ptS.x+m_iItemWidth+iWidthSpace;
+				ptS.x = ptS.x + m_iItemWidth + iWidthSpace;
 			}
 		}
 	}

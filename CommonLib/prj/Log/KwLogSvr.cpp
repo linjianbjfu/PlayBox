@@ -44,7 +44,7 @@ CKwLogSvr::CKwLogSvr()
 
 	char szID[128];
 	memset(szID,0,128);
-	CLhcImg::GetUserID(szID,128);
+	//CLhcImg::GetUserID(szID,128);
 	m_strID = szID;	
 
 	m_iLogVer	= g_iVersion;
@@ -78,12 +78,9 @@ struct SENDMSG
 
 void SendMsg( SENDMSG* pSendMsg )
 {
-	YL_Log(LOGSVR_LOG_FILE, LOG_KEYINFO, "LogSvr", "Send Msg to Server In");
 	//Base64 ¼ÓÃÜ
 	char* chInput = new char[BASE64_LENGTH(pSendMsg->msg.length())+1];
 	YL_Base64Encode(chInput, pSendMsg->msg.c_str(), (int)pSendMsg->msg.length(), "langhua ");
-	YL_Log(LOGSVR_LOG_FILE, LOG_KEYINFO, "LogSvr", "YL_Base64Encode End.");
-
 	//send to log server
 	YL_CHTTPRequest client;
 	char szLogServer[SRC_LENGTH];
@@ -99,9 +96,9 @@ void SendMsg( SENDMSG* pSendMsg )
 	}
 
 	char szID[INT_LENGTH], szVersion[VERSION_LENGTH], szInstallSRC[SRC_LENGTH];
-	CLhcImg::GetUserID( szID, INT_LENGTH );
-	CLhcImg::GetSoftwareVersion( szVersion, VERSION_LENGTH );
-	CLhcImg::GetInstallSRC( szInstallSRC, SRC_LENGTH );
+	//CLhcImg::GetUserID( szID, INT_LENGTH );
+	//CLhcImg::GetSoftwareVersion( szVersion, VERSION_LENGTH );
+	//CLhcImg::GetInstallSRC( szInstallSRC, SRC_LENGTH );
 
 	string strURL;
 	YL_StringUtil::Format( strURL, "%s/ulog?type=ilog&ver=%s&id=%s&source=%s",
@@ -355,7 +352,7 @@ HRESULT CKwLogSvr::UpdateConfig()
 	//update id
 	char szID[128];
 	memset(szID,0,128);
-	CLhcImg::GetUserID(szID,128);
+	//CLhcImg::GetUserID(szID,128);
 	m_strID = szID;	
 
 	return S_OK;
@@ -439,9 +436,9 @@ string CKwLogSvr::FormatMsg(int nMsgType, const string& msg)
 	//format <SRC:$ver|ACT:msg{$src}|U:$id>
 	string strFMsg, str;
 	char szID[VERSION_LENGTH], szVersion[VERSION_LENGTH], szInstallSRC[SRC_LENGTH];
-	CLhcImg::GetUserID(szID, VERSION_LENGTH);
-	CLhcImg::GetSoftwareVersion(szVersion, VERSION_LENGTH);
-	CLhcImg::GetInstallSRC(szInstallSRC, SRC_LENGTH);
+	//CLhcImg::GetUserID(szID, VERSION_LENGTH);
+	//CLhcImg::GetSoftwareVersion(szVersion, VERSION_LENGTH);
+	//CLhcImg::GetInstallSRC(szInstallSRC, SRC_LENGTH);
 	str = string("SRC:") + szVersion + "|ACT:" + msg + "{" + szInstallSRC + "}" + "|U:" + szID;
 	//str = string("|ACT:") + msg + "{" + szInstallSRC + "}" + "|U:" + szID;
 	switch(nMsgType)

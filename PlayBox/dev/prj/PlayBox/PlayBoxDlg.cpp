@@ -940,29 +940,12 @@ LRESULT CPlayBoxDlg::OnChangeText(WPARAM wp, LPARAM lp)
 LRESULT CPlayBoxDlg::OnHTTPDonwload(WPARAM w,LPARAM)
 {
 	//暂且不实现各种联网操作的排序
-	if( w == 1 )
-	{
+	if(w == 1)
 		CHTTPControl::HTTPFinish_RegID();
-	}
-	if( w == 2)
-	{
+	if(w == 2)
 		CHTTPControl::HTTPFinish_ConfigFile();
-		//取得新配置之后再决定是否弹框,3.0版改为走完取配置流程之后,下面代码移到OnHTTPDonwload中
-		//CMainMsgControl::GetInstance()->ResetPopedMsgNum();
-		//::SetTimer(m_hWnd,TIMER_POP_MESSAGE,3000,NULL);
-		//下载广告
-		//list<IMessageObserver*> listOb;
-		//AfxGetMessageManager()->QueryObservers( ID_MESSAGE_CONFUPDATE,listOb);
-		//for( list<IMessageObserver*>::iterator itOb = listOb.begin();itOb != listOb.end();itOb++ )
-		//{
-		//	IConfUpdateObserver* pOb = dynamic_cast<IConfUpdateObserver*>(*itOb);
-		//	pOb->IConfUpdate_ConfigFile();
-		//}
-	}
-	if( w == 3)
-	{
+	if(w == 3)
 		CHTTPControl::HTTPFinish_UpClientLog();
-	}
 	return 0;
 }
 

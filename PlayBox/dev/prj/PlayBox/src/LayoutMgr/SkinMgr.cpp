@@ -11,6 +11,7 @@
 
 #include "../util/MarkupArchive.h"
 #include "SkinVersion.h"
+#include "YL_UserId.h"
 
 // CSkin
 
@@ -752,42 +753,32 @@ bool CSkinMgr::IsSkinVersionValid(const CString& strSkinName)
 
 	strSkinPath = string(home) + "\\skin\\" + (LPCSTR)strSkinName;
 	
-	char szVersion[64];
-	CLhcImg::GetSoftwareVersion(szVersion,64);
-	string strSoftVersion = szVersion;
-	string strver2 = "";
+	string strSoftVersion;
+	YL_UserId::Get(YL_UserId::VERSION, strSoftVersion);
+	string strver2;
 
 	size_t first = strSoftVersion.find("_");
 	if( first != string::npos )
 	{
 		size_t end	 = strSoftVersion.find("_",first+1);
 		if( end != string::npos )
-		{
 			strver2 = strSoftVersion.substr( first + 1,end-first-1);
-		}
 	}
 
-	if( strver2 != "" )
+	if(!strver2.empty())
 	{
 		size_t nPos = strver2.find_last_of(".");
-		if( nPos != string::npos )
-		{
+		if(nPos != string::npos)
 			strver2 = strver2.substr(0,nPos);
-		}
-	}
-	else
-	{
+	} else
 		strver2 = strSoftVersion;
-	}
 
 	CMarkupArchive xml;
 	string strXMLFile;
 	GlobalFunc::GetSkinConfPath( strXMLFile );
 
 	if( !xml.Open( strXMLFile.c_str() ) )
-	{
 		return false;
-	}
 
 	xml.ResetPos();
 	if( xml.FindElem("root") )
@@ -797,20 +788,13 @@ bool CSkinMgr::IsSkinVersionValid(const CString& strSkinName)
 		if( (strSupportVer = find_SkinName( string(strSkinName) ) ) != "" )
 		{
 			if( strSupportVer == strVerion )
-			{
 				return true;
-			}
-		}	
-		else
+		} else
 		{
 			if( strVerion == strver2 )
-			{
 				return true;
-			}
 		}
 	}
-
 	xml.Close();
-
 	return false;
 }

@@ -1,4 +1,3 @@
 
 EXPORTS
 BeginUpdate2 PRIVATE
-SetHTTPControl	PRIVATE

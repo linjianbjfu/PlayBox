@@ -212,12 +212,10 @@ Section "-YPLAYBOX" realSection
 	Call RenameAndDeleteReboot
 	File  ..\install_resource\NetOp.dll
 
-	IfFileExists "$INSTDIR\MSVCR71.DLL" +2 0
-		File  "..\install_resource\MSVCR71.DLL"
-	IfFileExists "$INSTDIR\MSVCP71.DLL" +2 0
-		File  "..\install_resource\MSVCP71.DLL"
-	IfFileExists "$INSTDIR\MFC71.dll" +2 0
-		File  "..\install_resource\MFC71.dll"
+	IfFileExists "$INSTDIR\mfc90.dll" +2 0
+		File  "..\install_resource\mfc90.dll"
+	IfFileExists "$INSTDIR\msvcr90.dll" +2 0
+		File  "..\install_resource\msvcr90.dll"
 
 	File  ..\install_resource\Tool.exe
 	File  /r /x .svn /x *.db ..\install_resource\Resources

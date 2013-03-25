@@ -7,6 +7,8 @@
 #define SPACEWS			10
 #define	VSCROLLMIN		40			// 向下滚动幅度
 #define VSCROLLMAX		100			// 向下滚动幅度
+#define START_X_LEFT	45			//左边留出的空白区域
+#define END_X_RIGHT		45			//右边留出的空白区域
 
 struct GdiRes
 {

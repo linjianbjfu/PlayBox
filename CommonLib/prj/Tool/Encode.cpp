@@ -3,7 +3,6 @@
 #include "../../common/YL_StringUtil.h"
 #include "../../common/YL_EncFileReg.h"
 #include "../../common/LhcImg.h"
-#include "../../common/YL_UserId.h"
 #include "../../common/tools.h"
 #include "../../include/YL_HTTPRequest.h"
 
@@ -66,9 +65,9 @@ string FormatMsg(int nMsgType, const string& msg)
 	//format <SRC:$ver|ACT:msg{$src}|U:$id>
 	string strFMsg, str;
 	char szID[VERSION_LENGTH], szVersion[VERSION_LENGTH], szInstallSRC[SRC_LENGTH];
-	CLhcImg::GetUserID(szID, VERSION_LENGTH);
-	CLhcImg::GetSoftwareVersion(szVersion, VERSION_LENGTH);
-	CLhcImg::GetInstallSRC(szInstallSRC, SRC_LENGTH);
+	//CLhcImg::GetUserID(szID, VERSION_LENGTH);
+	//CLhcImg::GetSoftwareVersion(szVersion, VERSION_LENGTH);
+	//CLhcImg::GetInstallSRC(szInstallSRC, SRC_LENGTH);
 	str = string("SRC:") + szVersion + "|ACT:" + msg + "{" + szInstallSRC + "}" + "|U:" + szID;
 	//str = string("|ACT:") + msg + "{" + szInstallSRC + "}" + "|U:" + szID;
 	switch(nMsgType)
@@ -101,9 +100,9 @@ void SendRealMsg( string& strMsg )
 	}
 
 	char szID[INT_LENGTH], szVersion[VERSION_LENGTH], szInstallSRC[SRC_LENGTH];
-	CLhcImg::GetUserID( szID, INT_LENGTH );
-	CLhcImg::GetSoftwareVersion( szVersion, VERSION_LENGTH );
-	CLhcImg::GetInstallSRC( szInstallSRC, SRC_LENGTH );
+	//CLhcImg::GetUserID( szID, INT_LENGTH );
+	//CLhcImg::GetSoftwareVersion( szVersion, VERSION_LENGTH );
+	//CLhcImg::GetInstallSRC( szInstallSRC, SRC_LENGTH );
 
 	string strURL;
 	YL_StringUtil::Format( strURL, "%s/ulog?type=ilog&ver=%s&id=%s&source=%s",
